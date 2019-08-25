@@ -15,7 +15,11 @@ sub gst_bus_add_signal_watch_full (GstBus $bus, gint $priority)
   is export
 { * }
 
-sub gst_bus_add_watch (GstBus $bus, GstBusFunc $func, gpointer $user_data)
+sub gst_bus_add_watch (
+  GstBus $bus,
+  &func (GstBus, GstMesage, gpointer --> gboolean),
+  gpointer $user_data
+)
   returns guint
   is native(gstreamer)
   is export
@@ -24,7 +28,7 @@ sub gst_bus_add_watch (GstBus $bus, GstBusFunc $func, gpointer $user_data)
 sub gst_bus_add_watch_full (
   GstBus $bus,
   gint $priority,
-  GstBusFunc $func,
+  &func (GstBus, GstMesage, gpointer --> gboolean),
   gpointer $user_data,
   GDestroyNotify $notify
 )
@@ -133,7 +137,7 @@ sub gst_bus_set_flushing (GstBus $bus, gboolean $flushing)
 
 sub gst_bus_set_sync_handler (
   GstBus $bus,
-  GstBusSyncHandler $func,
+  &func (GstBus, GstMessage, gpointer --> guint),
   gpointer $user_data,
   GDestroyNotify $notify
 )
