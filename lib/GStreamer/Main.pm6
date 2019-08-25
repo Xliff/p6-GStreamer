@@ -54,14 +54,8 @@ class GStreamer::Main {
   method init_get_option_group (:$raw = False)
     is also<init-get-option-group>
   {
-    my $og = gst_init_get_option_group()
-      but GTK::Compat::Roles::ListData[GOptionGroup];
-
-    $og ??
-      ( $raw ??
-        og.Array !! $og.Array.map({ GTK::Compat::OptionGroup.new($_) }) )
-      !!
-      Nil;
+    # Waiting for the creation of GTK::Compat::OptionGroup.
+    gst_init_get_option_group()
   }
 
   method is_initialized is also<is-initialized> {

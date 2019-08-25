@@ -180,7 +180,7 @@ class GStreamer::Element is GStreamer::Object {
     so gst_element_is_locked_state($!e);
   }
 
-  method iterate_pads ($raw = False) is also<iterate-pads> {
+  method iterate_pads (:$raw = False) is also<iterate-pads> {
     my $p = gst_element_iterate_pads($!e);
 
     $p ??
@@ -189,7 +189,7 @@ class GStreamer::Element is GStreamer::Object {
       Nil;
   }
 
-  method iterate_sink_pads ($raw = False ) is also<iterate-sink-pads> {
+  method iterate_sink_pads (:$raw = False ) is also<iterate-sink-pads> {
     my $sp = gst_element_iterate_sink_pads($!e);
 
     $sp ??
@@ -198,7 +198,7 @@ class GStreamer::Element is GStreamer::Object {
       Nil;
   }
 
-  method iterate_src_pads ($raw = False) is also<iterate-src-pads> {
+  method iterate_src_pads (:$raw = False) is also<iterate-src-pads> {
     my $sp = gst_element_iterate_src_pads($!e);
 
     $sp ??
