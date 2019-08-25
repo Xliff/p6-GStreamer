@@ -37,7 +37,10 @@ class GStreamer::Bin is GStreamer::Element {
     is also<GstBin>
   { $!b }
 
-  method new {
+  multi method new (GstBin $bin) {
+    self.bless( :$bin );
+  }
+  multi method new {
     self.bless( bin => gst_bin_new() );
   }
 
