@@ -6,10 +6,14 @@ use GTK::Compat::Types;
 use GStreamer::Raw::Types;
 use GStreamer::Raw::Bin;
 
+use GStreamer::Roles::ChildProxy;
+
 our subset BinAncestry is export of Mu
-  where GstBin | ElementAncestry;
+  where GstBin | GstChildProxy | ElementAncestry;
 
 class GStreamer::Bin is GStreamer::Element {
+  also does GStreamer::Roles::ChildProxy;
+
   has GstBin $!b;
 
   submethod BUILD (:$bin) {
@@ -25,11 +29,18 @@ class GStreamer::Bin is GStreamer::Element {
         $_
       }
 
+      when GstChildProxy {
+        $to-parent = cast(GstElement, $_);
+        $!cp = $_;                         # GStreamer::Roles::ChildProxy
+        cast(GstBin, $_);
+      }
+
       default {
         $to-parent = $_
         cast(GstBin, $_);
       }
     }
+    $!cp //= cast(GstChildProxy, $_);      # GStreamer::Roles::ChildProxy
     self.setElement($to-parent);
   }
 
