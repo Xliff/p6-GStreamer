@@ -4,6 +4,8 @@ use GTK::Compat::Types;
 use GStreamer::Raw::Types;
 use GStreamer::Raw::Message;
 
+use GTK::Compat::Value;
+
 class GStreamer::Message {
   has GstMessage $!m;
 
@@ -375,8 +377,20 @@ class GStreamer::Message {
     );
   }
 
-  #### 
-
+  multi method new (
+    GstObject() $src,
+    Str() $location,
+    GstTagList() $tag_list,
+    GstStructure() $entry_struct,
+    :$redirect is required
+  ) {
+    GStreamer::Message.new(
+      $src,
+      $location,
+      $tag_list,
+      $entry_struct
+    );
+  }
   method new_redirect (
     GstObject() $src,
     Str() $location,
@@ -393,10 +407,24 @@ class GStreamer::Message {
     );
   }
 
+  multi method new (
+    GstObject() $src,
+    GstState() $state,
+    :request-state(:$request_state) is required
+  ) {
+    GStreamer::Messaeg.new_request_state($src, $state);
+  }
   method new_request_state (GstObject() $src, GstState() $state) {
     self.bless( message => gst_message_new_request_state($src, $state) );
   }
 
+  multi method new (
+    GstObject() $src,
+    Int() $running_time, # GstClockTime $running_time
+    :reset-time(:$reset_time) is required
+  ) {
+    GStreamer::Message.new_reset_time($src, $running_time);
+  }
   method new_reset_time (
     GstObject() $src,
     Int() $running_time # GstClockTime $running_time
@@ -404,6 +432,14 @@ class GStreamer::Message {
     self.bless( message => gst_message_new_reset_time($src, $running_time) );
   }
 
+  multi method new (
+    GstObject() $src,
+    GstFormat() $format,
+    Int() $position, # gint64 $position
+    :segment-done(:$segment_done) is required
+  ) {
+    GStreamer::Message.new_segment_done($src, $format, $position);
+  }
   method new_segment_done (
     GstObject() $src,
     GstFormat() $format,
@@ -414,6 +450,14 @@ class GStreamer::Message {
     );
   }
 
+  multi method new (
+    GstObject() $src,
+    GstFormat() $format,
+    Int() $position # gint64 $position
+    :segment-start(:$segment_start) is required
+  ) {
+    GStreamer::Message.new_segment_start($src, $format, $position);
+  }
   method new_segment_start (
     GstObject() $src,
     GstFormat() $format,
@@ -424,6 +468,20 @@ class GStreamer::Message {
     );
   }
 
+  multi method new (
+    GstObject() $src,
+    GstState $oldstate,
+    GstState $newstate,
+    GstState $pending,
+    :state-changed(:$state_changed) is required
+  ) {
+    GStreamer::Message.new_state_changed(
+      $src,
+      $oldstate,
+      $newstate,
+      $pending
+    );
+  }
   method new_state_changed (
     GstObject() $src,
     GstState $oldstate,
@@ -440,10 +498,38 @@ class GStreamer::Message {
     );
   }
 
+  multi method new (
+    GstObject() $src,
+    :state-dirty(:$state_dirty) is required
+  ) {
+    GStreamer::Message.new_state_dirty($src);
+  }
   method new_state_dirty (GstObject() $src)  {
     self.bless( message => gst_message_new_state_dirty($src) );
   }
 
+  multi method new (
+    GstObject() $src,
+    GstFormat() $format,
+    Int() $amount,       # guint64 $amount,
+    Int() $rate,         # gdouble $rate,
+    Int() $flush,        # gboolean $flush,
+    Int() $intermediate, # gboolean $intermediate,
+    Int() $duration,     # guint64 $duration,
+    Int() $eos,          # gboolean $eos
+    :step-done(:$step_done) is required
+  ) {
+    GStreamer::Message.new_step_done(
+      $src,
+      $format,
+      $amount,
+      $rate,
+      $flush,
+      $intermediate,
+      $duration,
+      $eos
+    );
+  }
   method new_step_done (
     GstObject() $src,
     GstFormat() $format,
@@ -468,6 +554,26 @@ class GStreamer::Message {
     );
   }
 
+  multi method new (
+    GstObject() $src,
+    Int() $active,       # gboolean $active,
+    GstFormat() $format,
+    Int() $amount,       # guint64 $amount,
+    Int() $rate,         # gdouble $rate,
+    Int() $flush,        # gboolean $flush,
+    Int() $intermediate, # gboolean $intermediate
+    :step-start(:$step_start) is required
+  ) {
+    GStreamer::Message.new_step_start(
+      $src,
+      $active,
+      $format,
+      $amount,
+      $rate,
+      $flush,
+      $intermediate
+    );
+  }
   method new_step_start (
     GstObject() $src,
     Int() $active,       # gboolean $active,
@@ -490,6 +596,13 @@ class GStreamer::Message {
     );
   }
 
+  multi method new (
+    GstObject() $src,
+    GstStreamCollection() $collection,
+    :stream-collection(:$stream_collection) is required
+  ) {
+    GStreamer::Message.new_stream_collection($src, $collection);
+  }
   method new_stream_collection (
     GstObject() $src,
     GstStreamCollection() $collection
@@ -499,10 +612,24 @@ class GStreamer::Message {
     );
   }
 
+  multi method new (
+    GstObject() $src,
+    :stream-start(:$stream_start) is required
+  ) {
+    GStreamer::Message.new_stream_start($src);
+  }
   method new_stream_start (GstObject() $src) {
     self.bless( message => gst_message_new_stream_start($src) );
   }
 
+  multi method new (
+    GstObject() $src,
+    Int() $type, # GstStreamStatusType $type,
+    GstElement() $owner,
+    :stream-status(:$stream_status) is required
+  ) {
+    GStreamer::Message.new_stream_status($src, $type, $owner);
+  }
   method new_stream_status (
     GstObject() $src,
     Int() $type, # GstStreamStatusType $type,
@@ -513,6 +640,13 @@ class GStreamer::Message {
     );
   }
 
+  multi method new (
+    GstObject() $src,
+    GstStreamCollection() $collection,
+    :stream-selected(:$stream_selected) is required
+  ) {
+    GStreamer::Message.new_streams_selected($src, $collection);
+  }
   method new_streams_selected (
     GstObject() $src,
     GstStreamCollection() $collection
@@ -522,21 +656,45 @@ class GStreamer::Message {
     );
   }
 
+  multi method new (
+    GstObject() $src,
+    Int() $type,       # GstStructureChangeType $type,
+    GstElement $owner,
+    Int() $busy,       # gboolean $busy
+    :structure-change(:$structure_change) is required
+  ) {
+    GStreamer::Message.new_structure_change($src, $type, $owner, $busy);
+  }
   method new_structure_change (
     GstObject() $src,
     Int() $type,       # GstStructureChangeType $type,
     GstElement $owner,
-    Int() $byst        # gboolean $busy
+    Int() $busy        # gboolean $busy
   ) {
     self.bless(
       message => gst_message_new_structure_change($src, $type, $owner, $busy)
     );
   }
 
+  multi method new (
+    GstObject() $src,
+    GstTagList() $tag_list,
+    :$tag is required
+  ) {
+    GStreamer::Message.new_tag($src, $tag_list);
+  }
   method new_tag (GstObject() $src, GstTagList() $tag_list) {
     self.bless( message => gst_message_new_tag($src, $tag_list) );
   }
 
+  multi method new (
+    GstObject() $src,
+    GstToc() $toc,
+    Int() $updated,   # gboolean $updated
+    :$toc is required
+  ) {
+    GStreamer::Message.new_toc($src, $toc, $updated);
+  }
   method new_toc (
     GstObject() $src,
     GstToc() $toc,
@@ -545,10 +703,32 @@ class GStreamer::Message {
     self.bless( message => gst_message_new_toc($src, $toc, $updated) );
   }
 
+  multi method new (
+    GstObject() $src,
+    GError $error,
+    Str() $debug,
+    :$warning is required
+  ) {
+    GStreamer::Message.new_warning($src, $error, $debug);
+  }
   method new_warning (GstObject() $src, GError $error, Str() $debug) {
     self.bless( message => gst_message_new_warning($src, $error, $debug) );
   }
 
+  multi method new (
+    GstObject() $src,
+    GError $error,
+    Str() $debug,
+    GstStructure() $details,
+    :warning-with-details(:$warning_with_details) is required
+  ) {
+    GStreamer::Message.new_warning_with_details(
+      $src,
+      $error,
+      $debug,
+      $details
+    );
+  }
   method new_warning_with_details (
     GstObject() $src,
     GError $error,
@@ -570,24 +750,33 @@ class GStreamer::Message {
       FETCH => sub ($) {
         gst_message_get_seqnum($!m);
       },
-      STORE => sub ($, $seqnum is copy) {
+      STORE => sub ($, Int() $seqnum is copy) {
         gst_message_set_seqnum($!m, $seqnum);
       }
     );
   }
 
-  method stream_status_object is rw {
+  method stream_status_object (:$raw = False) is rw {
     Proxy.new(
       FETCH => sub ($) {
-        gst_message_get_stream_status_object($!m);
+        my $v = gst_message_get_stream_status_object($!m);
+
+        $v ??
+          ( $raw ?? $v !! GTK::Compat::Value.new($v) )
+          !!
+          Nil;
       },
-      STORE => sub ($, $object is copy) {
+      STORE => sub ($, GValue() $object is copy) {
         gst_message_set_stream_status_object($!m, $object);
       }
     );
   }
 
-  method add_redirect_entry (Str $location, GstTagList $tag_list, GstStructure $entry_struct) {
+  method add_redirect_entry (
+    Str() $location,
+    GstTagList() $tag_list,
+    GstStructure() $entry_struct
+  ) {
     gst_message_add_redirect_entry($!m, $location, $tag_list, $entry_struct);
   }
 
@@ -595,8 +784,9 @@ class GStreamer::Message {
     gst_message_get_num_redirect_entries($!m);
   }
 
-  method get_structure {
+  method get_structure (:$raw = False) {
     gst_message_get_structure($!m);
+    # ADD OBJECT CREATION CODE
   }
 
   method get_type {
@@ -606,7 +796,7 @@ class GStreamer::Message {
   }
 
   method has_name (Str $name) {
-    gst_message_has_name($!m, $name);
+    so gst_message_has_name($!m, $name);
   }
 
   method parse_async_done (GstClockTime $running_time) {
@@ -785,16 +975,27 @@ class GStreamer::Message {
     gst_message_streams_selected_get_stream($!m, $idx);
   }
 
-  method type_get_name {
-    gst_message_type_get_name($!m);
+  method type_get_name (
+    GStreamer::Message:U:
+    Int() $type # GstMessageType
+  ) {
+    gst_message_type_get_name($type);
   }
 
-  method type_to_quark {
-    gst_message_type_to_quark($!m);
+  method type_to_quark (
+    GStreamer::Message:U:
+    Int() $type # GstMessageType
+  ) {
+    gst_message_type_to_quark($type);
   }
 
   method writable_structure {
     gst_message_writable_structure($!m);
   }
+
+  # Save for when GstMessage is converted to CStruct
+  # method message_type {
+  #   GstMessageType($!m.type);
+  # }
 
 }
