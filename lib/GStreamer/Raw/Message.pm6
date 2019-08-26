@@ -397,37 +397,40 @@ sub gst_message_new_warning_with_details (
 
 sub gst_message_parse_async_done (
   GstMessage $message,
-  GstClockTime $running_time
+  GstClockTime $running_time is rw
 )
   is native(gstreamer)
   is export
 { * }
 
-sub gst_message_parse_buffering (GstMessage $message, gint $percent)
+sub gst_message_parse_buffering (GstMessage $message, gint $percent is rw)
   is native(gstreamer)
   is export
 { * }
 
 sub gst_message_parse_buffering_stats (
   GstMessage $message,
-  guint $mode, # GstBufferingMode $mode,
-  gint $avg_in,
-  gint $avg_out,
-  gint64 $buffering_left
+  guint $mode            is rw, # GstBufferingMode $mode,
+  gint $avg_in           is rw,
+  gint $avg_out          is rw,
+  gint64 $buffering_left is rw
 )
   is native(gstreamer)
   is export
 { * }
 
-sub gst_message_parse_clock_lost (GstMessage $message, GstClock $clock)
+sub gst_message_parse_clock_lost (
+  GstMessage $message,
+  CArray[Pointer[GstClock]] $clock
+)
   is native(gstreamer)
   is export
 { * }
 
 sub gst_message_parse_clock_provide (
   GstMessage $message,
-  GstClock $clock,
-  gboolean $ready
+  CArray[Pointer[GstClock]] $clock,
+  gboolean $ready is rw
 )
   is native(gstreamer)
   is export

@@ -1,5 +1,7 @@
 use v6.c;
 
+use NativeCall;
+
 use GTK::Compat::Types;
 use GStreamer::Raw::Types;
 use GStreamer::Raw::Message;
@@ -799,39 +801,136 @@ class GStreamer::Message {
     so gst_message_has_name($!m, $name);
   }
 
-  method parse_async_done (GstClockTime $running_time) {
-    gst_message_parse_async_done($!m, $running_time);
+  proto method parse_async_done (|)
+  { * }
+
+  multi method parse_async_done {
+    samewith($ct);
+  }
+  multi method parse_async_done ($running_time is rw) {
+    my gint $r = 0;
+    gst_message_parse_async_done($!m, $r);
+    $running_time = $r
   }
 
-  method parse_buffering (gint $percent) {
-    gst_message_parse_buffering($!m, $percent);
+
+  method parse_buffering ($percent is rw)
+    my gint $p = 0;
+    gst_message_parse_buffering($!m, $p);
+    $percent = $0;
   }
 
-  method parse_buffering_stats (GstBufferingMode $mode, gint $avg_in, gint $avg_out, gint64 $buffering_left) {
-    gst_message_parse_buffering_stats($!m, $mode, $avg_in, $avg_out, $buffering_left);
+  proto method parse_buffering_stats (|)
+  { * }
+
+  multi method parse_buffering_stats (
+    my @a = 0 xx 4;
+    samewith(|@a);
+  }
+  multi method parse_buffering_stats (
+    $mode           is rw,
+    $avg_in         is rw,
+    $avg_out        is rw,
+    $buffering_left is rw
+  ) {
+    my guint $m = 0;
+    my gint ($ai, $ao) = 0 xx 2;
+    my gint64 $bl = 0;
+
+    gst_message_parse_buffering_stats($!m, $m, $ai, $ao, $bl);
+    ($mode, $avg_in, $avg_out, $buffering_left) = ($m, $ai, $ao, $bl);
   }
 
-  method parse_clock_lost (GstClock $clock) {
-    gst_message_parse_clock_lost($!m, $clock);
+  proto method parse_clock_lost (|)
+  { * }
+
+  multi method parse_clock_lost {
+    samewith(GstClock.new)
+  }
+  multi method parse_clock_lost ($clock is rw) {
+    my $ca = CArray[Pointer[GstClock]].new;
+
+    $ca[0] = GstClock.new;
+    gst_message_parse_clock_lost($!m, $ca);
+    $clock = $c
   }
 
-  method parse_clock_provide (GstClock $clock, gboolean $ready) {
-    gst_message_parse_clock_provide($!m, $clock, $ready);
+  proto method parse_clock_provide (|)
+  { * }
+
+  multi method parse_clock_provide {
+    my ($c, $r);
+    samewith($c, $r);
+  }
+  multi method parse_clock_provide (
+    $clock is rw,
+    $ready is rw
+  ) {
+    my gboolean $r = 0;
+    my $ca = CArray[Pointer[GstClock]].new;
+
+    $ca[0] = GstClock.new;
+    gst_message_parse_clock_provide($!m, $ca, $r);
+    ($clock, $ready) = ($ca, $r);
   }
 
-  method parse_context_type (Str $context_type) {
-    gst_message_parse_context_type($!m, $context_type);
+  proto method parse_context_type (|)
+  { * }
+
+  method parse_context_type {
+    my $ct;
+    samewith($ct);
+  }
+  method parse_context_type ($context_type is rw) {
+    my $ct = CArray[Str].new;
+    gst_message_parse_context_type($!m, $ct);
+    $context_type = $ct[0];
   }
 
-  method parse_device_added (GstDevice $device) {
-    gst_message_parse_device_added($!m, $device);
+  proto method parse_device_added (|)
+  { * }
+
+  multi method parse_device_added {
+    my $d;
+    samewith($d);
+  }
+  multi method parse_device_added ($device is rw) {
+    my $d = CArray[Pointer[GstDevice]].new;
+
+    $d[0] = GstDevice.new;
+    gst_message_parse_device_added($!m, $d);
+    $device = $d[0];
   }
 
-  method parse_device_changed (GstDevice $device, GstDevice $changed_device) {
-    gst_message_parse_device_changed($!m, $device, $changed_device);
+  proto method parse_device_changed (|)
+  { * }
+
+  multi method parse_device_changed {
+    my ($d, $cd);
+    samewith($c, $cd);
+  }
+  multi method parse_device_changed (
+    $device         is rw,
+    $changed_device is rw
+  ) {
+    my $d = CArray[Pointer[GstDevice]].new;
+
+    ($d[0], $d[1]) = GstDevice.new xx 2;
+    gst_message_parse_device_changed($!m, $d[0], $d[1]);
+    ($device, $changed_device) = ($d[0], $d[1]);
   }
 
-  method parse_device_removed (GstDevice $device) {
+  proto method parse_device_removed (|)
+  { * }
+
+  multi method parse_device_removed {
+    my $d;
+    samewith($d);
+  }
+  method parse_device_removed ($device is rw) {
+    my $d = CArray[Pointer[GstDevice]].new;
+
+    $d[0] = GstDevice.new;
     gst_message_parse_device_removed($!m, $device);
   }
 
@@ -943,27 +1042,50 @@ class GStreamer::Message {
     gst_message_parse_warning($!m, $gerror, $debug);
   }
 
-  method parse_warning_details (GstStructure $structure) {
+  method parse_warning_details (GstStructure() $structure) {
     gst_message_parse_warning_details($!m, $structure);
   }
 
-  method set_buffering_stats (GstBufferingMode $mode, gint $avg_in, gint $avg_out, gint64 $buffering_left) {
-    gst_message_set_buffering_stats($!m, $mode, $avg_in, $avg_out, $buffering_left);
+  # Look at macro for gst_message_ref and gst_message_unref
+
+  method set_buffering_stats (
+    Int() $mode,           # GstBufferingMode $mode,
+    Int() $avg_in,         # gint $avg_in,
+    Int() $avg_out,        # gint $avg_out,
+    Int() $buffering_left  # gint64 $buffering_left
+  ) {
+    gst_message_set_buffering_stats(
+      $!m,
+      $mode,
+      $avg_in,
+      $avg_out,
+      $buffering_left
+    );
   }
 
-  method set_group_id (guint $group_id) {
+  method set_group_id (
+    Int() $group_id # guint $group_id
+  ) {
     gst_message_set_group_id($!m, $group_id);
   }
 
-  method set_qos_stats (GstFormat $format, guint64 $processed, guint64 $dropped) {
+  method set_qos_stats (
+    GstFormat() $format,
+    Int() $processed,  # guint64 $processed,
+    Int() $dropped     # guint64 $dropped
+  ) {
     gst_message_set_qos_stats($!m, $format, $processed, $dropped);
   }
 
-  method set_qos_values (gint64 $jitter, gdouble $proportion, gint $quality) {
+  method set_qos_values (
+    Int() $jitter,     # gint64 $jitter,
+    Num() $proportion, # gdouble $proportion,
+    Int() $quality     # gint $quality
+  ) {
     gst_message_set_qos_values($!m, $jitter, $proportion, $quality);
   }
 
-  method streams_selected_add (GstStream $stream) {
+  method streams_selected_add (GstStream() $stream) {
     gst_message_streams_selected_add($!m, $stream);
   }
 
@@ -971,7 +1093,9 @@ class GStreamer::Message {
     gst_message_streams_selected_get_size($!m);
   }
 
-  method streams_selected_get_stream (guint $idx) {
+  method streams_selected_get_stream (
+    Int() $idx # guint $idx
+  ) {
     gst_message_streams_selected_get_stream($!m, $idx);
   }
 
@@ -989,8 +1113,9 @@ class GStreamer::Message {
     gst_message_type_to_quark($type);
   }
 
-  method writable_structure {
+  method writable_structure (:$raw = False) {
     gst_message_writable_structure($!m);
+    # ADD OBJECT CREATION CODE
   }
 
   # Save for when GstMessage is converted to CStruct
