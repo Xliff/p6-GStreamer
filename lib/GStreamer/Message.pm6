@@ -1144,68 +1144,284 @@ class GStreamer::Message {
     ($jitter, $proportion, $quality) = ($j, $p, $q);
   }
 
-  method parse_redirect_entry (gsize $entry_index, Str $location, GstTagList $tag_list, GstStructure $entry_struct) {
-    gst_message_parse_redirect_entry($!m, $entry_index, $location, $tag_list, $entry_struct);
+  proto method parse_redirect_entry (|)
+  { * }
+
+  multi method parse_redirect_entry {
+    my ($ei, $l, $tl, $es);
+    samewith($ei, $l, $tl, $es);
+  }
+  multi method parse_redirect_entry (
+    $entry_index  is rw
+    $location     is rw
+    $tag_list     is rw
+    $entry_struct is rw
+  ) {
+    my gsize $ei = 0;
+    my $l = CArray[Str].new;
+    my $tl = CArray[Pointer[GstTagList]]].new;
+    my $es = CArray[Pointer[GstStructure]].new;
+
+    ($tl[0], $es[0]) = (Pointer[GstTagList].new, Pointer[GstStructure].new);
+    gst_message_parse_redirect_entry($!m, $ei, $l, $t, $es);
+    ($entry_index, $location, $tag_list, $entry_struct) =
+      ppr($ei, $l[0], $tl[0], $es[0]);
   }
 
-  method parse_request_state (GstState $state) {
+  proto method parse_request_state (|)
+  { * }
+
+  multi method parse_request_state {
+    my $s;
+    samewith($s);
+  }
+  multi method parse_request_state ($state is rw) {
+    my $s = CArray[Pointer[GstState]].new;
+
+    $s[0] = Pointer[GstState].new;
     gst_message_parse_request_state($!m, $state);
+    ($state) = ppr($s[0]);
   }
 
-  method parse_reset_time (GstClockTime $running_time) {
+  proto method parse_reset_time (|)
+  { * }
+
+  multi method parse_reset_time {
+    my $rt;
+    samewith($rt);
+  }
+  multi method parse_reset_time ($running_time is rw) {
+    my guint $rt = 0;
+
     gst_message_parse_reset_time($!m, $running_time);
+    $running_time = $rt;
   }
 
-  method parse_segment_done (GstFormat $format, gint64 $position) {
+  proto method parse_segment_done (|)
+  { * }
+
+  multi method parse_segment_done {
+    my ($f, $p);
+    samewith($f, $p);
+  }
+  multi method parse_segment_done ($format is rw, $position is rw) {
+    my $f = CArray[Pointer[GstFormat]].new;
+    my gint64 $p = 0;
+
+    $f[0] = Pointer[GstFormat].new;
     gst_message_parse_segment_done($!m, $format, $position);
+    ($format, $position) = ppr($f[0], $p);
   }
 
-  method parse_segment_start (GstFormat $format, gint64 $position) {
+  proto method parse_segment_start (|)
+  { * }
+
+  multi method parse_segment_start {
+    my ($f, $p);
+    samewith($f, $p);
+  }
+  multi method parse_segment_start ($format is rw, $position is rw) {
+    my $f = CArray[Pointer[GstFormat]].new;
+    my gint64 $p = 0;
+
+    $f[0] = Pointer[GstFormat].new;
     gst_message_parse_segment_start($!m, $format, $position);
+    ($format, $position) = ppr($f[0], $p);
   }
 
-  method parse_state_changed (GstState $oldstate, GstState $newstate, GstState $pending) {
-    gst_message_parse_state_changed($!m, $oldstate, $newstate, $pending);
+  proto method parse_state_changed (|)
+  { * }
+
+  multi method parse_state_changed {
+    my ($o, $n, $p);
+    samewith ($o, $n, $p);
+  }
+  multi method parse_state_changed (
+    $oldstate is rw,
+    $newstate is rw,
+    $pending  is rw
+  ) {
+    my ($o, $n, $p) = CArray[Pointer[GstState]].new xx 3;
+    ($o[0], $n[0], $p[0]) = Pointer[GstState].new xx 3;
+
+    gst_message_parse_state_changed($!m, $o, $n, $p);
+    ($oldstate, $newstate, $pending) = ppr($o[0], $n[0], $p[0])
   }
 
-  method parse_step_done (GstFormat $format, guint64 $amount, gdouble $rate, gboolean $flush, gboolean $intermediate, guint64 $duration, gboolean $eos) {
-    gst_message_parse_step_done($!m, $format, $amount, $rate, $flush, $intermediate, $duration, $eos);
+  proto method parse_step_done (|)
+  { * }
+
+  multi method parse_step_done {
+    my ($f, $a, $r, $fl, $i, $d, $e);
+    samewith($f, $a, $r, $fl, $i, $d, $e);
+  }
+  multi method parse_step_done (
+    $format       is rw,
+    $amount       is rw,
+    $rate         is rw,
+    $flush        is rw,
+    $intermediate is rw,
+    $duration     is rw,
+    $eos          is rw
+  ) {
+    my $f = CArray[Pointer[GstFormat]].new;
+    my guint64 ($a, $d) = 0 xx 2;
+    my gdouble $r = 0;
+    my gboolean ($f, $l, $e) = 0 xx 3;
+
+    $f[0] = Pointer[GstFormat].new;
+    gst_message_parse_step_done($!m, $f, $a, $r, $fl, $i, $d, $e);
+    ($format, $amount, $rate, $flush, $intermediate, $duration, $eos)
+      = ppr($f[0], $a, $r, $fl, $i, $d, $e)
   }
 
-  method parse_step_start (gboolean $active, GstFormat $format, guint64 $amount, gdouble $rate, gboolean $flush, gboolean $intermediate) {
-    gst_message_parse_step_start($!m, $active, $format, $amount, $rate, $flush, $intermediate);
+  proto method parse_step_start (|)
+  { * }
+
+  multi method parse_step_start {
+    my ($a, $f, $am, $r, $fl, $i);
+    samewith($a, $f, $am, $r, $fl, $i);
+  }
+  multi method parse_step_start (
+    $active        is rw,
+    $format        is rw,
+    $amount        is rw,
+    $rate          is rw,
+    $flush         is rw,
+    $intermediate  is rw
+  ) {
+    my gboolean ($a, $fl, $i) = 0 xx 3;
+    my guint64 $am = 0;
+    my $f = CArray[Pointer[GstFormat]].new;
+
+    $f[0] = Pointer[GstFormat].new;
+    gst_message_parse_step_start($!m, $a, $f, $am, $r, $fl, $i);
+    ($active, $format, $amount, $rate, $flush, $intermediate) =
+      ppr($a, $f[0], $am, $r, $fl, $i);
   }
 
-  method parse_stream_collection (GstStreamCollection $collection) {
+  proto method parse_stream_collection (|)
+  { * }
+
+  multi method parse_stream_collection {
+    my $c;
+    samewith($c);
+  }
+  multi method parse_stream_collection ($collection is rw) {
+    my $c = CArray[Pointer[GstStreamCollection]].new;
+
+    $c[0] = Pointer[GstStreamCollection];
     gst_message_parse_stream_collection($!m, $collection);
+    ($collection) = ppr( $c[0]] );
   }
 
-  method parse_stream_status (GstStreamStatusType $type, GstElement $owner) {
-    gst_message_parse_stream_status($!m, $type, $owner);
+  proto method parse_stream_status (|)
+  { * }
+
+  multi method parse_stream_status {
+    my ($t, $o);
+    samewith($t, $o);
+  }
+  multi method parse_stream_status ($type is rw, $owner is rw) {
+    my guint $t = 0
+    my $o = CArray[Pointer[GstElement]].new;
+
+    $o[0] = Pointer[GstElement].new;
+    gst_message_parse_stream_status($!m, $t, $o);
+    ($type, $owner) = ppr($t, $o[0]);
   }
 
-  method parse_streams_selected (GstStreamCollection $collection) {
-    gst_message_parse_streams_selected($!m, $collection);
+  proto method parse_streams_selected (|)
+  { * }
+
+  multi method parse_streams_selected {
+    my $c;
+    samewith($c);
+  }
+  multi method parse_streams_selected ($collection is rw) {
+    my $c = CArray[Pointer[GstStreamCollection]].new;
+
+    $c[0] = Pointer[GstStreamCollection].new;
+    gst_message_parse_streams_selected($!m, $c);
+    ($collection) = ppr($c[0]);
   }
 
-  method parse_structure_change (GstStructureChangeType $type, GstElement $owner, gboolean $busy) {
-    gst_message_parse_structure_change($!m, $type, $owner, $busy);
+  proto method parse_structure_change (|)
+  { * }
+
+  multi method parse_structure_change {
+    my ($t, $o, $b);
+    samewith($t, $o, $b);
+  }
+  multi method parse_structure_change ($type is rw, $owner is rw, $busy is rw) {
+    my guint ($t, $b) = 0 xx 2;
+    my $o = CArray[Pointer[GstElement]].new;
+
+    $o[0] = Pointer[GstElement].new;
+    gst_message_parse_structure_change($!m, $t, $o, $b);
+    ($type, $owner, $busy) = ppr($t, $o[0], $b);
   }
 
-  method parse_tag (GstTagList $tag_list) {
-    gst_message_parse_tag($!m, $tag_list);
+  proto method parse_tag (|)
+  { * }
+
+  multi method parse_tag {
+    my $t;
+    samewith($t);
+  }
+  multi method parse_tag ($tag_list is rw) {
+    my $t = CArray[Pointer[GstTagList]].new;
+
+    $t[0] = Pointer[GstTagList].new;
+    gst_message_parse_tag($!m, $t);
+    ($tag_list) = ppr( $t[0] );
   }
 
-  method parse_toc (GstToc $toc, gboolean $updated) {
+  proto method parse_toc (|)
+  { * }
+
+  multi method parse_toc {
+    my ($t, $u);
+    samewith($t, $u);
+  }
+  multi method parse_toc ($toc is rw, $updated is rw) {
+    my $t = CArray[Pointer[GstToc]].new;
+    my gboolean $ = 0;
+
+    $t[0] = Pointer[GstToc].new;
     gst_message_parse_toc($!m, $toc, $updated);
+    ($toc, $updated) = ppr($t[0], $u);
   }
 
-  method parse_warning (CArray[Pointer[GError]] $gerror, Str $debug) {
-    gst_message_parse_warning($!m, $gerror, $debug);
+  proto method parse_warning (|)
+  { * }
+
+  multi method parse_warning {
+    my ($ge, $d)
+    samewith($ge, $d);
+  }
+  method parse_warning ($gerror is rw, $debug is rw) {
+    my $ge = CArray[Pointer[GError]].new;
+    my $d = CArray[Str].new;
+
+    $ge[0] = Pointer[GError].new;
+    gst_message_parse_warning($!m, $g, $d);
+    ($gerror, $debug) = ppr( $ge[0], $d[0] );
   }
 
-  method parse_warning_details (GstStructure() $structure) {
-    gst_message_parse_warning_details($!m, $structure);
+  proto method parse_warning_details (|)
+  { * }
+
+  multi parse_warning_details {
+    my $s;
+    samewith($s);
+  }
+  method parse_warning_details ($structure is rw) {
+    my $s = CArray[Pointer[GstStructure]].new;
+
+    $s[0] = Pointer[GstStructure].new;
+    gst_message_parse_warning_details($!m, $s);
+    ($structure) = ppr( $s[0] )
   }
 
   # Look at macro for gst_message_ref and gst_message_unref

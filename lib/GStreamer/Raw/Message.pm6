@@ -403,7 +403,10 @@ sub gst_message_parse_async_done (
   is export
 { * }
 
-sub gst_message_parse_buffering (GstMessage $message, gint $percent is rw)
+sub gst_message_parse_buffering (
+  GstMessage $message,
+  gint $percent is rw
+)
   is native(gstreamer)
   is export
 { * }
@@ -436,27 +439,36 @@ sub gst_message_parse_clock_provide (
   is export
 { * }
 
-sub gst_message_parse_context_type (GstMessage $message, Str $context_type)
+sub gst_message_parse_context_type (
+  GstMessage $message,
+  CArray[Str] $context_type
+)
   returns uint32
   is native(gstreamer)
   is export
 { * }
 
-sub gst_message_parse_device_added (GstMessage $message, GstDevice $device)
+sub gst_message_parse_device_added (
+  GstMessage $message,
+  CArray[Pointer[GstDevice]] $device
+)
   is native(gstreamer)
   is export
 { * }
 
 sub gst_message_parse_device_changed (
   GstMessage $message,
-  GstDevice $device,
-  GstDevice $changed_device
+  CArray[Pointer[GstDevice]] $device,
+  CArray[Pointer[GstDevice]] $changed_device
 )
   is native(gstreamer)
   is export
 { * }
 
-sub gst_message_parse_device_removed (GstMessage $message, GstDevice $device)
+sub gst_message_parse_device_removed (
+  GstMessage $message,
+  CArray[Pointer[GstDevice]] $device
+)
   is native(gstreamer)
   is export
 { * }
@@ -464,7 +476,7 @@ sub gst_message_parse_device_removed (GstMessage $message, GstDevice $device)
 sub gst_message_parse_error (
   GstMessage $message,
   CArray[Pointer[GError]] $gerror,
-  Str $debug
+  CArray[Str] $debug
 )
   is native(gstreamer)
   is export
@@ -472,19 +484,25 @@ sub gst_message_parse_error (
 
 sub gst_message_parse_error_details (
   GstMessage $message,
-  GstStructure $structure
+  CArray[Pointer[GstStructure]] $structure
 )
   is native(gstreamer)
   is export
 { * }
 
-sub gst_message_parse_group_id (GstMessage $message, guint $group_id)
+sub gst_message_parse_group_id (
+  GstMessage $message,
+  guint $group_id is rw
+)
   returns uint32
   is native(gstreamer)
   is export
 { * }
 
-sub gst_message_parse_have_context (GstMessage $message, GstContext $context)
+sub gst_message_parse_have_context (
+  GstMessage $message,
+  CArray[Pointer[GstContext]] $context
+)
   is native(gstreamer)
   is export
 { * }
@@ -492,7 +510,7 @@ sub gst_message_parse_have_context (GstMessage $message, GstContext $context)
 sub gst_message_parse_info (
   GstMessage $message,
   CArray[Pointer[GError]] $gerror,
-  Str $debug
+  CArray[Str] $debug
 )
   is native(gstreamer)
   is export
@@ -500,22 +518,25 @@ sub gst_message_parse_info (
 
 sub gst_message_parse_info_details (
   GstMessage $message,
-  GstStructure $structure
+  CArray[Pointer[GstStructure]] $structure
 )
   is native(gstreamer)
   is export
 { * }
 
-sub gst_message_parse_new_clock (GstMessage $message, GstClock $clock)
+sub gst_message_parse_new_clock (
+  GstMessage $message,
+  CArray[Pointer[GstClock]] $clock
+)
   is native(gstreamer)
   is export
 { * }
 
 sub gst_message_parse_progress (
   GstMessage $message,
-  guint $type, # GstProgressType $type,
-  Str $code,
-  Str $text
+  guint $type is rw, # GstProgressType $type,
+  CArray[Str] $code,
+  CArray[Str] $text
 )
   is native(gstreamer)
   is export
@@ -523,9 +544,9 @@ sub gst_message_parse_progress (
 
 sub gst_message_parse_property_notify (
   GstMessage $message,
-  GstObject $object,
-  Str $property_name,
-  GValue $property_value
+  CArray[GstObject]] $object,
+  CArray[Str]] $property_name,
+  CArray[GValue]] $property_value
 )
   is native(gstreamer)
   is export
@@ -533,11 +554,11 @@ sub gst_message_parse_property_notify (
 
 sub gst_message_parse_qos (
   GstMessage $message,
-  gboolean $live,
-  guint64 $running_time,
-  guint64 $stream_time,
-  guint64 $timestamp,
-  guint64 $duration
+  gboolean $live        is rw,
+  guint64 $running_time is rw,
+  guint64 $stream_time  is rw,
+  guint64 $timestamp    is rw,
+  guint64 $duration     is rw
 )
   is native(gstreamer)
   is export
@@ -545,9 +566,9 @@ sub gst_message_parse_qos (
 
 sub gst_message_parse_qos_stats (
   GstMessage $message,
-  GstFormat $format,
-  guint64 $processed,
-  guint64 $dropped
+  CArray[Pointer[GstFormat]] $format,
+  guint64 $processed is rw,
+  guint64 $dropped   is rw
 )
   is native(gstreamer)
   is export
@@ -555,9 +576,9 @@ sub gst_message_parse_qos_stats (
 
 sub gst_message_parse_qos_values (
   GstMessage $message,
-  gint64 $jitter,
-  gdouble $proportion,
-  gint $quality
+  gint64 $jitter      is rw,
+  gdouble $proportion is rw,
+  gint $quality       is rw
 )
   is native(gstreamer)
   is export
@@ -565,23 +586,26 @@ sub gst_message_parse_qos_values (
 
 sub gst_message_parse_redirect_entry (
   GstMessage $message,
-  gsize $entry_index,
-  Str $location,
-  GstTagList $tag_list,
-  GstStructure $entry_struct
+  gsize $entry_index is rw,
+  CArray[Pointer[Str]] $location,
+  CArray[Pointer[GstTagList]] $tag_list,
+  CArray[Pointer[GstStructure]] $entry_struct
 )
   is native(gstreamer)
   is export
 { * }
 
-sub gst_message_parse_request_state (GstMessage $message, GstState $state)
+sub gst_message_parse_request_state (
+  GstMessage $message,
+  CArray[Pointer[GstState]] $state
+)
   is native(gstreamer)
   is export
 { * }
 
 sub gst_message_parse_reset_time (
   GstMessage $message,
-  GstClockTime $running_time
+  GstClockTime $running_time is rw
 )
   is native(gstreamer)
   is export
@@ -589,8 +613,8 @@ sub gst_message_parse_reset_time (
 
 sub gst_message_parse_segment_done (
   GstMessage $message,
-  GstFormat $format,
-  gint64 $position
+  CArray[Pointer[GstFormat]] $format,
+  gint64 $position is rw
 )
   is native(gstreamer)
   is export
@@ -598,8 +622,8 @@ sub gst_message_parse_segment_done (
 
 sub gst_message_parse_segment_start (
   GstMessage $message,
-  GstFormat $format,
-  gint64 $position
+  CArray[Pointer[GstFormat]] $format,
+  gint64 $position is rw
 )
   is native(gstreamer)
   is export
@@ -607,9 +631,9 @@ sub gst_message_parse_segment_start (
 
 sub gst_message_parse_state_changed (
   GstMessage $message,
-  guint $oldstate,   # GstState $oldstate,
-  guint $newstate,   # GstState $newstate,
-  guint $pending     # GstState $pending
+  guint $oldstate is rw,   # GstState $oldstate,
+  guint $newstate is rw,   # GstState $newstate,
+  guint $pending  is rw     # GstState $pending
 )
   is native(gstreamer)
   is export
@@ -617,13 +641,13 @@ sub gst_message_parse_state_changed (
 
 sub gst_message_parse_step_done (
   GstMessage $message,
-  GstFormat $format,
-  guint64 $amount,
-  gdouble $rate,
-  gboolean $flush,
-  gboolean $intermediate,
-  guint64 $duration,
-  gboolean $eos
+  CArray[Pointer[GstFormat]] $format,
+  guint64 $amount        is rw,
+  gdouble $rate          is rw,
+  gboolean $flush        is rw,
+  gboolean $intermediate is rw,
+  guint64 $duration      is rw,
+  gboolean $eos          is rw
 )
   is native(gstreamer)
   is export
@@ -631,12 +655,12 @@ sub gst_message_parse_step_done (
 
 sub gst_message_parse_step_start (
   GstMessage $message,
-  gboolean $active,
-  GstFormat $format,
-  guint64 $amount,
-  gdouble $rate,
-  gboolean $flush,
-  gboolean $intermediate
+  gboolean $active       is rw,
+  CArray[Pointer[GstFormat]] $format,
+  guint64 $amount        is rw,
+  gdouble $rate          is rw,
+  gboolean $flush        is rw,
+  gboolean $intermediate is rw
 )
   is native(gstreamer)
   is export
@@ -644,7 +668,7 @@ sub gst_message_parse_step_start (
 
 sub gst_message_parse_stream_collection (
   GstMessage $message,
-  GstStreamCollection $collection
+  CArray[Pointer[GstStreamCollection]] $collection
 )
   is native(gstreamer)
   is export
@@ -652,8 +676,8 @@ sub gst_message_parse_stream_collection (
 
 sub gst_message_parse_stream_status (
   GstMessage $message,
-  guint $type, # GstStreamStatusType $type,
-  GstElement $owner
+  guint $type is rw, # GstStreamStatusType $type,
+  CArray[Pointer[GstElement]] $owner
 )
   is native(gstreamer)
   is export
@@ -661,7 +685,7 @@ sub gst_message_parse_stream_status (
 
 sub gst_message_parse_streams_selected (
   GstMessage $message,
-  GstStreamCollection $collection
+  CArray[Pointer[GstStreamCollection]] $collection
 )
   is native(gstreamer)
   is export
@@ -669,20 +693,27 @@ sub gst_message_parse_streams_selected (
 
 sub gst_message_parse_structure_change (
   GstMessage $message,
-  guint $type, # GstStructureChangeType $type,
-  GstElement $owner,
-  gboolean $busy
+  guint $type    is rw, # GstStructureChangeType $type,
+  CArray[Pointer[GstElement]] $owner,
+  gboolean $busy is rw
 )
   is native(gstreamer)
   is export
 { * }
 
-sub gst_message_parse_tag (GstMessage $message, GstTagList $tag_list)
+sub gst_message_parse_tag (
+  GstMessage $message,
+  CArray[Pointer[GstTagList]] $tag_list
+)
   is native(gstreamer)
   is export
 { * }
 
-sub gst_message_parse_toc (GstMessage $message, GstToc $toc, gboolean $updated)
+sub gst_message_parse_toc (
+  GstMessage $message,
+  CArray[Pointer[GstToc]] $toc,
+  gboolean $updated is rw
+)
   is native(gstreamer)
   is export
 { * }
@@ -690,7 +721,7 @@ sub gst_message_parse_toc (GstMessage $message, GstToc $toc, gboolean $updated)
 sub gst_message_parse_warning (
   GstMessage $message,
   CArray[Pointer[GError]] $gerror,
-  Str $debug
+  CArray[Str] $debug
 )
   is native(gstreamer)
   is export
@@ -698,7 +729,7 @@ sub gst_message_parse_warning (
 
 sub gst_message_parse_warning_details (
   GstMessage $message,
-  GstStructure $structure
+  CArray[Pointer[GstStructure]] $structure
 )
   is native(gstreamer)
   is export
