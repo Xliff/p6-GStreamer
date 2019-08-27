@@ -5,17 +5,22 @@ use Method::Also;
 use GTK::Compat::Types;
 use GStreamer::Raw::Types;
 use GStreamer::Raw::Element;
+use GStreamer::Raw::Utils;
 
 use GStreamer::Object;
+
+use GStreamer::Roles::Signals::Element;
 
 our ElementAncestry is export of Mu
   where GstElement | GstObject;
 
 class GStreamer::Element is GStreamer::Object {
+  also does GStreamer::Roles::Signals::Element;
+
   has GstElement $!e;
 
   submethod BUILD (ElementAncestry :$element) {
-    self.setGStreamerElement($element) if $element;
+    self.setGStreamerElement($elefment) if $element;
   }
 
   method setGStreamerElement(ElementAncestry $_) {
@@ -33,6 +38,28 @@ class GStreamer::Element is GStreamer::Object {
       }
     }
     self.setGStreamerObject($to-parent);
+  }
+
+  method GStreamer::Raw::Types::GstElement
+    is also<GstElement>
+  { $!e }
+
+  # Is originally:
+  # GstElement, gpointer --> void
+  method no-more-pads {
+    self.connect($!e, 'no-more-pads');
+  }
+
+  # Is originally:
+  # GstElement, GstPad, gpointer --> void
+  method pad-added {
+    self.connect-pad($!e, 'pad-added');
+  }
+
+  # Is originally:
+  # GstElement, GstPad, gpointer --> void
+  method pad-removed {
+    self.connect-pad($!e, 'pad-removed');
   }
 
   method abort_state is also<abort-state> {
@@ -158,9 +185,9 @@ class GStreamer::Element is GStreamer::Object {
   }
 
   method get_state (
-    GstState $state,
-    GstState $pending,
-    GstClockTime $timeout
+    Int() $state,    # GstState $state,
+    Int() $pending,  # GstState $pending,
+    Int() $timeout   # GstClockTime $timeout
   )
     is also<get-state>
   {
@@ -267,7 +294,7 @@ class GStreamer::Element is GStreamer::Object {
     gst_element_no_more_pads($!e);
   }
 
-  method post_message (GstMessage $message) is also<post-message> {
+  method post_message (GstMessage() $message) is also<post-message> {
     gst_element_post_message($!e, $message);
   }
 
@@ -279,11 +306,11 @@ class GStreamer::Element is GStreamer::Object {
     gst_element_query($!e, $query);
   }
 
-  method release_request_pad (GstPad $pad) is also<release-request-pad> {
+  method release_request_pad (GstPad() $pad) is also<release-request-pad> {
     gst_element_release_request_pad($!e, $pad);
   }
 
-  method remove_pad (GstPad $pad) is also<remove-pad> {
+  method remove_pad (GstPad() $pad) is also<remove-pad> {
     gst_element_remove_pad($!e, $pad);
   }
 
@@ -320,7 +347,7 @@ class GStreamer::Element is GStreamer::Object {
     );
   }
 
-  method send_event (GstEvent $event) is also<send-event> {
+  method send_event (GstEvent() $event) is also<send-event> {
     gst_element_send_event($!e, $event);
   }
 
@@ -328,15 +355,15 @@ class GStreamer::Element is GStreamer::Object {
     gst_element_set_base_time($!e, $time);
   }
 
-  method set_bus (GstBus $bus) is also<set-bus> {
+  method set_bus (GstBus() $bus) is also<set-bus> {
     gst_element_set_bus($!e, $bus);
   }
 
-  method set_clock (GstClock $clock) is also<set-clock> {
+  method set_clock (GstClock() $clock) is also<set-clock> {
     gst_element_set_clock($!e, $clock);
   }
 
-  method set_context (GstContext $context) is also<set-context> {
+  method set_context (GstContext() $context) is also<set-context> {
     gst_element_set_context($!e, $context);
   }
 
@@ -354,6 +381,135 @@ class GStreamer::Element is GStreamer::Object {
 
   method sync_state_with_parent is also<sync-state-with-parent> {
     gst_element_sync_state_with_parent($!e);
+  }
+
+  # From gstutils.h
+
+  method create_all_pads is also<create-all-pads> {
+    gst_element_create_all_pads($!e);
+  }
+
+  method get_compatible_pad (GstPad $pad, GstCaps $caps)
+    is also<get-compatible-pad>
+  {
+    gst_element_get_compatible_pad($!e, $pad, $caps);
+  }
+
+  method get_compatible_pad_template (GstPadTemplate $compattempl)
+    is also<get-compatible-pad-template>
+  {
+    gst_element_get_compatible_pad_template($!e, $compattempl);
+  }
+
+  method link (GstElement() $dest) {
+    gst_element_link($!e, $dest);
+  }
+
+  method link_many (*@e) is also<link-many> {
+    my $dieMsg = qq:to/DIE/.&nocr;
+      Items passed to GStreamer::Element.link_many must be GStreamer::Element
+      compatible!
+      DIE
+
+    die $dieMsg unless @e.all ~~ (GStreamer::Element, GstElement).any;
+    self.link($_) for @e;
+  }
+
+  method link_filtered (GstElement $dest, GstCaps $filter)
+    is also<link-filtered>
+  {
+    gst_element_link_filtered($!e, $dest, $filter);
+  }
+
+  method link_pads (Str $srcpadname, GstElement $dest, Str $destpadname)
+    is also<link-pads>
+  {
+    gst_element_link_pads($!e, $srcpadname, $dest, $destpadname);
+  }
+
+  method link_pads_filtered (
+    Str $srcpadname,
+    GstElement $dest,
+    Str $destpadname,
+    GstCaps $filter
+  )
+    is also<link-pads-filtered>
+  {
+    gst_element_link_pads_filtered(
+      $!e,
+      $srcpadname,
+      $dest,
+      $destpadname,
+      $filter
+    );
+  }
+
+  method link_pads_full (
+    Str $srcpadname,
+    GstElement $dest,
+    Str $destpadname,
+    GstPadLinkCheck $flags
+  )
+    is also<link-pads-full>
+  {
+    gst_element_link_pads_full($!e, $srcpadname, $dest, $destpadname, $flags);
+  }
+
+  method query_convert (
+    GstFormat $src_format,
+    gint64 $src_val,
+    GstFormat $dest_format,
+    gint64 $dest_val
+  )
+    is also<query-convert>
+  {
+    gst_element_query_convert(
+      $!e,
+      $src_format,
+      $src_val,
+      $dest_format,
+      $dest_val
+    );
+  }
+
+  method query_duration (GstFormat $format, gint64 $duration)
+    is also<query-duration>
+  {
+    gst_element_query_duration($!e, $format, $duration);
+  }
+
+  method query_position (GstFormat $format, gint64 $cur)
+    is also<query-position>
+  {
+    gst_element_query_position($!e, $format, $cur);
+  }
+
+  method seek_simple (
+    GstFormat $format,
+    GstSeekFlags $seek_flags,
+    gint64 $seek_pos
+  )
+    is also<seek-simple>
+  {
+    gst_element_seek_simple($!e, $format, $seek_flags, $seek_pos);
+  }
+
+  method state_change_return_get_name is also<state-change-return-get-name> {
+    gst_element_state_change_return_get_name($!e);
+  }
+
+  method state_get_name is also<state-get-name> {
+    gst_element_state_get_name($!e);
+  }
+
+  method unlink (GstElement $dest) {
+    gst_element_unlink($!e, $dest);
+  }
+
+  method unlink_pads (Str $srcpadname, GstElement $dest, Str $destpadname)
+    is also<unlink-pads>
+  {
+    gst_element_unlink_pads($!e, $srcpadname, $dest, $destpadname);
   }
 
 }

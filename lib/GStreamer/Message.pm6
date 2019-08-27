@@ -24,9 +24,9 @@ class GStreamer::Message {
     $!m = $message;
   }
 
-  # Consider a method new with slurpy positional and named arguments to
-  # act as a shortcut to the numerous options we have here.
-
+  multi method new (GstMessage $message) {
+    self.bless( :$message );
+  }
   multi method new (
     GstObject() $src,
     GstStructure() $structure,

@@ -4,6 +4,10 @@ use GTK::Compat::Types;
 
 unit package GStreamer::Raw::Types;
 
+sub nocr ($s) is export {
+  $s.subst("\n", ' ', :g);
+}
+
 constant GstClockTime is export := guint32
 
 constant GstBusSyncHandler                 is export := Pointer;
