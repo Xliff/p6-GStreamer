@@ -8,7 +8,8 @@ sub nocr ($s) is export {
   $s.subst("\n", ' ', :g);
 }
 
-constant GstClockTime is export := guint32
+constant GstClockTime     is export := guint32
+constant GstClockTimeDiff is export := int64;
 
 constant GstBusSyncHandler                 is export := Pointer;
 constant GstElementCallAsyncFunc           is export := Pointer;
@@ -46,12 +47,12 @@ class GstChildProxy        is repr('CPointer') does GTK::Roles::Pointers is expo
 class GstClock             is repr('CPointer') does GTK::Roles::Pointers is export { }
 class GstContext           is repr('CPointer') does GTK::Roles::Pointers is export { }
 class GstControlBinding    is repr('CPointer') does GTK::Roles::Pointers is export { }
-class GstElement           is repr('CPointer') does GTK::Roles::Pointers is export { }
+#class GstElement           is repr('CPointer') does GTK::Roles::Pointers is export { }
 class GstElementFactory    is repr('CPointer') does GTK::Roles::Pointers is export { }
 class GstEvent             is repr('CPointer') does GTK::Roles::Pointers is export { }
 class GstIterator          is repr('CPointer') does GTK::Roles::Pointers is export { }
-class GstMessage           is repr('CPointer') does GTK::Roles::Pointers is export { }
-class GstObject            is repr('CPointer') does GTK::Roles::Pointers is export { }
+#class GstMessage           is repr('CPointer') does GTK::Roles::Pointers is export { }
+#class GstObject            is repr('CPointer') does GTK::Roles::Pointers is export { }
 class GstPad               is repr('CPointer') does GTK::Roles::Pointers is export { }
 class GstPadProbeInfo      is repr('CPointer') does GTK::Roles::Pointers is export { }
 class GstPadTemplate       is repr('CPointer') does GTK::Roles::Pointers is export { }
@@ -223,6 +224,22 @@ our enum GstLibraryError is export (
   'GST_LIBRARY_ERROR_ENCODE',
   'GST_LIBRARY_ERROR_NUM_ERRORS'
 );
+
+our enum GstLockFlags (
+  GST_LOCK_FLAG_READ      => 1,
+  GST_LOCK_FLAG_WRITE     => (1 +< 1),
+  GST_LOCK_FLAG_EXCLUSIVE => (1 +< 2),
+  GST_LOCK_FLAG_LAST      => (1 +< 8)
+);
+
+our enum GstMiniObjectFlags is export (
+  GST_MINI_OBJECT_FLAG_LOCKABLE      => 1,
+  GST_MINI_OBJECT_FLAG_LOCK_READONLY => (1 +< 1),
+  GST_MINI_OBJECT_FLAG_MAY_BE_LEAKED => (1 +< 2),
+  # Padding
+  GST_MINI_OBJECT_FLAG_LAST          => (1 +< 4)
+);
+
 
 our enum GstPadDirection is export <
   GST_PAD_UNKNOWN
@@ -461,3 +478,79 @@ our enum GstURIType is export <
   GST_URI_SINK
   GST_URI_SRC
 >;
+
+constant GST_PADDING = 4;
+
+class GstObject is repr<CStruct> does GTK::Roles::Pointers is export {
+  HAS GObjectStruct     $.object;  # GInitiallyUnowned
+  HAS GMutex            $.lock;
+  has gchar             $.name;
+  has GstObject         $.parent;
+  has guint32           $.flags;
+
+  has GList             $!control_bindings;
+  has guint64           $!control_rate;
+  has guint64           $!last_sync;
+  has gpointer          $!gst_reserved;
+}
+
+class GstMiniObject is repr<CStruct> does GTK::Roles::Pointers is export {
+  has GType    $.type;
+
+  has gint     $.refcount;
+  has gint     $.lockstate;
+  has guint    $.flags;
+
+  has gpointer $.copy;     # GstMiniObjectCopyFunction
+  has gpointer $.dispose;  # GstMiniObjectDisposeFunction
+  has gpointer $.free;     # GstMiniObjectFreeFunction
+
+  has guint    $!priv_uint;
+  has gpointer $!priv_pointer;
+};
+
+class GstElement is repr<CStruct> does GTK::Roles::Pointers is export {
+  HAS GstObject        $.object;
+  HAS GRecMutex        $.state_lock;
+  HAS GCond            $.state_cond;
+  has guint32          $.state_cookie;
+  has GstState         $.target_state;
+  has GstState         $.current_state;
+  has GstState         $.next_state;
+  has GstState         $.pending_state;
+  has guint            $.last_return;     # GstStateChangeReturn
+  has GstBus           $.bus;
+  has GstClock         $.clock;
+  has GstClockTimeDiff $.base_time;
+  has GstClockTime     $.start_time;
+  has guint16          $.numpads;
+  has GList            $.pads;
+  has guint16          $.numsrcpads;
+  has GList            $.srcpads;
+  has guint16          $.numsinkpads;
+  has GList            $.sinkpads;
+  has guint32          $.pads_cookie;
+  has GList            $.contexts;
+
+  gpointer             $!gst_reserved0;
+  gpointer             $!gst_reserved1;
+  gpointer             $!gst_reserved2;
+  gpointer             $!gst_reserved3;
+}
+
+class GstMessage is repr<CStruct> does GTK::Roles::Pointers is export {
+  HAS GstMiniObject   $.mini_object;
+  has guint           $!type;        # GstMessageType
+  has guint64         $.timestamp;
+  has GstObject       $.src;
+  has guint32         $.seqnum;
+  HAS GMutex          $!lock;
+  HAS GCond           $!cond;
+
+  method type is rw {
+    Proxy.new:
+      FETCH => -> $           { GstMessageType($!type) },
+      STORE => -> $, Int() \t { $!type = t             };
+  }
+
+};
