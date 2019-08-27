@@ -1,5 +1,7 @@
 use v6.c;
 
+use NativeCall;
+
 use GTK::Compat::Types;
 use GStreamer::Raw::Types;
 
@@ -240,7 +242,10 @@ sub gst_message_new_redirect (
   is export
 { * }
 
-sub gst_message_new_request_state (GstObject $src, GstState $state)
+sub gst_message_new_request_state (
+  GstObject $src,
+  guint $state # GstState $state
+)
   returns GstMessage
   is native(gstreamer)
   is export
@@ -254,7 +259,7 @@ sub gst_message_new_reset_time (GstObject $src, GstClockTime $running_time)
 
 sub gst_message_new_segment_done (
   GstObject $src,
-  GstFormat $format,
+  guint $format, # GstFormat $format,
   gint64 $position
 )
   returns GstMessage
@@ -264,7 +269,7 @@ sub gst_message_new_segment_done (
 
 sub gst_message_new_segment_start (
   GstObject $src,
-  GstFormat $format,
+  guint $format, # GstFormat $format,
   gint64 $position
 )
   returns GstMessage
@@ -291,7 +296,7 @@ sub gst_message_new_state_dirty (GstObject $src)
 
 sub gst_message_new_step_done (
   GstObject $src,
-  GstFormat $format,
+  guint $format, # GstFormat $format,
   guint64 $amount,
   gdouble $rate,
   gboolean $flush,
@@ -307,7 +312,7 @@ sub gst_message_new_step_done (
 sub gst_message_new_step_start (
   GstObject $src,
   gboolean $active,
-  GstFormat $format,
+  guint $format, # GstFormat $format,
   guint64 $amount,
   gdouble $rate,
   gboolean $flush,
@@ -334,7 +339,7 @@ sub gst_message_new_stream_start (GstObject $src)
 
 sub gst_message_new_stream_status (
   GstObject $src,
-  GstStreamStatusType $type,
+  guint $type, # GstStreamStatusType $type,
   GstElement $owner
 )
   returns GstMessage
@@ -353,7 +358,7 @@ sub gst_message_new_streams_selected (
 
 sub gst_message_new_structure_change (
   GstObject $src,
-  GstStructureChangeType $type,
+  guint $type, # GstStructureChangeType $type,
   GstElement $owner,
   gboolean $busy
 )
@@ -544,9 +549,9 @@ sub gst_message_parse_progress (
 
 sub gst_message_parse_property_notify (
   GstMessage $message,
-  CArray[GstObject]] $object,
-  CArray[Str]] $property_name,
-  CArray[GValue]] $property_value
+  CArray[Pointer[GstObject]] $object,
+  CArray[Str] $property_name,
+  CArray[Pointer[GValue]] $property_value
 )
   is native(gstreamer)
   is export
@@ -566,7 +571,7 @@ sub gst_message_parse_qos (
 
 sub gst_message_parse_qos_stats (
   GstMessage $message,
-  CArray[Pointer[GstFormat]] $format,
+  CArray[guint] $format,
   guint64 $processed is rw,
   guint64 $dropped   is rw
 )
@@ -587,7 +592,7 @@ sub gst_message_parse_qos_values (
 sub gst_message_parse_redirect_entry (
   GstMessage $message,
   gsize $entry_index is rw,
-  CArray[Pointer[Str]] $location,
+  CArray[Str] $location,
   CArray[Pointer[GstTagList]] $tag_list,
   CArray[Pointer[GstStructure]] $entry_struct
 )
@@ -597,7 +602,7 @@ sub gst_message_parse_redirect_entry (
 
 sub gst_message_parse_request_state (
   GstMessage $message,
-  CArray[Pointer[GstState]] $state
+  CArray[guint] $state
 )
   is native(gstreamer)
   is export
@@ -613,7 +618,7 @@ sub gst_message_parse_reset_time (
 
 sub gst_message_parse_segment_done (
   GstMessage $message,
-  CArray[Pointer[GstFormat]] $format,
+  CArray[guint] $format,
   gint64 $position is rw
 )
   is native(gstreamer)
@@ -622,7 +627,7 @@ sub gst_message_parse_segment_done (
 
 sub gst_message_parse_segment_start (
   GstMessage $message,
-  CArray[Pointer[GstFormat]] $format,
+  CArray[guint] $format,
   gint64 $position is rw
 )
   is native(gstreamer)
@@ -641,7 +646,7 @@ sub gst_message_parse_state_changed (
 
 sub gst_message_parse_step_done (
   GstMessage $message,
-  CArray[Pointer[GstFormat]] $format,
+  CArray[guint] $format,
   guint64 $amount        is rw,
   gdouble $rate          is rw,
   gboolean $flush        is rw,
@@ -656,7 +661,7 @@ sub gst_message_parse_step_done (
 sub gst_message_parse_step_start (
   GstMessage $message,
   gboolean $active       is rw,
-  CArray[Pointer[GstFormat]] $format,
+  CArray[guint] $format,
   guint64 $amount        is rw,
   gdouble $rate          is rw,
   gboolean $flush        is rw,
@@ -753,7 +758,7 @@ sub gst_message_set_group_id (GstMessage $message, guint $group_id)
 
 sub gst_message_set_qos_stats (
   GstMessage $message,
-  GstFormat $format,
+  guint $format,             # GstFormat $format,
   guint64 $processed,
   guint64 $dropped
 )

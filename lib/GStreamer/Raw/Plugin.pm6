@@ -1,5 +1,7 @@
 use v6.c;
 
+use NativeCall;
+
 use GTK::Compat::Types;
 use GStreamer::Raw::Types;
 
@@ -10,7 +12,7 @@ sub gst_plugin_add_dependency (
   Str $env_vars,
   Str $paths,
   Str $names,
-  GstPluginDependencyFlags $flags
+  guint $flags # GstPluginDependencyFlags $flags
 )
   is native(gstreamer)
   is export
@@ -21,7 +23,7 @@ sub gst_plugin_add_dependency_simple (
   Str $env_vars,
   Str $paths,
   Str $names,
-  GstPluginDependencyFlags $flags
+  guint $flags # GstPluginDependencyFlags $flags
 )
   is native(gstreamer)
   is export

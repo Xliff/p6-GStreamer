@@ -8,7 +8,7 @@ use GStreamer::Raw::Object;
 
 use GTK::Raw::Utils;
 
-use GTK::Roles::Data;
+use GTK::Roles::Properties;
 
 class GStreamer::Object {
   also does GTK::Roles::Properties;
@@ -64,7 +64,8 @@ class GStreamer::Object {
   method parent (:$raw = False) is rw {
     Proxy.new(
       FETCH => sub ($) {
-        my $o = gst_object_get_parent($!o)
+        my $o = gst_object_get_parent($!o);
+
         $o ??
           ( $raw ?? $o !! GStreamer::Object.new($o) )
           !!
@@ -107,7 +108,7 @@ class GStreamer::Object {
     GstClockTime $timestamp,
     GstClockTime $interval,
     guint $n_values,
-    Pointer $values,
+    gpointer $values,
     :$raw = False
   )
     is also<get-g-value-array>
@@ -125,7 +126,7 @@ class GStreamer::Object {
     );
 
     $v ??
-      ( $raw = $v.Array !! $v.Array.map({ GTK::Compat::Value.new($_) })
+      ( $raw ?? $v.Array !! $v.Array.map({ GTK::Compat::Value.new($_) }) )
       !!
       Nil;
   }
@@ -212,15 +213,13 @@ class GStreamer::Object {
   )
     is also<set-control-binding-disabled>
   {
-    my gboolean $d = resolve-boolean($disabled);
-    gst_object_set_control_binding_disabled($!o, $property_name, $d);
+    gst_object_set_control_binding_disabled($!o, $property_name, $disabled);
   }
 
   method set_control_bindings_disabled (Int() $disabled)
     is also<set-control-bindings-disabled>
   {
-    my gboolean $d = resolve-boolean($disabled);
-    gst_object_set_control_bindings_disabled($!o, $d);
+    gst_object_set_control_bindings_disabled($!o, $disabled);
   }
 
   method suggest_next_sync is also<suggest-next-sync> {

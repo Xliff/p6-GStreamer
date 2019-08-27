@@ -1,5 +1,7 @@
 use v6.c;
 
+use NativeCall;
+
 use GTK::Compat::Types;
 use GStreamer::Raw::Types;
 
@@ -10,43 +12,65 @@ sub gst_element_create_all_pads (GstElement $element)
   is export
 { * }
 
-sub gst_element_factory_can_sink_all_caps (GstElementFactory $factory, GstCaps $caps)
+sub gst_element_factory_can_sink_all_caps (
+  GstElementFactory $factory,
+  GstCaps $caps
+)
   returns uint32
   is native(gstreamer)
   is export
 { * }
 
-sub gst_element_factory_can_sink_any_caps (GstElementFactory $factory, GstCaps $caps)
+sub gst_element_factory_can_sink_any_caps (
+  GstElementFactory $factory,
+  GstCaps $caps
+)
   returns uint32
   is native(gstreamer)
   is export
 { * }
 
-sub gst_element_factory_can_src_all_caps (GstElementFactory $factory, GstCaps $caps)
+sub gst_element_factory_can_src_all_caps (
+  GstElementFactory $factory,
+  GstCaps $caps
+)
   returns uint32
   is native(gstreamer)
   is export
 { * }
 
-sub gst_element_factory_can_src_any_caps (GstElementFactory $factory, GstCaps $caps)
+sub gst_element_factory_can_src_any_caps (
+  GstElementFactory $factory,
+  GstCaps $caps
+)
   returns uint32
   is native(gstreamer)
   is export
 { * }
 
-sub gst_element_get_compatible_pad (GstElement $element, GstPad $pad, GstCaps $caps)
+sub gst_element_get_compatible_pad (
+  GstElement $element,
+  GstPad $pad,
+  GstCaps $caps
+)
   returns GstPad
   is native(gstreamer)
   is export
 { * }
 
-sub gst_element_get_compatible_pad_template (GstElement $element, GstPadTemplate $compattempl)
+sub gst_element_get_compatible_pad_template (
+  GstElement $element,
+  GstPadTemplate $compattempl
+)
   returns GstPadTemplate
   is native(gstreamer)
   is export
 { * }
 
-sub gst_bin_find_unlinked_pad (GstBin $bin, GstPadDirection $direction)
+sub gst_bin_find_unlinked_pad (
+  GstBin $bin,
+  guint $direction # GstPadDirection $direction
+)
   returns GstPad
   is native(gstreamer)
   is export
@@ -58,13 +82,26 @@ sub gst_bin_sync_children_states (GstBin $bin)
   is export
 { * }
 
-sub gst_calculate_linear_regression (GstClockTime $xy, GstClockTime $temp, guint $n, GstClockTime $m_num, GstClockTime $m_denom, GstClockTime $b, GstClockTime $xbase, gdouble $r_squared)
+sub gst_calculate_linear_regression (
+  GstClockTime $xy,
+  GstClockTime $temp,
+  guint $n,
+  GstClockTime $m_num,
+  GstClockTime $m_denom,
+  GstClockTime $b,
+  GstClockTime $xbase,
+  gdouble $r_squared
+)
   returns uint32
   is native(gstreamer)
   is export
 { * }
 
-sub gst_object_default_error (GstObject $source, CArray[Pointer[GError]] $error, Str $debug)
+sub gst_object_default_error (
+  GstObject $source,
+  CArray[Pointer[GError]] $error,
+  Str $debug
+)
   is native(gstreamer)
   is export
 { * }
@@ -99,7 +136,11 @@ sub gst_pad_link_maybe_ghosting (GstPad $src, GstPad $sink)
   is export
 { * }
 
-sub gst_pad_link_maybe_ghosting_full (GstPad $src, GstPad $sink, GstPadLinkCheck $flags)
+sub gst_pad_link_maybe_ghosting_full (
+  GstPad $src,
+  GstPad $sink,
+  guint $flags               # GstPadLinkCheck $flags
+)
   returns uint32
   is native(gstreamer)
   is export
@@ -117,19 +158,33 @@ sub gst_pad_peer_query_caps (GstPad $pad, GstCaps $filter)
   is export
 { * }
 
-sub gst_pad_peer_query_convert (GstPad $pad, GstFormat $src_format, gint64 $src_val, GstFormat $dest_format, gint64 $dest_val)
+sub gst_pad_peer_query_convert (
+  GstPad $pad,
+  guint $src_format,         # GstFormat $src_format,
+  gint64 $src_val,
+  guint $dest_format,        # GstFormat $dest_format,
+  gint64 $dest_val
+)
   returns uint32
   is native(gstreamer)
   is export
 { * }
 
-sub gst_pad_peer_query_duration (GstPad $pad, GstFormat $format, gint64 $duration)
+sub gst_pad_peer_query_duration (
+  GstPad $pad,
+  guint $format,             # GstFormat $format,
+  gint64 $duration
+)
   returns uint32
   is native(gstreamer)
   is export
 { * }
 
-sub gst_pad_peer_query_position (GstPad $pad, GstFormat $format, gint64 $cur)
+sub gst_pad_peer_query_position (
+  GstPad $pad,
+  guint $format,             # GstFormat $format,
+  gint64 $cur
+)
   returns uint32
   is native(gstreamer)
   is export
@@ -159,19 +214,33 @@ sub gst_pad_query_caps (GstPad $pad, GstCaps $filter)
   is export
 { * }
 
-sub gst_pad_query_convert (GstPad $pad, GstFormat $src_format, gint64 $src_val, GstFormat $dest_format, gint64 $dest_val)
+sub gst_pad_query_convert (
+  GstPad $pad,
+  guint $src_format,         # GstFormat $src_format,
+  gint64 $src_val,
+  guint $dest_format,        # GstFormat $dest_format,
+  gint64 $dest_val
+)
   returns uint32
   is native(gstreamer)
   is export
 { * }
 
-sub gst_pad_query_duration (GstPad $pad, GstFormat $format, gint64 $duration)
+sub gst_pad_query_duration (
+  GstPad $pad,
+  guint $format,             # GstFormat $format,
+  gint64 $duration
+)
   returns uint32
   is native(gstreamer)
   is export
 { * }
 
-sub gst_pad_query_position (GstPad $pad, GstFormat $format, gint64 $cur)
+sub gst_pad_query_position (
+  GstPad $pad,
+  guint $format,             # GstFormat $format,
+  gint64 $cur
+)
   returns uint32
   is native(gstreamer)
   is export
@@ -182,25 +251,45 @@ sub gst_pad_use_fixed_caps (GstPad $pad)
   is export
 { * }
 
-sub gst_parse_bin_from_description (Str $bin_description, gboolean $ghost_unlinked_pads, CArray[Pointer[GError]] $err)
+sub gst_parse_bin_from_description (
+  Str $bin_description,
+  gboolean $ghost_unlinked_pads,
+  CArray[Pointer[GError]] $err
+)
   returns GstElement
   is native(gstreamer)
   is export
 { * }
 
-sub gst_parse_bin_from_description_full (Str $bin_description, gboolean $ghost_unlinked_pads, GstParseContext $context, GstParseFlags $flags, CArray[Pointer[GError]] $err)
+sub gst_parse_bin_from_description_full (
+  Str $bin_description,
+  gboolean $ghost_unlinked_pads,
+  GstParseContext $context,
+  guint $flags,              # GstParseFlags $flags,
+  CArray[Pointer[GError]] $err
+)
   returns GstElement
   is native(gstreamer)
   is export
 { * }
 
-sub gst_state_change_get_name (GstStateChange $transition)
+sub gst_state_change_get_name (
+  guint $transition          # GstStateChange $transition
+)
   returns Str
   is native(gstreamer)
   is export
 { * }
 
-sub gst_util_array_binary_search (gpointer $array, guint $num_elements, gsize $element_size, GCompareDataFunc $search_func, GstSearchMode $mode, gconstpointer $search_data, gpointer $user_data)
+sub gst_util_array_binary_search (
+  gpointer $array,
+  guint $num_elements,
+  gsize $element_size,
+  GCompareDataFunc $search_func,
+  guint $mode,               # GstSearchMode $mode,
+  gconstpointer $search_data,
+  gpointer $user_data
+)
   returns Pointer
   is native(gstreamer)
   is export
@@ -221,7 +310,14 @@ sub gst_util_dump_mem (guchar $mem, guint $size)
   is export
 { * }
 
-sub gst_util_fraction_add (gint $a_n, gint $a_d, gint $b_n, gint $b_d, gint $res_n, gint $res_d)
+sub gst_util_fraction_add (
+  gint $a_n,
+  gint $a_d,
+  gint $b_n,
+  gint $b_d,
+  gint $res_n,
+  gint $res_d
+)
   returns uint32
   is native(gstreamer)
   is export
@@ -233,7 +329,14 @@ sub gst_util_fraction_compare (gint $a_n, gint $a_d, gint $b_n, gint $b_d)
   is export
 { * }
 
-sub gst_util_fraction_multiply (gint $a_n, gint $a_d, gint $b_n, gint $b_d, gint $res_n, gint $res_d)
+sub gst_util_fraction_multiply (
+  gint $a_n,
+  gint $a_d,
+  gint $b_n,
+  gint $b_d,
+  gint $res_n,
+  gint $res_d
+)
   returns uint32
   is native(gstreamer)
   is export
@@ -250,11 +353,11 @@ sub gst_util_gdouble_to_guint64 (gdouble $value)
   is export
 { * }
 
-sub gst_util_get_object_array (GObject $object, Str $name, GValueArray $array)
-  returns uint32
-  is native(gstreamer)
-  is export
-{ * }
+# sub gst_util_get_object_array (GObject $object, Str $name, GValueArray $array)
+#   returns uint32
+#   is native(gstreamer)
+#   is export
+# { * }
 
 sub gst_util_get_timestamp ()
   returns GstClockTime
@@ -303,11 +406,11 @@ sub gst_util_set_object_arg (GObject $object, Str $name, Str $value)
   is export
 { * }
 
-sub gst_util_set_object_array (GObject $object, Str $name, GValueArray $array)
-  returns uint32
-  is native(gstreamer)
-  is export
-{ * }
+# sub gst_util_set_object_array (GObject $object, Str $name, GValueArray $array)
+#   returns uint32
+#   is native(gstreamer)
+#   is export
+# { * }
 
 sub gst_util_set_value_from_string (GValue $value, Str $value_str)
   is native(gstreamer)
@@ -356,61 +459,105 @@ sub gst_element_link (GstElement $src, GstElement $dest)
   is export
 { * }
 
-sub gst_element_link_filtered (GstElement $src, GstElement $dest, GstCaps $filter)
+sub gst_element_link_filtered (
+  GstElement $src,
+  GstElement $dest,
+  GstCaps $filter
+)
   returns uint32
   is native(gstreamer)
   is export
 { * }
 
-sub gst_element_link_pads (GstElement $src, Str $srcpadname, GstElement $dest, Str $destpadname)
+sub gst_element_link_pads (
+  GstElement $src,
+  Str $srcpadname,
+  GstElement $dest,
+  Str $destpadname
+)
   returns uint32
   is native(gstreamer)
   is export
 { * }
 
-sub gst_element_link_pads_filtered (GstElement $src, Str $srcpadname, GstElement $dest, Str $destpadname, GstCaps $filter)
+sub gst_element_link_pads_filtered (
+  GstElement $src,
+  Str $srcpadname,
+  GstElement $dest,
+  Str $destpadname,
+  GstCaps $filter
+)
   returns uint32
   is native(gstreamer)
   is export
 { * }
 
-sub gst_element_link_pads_full (GstElement $src, Str $srcpadname, GstElement $dest, Str $destpadname, GstPadLinkCheck $flags)
+sub gst_element_link_pads_full (
+  GstElement $src,
+  Str $srcpadname,
+  GstElement $dest,
+  Str $destpadname,
+  guint $flags               # GstPadLinkCheck $flags
+)
   returns uint32
   is native(gstreamer)
   is export
 { * }
 
-sub gst_element_query_convert (GstElement $element, GstFormat $src_format, gint64 $src_val, GstFormat $dest_format, gint64 $dest_val)
+sub gst_element_query_convert (
+  GstElement $element,
+  guint $src_format,         # GstFormat $src_format,
+  gint64 $src_val,
+  guint $dest_format,        # GstFormat $dest_format,
+  gint64 $dest_val
+)
   returns uint32
   is native(gstreamer)
   is export
 { * }
 
-sub gst_element_query_duration (GstElement $element, GstFormat $format, gint64 $duration)
+sub gst_element_query_duration (
+  GstElement $element,
+  guint $format,             # GstFormat $format,
+  gint64 $duration
+)
   returns uint32
   is native(gstreamer)
   is export
 { * }
 
-sub gst_element_query_position (GstElement $element, GstFormat $format, gint64 $cur)
+sub gst_element_query_position (
+  GstElement $element,
+  guint $format,             # GstFormat $format,
+  gint64 $cur
+)
   returns uint32
   is native(gstreamer)
   is export
 { * }
 
-sub gst_element_seek_simple (GstElement $element, GstFormat $format, GstSeekFlags $seek_flags, gint64 $seek_pos)
+sub gst_element_seek_simple (
+  GstElement $element,
+  guint $src_format,         # GstFormat $src_format,
+  guint $seek_flags,         # GstSeekFlags $seek_flags,
+  gint64 $seek_pos
+)
   returns uint32
   is native(gstreamer)
   is export
 { * }
 
-sub gst_element_state_change_return_get_name (GstStateChangeReturn $state_ret)
+sub gst_element_state_change_return_get_name (
+  guint $state_ret           # GstStateChangeReturn $state_ret
+)
   returns Str
   is native(gstreamer)
   is export
 { * }
 
-sub gst_element_state_get_name (GstState $state)
+sub gst_element_state_get_name (
+  guint $state               # GstState $state
+)
   returns Str
   is native(gstreamer)
   is export
@@ -421,7 +568,12 @@ sub gst_element_unlink (GstElement $src, GstElement $dest)
   is export
 { * }
 
-sub gst_element_unlink_pads (GstElement $src, Str $srcpadname, GstElement $dest, Str $destpadname)
+sub gst_element_unlink_pads (
+  GstElement $src,
+  Str $srcpadname,
+  GstElement $dest,
+  Str $destpadname
+)
   is native(gstreamer)
   is export
 { * }

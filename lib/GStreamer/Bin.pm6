@@ -6,6 +6,8 @@ use GTK::Compat::Types;
 use GStreamer::Raw::Types;
 use GStreamer::Raw::Bin;
 
+use GStreamer::Element;
+
 use GStreamer::Roles::ChildProxy;
 
 our subset BinAncestry is export of Mu

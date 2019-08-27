@@ -17,7 +17,7 @@ sub gst_iterator_filter (
   GstIterator $it,
   GCompareFunc $func,
   GValue $user_data
-)  
+)
   returns GstIterator
   is native(gstreamer)
   is export
@@ -102,7 +102,7 @@ sub gst_iterator_new_single (GType $type, GValue $object)
 { * }
 
 sub gst_iterator_next (GstIterator $it, GValue $elem)
-  returns GstIteratorResult
+  returns guint # GstIteratorResult
   is native(gstreamer)
   is export
 { * }

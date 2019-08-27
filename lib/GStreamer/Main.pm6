@@ -1,6 +1,7 @@
 use v6.c;
 
 use Method::Also;
+use NativeCall;
 
 use GTK::Compat::Types;
 use GStreamer::Raw::Main;
@@ -25,18 +26,20 @@ class GStreamer::Main {
     gst_init($c, $v);
   }
 
-  multi method init_check is also<init-check> {
+  proto method init_check (|)
+    is also<init-check>
+  { * }
+
+  multi method init_check  {
     my ($c, $v) = (0, CArray[Str].new);
 
     samewith($c, $v);
   }
-  method init_check(
+  multi method init_check(
     Int $c is rw,
     CArray[Str] $v,
     CArray[Pointer[GError]] $error = gerror
-  )
-    is also<init-check>
-  {
+  ) {
     clear_error;
     my $rc = gst_init_check ($c, $v, $error);
     set_error($error);

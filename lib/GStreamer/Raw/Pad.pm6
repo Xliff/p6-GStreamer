@@ -7,7 +7,11 @@ use GStreamer::Raw::Types;
 
 unit package GStreamer::Raw::Pad;
 
-sub gst_pad_activate_mode (GstPad $pad, GstPadMode $mode, gboolean $active)
+sub gst_pad_activate_mode (
+  GstPad $pad,
+  guint $mode,                   # GstPadMode $mode,
+  gboolean $active
+)
   returns uint32
   is native(gstreamer)
   is export
@@ -15,7 +19,7 @@ sub gst_pad_activate_mode (GstPad $pad, GstPadMode $mode, gboolean $active)
 
 sub gst_pad_add_probe (
   GstPad $pad,
-  GstPadProbeType $mask,
+  guint $mask,                   # GstPadProbeType $mask,
   GstPadProbeCallback $callback,
   gpointer $user_data,
   GDestroyNotify $destroy_data
@@ -32,13 +36,13 @@ sub gst_pad_can_link (GstPad $srcpad, GstPad $sinkpad)
 { * }
 
 sub gst_pad_chain (GstPad $pad, GstBuffer $buffer)
-  returns GstFlowReturn
+  returns gint # GstFlowReturn
   is native(gstreamer)
   is export
 { * }
 
 sub gst_pad_chain_list (GstPad $pad, GstBufferList $list)
-  returns GstFlowReturn
+  returns gint # GstFlowReturn
   is native(gstreamer)
   is export
 { * }
@@ -78,13 +82,13 @@ sub gst_pad_get_current_caps (GstPad $pad)
 { * }
 
 sub gst_pad_get_direction (GstPad $pad)
-  returns GstPadDirection
+  returns guint # GstPadDirection
   is native(gstreamer)
   is export
 { * }
 
 sub gst_pad_get_last_flow_return (GstPad $pad)
-  returns GstFlowReturn
+  returns guint # GstFlowReturn
   is native(gstreamer)
   is export
 { * }
@@ -113,14 +117,14 @@ sub gst_pad_get_range (
   guint $size,
   GstBuffer $buffer
 )
-  returns GstFlowReturn
+  returns guint # GstFlowReturn
   is native(gstreamer)
   is export
 { * }
 
 sub gst_pad_get_sticky_event (
   GstPad $pad,
-  GstEventType $event_type,
+  guint $event_type,             # GstEventType $event_type,
   guint $idx
 )
   returns GstEvent
@@ -129,7 +133,7 @@ sub gst_pad_get_sticky_event (
 { * }
 
 sub gst_pad_get_task_state (GstPad $pad)
-  returns GstTaskState
+  returns guint # GstTaskState
   is native(gstreamer)
   is export
 { * }
@@ -140,13 +144,17 @@ sub gst_pad_get_type ()
   is export
 { * }
 
-sub gst_flow_get_name (GstFlowReturn $ret)
+sub gst_flow_get_name (
+  guint $ret                     # GstFlowReturn $ret
+)
   returns Str
   is native(gstreamer)
   is export
 { * }
 
-sub gst_flow_to_quark (GstFlowReturn $ret)
+sub gst_flow_to_quark (
+  guint $ret                     # GstFlowReturn $ret
+)
   returns GQuark
   is native(gstreamer)
   is export
@@ -195,7 +203,7 @@ sub gst_pad_iterate_internal_links_default (GstPad $pad, GstObject $parent)
 { * }
 
 sub gst_pad_link (GstPad $srcpad, GstPad $sinkpad)
-  returns GstPadLinkReturn
+  returns gint # GstPadLinkReturn
   is native(gstreamer)
   is export
 { * }
@@ -203,14 +211,16 @@ sub gst_pad_link (GstPad $srcpad, GstPad $sinkpad)
 sub gst_pad_link_full (
   GstPad $srcpad,
   GstPad $sinkpad,
-  GstPadLinkCheck $flags
+  guint $flags # GstPadLinkCheck $flags
 )
-  returns GstPadLinkReturn
+  returns gint # GstPadLinkReturn
   is native(gstreamer)
   is export
 { * }
 
-sub gst_pad_link_get_name (GstPadLinkReturn $ret)
+sub gst_pad_link_get_name (
+  gint $ret # GstPadLinkReturn $ret
+)
   returns Str
   is native(gstreamer)
   is export
@@ -221,7 +231,9 @@ sub gst_pad_mark_reconfigure (GstPad $pad)
   is export
 { * }
 
-sub gst_pad_mode_get_name (GstPadMode $mode)
+sub gst_pad_mode_get_name (
+  guint $mode # GstPadMode $mode
+)
   returns Str
   is native(gstreamer)
   is export
@@ -233,7 +245,10 @@ sub gst_pad_needs_reconfigure (GstPad $pad)
   is export
 { * }
 
-sub gst_pad_new (Str $name, GstPadDirection $direction)
+sub gst_pad_new (
+  Str $name,
+  guint $direction # GstPadDirection $direction
+)
   returns GstPad
   is native(gstreamer)
   is export
@@ -293,13 +308,13 @@ sub gst_pad_pull_range (
   guint $size,
   GstBuffer $buffer
 )
-  returns GstFlowReturn
+  returns gint # GstFlowReturn
   is native(gstreamer)
   is export
 { * }
 
 sub gst_pad_push (GstPad $pad, GstBuffer $buffer)
-  returns GstFlowReturn
+  returns gint # GstFlowReturn
   is native(gstreamer)
   is export
 { * }
@@ -311,7 +326,7 @@ sub gst_pad_push_event (GstPad $pad, GstEvent $event)
 { * }
 
 sub gst_pad_push_list (GstPad $pad, GstBufferList $list)
-  returns GstFlowReturn
+  returns gint # GstFlowReturn
   is native(gstreamer)
   is export
 { * }
@@ -482,7 +497,7 @@ sub gst_pad_stop_task (GstPad $pad)
 { * }
 
 sub gst_pad_store_sticky_event (GstPad $pad, GstEvent $event)
-  returns GstFlowReturn
+  returns gint # GstFlowReturn
   is native(gstreamer)
   is export
 { * }

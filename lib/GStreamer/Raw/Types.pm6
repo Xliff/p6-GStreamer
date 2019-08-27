@@ -10,7 +10,7 @@ sub nocr ($s) is export {
   $s.subst("\n", ' ', :g);
 }
 
-constant GstClockTime     is export := guint32
+constant GstClockTime     is export := guint32;
 constant GstClockTimeDiff is export := int64;
 
 # cw: I now realize, that at some point, ALL of these will have to be functions
@@ -54,6 +54,7 @@ class GstChildProxy        is repr('CPointer') does GTK::Roles::Pointers is expo
 class GstClock             is repr('CPointer') does GTK::Roles::Pointers is export { }
 class GstContext           is repr('CPointer') does GTK::Roles::Pointers is export { }
 class GstControlBinding    is repr('CPointer') does GTK::Roles::Pointers is export { }
+class GstDevice            is repr('CPointer') does GTK::Roles::Pointers is export { }
 #class GstElement           is repr('CPointer') does GTK::Roles::Pointers is export { }
 class GstElementFactory    is repr('CPointer') does GTK::Roles::Pointers is export { }
 class GstEvent             is repr('CPointer') does GTK::Roles::Pointers is export { }
@@ -63,13 +64,20 @@ class GstIterator          is repr('CPointer') does GTK::Roles::Pointers is expo
 class GstPad               is repr('CPointer') does GTK::Roles::Pointers is export { }
 class GstPadProbeInfo      is repr('CPointer') does GTK::Roles::Pointers is export { }
 class GstPadTemplate       is repr('CPointer') does GTK::Roles::Pointers is export { }
+class GstParseContext      is repr('CPointer') does GTK::Roles::Pointers is export { }
 class GstPipeline          is repr('CPointer') does GTK::Roles::Pointers is export { }
 class GstPlugin            is repr('CPointer') does GTK::Roles::Pointers is export { }
 class GstPluginFeature     is repr('CPointer') does GTK::Roles::Pointers is export { }
 class GstProbeInfo         is repr('CPointer') does GTK::Roles::Pointers is export { }
 class GstQuery             is repr('CPointer') does GTK::Roles::Pointers is export { }
 class GstStaticPadTemplate is repr('CPointer') does GTK::Roles::Pointers is export { }
+class GstStream            is repr('CPointer') does GTK::Roles::Pointers is export { }
+class GstStreamCollection  is repr('CPointer') does GTK::Roles::Pointers is export { }
 class GstStructure         is repr('CPointer') does GTK::Roles::Pointers is export { }
+class GstTagList           is repr('CPointer') does GTK::Roles::Pointers is export { }
+class GstToc               is repr('CPointer') does GTK::Roles::Pointers is export { }
+
+constant GST_OBJECT_FLAG_LAST is export = 1 +< 4;
 
 our enum GstBufferingMode is export <
   GST_BUFFERING_STREAM
@@ -345,6 +353,41 @@ our enum GstPadDirection is export <
   GST_PAD_SINK
 >;
 
+our enum GstFlowReturn is export (
+  GST_FLOW_CUSTOM_SUCCESS_2 => 102,
+  GST_FLOW_CUSTOM_SUCCESS_1 => 101,
+  GST_FLOW_CUSTOM_SUCCESS   => 100,
+  GST_FLOW_OK		            =>  0,
+  GST_FLOW_NOT_LINKED       => -1,
+  GST_FLOW_FLUSHING         => -2,
+  GST_FLOW_EOS              => -3,
+  GST_FLOW_NOT_NEGOTIATED   => -4,
+  GST_FLOW_ERROR	          => -5,
+  GST_FLOW_NOT_SUPPORTED    => -6,
+  GST_FLOW_CUSTOM_ERROR     => -100,
+  GST_FLOW_CUSTOM_ERROR_1   => -101,
+  GST_FLOW_CUSTOM_ERROR_2   => -102
+);
+
+our enum GstPadLinkCheck is export (
+  GST_PAD_LINK_CHECK_NOTHING        => 0,
+  GST_PAD_LINK_CHECK_HIERARCHY      => 1,
+  GST_PAD_LINK_CHECK_TEMPLATE_CAPS  => 1 +< 1,
+  GST_PAD_LINK_CHECK_CAPS           => 1 +< 2,
+  GST_PAD_LINK_CHECK_NO_RECONFIGURE => 1 +< 3,
+  GST_PAD_LINK_CHECK_DEFAULT        => 1 +| (1 +< 2)
+);
+
+our enum GstPadLinkReturn is export (
+  GST_PAD_LINK_OK               =>  0,
+  GST_PAD_LINK_WRONG_HIERARCHY  => -1,
+  GST_PAD_LINK_WAS_LINKED       => -2,
+  GST_PAD_LINK_WRONG_DIRECTION  => -3,
+  GST_PAD_LINK_NOFORMAT         => -4,
+  GST_PAD_LINK_NOSCHED          => -5,
+  GST_PAD_LINK_REFUSED          => -6
+);
+
 our enum GstPadMode is export <
   GST_PAD_MODE_NONE
   GST_PAD_MODE_PUSH
@@ -365,6 +408,32 @@ our enum GstPadProbeReturn is export <
   GST_PAD_PROBE_HANDLED
 >;
 
+our enum GstPadProbeType is export (
+  GST_PAD_PROBE_TYPE_INVALID          => 0,
+  GST_PAD_PROBE_TYPE_IDLE             => (1 +< 0),
+  GST_PAD_PROBE_TYPE_BLOCK            => (1 +< 1),
+  GST_PAD_PROBE_TYPE_BUFFER           => (1 +< 4),
+  GST_PAD_PROBE_TYPE_BUFFER_LIST      => (1 +< 5),
+  GST_PAD_PROBE_TYPE_EVENT_DOWNSTREAM => (1 +< 6),
+  GST_PAD_PROBE_TYPE_EVENT_UPSTREAM   => (1 +< 7),
+  GST_PAD_PROBE_TYPE_EVENT_FLUSH      => (1 +< 8),
+  GST_PAD_PROBE_TYPE_QUERY_DOWNSTREAM => (1 +< 9),
+  GST_PAD_PROBE_TYPE_QUERY_UPSTREAM   => (1 +< 10),
+  GST_PAD_PROBE_TYPE_PUSH             => (1 +< 12),
+  GST_PAD_PROBE_TYPE_PULL             => (1 +< 13),
+
+  GST_PAD_PROBE_TYPE_BLOCKING         => 0         +| (1 +< 1),
+  GST_PAD_PROBE_TYPE_DATA_DOWNSTREAM  => (1 +< 4)  +| (1 +< 5) +| (1 +< 6),
+  GST_PAD_PROBE_TYPE_DATA_UPSTREAM    => (1 +< 7),
+  GST_PAD_PROBE_TYPE_DATA_BOTH        => (1 +< 4)  +| (1 +< 5) +| (1 +< 6) +| (1 +< 7),
+  GST_PAD_PROBE_TYPE_BLOCK_DOWNSTREAM => (1 +< 1)  +| (1 +< 4) +| (1 +< 5) +| (1 +< 6),
+  GST_PAD_PROBE_TYPE_BLOCK_UPSTREAM   => (1 +< 1)  +| (1 +< 7),
+  GST_PAD_PROBE_TYPE_EVENT_BOTH       => (1 +< 6)  +| (1 +< 7),
+  GST_PAD_PROBE_TYPE_QUERY_BOTH       => (1 +< 9)  +| (1 +< 10),
+  GST_PAD_PROBE_TYPE_ALL_BOTH         => (1 +< 4)  +| (1 +< 5) +| (1 +< 6) +| (1 +< 7) +| (1 +< 9) +| (1 +< 10),
+  GST_PAD_PROBE_TYPE_SCHEDULING       => (1 +< 12) +| (1 +< 13)
+);
+
 our enum GstParseError is export <
   GST_PARSE_ERROR_SYNTAX
   GST_PARSE_ERROR_NO_SUCH_ELEMENT
@@ -376,11 +445,32 @@ our enum GstParseError is export <
   GST_PARSE_ERROR_DELAYED_LINK
 >;
 
+our enum GstParseFlags is export (
+  GST_PARSE_FLAG_NONE                   => 0,
+  GST_PARSE_FLAG_FATAL_ERRORS           => 1,
+  GST_PARSE_FLAG_NO_SINGLE_ELEMENT_BINS => (1 +< 1),
+  GST_PARSE_FLAG_PLACE_IN_BIN           => (1 +< 2)
+);
+
+our enum GstPluginDependencyFlags is export (
+  GST_PLUGIN_DEPENDENCY_FLAG_NONE                      => 0,
+  GST_PLUGIN_DEPENDENCY_FLAG_RECURSE                   => 1,
+  GST_PLUGIN_DEPENDENCY_FLAG_PATHS_ARE_DEFAULT_ONLY    => (1 +< 1),
+  GST_PLUGIN_DEPENDENCY_FLAG_FILE_NAME_IS_SUFFIX       => (1 +< 2),
+  GST_PLUGIN_DEPENDENCY_FLAG_FILE_NAME_IS_PREFIX       => (1 +< 3),
+  GST_PLUGIN_DEPENDENCY_FLAG_PATHS_ARE_RELATIVE_TO_EXE => (1 +< 4)
+);
+
 our enum GstPluginError is export <
   GST_PLUGIN_ERROR_MODULE
   GST_PLUGIN_ERROR_DEPENDENCIES
   GST_PLUGIN_ERROR_NAME_MISMATCH
 >;
+
+our enum GstPluginFlags is export (
+  GST_PLUGIN_FLAG_CACHED      => (GST_OBJECT_FLAG_LAST +< 0),
+  GST_PLUGIN_FLAG_BLACKLISTED => (GST_OBJECT_FLAG_LAST +< 1)
+);
 
 our enum GstProgressType is export (
   GST_PROGRESS_TYPE_START    =>  0,
@@ -653,10 +743,10 @@ class GstElement is repr<CStruct> does GTK::Roles::Pointers is export {
   HAS GRecMutex        $.state_lock;
   HAS GCond            $.state_cond;
   has guint32          $.state_cookie;
-  has GstState         $.target_state;
-  has GstState         $.current_state;
-  has GstState         $.next_state;
-  has GstState         $.pending_state;
+  has guint            $.target_state;    # GstState
+  has guint            $.current_state;   # GstState
+  has guint            $.next_state;      # GstState
+  has guint            $.pending_state;   # GstState
   has guint            $.last_return;     # GstStateChangeReturn
   has GstBus           $.bus;
   has GstClock         $.clock;
@@ -671,10 +761,10 @@ class GstElement is repr<CStruct> does GTK::Roles::Pointers is export {
   has guint32          $.pads_cookie;
   has GList            $.contexts;
 
-  gpointer             $!gst_reserved0;
-  gpointer             $!gst_reserved1;
-  gpointer             $!gst_reserved2;
-  gpointer             $!gst_reserved3;
+  has gpointer         $!gst_reserved0;
+  has gpointer         $!gst_reserved1;
+  has gpointer         $!gst_reserved2;
+  has gpointer         $!gst_reserved3;
 }
 
 class GstMessage is repr<CStruct> does GTK::Roles::Pointers is export {
@@ -701,3 +791,23 @@ class GstFormatDefinition is repr<CStruct>     does GTK::Roles::Pointers is expo
   has Str    $.description;
   has GQuark $.quark;
 }
+
+class GstPluginDesc       is repr<CStruct>     does GTK::Roles::Pointers is export {
+  has gint      $.major_version;
+  has gint      $.minor_version;
+  has Str       $.name;
+  has Str       $.description;
+  has gpointer  $.plugin_init; # GstPluginInitFunc
+  has Str       $.version;
+  has Str       $.license;
+  has Str       $.source;
+  has Str       $.package;
+  has Str       $.origin;
+  has Str       $.release_datetime;
+
+  # private
+  has gpointer  $!gst_reserved0;
+  has gpointer  $!gst_reserved1;
+  has gpointer  $!gst_reserved2;
+  has gpointer  $!gst_reserved3;
+};

@@ -1,5 +1,7 @@
 use v6.c;
 
+use NativeCall;
+
 use GTK::Compat::Types;
 use GStreamer::Raw::Types;
 
@@ -7,7 +9,7 @@ use GTK::Roles::Signals::Generic;
 
 role GStreamer::Roles::Signals::Element {
   also does GTK::Roles::Signals::Generic;
-  
+
   has %!signals-e;
 
   # GstElement, GstPad, gpointer
