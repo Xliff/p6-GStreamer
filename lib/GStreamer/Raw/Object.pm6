@@ -26,7 +26,7 @@ sub gst_object_default_deep_notify (
   GObject $object,
   GstObject $orig,
   GParamSpec $pspec,
-  Str $excluded_props
+  CArray[Str] $excluded_props
 )
   is native(gstreamer)
   is export
@@ -109,13 +109,13 @@ sub gst_object_has_as_parent (GstObject $object, GstObject $parent)
   is export
 { * }
 
-sub gst_object_ref (gpointer $object)
+sub gst_object_ref (GstObject $object)
   returns Pointer
   is native(gstreamer)
   is export
 { * }
 
-sub gst_object_ref_sink (gpointer $object)
+sub gst_object_ref_sink (GstObject $object)
   returns Pointer
   is native(gstreamer)
   is export
@@ -170,7 +170,7 @@ sub gst_object_unparent (GstObject $object)
   is export
 { * }
 
-sub gst_object_unref (gpointer $object)
+sub gst_object_unref (GstObject $object)
   is native(gstreamer)
   is export
 { * }

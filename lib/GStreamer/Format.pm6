@@ -1,5 +1,7 @@
 use v6.c;
 
+use NativeCall;
+
 use GTK::Compat::Types;
 use GStreamer::Raw::Types;
 use GStreamer::Raw::Format;
@@ -34,13 +36,15 @@ class GStreamer::Format {
     die '@formats must only contain GstFormat data!'
       unless @formats.all ~~ GstFormat;
 
-    my $f = CArray[GstFormat].new; # CArray[uint32].new
+    my $f = CArray[uint32].new; # CArray[uint32].new
 
-    $f[$_] = @formats[$_] for ^@formats.elems;
+    my $ne = @formats.elems;
+    $f[$_] = @formats[$_] for ^$ne;
+    $f[$ne] = 0;
     samewith($f, $format);
   }
   multi method gst_formats_contains (
-    CArray[GstFormat] $formats,   # Zero Terminated
+    CArray[uint32] $formats,   # Zero Terminated
     GstFormat $format
   ) {
     gst_formats_contains($formats, $format);
@@ -59,6 +63,10 @@ class GStreamer::Format {
     gst_format_register($nick, $description);
   }
 
-  method to_quark (GstFormat $format) {
+  method to_quark (
+    guint $format # GstFormat $format
+  ) {
     gst_format_to_quark($format);
   }
+
+}

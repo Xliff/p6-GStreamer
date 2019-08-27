@@ -1,6 +1,7 @@
 use v6.c;
 
 use Method::Also;
+use NativeCall;
 
 use GTK::Compat::Types;
 use GStreamer::Raw::Types;
@@ -83,18 +84,41 @@ class GStreamer::Object {
     gst_object_add_control_binding($!o, $binding);
   }
 
-  method check_uniqueness (Str() $name) is also<check-uniqueness> {
-    gst_object_check_uniqueness($!o, $name);
+  method check_uniqueness (GStreamer::Object:U:
+    GList() $list,
+    Str() $name
+  )
+    is also<check-uniqueness>
+  {
+    so gst_object_check_uniqueness($list, $name);
   }
 
-  method default_deep_notify (
+  proto method default_deep_notify (|)
+    is also<default-deep-notify>
+  { * }
+
+  multi method default_deep_notify (
+    GStreamer::Object:U:
+    GObject() $obj,
     GstObject() $orig,
     GParamSpec $pspec,
-    Str() $excluded_props
-  )
-    is also<default-deep-notify>
-  {
-    gst_object_default_deep_notify($!o, $orig, $pspec, $excluded_props);
+    @excluded_props
+  ) {
+    my $ep = CArray[Str].new;
+
+    my $ne = @excluded_props.elems;
+    $ep[$_] = @excluded_props[$_] for ^$ne;
+    $ep[$ne] = Str;
+    samewith($obj, $orig, $pspec, $ep);
+  }
+  multi method default_deep_notify (
+    GStreamer::Object:U:
+    GObject() $obj,
+    GstObject() $orig,
+    GParamSpec $pspec,
+    CArray[Str] $excluded_props
+  ) {
+    gst_object_default_deep_notify($obj, $orig, $pspec, $excluded_props);
   }
 
   method get_control_binding (Str() $property_name)
