@@ -67,8 +67,17 @@ class GStreamer::Pad is GStreamer::Object {
       FETCH => sub ($) {
         gst_pad_get_element_private($!p);
       },
-      STORE => sub ($, gpointer $priv is copy) {
-        gst_pad_set_element_private($!p, $priv);
+      STORE => sub ($, $priv is copy) {
+        my gpointer $ptr = do given $priv {
+          when Pointer        { $_ }
+          when GStreamer::Pad { .GstPad.p }
+          when GstPad         { .p }
+
+          default {
+            die 'Invalid value passed to element_private!'
+          }
+        }
+        gst_pad_set_element_private($!p, $ptr);
       }
     );
   }
@@ -78,7 +87,7 @@ class GStreamer::Pad is GStreamer::Object {
       FETCH => sub ($) {
         gst_pad_get_offset($!p);
       },
-      STORE => sub ($, $offset is copy) {
+      STORE => sub ($, Int() $offset is copy) {
         gst_pad_set_offset($!p, $offset);
       }
     );
@@ -158,7 +167,7 @@ class GStreamer::Pad is GStreamer::Object {
     # ADD OBJECT CREATION CODE
   }
 
-  method get_peer  (:$raw = False) is also<get-peer> {
+  method get_peer (:$raw = False) is also<get-peer> {
     my $p = gst_pad_get_peer($!p);
 
     $p ??

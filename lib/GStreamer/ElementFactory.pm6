@@ -6,6 +6,7 @@ use GTK::Compat::Types;
 use GStreamer::Raw::Types;
 use GStreamer::Raw::ElementFactory;
 
+use GStreamer::Element;
 use GStreamer::PluginFeature;
 
 our subset ElementFactoryAncestry is export of Mu
@@ -74,6 +75,7 @@ class GStreamer::ElementFactory is GStreamer::PluginFeature {
     my $pt = gst_element_factory_get_static_pad_templates($!ef)
       but GTK::Compat::Roles:::ListData[GstStaticPadTemplate];
 
+    # Check for object.
     $pt ?? $pt.Array !! Nil;
   }
 

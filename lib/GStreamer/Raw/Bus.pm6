@@ -1,5 +1,7 @@
 use v6.c;
 
+use NativeCall;
+
 use GTK::Compat::Types;
 use GStreamer::Raw::Types;
 
@@ -17,7 +19,7 @@ sub gst_bus_add_signal_watch_full (GstBus $bus, gint $priority)
 
 sub gst_bus_add_watch (
   GstBus $bus,
-  &func (GstBus, GstMesage, gpointer --> gboolean),
+  &func (GstBus, GstMessage, gpointer --> gboolean),
   gpointer $user_data
 )
   returns guint
@@ -28,7 +30,7 @@ sub gst_bus_add_watch (
 sub gst_bus_add_watch_full (
   GstBus $bus,
   gint $priority,
-  &func (GstBus, GstMesage, gpointer --> gboolean),
+  &func (GstBus, GstMessage, gpointer --> gboolean),
   gpointer $user_data,
   GDestroyNotify $notify
 )
@@ -92,7 +94,7 @@ sub gst_bus_peek (GstBus $bus)
   is export
 { * }
 
-sub gst_bus_poll (GstBus $bus, GstMessageType $events, GstClockTime $timeout)
+sub gst_bus_poll (GstBus $bus, guint $events, GstClockTime $timeout)
   returns GstMessage
   is native(gstreamer)
   is export
@@ -106,7 +108,7 @@ sub gst_bus_pop (GstBus $bus)
 
 sub gst_bus_pop_filtered (
   GstBus $bus,
-  GstMessageType $types
+  guint $type # GstMessageType $types
 )
   returns GstMessage
   is native(gstreamer)
@@ -150,7 +152,7 @@ sub gst_bus_sync_signal_handler (
   GstMessage $message,
   gpointer $data
 )
-  returns GstBusSyncReply
+  returns guint # GstBusSyncReply
   is native(gstreamer)
   is export
 { * }
@@ -164,7 +166,7 @@ sub gst_bus_timed_pop (GstBus $bus, GstClockTime $timeout)
 sub gst_bus_timed_pop_filtered (
   GstBus $bus,
   GstClockTime $timeout,
-  GstMessageType $types
+  guint $type # GstMessageType $types
 )
   returns GstMessage
   is native(gstreamer)

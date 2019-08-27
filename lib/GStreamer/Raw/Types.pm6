@@ -1,5 +1,7 @@
 use v6.c;
 
+use NativeCall;
+
 use GTK::Compat::Types;
 
 unit package GStreamer::Raw::Types;
@@ -10,6 +12,10 @@ sub nocr ($s) is export {
 
 constant GstClockTime     is export := guint32
 constant GstClockTimeDiff is export := int64;
+
+# cw: I now realize, that at some point, ALL of these will have to be functions
+#     to account for the various distributions and OSes out there.
+constant gstreamer is export = 'gstreamer-1.0',v0;
 
 constant GstBusSyncHandler                 is export := Pointer;
 constant GstElementCallAsyncFunc           is export := Pointer;
@@ -43,6 +49,7 @@ class GstBin               is repr('CPointer') does GTK::Roles::Pointers is expo
 class GstBuffer            is repr('CPointer') does GTK::Roles::Pointers is export { }
 class GstBufferList        is repr('CPointer') does GTK::Roles::Pointers is export { }
 class GstBus               is repr('CPointer') does GTK::Roles::Pointers is export { }
+class GstCaps              is repr('CPointer') does GTK::Roles::Pointers is export { }
 class GstChildProxy        is repr('CPointer') does GTK::Roles::Pointers is export { }
 class GstClock             is repr('CPointer') does GTK::Roles::Pointers is export { }
 class GstContext           is repr('CPointer') does GTK::Roles::Pointers is export { }
@@ -178,6 +185,51 @@ our enum GstEventTypeFlags is export (
   GST_EVENT_TYPE_STICKY_MULTI =>  1 +< 4,
 );
 
+constant GST_EVENT_TYPE_BOTH is export = GST_EVENT_TYPE_UPSTREAM +| GST_EVENT_TYPE_DOWNSTREAM;
+
+our enum GstEventType is export (
+  GST_EVENT_UNKNOWN                  => 0,
+
+  # bidirectional events
+  GST_EVENT_FLUSH_START              => 10 +< 8 +| GST_EVENT_TYPE_BOTH,
+  GST_EVENT_FLUSH_STOP               => 20 +< 8 +| GST_EVENT_TYPE_BOTH +| GST_EVENT_TYPE_SERIALIZED.Int,
+
+  # downstream serialized events
+  GST_EVENT_STREAM_START             => 40  +< 8 +| GST_EVENT_TYPE_DOWNSTREAM.Int +| GST_EVENT_TYPE_SERIALIZED.Int +| GST_EVENT_TYPE_STICKY.Int,
+  GST_EVENT_CAPS                     => 50  +< 8 +| GST_EVENT_TYPE_DOWNSTREAM.Int +| GST_EVENT_TYPE_SERIALIZED.Int +| GST_EVENT_TYPE_STICKY.Int,
+  GST_EVENT_SEGMENT                  => 70  +< 8 +| GST_EVENT_TYPE_DOWNSTREAM.Int +| GST_EVENT_TYPE_SERIALIZED.Int +| GST_EVENT_TYPE_STICKY.Int,
+  GST_EVENT_STREAM_COLLECTION        => 75  +< 8 +| GST_EVENT_TYPE_DOWNSTREAM.Int +| GST_EVENT_TYPE_SERIALIZED.Int +| GST_EVENT_TYPE_STICKY.Int +| GST_EVENT_TYPE_STICKY_MULTI.Int,
+  GST_EVENT_TAG                      => 80  +< 8 +| GST_EVENT_TYPE_DOWNSTREAM.Int +| GST_EVENT_TYPE_SERIALIZED.Int +| GST_EVENT_TYPE_STICKY.Int +| GST_EVENT_TYPE_STICKY_MULTI.Int,
+  GST_EVENT_BUFFERSIZE               => 90  +< 8 +| GST_EVENT_TYPE_DOWNSTREAM.Int +| GST_EVENT_TYPE_SERIALIZED.Int +| GST_EVENT_TYPE_STICKY.Int,
+  GST_EVENT_SINK_MESSAGE             => 100 +< 8 +| GST_EVENT_TYPE_DOWNSTREAM.Int +| GST_EVENT_TYPE_SERIALIZED.Int +| GST_EVENT_TYPE_STICKY.Int +| GST_EVENT_TYPE_STICKY_MULTI.Int,
+  GST_EVENT_STREAM_GROUP_DONE        => 105 +< 8 +| GST_EVENT_TYPE_DOWNSTREAM.Int +| GST_EVENT_TYPE_SERIALIZED.Int +| GST_EVENT_TYPE_STICKY.Int,
+  GST_EVENT_EOS                      => 110 +< 8 +| GST_EVENT_TYPE_DOWNSTREAM.Int +| GST_EVENT_TYPE_SERIALIZED.Int +| GST_EVENT_TYPE_STICKY.Int,
+  GST_EVENT_TOC                      => 120 +< 8 +| GST_EVENT_TYPE_DOWNSTREAM.Int +| GST_EVENT_TYPE_SERIALIZED.Int +| GST_EVENT_TYPE_STICKY.Int +| GST_EVENT_TYPE_STICKY_MULTI.Int,
+  GST_EVENT_PROTECTION               => 130 +< 8 +| GST_EVENT_TYPE_DOWNSTREAM.Int +| GST_EVENT_TYPE_SERIALIZED.Int +| GST_EVENT_TYPE_STICKY.Int +| GST_EVENT_TYPE_STICKY_MULTI.Int,
+
+  # non-sticky downstream serialized
+  GST_EVENT_SEGMENT_DONE             => 150 +< 8 +| GST_EVENT_TYPE_DOWNSTREAM.Int +| GST_EVENT_TYPE_SERIALIZED.Int,
+  GST_EVENT_GAP                      => 160 +< 8 +| GST_EVENT_TYPE_DOWNSTREAM.Int +| GST_EVENT_TYPE_SERIALIZED.Int,
+
+  # upstream events
+  GST_EVENT_QOS                      => 190 +< 8 +| GST_EVENT_TYPE_UPSTREAM.Int,
+  GST_EVENT_SEEK                     => 200 +< 8 +| GST_EVENT_TYPE_UPSTREAM.Int,
+  GST_EVENT_NAVIGATION               => 210 +< 8 +| GST_EVENT_TYPE_UPSTREAM.Int,
+  GST_EVENT_LATENCY                  => 220 +< 8 +| GST_EVENT_TYPE_UPSTREAM.Int,
+  GST_EVENT_STEP                     => 230 +< 8 +| GST_EVENT_TYPE_UPSTREAM.Int,
+  GST_EVENT_RECONFIGURE              => 240 +< 8 +| GST_EVENT_TYPE_UPSTREAM.Int,
+  GST_EVENT_TOC_SELECT               => 250 +< 8 +| GST_EVENT_TYPE_UPSTREAM.Int,
+  GST_EVENT_SELECT_STREAMS           => 260 +< 8 +| GST_EVENT_TYPE_UPSTREAM.Int,
+
+  # custom events start here
+  GST_EVENT_CUSTOM_UPSTREAM          => 270 +< 8 +| GST_EVENT_TYPE_UPSTREAM.Int,
+  GST_EVENT_CUSTOM_DOWNSTREAM        => 280 +< 8 +| GST_EVENT_TYPE_DOWNSTREAM.Int +| GST_EVENT_TYPE_SERIALIZED.Int,
+  GST_EVENT_CUSTOM_DOWNSTREAM_OOB    => 290 +< 8 +| GST_EVENT_TYPE_DOWNSTREAM.Int,
+  GST_EVENT_CUSTOM_DOWNSTREAM_STICKY => 300 +< 8 +| GST_EVENT_TYPE_DOWNSTREAM.Int +| GST_EVENT_TYPE_SERIALIZED.Int +| GST_EVENT_TYPE_STICKY.Int +| GST_EVENT_TYPE_STICKY_MULTI.Int,
+  GST_EVENT_CUSTOM_BOTH              => 310 +< 8 +| GST_EVENT_TYPE_BOTH           +| GST_EVENT_TYPE_SERIALIZED.Int,
+  GST_EVENT_CUSTOM_BOTH_OOB          => 320 +< 8 +| GST_EVENT_TYPE_BOTH
+);
+
 our enum GstFormat is export (
   GST_FORMAT_UNDEFINED => 0,
   GST_FORMAT_DEFAULT   => 1,
@@ -240,6 +292,52 @@ our enum GstMiniObjectFlags is export (
   GST_MINI_OBJECT_FLAG_LAST          => (1 +< 4)
 );
 
+# C wants gint, but Perl might get confused. At the time of this writing,
+# there are issues with NativeCall and unsigned integers. For now, will
+# treat as UINT32, and will adjust as needed.
+our enum GstMessageType is export (
+  GST_MESSAGE_UNKNOWN           => 0,
+  GST_MESSAGE_EOS               => (1 +< 0),
+  GST_MESSAGE_ERROR             => (1 +< 1),
+  GST_MESSAGE_WARNING           => (1 +< 2),
+  GST_MESSAGE_INFO              => (1 +< 3),
+  GST_MESSAGE_TAG               => (1 +< 4),
+  GST_MESSAGE_BUFFERING         => (1 +< 5),
+  GST_MESSAGE_STATE_CHANGED     => (1 +< 6),
+  GST_MESSAGE_STATE_DIRTY       => (1 +< 7),
+  GST_MESSAGE_STEP_DONE         => (1 +< 8),
+  GST_MESSAGE_CLOCK_PROVIDE     => (1 +< 9),
+  GST_MESSAGE_CLOCK_LOST        => (1 +< 10),
+  GST_MESSAGE_NEW_CLOCK         => (1 +< 11),
+  GST_MESSAGE_STRUCTURE_CHANGE  => (1 +< 12),
+  GST_MESSAGE_STREAM_STATUS     => (1 +< 13),
+  GST_MESSAGE_APPLICATION       => (1 +< 14),
+  GST_MESSAGE_ELEMENT           => (1 +< 15),
+  GST_MESSAGE_SEGMENT_START     => (1 +< 16),
+  GST_MESSAGE_SEGMENT_DONE      => (1 +< 17),
+  GST_MESSAGE_DURATION_CHANGED  => (1 +< 18),
+  GST_MESSAGE_LATENCY           => (1 +< 19),
+  GST_MESSAGE_ASYNC_START       => (1 +< 20),
+  GST_MESSAGE_ASYNC_DONE        => (1 +< 21),
+  GST_MESSAGE_REQUEST_STATE     => (1 +< 22),
+  GST_MESSAGE_STEP_START        => (1 +< 23),
+  GST_MESSAGE_QOS               => (1 +< 24),
+  GST_MESSAGE_PROGRESS          => (1 +< 25),
+  GST_MESSAGE_TOC               => (1 +< 26),
+  GST_MESSAGE_RESET_TIME        => (1 +< 27),
+  GST_MESSAGE_STREAM_START      => (1 +< 28),
+  GST_MESSAGE_NEED_CONTEXT      => (1 +< 29),
+  GST_MESSAGE_HAVE_CONTEXT      => (1 +< 30),
+  GST_MESSAGE_EXTENDED          => (1 +< 31),
+  GST_MESSAGE_DEVICE_ADDED      => (1 +< 31) + 1,
+  GST_MESSAGE_DEVICE_REMOVED    => (1 +< 31) + 2,
+  GST_MESSAGE_PROPERTY_NOTIFY   => (1 +< 31) + 3,
+  GST_MESSAGE_STREAM_COLLECTION => (1 +< 31) + 4,
+  GST_MESSAGE_STREAMS_SELECTED  => (1 +< 31) + 5,
+  GST_MESSAGE_REDIRECT          => (1 +< 31) + 6,
+  GST_MESSAGE_DEVICE_CHANGED    => (1 +< 31) + 7,
+  GST_MESSAGE_ANY               => 0xffffffff
+);
 
 our enum GstPadDirection is export <
   GST_PAD_UNKNOWN
@@ -343,10 +441,37 @@ our enum GstSearchMode is export (
   'GST_SEARCH_MODE_AFTER'
 );
 
+our enum GstSeekFlags is export (
+  GST_SEEK_FLAG_NONE                        => 0,
+  GST_SEEK_FLAG_FLUSH                       => 1,
+  GST_SEEK_FLAG_ACCURATE                    => (1 +< 1),
+  GST_SEEK_FLAG_KEY_UNIT                    => (1 +< 2),
+  GST_SEEK_FLAG_SEGMENT                     => (1 +< 3),
+  GST_SEEK_FLAG_TRICKMODE                   => (1 +< 4),
+  GST_SEEK_FLAG_SKIP                        => (1 +< 4),
+  GST_SEEK_FLAG_SNAP_BEFORE                 => (1 +< 5),
+  GST_SEEK_FLAG_SNAP_AFTER                  => (1 +< 6),
+  GST_SEEK_FLAG_SNAP_NEAREST                => (1 +< 5) +| (1 +< 6),
+  GST_SEEK_FLAG_TRICKMODE_KEY_UNITS         => (1 +< 7),
+  GST_SEEK_FLAG_TRICKMODE_NO_AUDIO          => (1 +< 8),
+  GST_SEEK_FLAG_TRICKMODE_FORWARD_PREDICTED => (1 +< 9),
+);
+
+our enum GstSegmentFlags is export (
+  GST_SEGMENT_FLAG_NONE                        => GST_SEEK_FLAG_NONE.Int,
+  GST_SEGMENT_FLAG_RESET                       => GST_SEEK_FLAG_FLUSH.Int,
+  GST_SEGMENT_FLAG_TRICKMODE                   => GST_SEEK_FLAG_TRICKMODE.Int,
+  GST_SEGMENT_FLAG_SKIP                        => GST_SEEK_FLAG_TRICKMODE.Int,
+  GST_SEGMENT_FLAG_SEGMENT                     => GST_SEEK_FLAG_SEGMENT.Int,
+  GST_SEGMENT_FLAG_TRICKMODE_KEY_UNITS         => GST_SEEK_FLAG_TRICKMODE_KEY_UNITS.Int,
+  GST_SEGMENT_FLAG_TRICKMODE_FORWARD_PREDICTED => GST_SEEK_FLAG_TRICKMODE_FORWARD_PREDICTED.Int,
+  GST_SEGMENT_FLAG_TRICKMODE_NO_AUDIO          => GST_SEEK_FLAG_TRICKMODE_NO_AUDIO.Int
+);
+
 our enum GstSeekType is export (
-  GST_SEEK_TYPE_NONE =>  0,
-  GST_SEEK_TYPE_SET =>  1,
-  GST_SEEK_TYPE_END =>  2,
+  GST_SEEK_TYPE_NONE => 0,
+  GST_SEEK_TYPE_SET  => 1,
+  GST_SEEK_TYPE_END  => 2,
 );
 
 our enum GstStackTraceFlags is export (
@@ -355,17 +480,31 @@ our enum GstStackTraceFlags is export (
 
 our enum GstState is export (
   GST_STATE_VOID_PENDING =>  0,
-  GST_STATE_NULL =>  1,
-  GST_STATE_READY =>  2,
-  GST_STATE_PAUSED =>  3,
-  GST_STATE_PLAYING =>  4,
+  GST_STATE_NULL         =>  1,
+  GST_STATE_READY        =>  2,
+  GST_STATE_PAUSED       =>  3,
+  GST_STATE_PLAYING      =>  4,
 );
 
+our enum GstStateChange is export (
+  GST_STATE_CHANGE_NULL_TO_READY      => (GST_STATE_NULL.Int    +< 3) +| GST_STATE_READY.Int,
+  GST_STATE_CHANGE_READY_TO_PAUSED    => (GST_STATE_READY.Int   +< 3) +| GST_STATE_PAUSED.Int,
+  GST_STATE_CHANGE_PAUSED_TO_PLAYING  => (GST_STATE_PAUSED.Int  +< 3) +| GST_STATE_PLAYING.Int,
+  GST_STATE_CHANGE_PLAYING_TO_PAUSED  => (GST_STATE_PLAYING.Int +< 3) +| GST_STATE_PAUSED.Int,
+  GST_STATE_CHANGE_PAUSED_TO_READY    => (GST_STATE_PAUSED.Int  +< 3) +| GST_STATE_READY.Int,
+  GST_STATE_CHANGE_READY_TO_NULL      => (GST_STATE_READY.Int   +< 3) +| GST_STATE_NULL.Int,
+  GST_STATE_CHANGE_NULL_TO_NULL       => (GST_STATE_NULL.Int    +< 3) +| GST_STATE_NULL.Int,
+  GST_STATE_CHANGE_READY_TO_READY     => (GST_STATE_READY.Int   +< 3) +| GST_STATE_READY.Int,
+  GST_STATE_CHANGE_PAUSED_TO_PAUSED   => (GST_STATE_PAUSED.Int  +< 3) +| GST_STATE_PAUSED.Int,
+  GST_STATE_CHANGE_PLAYING_TO_PLAYING => (GST_STATE_PLAYING.Int +< 3) +| GST_STATE_PLAYING.Int
+);
+
+
 our enum GstStateChangeReturn is export (
-  GST_STATE_CHANGE_FAILURE =>  0,
-  GST_STATE_CHANGE_SUCCESS =>  1,
-  GST_STATE_CHANGE_ASYNC =>  2,
-  GST_STATE_CHANGE_NO_PREROLL =>  3,
+  GST_STATE_CHANGE_FAILURE    => 0,
+  GST_STATE_CHANGE_SUCCESS    => 1,
+  GST_STATE_CHANGE_ASYNC      => 2,
+  GST_STATE_CHANGE_NO_PREROLL => 3,
 );
 
 our enum GstStreamError is export (
@@ -386,26 +525,26 @@ our enum GstStreamError is export (
 );
 
 our enum GstStreamStatusType is export (
-  GST_STREAM_STATUS_TYPE_CREATE =>  0,
-  GST_STREAM_STATUS_TYPE_ENTER =>  1,
-  GST_STREAM_STATUS_TYPE_LEAVE =>  2,
-  GST_STREAM_STATUS_TYPE_DESTROY =>  3,
-  GST_STREAM_STATUS_TYPE_START =>  8,
-  GST_STREAM_STATUS_TYPE_PAUSE =>  9,
-  GST_STREAM_STATUS_TYPE_STOP =>  10,
+  GST_STREAM_STATUS_TYPE_CREATE  => 0,
+  GST_STREAM_STATUS_TYPE_ENTER   => 1,
+  GST_STREAM_STATUS_TYPE_LEAVE   => 2,
+  GST_STREAM_STATUS_TYPE_DESTROY => 3,
+  GST_STREAM_STATUS_TYPE_START   => 8,
+  GST_STREAM_STATUS_TYPE_PAUSE   => 9,
+  GST_STREAM_STATUS_TYPE_STOP    => 10,
 );
 
 our enum GstStreamType is export (
-  GST_STREAM_TYPE_UNKNOWN =>  1 +< 0,
-  GST_STREAM_TYPE_AUDIO =>  1 +< 1,
-  GST_STREAM_TYPE_VIDEO =>  1 +< 2,
-  GST_STREAM_TYPE_CONTAINER =>  1 +< 3,
-  GST_STREAM_TYPE_TEXT =>  1 +< 4,
+  GST_STREAM_TYPE_UNKNOWN   => 1 +< 0,
+  GST_STREAM_TYPE_AUDIO     => 1 +< 1,
+  GST_STREAM_TYPE_VIDEO     => 1 +< 2,
+  GST_STREAM_TYPE_CONTAINER => 1 +< 3,
+  GST_STREAM_TYPE_TEXT      => 1 +< 4,
 );
 
 our enum GstStructureChangeType is export (
-  GST_STRUCTURE_CHANGE_TYPE_PAD_LINK =>  0,
-  GST_STRUCTURE_CHANGE_TYPE_PAD_UNLINK =>  1,
+  GST_STRUCTURE_CHANGE_TYPE_PAD_LINK   => 0,
+  GST_STRUCTURE_CHANGE_TYPE_PAD_UNLINK => 1,
 );
 
 our enum GstTagFlag is export <
@@ -446,8 +585,8 @@ our enum GstTocLoopType is export (
 );
 
 our enum GstTocScope is export (
-  GST_TOC_SCOPE_GLOBAL =>  1,
-  GST_TOC_SCOPE_CURRENT =>  2,
+  GST_TOC_SCOPE_GLOBAL  => 1,
+  GST_TOC_SCOPE_CURRENT => 2,
 );
 
 our enum GstTracerValueScope is export <
@@ -458,12 +597,12 @@ our enum GstTracerValueScope is export <
 >;
 
 our enum GstTypeFindProbability is export (
-  GST_TYPE_FIND_NONE =>  0,
-  GST_TYPE_FIND_MINIMUM =>  1,
-  GST_TYPE_FIND_POSSIBLE =>  50,
-  GST_TYPE_FIND_LIKELY =>  80,
-  GST_TYPE_FIND_NEARLY_CERTAIN =>  99,
-  GST_TYPE_FIND_MAXIMUM =>  100,
+  GST_TYPE_FIND_NONE           => 0,
+  GST_TYPE_FIND_MINIMUM        => 1,
+  GST_TYPE_FIND_POSSIBLE       => 50,
+  GST_TYPE_FIND_LIKELY         => 80,
+  GST_TYPE_FIND_NEARLY_CERTAIN => 99,
+  GST_TYPE_FIND_MAXIMUM        => 100,
 );
 
 our enum GstURIError is export <
@@ -554,3 +693,11 @@ class GstMessage is repr<CStruct> does GTK::Roles::Pointers is export {
   }
 
 };
+
+# Modification is currently NYI.
+class GstFormatDefinition is repr<CStruct>     does GTK::Roles::Pointers is export {
+  has guint  $.value; # GstFormat
+  has Str    $.nick;
+  has Str    $.description;
+  has GQuark $.quark;
+}

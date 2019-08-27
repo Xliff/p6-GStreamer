@@ -1,5 +1,7 @@
 use v6.c;
 
+use NativeCall;
+
 use GTK::Compat::Types;
 use GStreamer::Raw::Types;
 
@@ -41,8 +43,11 @@ sub gst_element_call_async (
   is export
 { * }
 
-sub gst_element_change_state (GstElement $element, GstStateChange $transition)
-  returns GstStateChangeReturn
+sub gst_element_change_state (
+  GstElement $element,
+  guint $transition # GstStateChange $transition
+)
+  returns guint # GstStateChangeReturn
   is native(gstreamer)
   is export
 { * }
@@ -140,9 +145,9 @@ sub gst_element_change_state (GstElement $element, GstStateChange $transition)
 
 sub gst_element_continue_state (
   GstElement $element,
-  GstStateChangeReturn $ret
+  guint $ret # GstStateChangeReturn $ret
 )
-  returns GstStateChangeReturn
+  returns guint # GstStateChangeReturn
   is native(gstreamer)
   is export
 { * }
@@ -251,11 +256,11 @@ sub gst_element_get_start_time (GstElement $element)
 
 sub gst_element_get_state (
   GstElement $element,
-  GstState $state,
-  GstState $pending,
+  guint $state,   # GstState $state,
+  guint $pending, # GstState $pending,
   GstClockTime $timeout
 )
-  returns GstStateChangeReturn
+  returns guint   # GstStateChangeReturn
   is native(gstreamer)
   is export
 { * }
@@ -303,7 +308,7 @@ sub gst_element_lost_state (GstElement $element)
 
 sub gst_element_message_full (
   GstElement $element,
-  GstMessageType $type,
+  guint $type, # GstMessageType $type
   GQuark $domain,
   gint $code,
   Str $text,
@@ -318,7 +323,7 @@ sub gst_element_message_full (
 
 sub gst_element_message_full_with_details (
   GstElement $element,
-  GstMessageType $type,
+  guint $type, # GstMessageType $type
   GQuark $domain,
   gint $code,
   Str $text,
@@ -388,11 +393,11 @@ sub gst_element_request_pad (
 sub gst_element_seek (
   GstElement $element,
   gdouble $rate,
-  GstFormat $format,
-  GstSeekFlags $flags,
-  GstSeekType $start_type,
+  guint $format,       # GstFormat $format,
+  guint $flags,        # GstSeekFlags $flags,
+  guint $start_type,   # GstSeekType $start_type,
   gint64 $start,
-  GstSeekType $stop_type,
+  guint $stop_type,    # GstSeekType $stop_type,
   gint64 $stop
 )
   returns uint32
@@ -438,8 +443,11 @@ sub gst_element_set_start_time (GstElement $element, GstClockTime $time)
   is export
 { * }
 
-sub gst_element_set_state (GstElement $element, GstState $state)
-  returns GstStateChangeReturn
+sub gst_element_set_state (
+  GstElement $element,
+  guint $state # GstState $state
+)
+  returns guint # GstStateChangeReturn
   is native(gstreamer)
   is export
 { * }

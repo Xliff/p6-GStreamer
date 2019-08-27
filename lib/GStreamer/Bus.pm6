@@ -130,8 +130,8 @@ class GStreamer::Bus is GStreamer::Object {
   }
 
   method poll (
-    GstMessageType $events,
-    GstClockTime $timeout,
+    Int() $events,   # GstMessageType $events,
+    Int() $timeout,
     :$raw = False
   ) {
     gst_bus_poll($!b, $events, $timeout);
@@ -143,7 +143,10 @@ class GStreamer::Bus is GStreamer::Object {
     # ADD OBJECT CREATION CODE
   }
 
-  method pop_filtered (GstMessageType $types, :$raw = False)
+  method pop_filtered (
+    Int() $types,    # GstMessageType $types,
+    :$raw = False
+  )
     is also<pop-filtered>
   {
     gst_bus_pop_filtered($!b, $types);
@@ -185,7 +188,10 @@ class GStreamer::Bus is GStreamer::Object {
     gst_bus_sync_signal_handler($!b, $message, $data);
   }
 
-  method timed_pop (GstClockTime $timeout, :$raw = False)
+  method timed_pop (
+    Int() $timeouot, # GstClockTime $timeout,
+    :$raw = False
+  )
     is also<timed-pop>
   {
     gst_bus_timed_pop($!b, $timeout);
@@ -193,8 +199,8 @@ class GStreamer::Bus is GStreamer::Object {
   }
 
   method timed_pop_filtered (
-    GstClockTime $timeout,
-    GstMessageType $types,
+    Int() $timeout,  # GstClockTime $timeout,
+    Int() $types,    # GstMessageType $types,
     :$raw = False
   )
     is also<timed-pop-filtered>

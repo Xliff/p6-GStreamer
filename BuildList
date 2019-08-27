@@ -1,6 +1,6 @@
-GTK::Compact::Types
 GTK::Compat::Roles::ListData
 GTK::Compat::Types
+GTK::Compat::Value
 GTK::Raw::Utils
 Method::Also
 GStreamer::Raw::Types
@@ -9,8 +9,10 @@ GStreamer::Raw::Bus
 GStreamer::Raw::ChildProxy
 GStreamer::Raw::Element
 GStreamer::Raw::ElementFactory
+GStreamer::Raw::Format
 GStreamer::Raw::Iterator
 GStreamer::Raw::Main
+GStreamer::Raw::Message
 GStreamer::Raw::Object
 GStreamer::Raw::Pad
 GStreamer::Raw::Pipeline
@@ -20,6 +22,7 @@ GStreamer::Roles::ChildProxy
 GStreamer::Bin
 GStreamer::Iterator
 GStreamer::Main
+GStreamer::Message
 GStreamer::Object
 GStreamer::Pad
 GStreamer::Pipeline
@@ -28,3 +31,4 @@ GStreamer::PluginFeature
 GStreamer::Bus
 GStreamer::Element
 GStreamer::ElementFactory
+GStreamer::Format

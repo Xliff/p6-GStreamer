@@ -80,7 +80,7 @@ sub gst_message_new_clock_provide (
 { * }
 
 sub gst_message_new_custom (
-  GstMessageType $type,
+  guint $type, # GstMessageType $type
   GstObject $src,
   GstStructure $structure
 )
@@ -788,13 +788,17 @@ sub gst_message_streams_selected_get_stream (GstMessage $message, guint $idx)
   is export
 { * }
 
-sub gst_message_type_get_name (GstMessageType $type)
+sub gst_message_type_get_name (
+  guint $type # GstMessageType $type
+)
   returns Str
   is native(gstreamer)
   is export
 { * }
 
-sub gst_message_type_to_quark (GstMessageType $type)
+sub gst_message_type_to_quark (
+  guint $type # GstMessageType $type
+)
   returns GQuark
   is native(gstreamer)
   is export

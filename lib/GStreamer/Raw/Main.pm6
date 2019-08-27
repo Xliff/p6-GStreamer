@@ -1,6 +1,8 @@
 use v6.c;
 
-use GTK::Compact::Types;
+use NativeCall;
+
+use GTK::Compat::Types;
 use GStreamer::Raw::Types;
 
 unit package GStreamer::Raw::Main;

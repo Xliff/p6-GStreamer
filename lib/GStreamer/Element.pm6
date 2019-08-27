@@ -8,6 +8,8 @@ use GStreamer::Raw::Element;
 use GStreamer::Raw::Utils;
 
 use GStreamer::Object;
+use GStreamer::Bus;
+use GStreamer::Pad;
 
 use GStreamer::Roles::Signals::Element;
 
@@ -72,17 +74,21 @@ class GStreamer::Element is GStreamer::Object {
 
   # add-property(..., :notify, :deep) ?
   method add_property_deep_notify_watch (
-    Str $property_name,
-    gboolean $include_value
+    Str() $property_name,
+    Int() $include_value
   )
     is also<add-property-deep-notify-watch>
   {
-    gst_element_add_property_deep_notify_watch($!e, $property_name, $include_value);
+    gst_element_add_property_deep_notify_watch(
+      $!e,
+      $property_name,
+      $include_value
+    );
   }
 
   method add_property_notify_watch (
-    Str $property_name,
-    gboolean $include_value
+    Str() $property_name,
+    Int() $include_value
   )
     is also<add-property-notify-watch>
   {
@@ -99,11 +105,19 @@ class GStreamer::Element is GStreamer::Object {
     gst_element_call_async($!e, $func, $user_data, $destroy_notify);
   }
 
-  method change_state (GstStateChange $transition) is also<change-state> {
+  method change_state (
+    Int() $transition # GstStateChange $transition
+  )
+    is also<change-state>
+  {
     gst_element_change_state($!e, $transition);
   }
 
-  method continue_state (GstStateChangeReturn $ret) is also<continue-state> {
+  method continue_state (
+    Int() $ret       # GstStateChangeReturn $ret
+  )
+    is also<continue-state>
+  {
     gst_element_continue_state($!e, $ret);
   }
 
@@ -138,46 +152,75 @@ class GStreamer::Element is GStreamer::Object {
     gst_element_get_base_time($!e);
   }
 
-  method get_bus is also<get-bus> {
-    gst_element_get_bus($!e);
+  method get_bus (:$raw = False) is also<get-bus> {
+    my $b = gst_element_get_bus($!e);
+
+    $b ??
+      ( $raw ?? $b !! GST::Bus.new($b) )
+      !!
+      Nil;
   }
 
   method get_clock is also<get-clock> {
     gst_element_get_clock($!e);
+    # ADD OBJECT CREATION
   }
 
   method get_context (Str $context_type) is also<get-context> {
     gst_element_get_context($!e, $context_type);
+    # ADD OBJECT CREATION
   }
 
   method get_context_unlocked (Str $context_type)
     is also<get-context-unlocked>
   {
     gst_element_get_context_unlocked($!e, $context_type);
+    # ADD OBJECT CREATION
   }
 
   method get_contexts is also<get-contexts> {
     gst_element_get_contexts($!e);
+    # ADD OBJECT CREATION
   }
 
-  method get_factory is also<get-factory> {
-    gst_element_get_factory($!e);
+  method get_factory (:$raw = False) is also<get-factory> {
+    my $f = gst_element_get_factory($!e);
+
+    $f ??
+      ( $raw ?? $f !! ::('GST::ElementFactory').new($f) )
+      !!
+      Nil;
   }
 
-  method get_metadata (Str $key) is also<get-metadata> {
+  method get_metadata (Str() $key) is also<get-metadata> {
     gst_element_get_metadata($!e, $key);
   }
 
-  method get_pad_template (Str $name) is also<get-pad-template> {
+  method get_pad_template (Str() $name) is also<get-pad-template> {
     gst_element_get_pad_template($!e, $name);
+    # ADD OBJECT CREATION
   }
 
-  method get_pad_template_list is also<get-pad-template-list> {
-    gst_element_get_pad_template_list($!e);
+  method get_pad_template_list (:$raw = False)
+    is also<get-pad-template-list>
+  {
+    my $tl = gst_element_get_pad_template_list($!e)
+      but
+      GTK::Compat::Roles::ListData[GstPadTemplate];
+
+    # ADD OBJECT CREATION
+    $tl;
   }
 
-  method get_request_pad (Str $name) is also<get-request-pad> {
-    gst_element_get_request_pad($!e, $name);
+  method get_request_pad (Str() $name, :$raw = False)
+    is also<get-request-pad>
+  {
+    my $p = gst_element_get_request_pad($!e, $name);
+
+    $p ??
+      ( $raw ?? $p !! GStreamer::Pad.new($p) )
+      !!
+      Nil;
   }
 
   method get_start_time is also<get-start-time> {
@@ -194,7 +237,7 @@ class GStreamer::Element is GStreamer::Object {
     gst_element_get_state($!e, $state, $pending, $timeout);
   }
 
-  method get_static_pad (Str $name) is also<get-static-pad> {
+  method get_static_pad (Str() $name) is also<get-static-pad> {
     gst_element_get_static_pad($!e, $name);
   }
 
@@ -239,14 +282,14 @@ class GStreamer::Element is GStreamer::Object {
   }
 
   method message_full (
-    GstMessageType $type,
+    Int() $type,
     GQuark $domain,
-    gint $code,
-    Str $text,
-    Str $debug,
-    Str $file,
-    Str $function,
-    gint $line
+    Int() $code,     # gint $code,
+    Str() $text,
+    Str() $debug,
+    Str() $file,
+    Str() $function,
+    Int() $line      # gint $line
   )
     is also<message-full>
   {
@@ -264,15 +307,15 @@ class GStreamer::Element is GStreamer::Object {
   }
 
   method message_full_with_details (
-    GstMessageType $type,
+    Int() $type,
     GQuark $domain,
-    gint $code,
-    Str $text,
-    Str $debug,
-    Str $file,
-    Str $function,
-    gint $line,
-    GstStructure $structure
+    Int() $code,
+    Str() $text,
+    Str() $debug,
+    Str() $file,
+    Str() $function,
+    Int() $line,
+    GstStructure() $structure
   )
     is also<message-full-with-details>
   {
@@ -302,7 +345,7 @@ class GStreamer::Element is GStreamer::Object {
     gst_element_provide_clock($!e);
   }
 
-  method query (GstQuery $query) {
+  method query (GstQuery() $query) {
     gst_element_query($!e, $query);
   }
 
@@ -314,26 +357,32 @@ class GStreamer::Element is GStreamer::Object {
     gst_element_remove_pad($!e, $pad);
   }
 
-  method remove_property_notify_watch (gulong $watch_id)
+  method remove_property_notify_watch (
+    Int() $watch_id # gulong $watch_id
+  )
     is also<remove-property-notify-watch>
   {
     gst_element_remove_property_notify_watch($!e, $watch_id);
   }
 
-  method request_pad (GstPadTemplate $templ, Str $name, GstCaps $caps)
+  method request_pad (
+    GstPadTemplate() $templ,
+    Str() $name,
+    GstCaps() $caps
+  )
     is also<request-pad>
   {
     gst_element_request_pad($!e, $templ, $name, $caps);
   }
 
   method seek (
-    gdouble $rate,
-    GstFormat $format,
-    GstSeekFlags $flags,
-    GstSeekType $start_type,
-    gint64 $start,
-    GstSeekType $stop_type,
-    gint64 $stop
+    Num() $rate,       # gdouble
+    GstFormat() $format,
+    Int() $flags,      # GstSeekFlags $flags,
+    Int() $start_type, # GstSeekType $start_type,
+    Int() $start,      # uint64
+    Int() $stop_type,  # GstSeekType $stop_type,
+    Int() $stop        # uint64
   ) {
     gst_element_seek(
       $!e,
@@ -351,7 +400,11 @@ class GStreamer::Element is GStreamer::Object {
     gst_element_send_event($!e, $event);
   }
 
-  method set_base_time (GstClockTime $time) is also<set-base-time> {
+  method set_base_time (
+    Int() $time      # GstClockTime $time
+  )
+    is also<set-base-time>
+  {
     gst_element_set_base_time($!e, $time);
   }
 
@@ -367,15 +420,23 @@ class GStreamer::Element is GStreamer::Object {
     gst_element_set_context($!e, $context);
   }
 
-  method set_locked_state (gboolean $locked_state) is also<set-locked-state> {
+  method set_locked_state (Int() $locked_state) is also<set-locked-state> {
     gst_element_set_locked_state($!e, $locked_state);
   }
 
-  method set_start_time (GstClockTime $time) is also<set-start-time> {
+  method set_start_time (
+    Int() $time      # GstClockTime $time
+  )
+    is also<set-start-time>
+  {
     gst_element_set_start_time($!e, $time);
   }
 
-  method set_state (GstState $state) is also<set-state> {
+  method set_state (
+    Int() $state     # GstState $state
+  )
+    is also<set-state>
+  {
     gst_element_set_state($!e, $state);
   }
 
