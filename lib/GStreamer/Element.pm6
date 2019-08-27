@@ -13,7 +13,7 @@ use GStreamer::Pad;
 
 use GStreamer::Roles::Signals::Element;
 
-our ElementAncestry is export of Mu
+our subset ElementAncestry is export of Mu
   where GstElement | GstObject;
 
 class GStreamer::Element is GStreamer::Object {
@@ -22,7 +22,7 @@ class GStreamer::Element is GStreamer::Object {
   has GstElement $!e;
 
   submethod BUILD (ElementAncestry :$element) {
-    self.setGStreamerElement($elefment) if $element;
+    self.setGStreamerElement($element) if $element;
   }
 
   method setGStreamerElement(ElementAncestry $_) {
@@ -30,7 +30,7 @@ class GStreamer::Element is GStreamer::Object {
 
     $!e = do  {
       when GstElement {
-        $to-parent = cast(GstObject, $element);
+        $to-parent = cast(GstObject, $_);
         $_;
       }
 
@@ -48,19 +48,19 @@ class GStreamer::Element is GStreamer::Object {
 
   # Is originally:
   # GstElement, gpointer --> void
-  method no-more-pads {
+  method no-more-pads is also<no_more_pads> {
     self.connect($!e, 'no-more-pads');
   }
 
   # Is originally:
   # GstElement, GstPad, gpointer --> void
-  method pad-added {
+  method pad-added is also<pad_added> {
     self.connect-pad($!e, 'pad-added');
   }
 
   # Is originally:
   # GstElement, GstPad, gpointer --> void
-  method pad-removed {
+  method pad-removed is also<pad_removed> {
     self.connect-pad($!e, 'pad-removed');
   }
 
@@ -254,7 +254,7 @@ class GStreamer::Element is GStreamer::Object {
     my $p = gst_element_iterate_pads($!e);
 
     $p ??
-      ( $raw ?? $p ?? GStreamer::Iterator.new($p) )
+      ( $raw ?? $p !! GStreamer::Iterator.new($p) )
       !!
       Nil;
   }
@@ -263,7 +263,7 @@ class GStreamer::Element is GStreamer::Object {
     my $sp = gst_element_iterate_sink_pads($!e);
 
     $sp ??
-      ( $raw ?? $sp ?? GStreamer::Iterator.new($sp) )
+      ( $raw ?? $sp !! GStreamer::Iterator.new($sp) )
       !!
       Nil;
   }
@@ -272,7 +272,7 @@ class GStreamer::Element is GStreamer::Object {
     my $sp = gst_element_iterate_src_pads($!e);
 
     $sp ??
-      ( $raw ?? $sp ?? GStreamer::Iterator.new($sp) )
+      ( $raw ?? $sp !! GStreamer::Iterator.new($sp) )
       !!
       Nil;
   }
@@ -333,7 +333,7 @@ class GStreamer::Element is GStreamer::Object {
     );
   }
 
-  method no_more_pads is also<no-more-pads> {
+  method emit_no_more_pads is also<emit-no-more-pads> {
     gst_element_no_more_pads($!e);
   }
 

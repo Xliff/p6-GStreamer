@@ -9,7 +9,7 @@ use GStreamer::Raw::Pipeline;
 use GStreamer::Bin;
 
 our subset PipelineAncestry is export of Mu
-  where GstPipeline | BinAncestry
+  where GstPipeline | BinAncestry;
 
 class GStreamer::Pipeline is GStreamer::Bin {
   has GstPipeline $!p;
@@ -40,10 +40,10 @@ class GStreamer::Pipeline is GStreamer::Bin {
   { $!p }
 
   multi method new (GstPipeline $pipeline) {
-    self.bless( :$pipeline ):
+    self.bless( :$pipeline );
   }
-  multi method new {
-    self.bless( pipeline => gst_pipeline_new() );
+  multi method new (Str() $name) {
+    self.bless( pipeline => gst_pipeline_new($name) );
   }
 
   method auto_flush_bus is rw is also<auto-flush-bus> {

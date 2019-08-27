@@ -6,6 +6,10 @@ use GTK::Compat::Types;
 use GStreamer::Raw::Types;
 use GStreamer::Raw::PluginFeature;
 
+use GTK::Compat::GList;
+
+use GStreamer::Object;
+
 our subset PluginFeatureAncestry is export of Mu
   where GstPluginFeature | GstObject;
 
@@ -95,39 +99,41 @@ class GStreamer::PluginFeature is GStreamer::Object {
     unstable_get_type( self.^name, &gst_plugin_feature_get_type, $n, $t );
   }
 
-  method list_copy
+  method list_copy (
+    GStreamer::PluginFeature:U:
+    GList() $list,
+    :$raw = False
+  )
     is also<
       list-copy
       copy
     >
   {
-    gst_plugin_feature_list_copy($!pf);
+    my $l = gst_plugin_feature_list_copy($list);
+
+    $l ??
+      ( $raw ?? $l !! GTK::Compat::GList.new($list) )
+      !!
+      Nil;
   }
 
-  method list_debug
+  method list_debug (
+    GStreamer::PluginFeature:U:
+    GList() $list
+  )
     is also<
       list-debug
       debug
     >
   {
-    gst_plugin_feature_list_debug($!pf);
+    gst_plugin_feature_list_debug($list);
   }
 
-  proto method list_free (|)
-    is also<
-      list-free
-      free
-    >
-  { * }
-
-  multi method list_free ( GStreamer::PluginFeature:D: )  {
-    GStreamer::PluginFeature.list_free($!pf);
-  }
   multi method list_free (
     GStreamer::PluginFeature:U:
-    GstPluginFeature $feature
+    GList() $list
   ) {
-    gst_plugin_feature_list_free($feature);
+    gst_plugin_feature_list_free($list);
   }
 
   method load {

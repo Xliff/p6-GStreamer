@@ -1,6 +1,7 @@
 use v6.c;
 
 use Method::Also;
+use NativeCall;
 
 use GTK::Compat::Types;
 use GStreamer::Raw::Types;
@@ -160,7 +161,7 @@ class GStreamer::Plugin is GStreamer::Object {
   }
 
   method load_file (
-    Str() $filename
+    Str() $filename,
     CArray[Pointer[GError]] $error = gerror,
     :$raw = False
   )

@@ -19,7 +19,7 @@ class GStreamer::Pad is GStreamer::Object {
     self.setPad($pad);
   }
 
-  method setPad (GstAncestry $_) {
+  method setPad (PadAncestry $_) {
     my $to-parent;
 
     $!p = do {
@@ -43,7 +43,7 @@ class GStreamer::Pad is GStreamer::Object {
   multi method new (GstPad $pad) {
     self.bless( :$pad );
   }
-  method new (Str() $name, Int() $direction) {
+  multi method new (Str() $name, Int() $direction) {
     self.bless( pad => gst_pad_new($name, $direction) );
   }
 
@@ -69,7 +69,7 @@ class GStreamer::Pad is GStreamer::Object {
       },
       STORE => sub ($, $priv is copy) {
         my gpointer $ptr = do given $priv {
-          when Pointer        { $_ }
+          when gpointer       { $_ }
           when GStreamer::Pad { .GstPad.p }
           when GstPad         { .p }
 
@@ -200,19 +200,19 @@ class GStreamer::Pad is GStreamer::Object {
   }
 
   method get_type is also<get-type> {
-    state ($n, $t)
+    state ($n, $t);
 
     unstable_get_type( self.^name, &gst_pad_get_type, $n, $t );
   }
 
-  method gst_flow_get_name is also<gst-flow-get-name> {
-    gst_flow_get_name();
-  }
 
   # ↓ MOVE TO GSTREAMER::RAW::TYPES
-  method flow_to_quark is also<flow-to-quark> {
-    gst_flow_to_quark();
-  }
+  # method gst_flow_get_name is also<gst-flow-get-name> {
+  #   gst_flow_get_name();
+  # }
+  # method flow_to_quark is also<flow-to-quark> {
+  #   gst_flow_to_quark();
+  # }
   # ↑ MOVE TO GSTREAMER::RAW::TYPES
 
   method has_current_caps is also<has-current-caps> {
@@ -294,49 +294,50 @@ class GStreamer::Pad is GStreamer::Object {
     so gst_pad_peer_query($!p, $query);
   }
 
-  method probe_info_get_buffer (
-    GStreamer::Pad:U:
-    GstProbeInfo() $i,
-    :$raw = False
-  )
-    is also<probe-info-get-buffer>
-  {
-    gst_pad_probe_info_get_buffer($i);
-    # ADD OBJECT CREATION CODE for GStreamer::Buffer
-  }
-
-  method probe_info_get_buffer_list (
-    GStreamer::Pad:U:
-    GstProbeInfo() $i,
-    :$raw = False
-  )
-    is also<probe-info-get-buffer-list>
-  {
-    gst_pad_probe_info_get_buffer_list($!p);
-    # ADD OBJECT CREATION CODE for GStreamer::BufferList
-  }
-
-  method probe_info_get_event (
-    GStreamer::Pad:U:
-    GstProbeInfo() $i,
-    :$raw = False
-  )
-    is also<probe-info-get-event>
-  {
-    gst_pad_probe_info_get_event($!p);
-    # ADD OBJECT CREATION CODE for GStreamer::Event
-  }
-
-  method probe_info_get_query (
-    GStreamer::Pad:U:
-    GstProbeInfo() $i,
-    :$raw = False
-  )
-    is also<probe-info-get-query>
-  {
-    gst_pad_probe_info_get_query($!p);
-    # ADD OBJECT CREATION CODE for GStreamer::Query
-  }
+  # GStreamer::PadProbeInfo
+  # method probe_info_get_buffer (
+  #   GStreamer::Pad:U:
+  #   GstProbeInfo() $i,
+  #   :$raw = False
+  # )
+  #   is also<probe-info-get-buffer>
+  # {
+  #   gst_pad_probe_info_get_buffer($i);
+  #   # ADD OBJECT CREATION CODE for GStreamer::Buffer
+  # }
+  #
+  # method probe_info_get_buffer_list (
+  #   GStreamer::Pad:U:
+  #   GstProbeInfo() $i,
+  #   :$raw = False
+  # )
+  #   is also<probe-info-get-buffer-list>
+  # {
+  #   gst_pad_probe_info_get_buffer_list($!p);
+  #   # ADD OBJECT CREATION CODE for GStreamer::BufferList
+  # }
+  #
+  # method probe_info_get_event (
+  #   GStreamer::Pad:U:
+  #   GstProbeInfo() $i,
+  #   :$raw = False
+  # )
+  #   is also<probe-info-get-event>
+  # {
+  #   gst_pad_probe_info_get_event($!p);
+  #   # ADD OBJECT CREATION CODE for GStreamer::Event
+  # }
+  #
+  # method probe_info_get_query (
+  #   GStreamer::Pad:U:
+  #   GstProbeInfo() $i,
+  #   :$raw = False
+  # )
+  #   is also<probe-info-get-query>
+  # {
+  #   gst_pad_probe_info_get_query($!p);
+  #   # ADD OBJECT CREATION CODE for GStreamer::Query
+  # }
 
   method pull_range (
     Int() $offset,       # guint64 $offset,

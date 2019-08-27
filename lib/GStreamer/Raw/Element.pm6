@@ -7,6 +7,11 @@ use GStreamer::Raw::Types;
 
 unit package GStreamer::Raw::Element;
 
+sub gst_element_abort_state (GstElement $element)
+  is native(gstreamer)
+  is export
+{ * }
+
 sub gst_element_add_pad (GstElement $element, GstPad $pad)
   returns uint32
   is native(gstreamer)

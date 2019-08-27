@@ -189,7 +189,7 @@ class GStreamer::Bus is GStreamer::Object {
   }
 
   method timed_pop (
-    Int() $timeouot, # GstClockTime $timeout,
+    Int() $timeout, # GstClockTime $timeout,
     :$raw = False
   )
     is also<timed-pop>

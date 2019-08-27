@@ -185,6 +185,16 @@ our enum GstDebugLevel is export (
   'GST_LEVEL_COUNT'
 );
 
+our enum GstElementFlags is export (
+  GST_ELEMENT_FLAG_LOCKED_STATE   => (GST_OBJECT_FLAG_LAST +< 0),
+  GST_ELEMENT_FLAG_SINK           => (GST_OBJECT_FLAG_LAST +< 1),
+  GST_ELEMENT_FLAG_SOURCE         => (GST_OBJECT_FLAG_LAST +< 2),
+  GST_ELEMENT_FLAG_PROVIDE_CLOCK  => (GST_OBJECT_FLAG_LAST +< 3),
+  GST_ELEMENT_FLAG_REQUIRE_CLOCK  => (GST_OBJECT_FLAG_LAST +< 4),
+  GST_ELEMENT_FLAG_INDEXABLE      => (GST_OBJECT_FLAG_LAST +< 5),
+  GST_ELEMENT_FLAG_LAST           => (GST_OBJECT_FLAG_LAST +< 10)
+);
+
 our enum GstEventTypeFlags is export (
   GST_EVENT_TYPE_UPSTREAM     =>  1 +< 0,
   GST_EVENT_TYPE_DOWNSTREAM   =>  1 +< 1,

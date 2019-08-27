@@ -10,7 +10,7 @@ use GStreamer::Element;
 use GStreamer::PluginFeature;
 
 our subset ElementFactoryAncestry is export of Mu
-  GstElementFactory | GstPluginFeature;
+  where GstElementFactory | GstPluginFeature;
 
 class GStreamer::ElementFactory is GStreamer::PluginFeature {
   has GstElementFactory $!ef;
@@ -39,7 +39,7 @@ class GStreamer::ElementFactory is GStreamer::PluginFeature {
   method GStreamer::Raw::Types::GstElementFactory
   { $!ef }
 
-  method new (GStElementFactory $factory) {
+  method new (GstElementFactory $factory) {
     self.bless( :$factory );
   }
 
@@ -72,8 +72,9 @@ class GStreamer::ElementFactory is GStreamer::PluginFeature {
   }
 
   method get_static_pad_templates is also<get-static-pad-templates> {
+    # LTA: Parameterized role throws weird error if parameter is not defined!
     my $pt = gst_element_factory_get_static_pad_templates($!ef)
-      but GTK::Compat::Roles:::ListData[GstStaticPadTemplate];
+      but GTK::Compat::Roles:::ListData[GstPadTemplate];
 
     # Check for object.
     $pt ?? $pt.Array !! Nil;
@@ -107,14 +108,15 @@ class GStreamer::ElementFactory is GStreamer::PluginFeature {
       GTK::Compat::Roles::ListData[GstElementFactory];
 
     $ef ??
-      ( $raw ?? $ef.Array !! $ef.Array({ GStreamer::ElementFactory.new($_ ) })
+      ( $raw ?? $ef.Array !! $ef.Array({ GStreamer::ElementFactory.new($_ ) }) )
       !!
       Nil
   }
 
   method list_get_elements (
     Int() $type,
-    GstRank $minrank
+    GstRank $minrank,
+    :$raw = False;
   )
     is also<list-get-elements>
   {
@@ -122,7 +124,9 @@ class GStreamer::ElementFactory is GStreamer::PluginFeature {
       but GTK::Compat::Roles::ListData[GstElementFactory];
 
     $ef ??
-      ( $raw ?? $ef.Array !! $ef.Array({ GStreamer::ElementFactory.new($_ ) })
+      ( $raw ??
+        $ef.Array !! $ef.Array({ GStreamer::ElementFactory.new($_ ) })
+      )
       !!
       Nil
   }
@@ -131,8 +135,8 @@ class GStreamer::ElementFactory is GStreamer::PluginFeature {
     so gst_element_factory_list_is_type($!ef, $type);
   }
 
-  method make (Str() $name, Str() $name, :$raw = False) {
-    my $e = gst_element_factory_make($name, $name);
+  method make (Str() $fname, Str() $name, :$raw = False) {
+    my $e = gst_element_factory_make($fname, $name);
 
     $e ??
       ( $raw ?? $e !! GStreamer::Element.new($e) )

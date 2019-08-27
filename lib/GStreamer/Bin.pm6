@@ -38,7 +38,7 @@ class GStreamer::Bin is GStreamer::Element {
       }
 
       default {
-        $to-parent = $_
+        $to-parent = $_;
         cast(GstBin, $_);
       }
     }
@@ -53,8 +53,8 @@ class GStreamer::Bin is GStreamer::Element {
   multi method new (GstBin $bin) {
     self.bless( :$bin );
   }
-  multi method new {
-    self.bless( bin => gst_bin_new() );
+  multi method new (Str() $name) {
+    self.bless( bin => gst_bin_new($name) );
   }
 
   method suppressed_flags is rw is also<suppressed-flags> {
@@ -166,7 +166,7 @@ class GStreamer::Bin is GStreamer::Element {
       Nil;
   }
 
-  method iterate_sources is also<iterate-sources> {
+  method iterate_sources (:$raw = False) is also<iterate-sources> {
     my $i = gst_bin_iterate_sources($!b);
 
     $i ??
