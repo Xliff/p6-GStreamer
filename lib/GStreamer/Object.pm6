@@ -8,11 +8,19 @@ use GStreamer::Raw::Object;
 
 use GTK::Raw::Utils;
 
+use GTK::Roles::Data;
+
 class GStreamer::Object {
+  also does GTK::Roles::Properties;
+
   has GstObject $!o;
 
-  submethod BUILD (GstObject :$object) {
-    $!o = $object if $object;
+  submethod BUILD (:$object) {
+    self.setGstObject($object) if $object;
+  }
+
+  method setGstObject(GstObject $object) {
+    $!prop = cast(GObject, $!o = $object);    # GTK::Roles::Properties
   }
 
   method GStreamer::Raw::Types::GstObject

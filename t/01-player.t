@@ -1,6 +1,7 @@
 use v6.c;
 
 use GTK::Compat::Source;
+use GTK::Compat::Value; # for prop_set call.
 
 use GStreamer::Main;
 use GStreamer::Pipeline;
@@ -23,6 +24,9 @@ sub MAIN (
 
   die 'One element could not be created. Exiting!'
     if %e.values.grep( *.defined.not );
+
+  # Will need to check this and add it to GStreamer::Object
+  %e<source>.prop-set( 'location', gv_str($filename) );
 
   my $bus = $pipeline.bus;
   my $watch-id = $bus.add-watch(-> *@a --> guint {
