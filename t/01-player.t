@@ -9,6 +9,7 @@ use GTK::Compat::Value; # for prop_set call.
 
 use GStreamer::ElementFactory;
 use GStreamer::Main;
+use GStreamer::Message;
 use GStreamer::Pipeline;
 
 sub MAIN (
@@ -39,6 +40,7 @@ sub MAIN (
 
     my $m = GStreamer::Message.new( @a[1] );
 
+    say $m.type;
     given $m.type {
       when GST_MESSAGE_EOS   { say 'End of stream'; $loop.quit }
 
@@ -56,7 +58,7 @@ sub MAIN (
   $pipeline.add-many( %e<source demuxer decoder conv sink> );
 
   %e<source>.link(%e<demuxer>);
-  %e<decoder>.link-many(|%e<conv sink>);
+  %e<decoder>.link-many(%e<conv>, %e<sink>);
 
   # note that the demuxer will be linked to the decoder dynamically.
   # The reason is that Ogg may contain various streams (for example
@@ -65,26 +67,29 @@ sub MAIN (
   # Therefore we connect a callback function which will be executed
   # when the "pad-added" is emitted.
 
-  %e<demuxer>.pad-added.tap(-> *@a {
-    CATCH { default { .message.say } }
+  # %e<demuxer>.pad-added.tap(-> *@a {
+    # CATCH { default { .message.say } }
 
-    my $p = GStreamer::Pad.new( @a[1] );
-    my $sinkpad = GStreamer::Element.get-static-pad('sink');
+    # say 'PA';
+    # my $p = GStreamer::Pad.new( @a[1] );
+    # my $sinkpad = GStreamer::Element.get-static-pad('sink');
 
-    $p.link($sinkpad);
-    $sinkpad.unref;
+    # $p.link($sinkpad);
+    # $sinkpad.unref;
 
-    say 'Dynamic pad created, linking demuxer/decoder'
-  });
+    # say 'Dynamic pad created, linking demuxer/decoder'
+  # });
 
   say "Now playing: { $filename }";
   $pipeline.set_state(GST_STATE_PLAYING);
 
   say 'Running...';
+  %e.gist.say;
+
   $loop.run;
 
   say 'Returned. Stoping playback...';
-  $pipeline.get_state(GST_STATE_NULL);
+  $pipeline.set_state(GST_STATE_NULL);
 
   say 'Deleting pipeline...';
   $pipeline.unref;

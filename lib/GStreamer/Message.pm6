@@ -9,7 +9,7 @@ use GStreamer::Raw::Message;
 use GTK::Compat::Value;
 
 class GStreamer::Message {
-  has GstMessage $!m;
+  has GstMessage $!m handles <type timestamp>;
 
   my sub ppr(*@a) {
     @a.map({
@@ -782,6 +782,13 @@ class GStreamer::Message {
         gst_message_set_stream_status_object($!m, $object);
       }
     );
+  }
+
+  method get_src (:$raw = False) {
+    $!m.src ??
+      ( $raw ?? $!m.src !! GStreamer::Object.new($!m.src) )
+      !!
+      Nil;
   }
 
   method add_redirect_entry (

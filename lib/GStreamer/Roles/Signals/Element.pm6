@@ -24,9 +24,8 @@ role GStreamer::Roles::Signals::Element {
       $hid = g-connect-pad($obj, $signal,
         -> $, $gp, $ud {
           CATCH {
-            default { $s.quit($_) }
+            default { $s.note($_) }
           }
-
           $s.emit( [self, $gp, $ud ] );
         },
         Pointer, 0
