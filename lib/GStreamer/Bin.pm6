@@ -19,7 +19,7 @@ class GStreamer::Bin is GStreamer::Element {
   has GstBin $!b;
 
   submethod BUILD (:$bin) {
-    self.setBin($bin);
+    self.setBin($bin) if $bin.defined;
   }
 
   method setBin(BinAncestry $_) {

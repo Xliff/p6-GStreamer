@@ -6,8 +6,6 @@ use NativeCall;
 use GTK::Compat::Types;
 use GStreamer::Raw::Main;
 
-use GTK::Compat::Roles::ListData;
-
 class GStreamer::Main {
 
   method new (|) {
@@ -22,8 +20,11 @@ class GStreamer::Main {
 
     samewith($c, $v);
   }
-  multi method init (Int $c is rw, CArray[Str] $v) {
-    gst_init($c, $v);
+  multi method init (Int $c, CArray[Str] $v) {
+    my gint $ac = $c;
+
+    # $ac is rw to pass the pointer. We do not need it back.
+    gst_init($ac, $v);
   }
 
   proto method init_check (|)
@@ -36,13 +37,17 @@ class GStreamer::Main {
     samewith($c, $v);
   }
   multi method init_check(
-    Int $c is rw,
+    Int $c,
     CArray[Str] $v,
     CArray[Pointer[GError]] $error = gerror
   ) {
+    my gint $ac = $c;
+
     clear_error;
-    my $rc = gst_init_check ($c, $v, $error);
+    # $ac is rw to pass the pointer. We do not need it back.
+    my $rc = gst_init_check ($ac, $v, $error);
     set_error($error);
+
     $rc;
   }
 

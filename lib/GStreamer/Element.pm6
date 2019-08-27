@@ -21,11 +21,11 @@ class GStreamer::Element is GStreamer::Object {
 
   has GstElement $!e;
 
-  submethod BUILD (ElementAncestry :$element) {
-    self.setGStreamerElement($element) if $element;
+  submethod BUILD (:$element) {
+    self.setElement($element) if $element.defined;
   }
 
-  method setGStreamerElement(ElementAncestry $_) {
+  method setElement(ElementAncestry $_) {
     my $to-parent;
 
     $!e = do  {
@@ -39,29 +39,33 @@ class GStreamer::Element is GStreamer::Object {
         cast(GstElement, $_);
       }
     }
-    self.setGStreamerObject($to-parent);
+    self.setGstObject($to-parent);
   }
 
   method GStreamer::Raw::Types::GstElement
     is also<GstElement>
   { $!e }
 
+  method new (GstElement $element) {
+    self.bless( :$element );
+  }
+
   # Is originally:
   # GstElement, gpointer --> void
   method no-more-pads is also<no_more_pads> {
-    self.connect($!e, 'no-more-pads');
+    self.connect($!e.p, 'no-more-pads');
   }
 
   # Is originally:
   # GstElement, GstPad, gpointer --> void
   method pad-added is also<pad_added> {
-    self.connect-pad($!e, 'pad-added');
+    self.connect-pad($!e.p, 'pad-added');
   }
 
   # Is originally:
   # GstElement, GstPad, gpointer --> void
   method pad-removed is also<pad_removed> {
-    self.connect-pad($!e, 'pad-removed');
+    self.connect-pad($!e.p, 'pad-removed');
   }
 
   method abort_state is also<abort-state> {

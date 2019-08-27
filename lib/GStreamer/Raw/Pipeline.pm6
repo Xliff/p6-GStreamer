@@ -31,7 +31,7 @@ sub gst_pipeline_get_type ()
 { * }
 
 sub gst_pipeline_new (Str $name)
-  returns GstElement
+  returns GstPipeline
   is native(gstreamer)
   is export
 { * }

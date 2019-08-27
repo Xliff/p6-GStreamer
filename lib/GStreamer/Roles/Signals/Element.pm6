@@ -13,7 +13,7 @@ role GStreamer::Roles::Signals::Element {
   has %!signals-e;
 
   # GstElement, GstPad, gpointer
-  method connect-pad-added (
+  method connect-pad (
     $obj,
     $signal,
     &handler?

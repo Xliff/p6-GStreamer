@@ -43,7 +43,8 @@ class GStreamer::Pipeline is GStreamer::Bin {
     self.bless( :$pipeline );
   }
   multi method new (Str() $name) {
-    self.bless( pipeline => gst_pipeline_new($name) );
+    my $pipeline = gst_pipeline_new($name);
+    self.bless( :$pipeline );
   }
 
   method auto_flush_bus is rw is also<auto-flush-bus> {
@@ -95,7 +96,12 @@ class GStreamer::Pipeline is GStreamer::Bin {
     gst_pipeline_auto_clock($!p);
   }
 
-  method get_bus (:$raw = False) is also<get-bus> {
+  method get_bus (:$raw = False)
+    is also<
+      get-bus
+      bus
+    >
+  {
     my $b = gst_pipeline_get_bus($!p);
 
     $b ??
@@ -104,7 +110,13 @@ class GStreamer::Pipeline is GStreamer::Bin {
       Nil;
   }
 
-  method get_pipeline_clock (:$raw = False) is also<get-pipeline-clock> {
+  method get_pipeline_clock (:$raw = False)
+    is also<
+      get-pipeline-clock
+      pipeline_clock
+      pipeline-clock
+    >
+  {
     # OBJECT CREATION HERE
     gst_pipeline_get_pipeline_clock($!p);
   }

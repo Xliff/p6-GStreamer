@@ -1,19 +1,24 @@
 use v6.c;
 
+use GTK::Compat::Types;
+use GStreamer::Raw::Types;
+
+use GTK::Compat::MainLoop;
 use GTK::Compat::Source;
 use GTK::Compat::Value; # for prop_set call.
 
+use GStreamer::ElementFactory;
 use GStreamer::Main;
 use GStreamer::Pipeline;
 
 sub MAIN (
   $filename     #= Name of Ogg/Vorbis file to play
 ) {
-  GST::Main.init;
+  GStreamer::Main.init;
 
   my %e;
   my $loop     = GTK::Compat::MainLoop.new;
-  my $pipeline = GStreamer::Pipeline.new
+  my $pipeline = GStreamer::Pipeline.new('audio-player');
 
   %e{$_[0]} = GStreamer::ElementFactory.make($_[1], $_[2])
     for  <source  filesrc       file-src>,
@@ -38,17 +43,17 @@ sub MAIN (
       when GST_MESSAGE_EOS   { say 'End of stream'; $loop.quit }
 
       when GST_MESSAGE_ERROR {
-        ($error, $debug) = $m.parse_error;
-        say "Error: { $error.message }"
+        my ($error, $debug) = $m.parse_error;
+        say "Error: { $error.message }";
         $loop.quit;
       }
     }
 
     1;
-  }, $loop);
+  });
   $bus.unref;
 
-  $bin.add-many( %e<source demuxer decoder conv sink> );
+  $pipeline.add-many( %e<source demuxer decoder conv sink> );
 
   %e<source>.link(%e<demuxer>);
   %e<decoder>.link-many(|%e<conv sink>);
