@@ -85,6 +85,7 @@ class GstToc               is repr('CPointer') does GTK::Roles::Pointers is expo
 
 constant GST_OBJECT_FLAG_LAST is export = 1 +< 4;
 constant GST_CLOCK_TIME_NONE  is export = 18446744073709551615;
+constant GST_TIME_FORMAT      is export = '%u:%02u:%02u.%09u';
 
 our enum GstBufferingMode is export <
   GST_BUFFERING_STREAM

@@ -1,5 +1,7 @@
 use v6.c;
 
+use Method::Also;
+
 use GTK::Compat::Types;
 use GStreamer::Raw::Types;
 use GStreamer::Raw::Clock;
@@ -33,6 +35,7 @@ class GStreamer::Clock is GStreamer::Object {
   }
 
   method GStreamer::Raw::Types::GstClock
+    is also<GstClock>
   { $!c }
 
   method master (:$raw = False) is rw {
@@ -75,6 +78,10 @@ class GStreamer::Clock is GStreamer::Object {
     );
   }
 
+  proto method add_observation (|)
+    is also<add-observation>
+  { * }
+
   multi method add_observation(
     Int() $slave,
     Int() $master,
@@ -104,7 +111,9 @@ class GStreamer::Clock is GStreamer::Object {
     Int() $external,
     Int() $rate_num,
     Int() $rate_denom
-  ) {
+  )
+    is also<add-observation-unapplied>
+  {
     my ($s, $m, $i, $e, $rn, $rd) =
       ($slave, $master, $internal, $external, $rate_num, $rate_denom);
     my gdouble $rs = $r_squared;
@@ -112,7 +121,7 @@ class GStreamer::Clock is GStreamer::Object {
     gst_clock_add_observation_unapplied($!c, $s, $m, $rs, $i, $e, $rn, $rd);
   }
 
-  method adjust_unlocked (Int() $internal) {
+  method adjust_unlocked (Int() $internal) is also<adjust-unlocked> {
     my uint64 $i = $internal;
     gst_clock_adjust_unlocked($!c, $i);
   }
@@ -123,14 +132,20 @@ class GStreamer::Clock is GStreamer::Object {
     Num() $cexternal,
     Num() $cnum,
     Num() $cdenom
-  ) {
+  )
+    is also<adjust-with-calibration>
+  {
     my uint64 ($i, $ci, $ce, $cn, $cd) =
       ($internal_target, $cinternal, $cexternal, $cnum, $cdenom);
 
     gst_clock_adjust_with_calibration($!c, $i, $ci, $ce, $cn, $cd);
   }
 
-  multi method get_calibration {
+  proto method get_calibration (|)
+    is also<get-calibration>
+  { * }
+
+  multi method get_calibration is also<calibration> {
     my ($i, $e, $rn, $rd);
 
     samewith($i, $e, $rn, $rd)
@@ -147,15 +162,26 @@ class GStreamer::Clock is GStreamer::Object {
     ($internal, $external, $rate_num, $rate_denom) = ($i, $e, $rn, $rd);
   }
 
-  method get_internal_time {
+  method get_internal_time
+    is also<
+      get-internal-time
+      internal_time
+      internal-time
+    >
+  {
     gst_clock_get_internal_time($!c);
   }
 
-  method get_time {
+  method get_time
+    is also<
+      get-time
+      time
+    >
+  {
     gst_clock_get_time($!c);
   }
 
-  method get_type {
+  method get_type is also<get-type> {
     state ($n, $t);
 
     unstable_get_type( self.^name, &gst_clock_get_type, $n, $t );
@@ -197,7 +223,7 @@ class GStreamer::Clock is GStreamer::Object {
   #   gst_clock_id_wait_async($!c, $func, $user_data, $destroy_data);
   # }
 
-  method is_synced {
+  method is_synced is also<is-synced> {
     so gst_clock_is_synced($!c);
   }
 
@@ -222,14 +248,16 @@ class GStreamer::Clock is GStreamer::Object {
     Int() $external    is rw,
     Int() $rate_num    is rw,
     Int() $rate_denom  is rw
-  ) {
+  )
+    is also<set-calibration>
+  {
     my uint64 ($i, $e, $rn, $rd) =
       ($internal, $external, $rate_num, $rate_denom);
 
     gst_clock_set_calibration($!c, $i, $e, $rn, $rd);
   }
 
-  method set_synced (Int() $synced) {
+  method set_synced (Int() $synced) is also<set-synced> {
     my gboolean $s = $synced.so.Int;
 
     gst_clock_set_synced($!c, $s);
@@ -239,7 +267,7 @@ class GStreamer::Clock is GStreamer::Object {
   #   gst_clock_single_shot_id_reinit($!c, $id, $time);
   # }
 
-  method unadjust_unlocked (Int() $external) {
+  method unadjust_unlocked (Int() $external) is also<unadjust-unlocked> {
     my uint64 $e = $external;
 
     gst_clock_unadjust_unlocked($!c, $e);
@@ -251,14 +279,16 @@ class GStreamer::Clock is GStreamer::Object {
     Int() $cexternal,
     Int() $cnum,
     Int() $cdenom
-  ) {
+  )
+    is also<unadjust-with-calibration>
+  {
     my ($e, $ci, $ce, $cn, $cd) =
       ($external_target, $cinternal, $cexternal, $cnum, $cdenom);
 
     gst_clock_unadjust_with_calibration($!c, $e, $ci, $ce, $cn, $cd);
   }
 
-  method wait_for_sync (Int() $timeout) {
+  method wait_for_sync (Int() $timeout) is also<wait-for-sync> {
     my uint64 $t = $timeout;
 
     gst_clock_wait_for_sync($!c, $t);
