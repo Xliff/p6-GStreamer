@@ -93,14 +93,14 @@ class GStreamer::Iterator {
     GValue() $ret,
     gpointer $user_data = gpointer
   ) {
-    GstIteratorResult( gst_iterator_fold($!i, $func, $ret, $user_data) );
+    GstIteratorResultEnum( gst_iterator_fold($!i, $func, $ret, $user_data) );
   }
 
   method foreach (
     GstIteratorForeachFunction $func,
     gpointer $user_data = gpointer
   ) {
-    GstIteratorResult( gst_iterator_foreach($!i, $func, $user_data) );
+    GstIteratorResultEnum( gst_iterator_foreach($!i, $func, $user_data) );
   }
 
   method free {
@@ -113,7 +113,7 @@ class GStreamer::Iterator {
   }
 
   method next (GValue() $elem) {
-    GstIteratorResult( gst_iterator_next($!i, $elem) );
+    GstIteratorResultEnum( gst_iterator_next($!i, $elem) );
   }
 
   method push (GstIterator() $other) {

@@ -60,7 +60,7 @@ class GStreamer::Bin is GStreamer::Element {
   method suppressed_flags is rw is also<suppressed-flags> {
     Proxy.new(
       FETCH => sub ($) {
-        GstElementFlags( gst_bin_get_suppressed_flags($!b) );
+        GstElementFlagsEnum( gst_bin_get_suppressed_flags($!b) );
       },
       STORE => sub ($, Int() $flags is copy) {
         gst_bin_set_suppressed_flags($!b, $flags);

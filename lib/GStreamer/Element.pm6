@@ -474,7 +474,7 @@ class GStreamer::Element is GStreamer::Object {
   )
     is also<set-state>
   {
-    GstStateChangeReturn( gst_element_set_state($!e, $state) );
+    GstStateChangeReturnEnum( gst_element_set_state($!e, $state) );
   }
 
   method sync_state_with_parent is also<sync-state-with-parent> {

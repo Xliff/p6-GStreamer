@@ -115,11 +115,11 @@ class GStreamer::Pad is GStreamer::Object {
   }
 
   method chain (GstBuffer() $buffer) {
-    GstFlowReturn( gst_pad_chain($!p, $buffer) );
+    GstFlowReturnEnum( gst_pad_chain($!p, $buffer) );
   }
 
   method chain_list (GstBufferList() $list) is also<chain-list> {
-    GstFlowReturn( gst_pad_chain_list($!p, $list) );
+    GstFlowReturnEnum( gst_pad_chain_list($!p, $list) );
   }
 
   method check_reconfigure is also<check-reconfigure> {
@@ -150,11 +150,11 @@ class GStreamer::Pad is GStreamer::Object {
   }
 
   method get_direction is also<get-direction> {
-    GstPadDirection( gst_pad_get_direction($!p) );
+    GstPadDirectionEnum( gst_pad_get_direction($!p) );
   }
 
   method get_last_flow_return is also<get-last-flow-return> {
-    GstFlowReturn( gst_pad_get_last_flow_return($!p) );
+    GstFlowReturnEnum( gst_pad_get_last_flow_return($!p) );
   }
 
   method get_pad_template (:$raw = False) is also<get-pad-template> {
@@ -196,7 +196,7 @@ class GStreamer::Pad is GStreamer::Object {
   }
 
   method get_task_state is also<get-task-state> {
-    GstTaskState( gst_pad_get_task_state($!p) );
+    GstTaskStateEnum( gst_pad_get_task_state($!p) );
   }
 
   method get_type is also<get-type> {
@@ -258,7 +258,7 @@ class GStreamer::Pad is GStreamer::Object {
   }
 
   method link (GstPad() $sinkpad) {
-    GstPadLinkReturn( gst_pad_link($!p, $sinkpad) );
+    GstPadLinkReturnEnum( gst_pad_link($!p, $sinkpad) );
   }
 
   method link_full (
@@ -267,7 +267,7 @@ class GStreamer::Pad is GStreamer::Object {
   )
     is also<link-full>
   {
-    GstPadLinkReturn( gst_pad_link_full($!p, $sinkpad, $flags) );
+    GstPadLinkReturnEnum( gst_pad_link_full($!p, $sinkpad, $flags) );
   }
 
   method link_get_name is also<link-get-name> {

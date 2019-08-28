@@ -1,4 +1,4 @@
-use v6.c;
+GST_QUERY_TYPE_$1GST_QUERY_TYPE_$1GST_QUERY_TYPE_$1GST_QUERY_TYPE_$1GST_QUERY_TYPE_$1GST_QUERY_TYPE_$1GST_QUERY_TYPE_$1GST_QUERY_TYPE_$1GST_QUERY_TYPE_$1GST_QUERY_TYPE_$1GST_QUERY_TYPE_$1GST_QUERY_TYPE_$1GST_QUERY_TYPE_$1GST_QUERY_TYPE_$1GST_QUERY_TYPE_$1GST_QUERY_TYPE_$1GST_QUERY_TYPE_$1GST_QUERY_TYPE_$1GST_QUERY_TYPE_$1GST_QUERY_TYPE_$1GST_QUERY_TYPE_$1use v6.c;
 
 use NativeCall;
 
@@ -87,30 +87,35 @@ constant GST_OBJECT_FLAG_LAST is export = 1 +< 4;
 constant GST_CLOCK_TIME_NONE  is export = 18446744073709551615;
 constant GST_TIME_FORMAT      is export = '%u:%02u:%02u.%09u';
 
-our enum GstBufferingMode is export <
+constant GstBufferingMode is export := guint;
+our enum GstBufferingModeEnum is export <
   GST_BUFFERING_STREAM
   GST_BUFFERING_DOWNLOAD
   GST_BUFFERING_TIMESHIFT
   GST_BUFFERING_LIVE
 >;
 
-our enum GstBusSyncReply is export (
+constant GstBusSyncReply is export := guint;
+our enum GstBusSyncReplyEnum is export (
   GST_BUS_DROP  => 0,
   GST_BUS_PASS  => 1,
   GST_BUS_ASYNC => 2,
 );
 
-our enum GstCapsIntersectMode is export (
+constant GstCapsIntersectMode is export := guint;
+our enum GstCapsIntersectModeEnum is export (
   GST_CAPS_INTERSECT_ZIG_ZAG => 0,
   GST_CAPS_INTERSECT_FIRST   => 1,
 );
 
-our enum GstClockEntryType is export <
+constant GstClockEntryType is export := guint;
+our enum GstClockEntryTypeEnum is export <
   GST_CLOCK_ENTRY_SINGLE
   GST_CLOCK_ENTRY_PERIODIC
 >;
 
-our enum GstClockFlags is export (
+constant GstClockFlags is export := guint;
+our enum GstClockFlagsEnum is export (
   GST_CLOCK_FLAG_CAN_DO_SINGLE_SYNC     => (GST_OBJECT_FLAG_LAST +< 0),
   GST_CLOCK_FLAG_CAN_DO_SINGLE_ASYNC    => (GST_OBJECT_FLAG_LAST +< 1),
   GST_CLOCK_FLAG_CAN_DO_PERIODIC_SYNC   => (GST_OBJECT_FLAG_LAST +< 2),
@@ -121,7 +126,8 @@ our enum GstClockFlags is export (
   GST_CLOCK_FLAG_LAST                   => (GST_OBJECT_FLAG_LAST +< 8)
 );
 
-our enum GstClockReturn is export (
+constant GstClockReturn is export := guint;
+our enum GstClockReturnEnum is export (
   GST_CLOCK_OK          => 0,
   GST_CLOCK_EARLY       => 1,
   GST_CLOCK_UNSCHEDULED => 2,
@@ -132,13 +138,15 @@ our enum GstClockReturn is export (
   GST_CLOCK_DONE        => 7,
 );
 
-our enum GstClockType is export (
+constant GstClockType is export := guint;
+our enum GstClockTypeEnum is export (
   GST_CLOCK_TYPE_REALTIME  => 0,
   GST_CLOCK_TYPE_MONOTONIC => 1,
   GST_CLOCK_TYPE_OTHER     => 2,
 );
 
-our enum GstCollectPadsStateFlags is export (
+constant GstCollectPadsStateFlags is export := guint;
+our enum GstCollectPadsStateFlagsEnum is export (
   GST_COLLECT_PADS_STATE_EOS         => 1 +< 0,
   GST_COLLECT_PADS_STATE_FLUSHING    => 1 +< 1,
   GST_COLLECT_PADS_STATE_NEW_SEGMENT => 1 +< 2,
@@ -146,7 +154,8 @@ our enum GstCollectPadsStateFlags is export (
   GST_COLLECT_PADS_STATE_LOCKED      => 1 +< 4,
 );
 
-our enum GstCoreError is export (
+constant GstCoreError is export := guint;
+our enum GstCoreErrorEnum is export (
   GST_CORE_ERROR_FAILED =>  1,
   'GST_CORE_ERROR_TOO_LAZY',
   'GST_CORE_ERROR_NOT_IMPLEMENTED',
@@ -164,7 +173,8 @@ our enum GstCoreError is export (
   'GST_CORE_ERROR_NUM_ERRORS'
 );
 
-our enum GstDebugColorFlags is export (
+constant GstDebugColorFlags is export := guint;
+our enum GstDebugColorFlagsEnum is export (
   GST_DEBUG_FG_BLACK   => 0x0000,
   GST_DEBUG_FG_RED     => 0x0001,
   GST_DEBUG_FG_GREEN   => 0x0002,
@@ -185,13 +195,15 @@ our enum GstDebugColorFlags is export (
   GST_DEBUG_UNDERLINE  => 0x0200,
 );
 
-our enum GstDebugColorMode is export (
+constant GstDebugColorMode is export := guint;
+our enum GstDebugColorModeEnum is export (
   GST_DEBUG_COLOR_MODE_OFF  =>  0,
   GST_DEBUG_COLOR_MODE_ON   =>  1,
   GST_DEBUG_COLOR_MODE_UNIX =>  2,
 );
 
-our enum GstDebugLevel is export (
+constant GstDebugLevel is export := guint;
+our enum GstDebugLevelEnum is export (
   GST_LEVEL_NONE    => 0,
   GST_LEVEL_ERROR   => 1,
   GST_LEVEL_WARNING => 2,
@@ -204,7 +216,8 @@ our enum GstDebugLevel is export (
   'GST_LEVEL_COUNT'
 );
 
-our enum GstElementFlags is export (
+constant GstElementFlags is export := guint;
+our enum GstElementFlagsEnum is export (
   GST_ELEMENT_FLAG_LOCKED_STATE   => (GST_OBJECT_FLAG_LAST +< 0),
   GST_ELEMENT_FLAG_SINK           => (GST_OBJECT_FLAG_LAST +< 1),
   GST_ELEMENT_FLAG_SOURCE         => (GST_OBJECT_FLAG_LAST +< 2),
@@ -214,7 +227,8 @@ our enum GstElementFlags is export (
   GST_ELEMENT_FLAG_LAST           => (GST_OBJECT_FLAG_LAST +< 10)
 );
 
-our enum GstEventTypeFlags is export (
+constant GstEventTypeFlags is export := guint;
+our enum GstEventTypeFlagsEnum is export (
   GST_EVENT_TYPE_UPSTREAM     =>  1 +< 0,
   GST_EVENT_TYPE_DOWNSTREAM   =>  1 +< 1,
   GST_EVENT_TYPE_SERIALIZED   =>  1 +< 2,
@@ -224,7 +238,8 @@ our enum GstEventTypeFlags is export (
 
 constant GST_EVENT_TYPE_BOTH is export = GST_EVENT_TYPE_UPSTREAM +| GST_EVENT_TYPE_DOWNSTREAM;
 
-our enum GstEventType is export (
+constant GstEventType is export := guint;
+our enum GstEventTypeEnum is export (
   GST_EVENT_UNKNOWN                  => 0,
 
   # bidirectional events
@@ -267,7 +282,25 @@ our enum GstEventType is export (
   GST_EVENT_CUSTOM_BOTH_OOB          => 320 +< 8 +| GST_EVENT_TYPE_BOTH
 );
 
-our enum GstFormat is export (
+our constant GstFlowReturn is export := gint;
+our enum GstFlowReturnEnum is export (
+  GST_FLOW_CUSTOM_SUCCESS_2 => 102,
+  GST_FLOW_CUSTOM_SUCCESS_1 => 101,
+  GST_FLOW_CUSTOM_SUCCESS   => 100,
+  GST_FLOW_OK		            =>  0,
+  GST_FLOW_NOT_LINKED       => -1,
+  GST_FLOW_FLUSHING         => -2,
+  GST_FLOW_EOS              => -3,
+  GST_FLOW_NOT_NEGOTIATED   => -4,
+  GST_FLOW_ERROR	          => -5,
+  GST_FLOW_NOT_SUPPORTED    => -6,
+  GST_FLOW_CUSTOM_ERROR     => -100,
+  GST_FLOW_CUSTOM_ERROR_1   => -101,
+  GST_FLOW_CUSTOM_ERROR_2   => -102
+);
+
+constant GstFormat is export := guint;
+our enum GstFormatEnum is export (
   GST_FORMAT_UNDEFINED => 0,
   GST_FORMAT_DEFAULT   => 1,
   GST_FORMAT_BYTES     => 2,
@@ -276,27 +309,31 @@ our enum GstFormat is export (
   GST_FORMAT_PERCENT   => 5,
 );
 
-our enum GstInterpolationMode is export <
+constant GstInterpolationMode is export := guint;
+our enum GstInterpolationModeEnum is export <
   GST_INTERPOLATION_MODE_NONE
   GST_INTERPOLATION_MODE_LINEAR
   GST_INTERPOLATION_MODE_CUBIC
   GST_INTERPOLATION_MODE_CUBIC_MONOTONIC
 >;
 
-our enum GstIteratorItem is export (
+constant GstIteratorItem is export := guint;
+our enum GstIteratorItemEnum is export (
   GST_ITERATOR_ITEM_SKIP =>  0,
   GST_ITERATOR_ITEM_PASS =>  1,
   GST_ITERATOR_ITEM_END  =>  2,
 );
 
-our enum GstIteratorResult is export (
+constant GstIteratorResult is export := guint;
+our enum GstIteratorResultEnum is export (
   GST_ITERATOR_DONE   =>  0,
   GST_ITERATOR_OK     =>  1,
   GST_ITERATOR_RESYNC =>  2,
   GST_ITERATOR_ERROR  =>  3,
 );
 
-our enum GstLFOWaveform is export <
+constant GstLFOWaveform is export := guint;
+our enum GstLFOWaveformEnum is export <
   GST_LFO_WAVEFORM_SINE
   GST_LFO_WAVEFORM_SQUARE
   GST_LFO_WAVEFORM_SAW
@@ -304,7 +341,8 @@ our enum GstLFOWaveform is export <
   GST_LFO_WAVEFORM_TRIANGLE
 >;
 
-our enum GstLibraryError is export (
+constant GstLibraryError is export := guint;
+our enum GstLibraryErrorEnum is export (
   GST_LIBRARY_ERROR_FAILED =>  1,
   'GST_LIBRARY_ERROR_TOO_LAZY',
   'GST_LIBRARY_ERROR_INIT',
@@ -322,7 +360,8 @@ our enum GstLockFlagsEnum (
   GST_LOCK_FLAG_LAST      => (1 +< 8)
 );
 
-our enum GstMiniObjectFlags is export (
+constant GstMiniObjectFlags is export := guint;
+our enum GstMiniObjectFlagsEnum is export (
   GST_MINI_OBJECT_FLAG_LOCKABLE      => 1,
   GST_MINI_OBJECT_FLAG_LOCK_READONLY => (1 +< 1),
   GST_MINI_OBJECT_FLAG_MAY_BE_LEAKED => (1 +< 2),
@@ -333,7 +372,8 @@ our enum GstMiniObjectFlags is export (
 # C wants gint, but Perl might get confused. At the time of this writing,
 # there are issues with NativeCall and unsigned integers. For now, will
 # treat as UINT32, and will adjust as needed.
-our enum GstMessageType is export (
+constant GstMessageType is export := guint;
+our enum GstMessageTypeEnum is export (
   GST_MESSAGE_UNKNOWN           => 0,
   GST_MESSAGE_EOS               => (1 +< 0),
   GST_MESSAGE_ERROR             => (1 +< 1),
@@ -377,30 +417,15 @@ our enum GstMessageType is export (
   GST_MESSAGE_ANY               => 0xffffffff
 );
 
-our enum GstPadDirection is export <
+constant GstPadDirection is export := guint;
+our enum GstPadDirectionEnum is export <
   GST_PAD_UNKNOWN
   GST_PAD_SRC
   GST_PAD_SINK
 >;
 
-our constant GstFlowReturn is export := gint;
-our enum GstFlowReturnEnum is export (
-  GST_FLOW_CUSTOM_SUCCESS_2 => 102,
-  GST_FLOW_CUSTOM_SUCCESS_1 => 101,
-  GST_FLOW_CUSTOM_SUCCESS   => 100,
-  GST_FLOW_OK		            =>  0,
-  GST_FLOW_NOT_LINKED       => -1,
-  GST_FLOW_FLUSHING         => -2,
-  GST_FLOW_EOS              => -3,
-  GST_FLOW_NOT_NEGOTIATED   => -4,
-  GST_FLOW_ERROR	          => -5,
-  GST_FLOW_NOT_SUPPORTED    => -6,
-  GST_FLOW_CUSTOM_ERROR     => -100,
-  GST_FLOW_CUSTOM_ERROR_1   => -101,
-  GST_FLOW_CUSTOM_ERROR_2   => -102
-);
-
-our enum GstPadLinkCheck is export (
+constant GstPadLinkCheck is export := guint;
+our enum GstPadLinkCheckEnum is export (
   GST_PAD_LINK_CHECK_NOTHING        => 0,
   GST_PAD_LINK_CHECK_HIERARCHY      => 1,
   GST_PAD_LINK_CHECK_TEMPLATE_CAPS  => 1 +< 1,
@@ -409,7 +434,7 @@ our enum GstPadLinkCheck is export (
   GST_PAD_LINK_CHECK_DEFAULT        => 1 +| (1 +< 2)
 );
 
-our constant GstPadLinkReturn is export := gint;
+constant GstPadLinkReturn is export := gint;
 our enum GstPadLinkReturnEnum is export (
   GST_PAD_LINK_OK               =>  0,
   GST_PAD_LINK_WRONG_HIERARCHY  => -1,
@@ -420,19 +445,22 @@ our enum GstPadLinkReturnEnum is export (
   GST_PAD_LINK_REFUSED          => -6
 );
 
-our enum GstPadMode is export <
+constant GstPadMode is export := guint;
+our enum GstPadModeEnum is export <
   GST_PAD_MODE_NONE
   GST_PAD_MODE_PUSH
   GST_PAD_MODE_PULL
 >;
 
-our enum GstPadPresence is export <
+constant GstPadPresence is export := guint;
+our enum GstPadPresenceEnum is export <
   GST_PAD_ALWAYS
   GST_PAD_SOMETIMES
   GST_PAD_REQUEST
 >;
 
-our enum GstPadProbeReturn is export <
+constant GstPadProbeReturn is export := guint;
+our enum GstPadProbeReturnEnum is export <
   GST_PAD_PROBE_DROP
   GST_PAD_PROBE_OK
   GST_PAD_PROBE_REMOVE
@@ -440,7 +468,8 @@ our enum GstPadProbeReturn is export <
   GST_PAD_PROBE_HANDLED
 >;
 
-our enum GstPadProbeType is export (
+constant GstPadProbeType is export := guint;
+our enum GstPadProbeTypeEnum is export (
   GST_PAD_PROBE_TYPE_INVALID          => 0,
   GST_PAD_PROBE_TYPE_IDLE             => (1 +< 0),
   GST_PAD_PROBE_TYPE_BLOCK            => (1 +< 1),
@@ -466,7 +495,8 @@ our enum GstPadProbeType is export (
   GST_PAD_PROBE_TYPE_SCHEDULING       => (1 +< 12) +| (1 +< 13)
 );
 
-our enum GstParseError is export <
+constant GstParseError is export := guint;
+our enum GstParseErrorEnum is export <
   GST_PARSE_ERROR_SYNTAX
   GST_PARSE_ERROR_NO_SUCH_ELEMENT
   GST_PARSE_ERROR_NO_SUCH_PROPERTY
@@ -477,14 +507,16 @@ our enum GstParseError is export <
   GST_PARSE_ERROR_DELAYED_LINK
 >;
 
-our enum GstParseFlags is export (
+constant GstParseFlags is export := guint;
+our enum GstParseFlagsEnum is export (
   GST_PARSE_FLAG_NONE                   => 0,
   GST_PARSE_FLAG_FATAL_ERRORS           => 1,
   GST_PARSE_FLAG_NO_SINGLE_ELEMENT_BINS => (1 +< 1),
   GST_PARSE_FLAG_PLACE_IN_BIN           => (1 +< 2)
 );
 
-our enum GstPluginDependencyFlags is export (
+constant GstPluginDependencyFlags is export := guint;
+our enum GstPluginDependencyFlagsEnum is export (
   GST_PLUGIN_DEPENDENCY_FLAG_NONE                      => 0,
   GST_PLUGIN_DEPENDENCY_FLAG_RECURSE                   => 1,
   GST_PLUGIN_DEPENDENCY_FLAG_PATHS_ARE_DEFAULT_ONLY    => (1 +< 1),
@@ -493,18 +525,21 @@ our enum GstPluginDependencyFlags is export (
   GST_PLUGIN_DEPENDENCY_FLAG_PATHS_ARE_RELATIVE_TO_EXE => (1 +< 4)
 );
 
-our enum GstPluginError is export <
+constant GstPluginError is export := guint;
+our enum GstPluginErrorEnum is export <
   GST_PLUGIN_ERROR_MODULE
   GST_PLUGIN_ERROR_DEPENDENCIES
   GST_PLUGIN_ERROR_NAME_MISMATCH
 >;
 
-our enum GstPluginFlags is export (
+constant GstPluginFlags is export := guint;
+our enum GstPluginFlagsEnum is export (
   GST_PLUGIN_FLAG_CACHED      => (GST_OBJECT_FLAG_LAST +< 0),
   GST_PLUGIN_FLAG_BLACKLISTED => (GST_OBJECT_FLAG_LAST +< 1)
 );
 
-our enum GstProgressType is export (
+constant GstProgressType is export := guint;
+our enum GstProgressTypeEnum is export (
   GST_PROGRESS_TYPE_START    =>  0,
   GST_PROGRESS_TYPE_CONTINUE =>  1,
   GST_PROGRESS_TYPE_COMPLETE =>  2,
@@ -512,33 +547,65 @@ our enum GstProgressType is export (
   GST_PROGRESS_TYPE_ERROR    =>  4,
 );
 
-our enum GstPromiseResult is export <
+constant GstPromiseResult is export := guint;
+our enum GstPromiseResultEnum is export <
   GST_PROMISE_RESULT_PENDING
   GST_PROMISE_RESULT_INTERRUPTED
   GST_PROMISE_RESULT_REPLIED
   GST_PROMISE_RESULT_EXPIRED
 >;
 
-our enum GstQOSType is export (
+constant GstQOSType is export := guint;
+our enum GstQOSTypeEnum is export (
   GST_QOS_TYPE_OVERFLOW  =>  0,
   GST_QOS_TYPE_UNDERFLOW =>  1,
   GST_QOS_TYPE_THROTTLE  =>  2,
 );
 
-our enum GstQueryTypeFlags is export (
+constant GstQueryTypeFlags is export := guint;
+our enum GstQueryTypeFlagsEnum is export (
   GST_QUERY_TYPE_UPSTREAM   =>  1 +< 0,
   GST_QUERY_TYPE_DOWNSTREAM =>  1 +< 1,
   GST_QUERY_TYPE_SERIALIZED =>  1 +< 2,
 );
 
-our enum GstRank is export (
+constant GST_QUERY_TYPE_BOTH is export =
+  GST_QUERY_TYPE_UPSTREAM +| GST_QUERY_TYPE_DOWNSTREAM;
+
+constant GstQueryType is export := guint;
+our enum GstQueryTypeEnum is export (
+  GST_QUERY_UNKNOWN      =>   (0 +< 8),
+  GST_QUERY_POSITION     =>  (10 +< 8) +| GST_QUERY_TYPE_BOTH,
+  GST_QUERY_DURATION     =>  (20 +< 8) +| GST_QUERY_TYPE_BOTH,
+  GST_QUERY_LATENCY      =>  (30 +< 8) +| GST_QUERY_TYPE_BOTH,
+  GST_QUERY_JITTER       =>  (40 +< 8) +| GST_QUERY_TYPE_BOTH,
+  GST_QUERY_RATE         =>  (50 +< 8) +| GST_QUERY_TYPE_BOTH,
+  GST_QUERY_SEEKING      =>  (60 +< 8) +| GST_QUERY_TYPE_BOTH,
+  GST_QUERY_SEGMENT      =>  (70 +< 8) +| GST_QUERY_TYPE_BOTH,
+  GST_QUERY_CONVERT      =>  (80 +< 8) +| GST_QUERY_TYPE_BOTH,
+  GST_QUERY_FORMATS      =>  (90 +< 8) +| GST_QUERY_TYPE_BOTH,
+  GST_QUERY_BUFFERING    => (110 +< 8) +| GST_QUERY_TYPE_BOTH,
+  GST_QUERY_CUSTOM       => (120 +< 8) +| GST_QUERY_TYPE_BOTH,
+  GST_QUERY_URI          => (130 +< 8) +| GST_QUERY_TYPE_BOTH,
+  GST_QUERY_ALLOCATION   => (140 +< 8) +| GST_QUERY_TYPE_DOWNSTREAM +| GST_QUERY_TYPE_SERIALIZED,
+  GST_QUERY_SCHEDULING   => (150 +< 8) +| GST_QUERY_TYPE_UPSTREAM,
+  GST_QUERY_ACCEPT_CAPS  => (160 +< 8) +| GST_QUERY_TYPE_BOTH,
+  GST_QUERY_CAPS         => (170 +< 8) +| GST_QUERY_TYPE_BOTH,
+  GST_QUERY_DRAIN        => (180 +< 8) +| GST_QUERY_TYPE_DOWNSTREAM +| GST_QUERY_TYPE_SERIALIZED,
+  GST_QUERY_CONTEXT      => (190 +< 8) +| GST_QUERY_TYPE_BOTH,
+  GST_QUERY_BITRATE      => (200 +< 8) +| GST_QUERY_TYPE_DOWNSTREAM,
+);
+
+constant GstRank is export := guint;
+our enum GstRankEnum is export (
   GST_RANK_NONE      =>  0,
   GST_RANK_MARGINAL  =>  64,
   GST_RANK_SECONDARY =>  128,
   GST_RANK_PRIMARY   =>  256,
 );
 
-our enum GstResourceError is export (
+constant GstResourceError is export := guint;
+our enum GstResourceErrorEnum is export (
   GST_RESOURCE_ERROR_FAILED =>  1,
   'GST_RESOURCE_ERROR_TOO_LAZY',
   'GST_RESOURCE_ERROR_NOT_FOUND',
@@ -557,13 +624,15 @@ our enum GstResourceError is export (
   'GST_RESOURCE_ERROR_NUM_ERRORS'
 );
 
-our enum GstSearchMode is export (
+constant GstSearchMode is export := guint;
+our enum GstSearchModeEnum is export (
   GST_SEARCH_MODE_EXACT =>  0,
   'GST_SEARCH_MODE_BEFORE',
   'GST_SEARCH_MODE_AFTER'
 );
 
-our enum GstSeekFlags is export (
+constant GstSeekFlags is export := guint;
+our enum GstSeekFlagsEnum is export (
   GST_SEEK_FLAG_NONE                        => 0,
   GST_SEEK_FLAG_FLUSH                       => 1,
   GST_SEEK_FLAG_ACCURATE                    => (1 +< 1),
@@ -579,7 +648,8 @@ our enum GstSeekFlags is export (
   GST_SEEK_FLAG_TRICKMODE_FORWARD_PREDICTED => (1 +< 9),
 );
 
-our enum GstSegmentFlags is export (
+constant GstSegmentFlags is export := guint;
+our enum GstSegmentFlagsEnum is export (
   GST_SEGMENT_FLAG_NONE                        => GST_SEEK_FLAG_NONE.Int,
   GST_SEGMENT_FLAG_RESET                       => GST_SEEK_FLAG_FLUSH.Int,
   GST_SEGMENT_FLAG_TRICKMODE                   => GST_SEEK_FLAG_TRICKMODE.Int,
@@ -590,17 +660,20 @@ our enum GstSegmentFlags is export (
   GST_SEGMENT_FLAG_TRICKMODE_NO_AUDIO          => GST_SEEK_FLAG_TRICKMODE_NO_AUDIO.Int
 );
 
-our enum GstSeekType is export (
+constant GstSeekType is export := guint;
+our enum GstSeekTypeEnum is export (
   GST_SEEK_TYPE_NONE => 0,
   GST_SEEK_TYPE_SET  => 1,
   GST_SEEK_TYPE_END  => 2,
 );
 
-our enum GstStackTraceFlags is export (
+constant GstStackTraceFlags is export := guint;
+our enum GstStackTraceFlagsEnum is export (
   GST_STACK_TRACE_SHOW_FULL =>  1 +< 0,
 );
 
-our enum GstState is export (
+constant GstState is export := guint;
+our enum GstStateEnum is export (
   GST_STATE_VOID_PENDING =>  0,
   GST_STATE_NULL         =>  1,
   GST_STATE_READY        =>  2,
@@ -608,7 +681,8 @@ our enum GstState is export (
   GST_STATE_PLAYING      =>  4,
 );
 
-our enum GstStateChange is export (
+constant GstStateChange is export := guint;
+our enum GstStateChangeEnum is export (
   GST_STATE_CHANGE_NULL_TO_READY      => (GST_STATE_NULL.Int    +< 3) +| GST_STATE_READY.Int,
   GST_STATE_CHANGE_READY_TO_PAUSED    => (GST_STATE_READY.Int   +< 3) +| GST_STATE_PAUSED.Int,
   GST_STATE_CHANGE_PAUSED_TO_PLAYING  => (GST_STATE_PAUSED.Int  +< 3) +| GST_STATE_PLAYING.Int,
@@ -622,14 +696,16 @@ our enum GstStateChange is export (
 );
 
 
-our enum GstStateChangeReturn is export (
+constant GstStateChangeReturn is export := guint;
+our enum GstStateChangeReturnEnum is export (
   GST_STATE_CHANGE_FAILURE    => 0,
   GST_STATE_CHANGE_SUCCESS    => 1,
   GST_STATE_CHANGE_ASYNC      => 2,
   GST_STATE_CHANGE_NO_PREROLL => 3,
 );
 
-our enum GstStreamError is export (
+constant GstStreamError is export := guint;
+our enum GstStreamErrorEnum is export (
   GST_STREAM_ERROR_FAILED =>  1,
   'GST_STREAM_ERROR_TOO_LAZY',
   'GST_STREAM_ERROR_NOT_IMPLEMENTED',
@@ -646,7 +722,8 @@ our enum GstStreamError is export (
   'GST_STREAM_ERROR_NUM_ERRORS'
 );
 
-our enum GstStreamStatusType is export (
+constant GstStreamStatusType is export := guint;
+our enum GstStreamStatusTypeEnum is export (
   GST_STREAM_STATUS_TYPE_CREATE  => 0,
   GST_STREAM_STATUS_TYPE_ENTER   => 1,
   GST_STREAM_STATUS_TYPE_LEAVE   => 2,
@@ -656,7 +733,8 @@ our enum GstStreamStatusType is export (
   GST_STREAM_STATUS_TYPE_STOP    => 10,
 );
 
-our enum GstStreamType is export (
+constant GstStreamType is export := guint;
+our enum GstStreamTypeEnum is export (
   GST_STREAM_TYPE_UNKNOWN   => 1 +< 0,
   GST_STREAM_TYPE_AUDIO     => 1 +< 1,
   GST_STREAM_TYPE_VIDEO     => 1 +< 2,
@@ -664,12 +742,14 @@ our enum GstStreamType is export (
   GST_STREAM_TYPE_TEXT      => 1 +< 4,
 );
 
-our enum GstStructureChangeType is export (
+constant GstStructureChangeType is export := guint;
+our enum GstStructureChangeTypeEnum is export (
   GST_STRUCTURE_CHANGE_TYPE_PAD_LINK   => 0,
   GST_STRUCTURE_CHANGE_TYPE_PAD_UNLINK => 1,
 );
 
-our enum GstTagFlag is export <
+constant GstTagFlag is export := guint;
+our enum GstTagFlagEnum is export <
   GST_TAG_FLAG_UNDEFINED
   GST_TAG_FLAG_META
   GST_TAG_FLAG_ENCODED
@@ -677,7 +757,8 @@ our enum GstTagFlag is export <
   GST_TAG_FLAG_COUNT
 >;
 
-our enum GstTagMergeMode is export <
+constant GstTagMergeMode is export := guint;
+our enum GstTagMergeModeEnum is export <
   GST_TAG_MERGE_UNDEFINED
   GST_TAG_MERGE_REPLACE_ALL
   GST_TAG_MERGE_REPLACE
@@ -688,37 +769,43 @@ our enum GstTagMergeMode is export <
   GST_TAG_MERGE_COUNT
 >;
 
-our enum GstTagScope is export <
+constant GstTagScope is export := guint;
+our enum GstTagScopeEnum is export <
   GST_TAG_SCOPE_STREAM
   GST_TAG_SCOPE_GLOBAL
 >;
 
-our enum GstTaskState is export <
+constant GstTaskState is export := guint;
+our enum GstTaskStateEnum is export <
   GST_TASK_STARTED
   GST_TASK_STOPPED
   GST_TASK_PAUSED
 >;
 
-our enum GstTocLoopType is export (
+constant GstTocLoopType is export := guint;
+our enum GstTocLoopTypeEnum is export (
   GST_TOC_LOOP_NONE =>  0,
   'GST_TOC_LOOP_FORWARD',
   'GST_TOC_LOOP_REVERSE',
   'GST_TOC_LOOP_PING_PONG'
 );
 
-our enum GstTocScope is export (
+constant GstTocScope is export := guint;
+our enum GstTocScopeEnum is export (
   GST_TOC_SCOPE_GLOBAL  => 1,
   GST_TOC_SCOPE_CURRENT => 2,
 );
 
-our enum GstTracerValueScope is export <
+constant GstTracerValueScope is export := guint;
+our enum GstTracerValueScopeEnum is export <
   GST_TRACER_VALUE_SCOPE_PROCESS
   GST_TRACER_VALUE_SCOPE_THREAD
   GST_TRACER_VALUE_SCOPE_ELEMENT
   GST_TRACER_VALUE_SCOPE_PAD
 >;
 
-our enum GstTypeFindProbability is export (
+constant GstTypeFindProbability is export := guint;
+our enum GstTypeFindProbabilityEnum is export (
   GST_TYPE_FIND_NONE           => 0,
   GST_TYPE_FIND_MINIMUM        => 1,
   GST_TYPE_FIND_POSSIBLE       => 50,
@@ -727,14 +814,16 @@ our enum GstTypeFindProbability is export (
   GST_TYPE_FIND_MAXIMUM        => 100,
 );
 
-our enum GstURIError is export <
+constant GstURIError is export := guint;
+our enum GstURIErrorEnum is export <
   GST_URI_ERROR_UNSUPPORTED_PROTOCOL
   GST_URI_ERROR_BAD_URI
   GST_URI_ERROR_BAD_STATE
   GST_URI_ERROR_BAD_REFERENCE
 >;
 
-our enum GstURIType is export <
+constant GstURIType is export := guint;
+our enum GstURITypeEnum is export <
   GST_URI_UNKNOWN
   GST_URI_SINK
   GST_URI_SRC
@@ -800,7 +889,7 @@ class GstElement is repr<CStruct> does GTK::Roles::Pointers is export {
 }
 
 class GstMessage is repr<CStruct> does GTK::Roles::Pointers is export {
-  HAS GstMiniObject   $.mini_object;
+  HAS GstMiniObject   $!mini_object;
   has guint           $!type;        # GstMessageType
   has guint64         $.timestamp;
   has GstObject       $.src;
@@ -810,8 +899,8 @@ class GstMessage is repr<CStruct> does GTK::Roles::Pointers is export {
 
   method type is rw {
     Proxy.new:
-      FETCH => -> $           { GstMessageType($!type) },
-      STORE => -> $, Int() \t { $!type = t             };
+      FETCH => -> $           { GstMessageTypeEnum($!type) },
+      STORE => -> $, Int() \t { $!type = t                 };
   }
 
 };
@@ -842,4 +931,16 @@ class GstPluginDesc       is repr<CStruct>     does GTK::Roles::Pointers is expo
   has gpointer  $!gst_reserved1;
   has gpointer  $!gst_reserved2;
   has gpointer  $!gst_reserved3;
+};
+
+class GstQuery            is repr<CStruct>     does GTK::Roles::Pointers is export {
+{
+  HAS GstMiniObject $!mini_object;
+  has GstQueryType  $!type;
+
+  method type is rw {
+    Proxy.new:
+      FETCH => -> $           { GstQueryTypeEnum($!type) },
+      STORE => -> $, Int() \t { $!type = t               };
+  }
 };
