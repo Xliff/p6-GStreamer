@@ -20,6 +20,8 @@ constant gstreamer is export = 'gstreamer-1.0',v0;
 constant GstBusSyncHandler                 is export := Pointer;
 constant GstElementCallAsyncFunc           is export := Pointer;
 constant GstElementForeachPadFunc          is export := Pointer;
+constant GstClockCallback                  is export := Pointer;
+constant GstClockID                        is export := Pointer;
 constant GstIteratorCopyFunction           is export := Pointer;
 constant GstIteratorFoldFunction           is export := Pointer;
 constant GstIteratorForeachFunction        is export := Pointer;
@@ -106,6 +108,17 @@ our enum GstClockEntryType is export <
   GST_CLOCK_ENTRY_SINGLE
   GST_CLOCK_ENTRY_PERIODIC
 >;
+
+our enum GstClockFlags is export (
+  GST_CLOCK_FLAG_CAN_DO_SINGLE_SYNC     => (GST_OBJECT_FLAG_LAST +< 0),
+  GST_CLOCK_FLAG_CAN_DO_SINGLE_ASYNC    => (GST_OBJECT_FLAG_LAST +< 1),
+  GST_CLOCK_FLAG_CAN_DO_PERIODIC_SYNC   => (GST_OBJECT_FLAG_LAST +< 2),
+  GST_CLOCK_FLAG_CAN_DO_PERIODIC_ASYNC  => (GST_OBJECT_FLAG_LAST +< 3),
+  GST_CLOCK_FLAG_CAN_SET_RESOLUTION     => (GST_OBJECT_FLAG_LAST +< 4),
+  GST_CLOCK_FLAG_CAN_SET_MASTER         => (GST_OBJECT_FLAG_LAST +< 5),
+  GST_CLOCK_FLAG_NEEDS_STARTUP_SYNC     => (GST_OBJECT_FLAG_LAST +< 6),
+  GST_CLOCK_FLAG_LAST                   => (GST_OBJECT_FLAG_LAST +< 8)
+);
 
 our enum GstClockReturn is export (
   GST_CLOCK_OK          => 0,
