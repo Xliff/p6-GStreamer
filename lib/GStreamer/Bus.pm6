@@ -6,7 +6,6 @@ use GTK::Compat::Types;
 use GStreamer::Raw::Types;
 use GStreamer::Raw::Bus;
 
-use GStreamer::Message;
 use GStreamer::Object;
 
 our subset BusAncestry is export of Mu
@@ -129,7 +128,7 @@ class GStreamer::Bus is GStreamer::Object {
     my $m = gst_bus_peek($!b);
 
     $m ??
-      ( $raw ?? $m !! GStreamer::Message.new($m) )
+      ( $raw ?? $m !! ::('GStreamer::Message').new($m) )
       !!
       Nil;
   }
@@ -142,7 +141,7 @@ class GStreamer::Bus is GStreamer::Object {
     my $m = gst_bus_poll($!b, $events, $timeout);
 
     $m ??
-      ( $raw ?? $m !! GStreamer::Message.new($m) )
+      ( $raw ?? $m !! ::('GStreamer::Message').new($m) )
       !!
       Nil;
   }
@@ -151,7 +150,7 @@ class GStreamer::Bus is GStreamer::Object {
     my $m = gst_bus_pop($!b);
 
     $m ??
-      ( $raw ?? $m !! GStreamer::Message.new($m) )
+      ( $raw ?? $m !! ::('GStreamer::Message').new($m) )
       !!
       Nil;
   }
@@ -166,7 +165,7 @@ class GStreamer::Bus is GStreamer::Object {
     my $m = gst_bus_pop_filtered($!b, $t);
 
     $m ??
-      ( $raw ?? $m !! GStreamer::Message.new($m) )
+      ( $raw ?? $m !! ::('GStreamer::Message').new($m) )
       !!
       Nil;
   }
@@ -216,7 +215,7 @@ class GStreamer::Bus is GStreamer::Object {
     my $m = gst_bus_timed_pop($!b, $timeout);
 
     $m ??
-      ( $raw ?? $m !! GStreamer::Message.new($m) )
+      ( $raw ?? $m !! ::('GStreamer::Message').new($m) )
       !!
       Nil;
   }
@@ -233,7 +232,7 @@ class GStreamer::Bus is GStreamer::Object {
     my $m = gst_bus_timed_pop_filtered($!b, $to, $t);
 
     $m ??
-      ( $raw ?? $m !! GStreamer::Message.new($m) )
+      ( $raw ?? $m !! ::('GStreamer::Message').new($m) )
       !!
       Nil;
   }

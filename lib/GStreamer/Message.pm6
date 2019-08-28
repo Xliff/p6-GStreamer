@@ -14,6 +14,15 @@ use GTK::Compat::Value;
 
 use GStreamer::MiniObject;
 
+use GStreamer::Element;
+use GStreamer::Clock;
+use GStreamer::Context;
+use GStreamer::Device;
+use GStreamer::StreamCollection;
+use GStreamer::Structure;
+use GStreamer::TagList;
+use GStreamer::TOC;
+
 class GStreamer::Message is GStreamer::MiniObject {
   has GstMessage $!m handles <type src timestamp>;
 
