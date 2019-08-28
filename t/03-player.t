@@ -32,7 +32,7 @@ sub MAIN (
     if %e.values.grep( *.defined.not );
 
   # Will need to check this and add it to GStreamer::Object
-  %e<source>.prop-set( 'location', gv_str($filename) );
+  %e<source>.prop_set( 'location', gv_str($filename) );
 
   my $bus = $pipeline.bus;
   my $watch-id = $bus.add-watch(-> *@a --> guint {
