@@ -11,7 +11,7 @@ use GTK::Compat::Value;
 use GStreamer::MiniObject;
 
 class GStreamer::Message is GStreamer::MiniObject {
-  has GstMessage $!m handles <type timestamp>;
+  has GstMessage $!m handles <type src timestamp>;
 
   my sub ppr(*@a) {
     @a.map({

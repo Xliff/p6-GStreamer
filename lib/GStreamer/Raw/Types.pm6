@@ -731,7 +731,7 @@ constant GST_PADDING = 4;
 class GstObject is repr<CStruct> does GTK::Roles::Pointers is export {
   HAS GObjectStruct     $.object;  # GInitiallyUnowned
   HAS GMutex            $.lock;
-  has gchar             $.name;
+  has Str               $.name;
   has GstObject         $.parent;
   has guint32           $.flags;
 
