@@ -1,4 +1,4 @@
-GST_QUERY_TYPE_$1GST_QUERY_TYPE_$1GST_QUERY_TYPE_$1GST_QUERY_TYPE_$1GST_QUERY_TYPE_$1GST_QUERY_TYPE_$1GST_QUERY_TYPE_$1GST_QUERY_TYPE_$1GST_QUERY_TYPE_$1GST_QUERY_TYPE_$1GST_QUERY_TYPE_$1GST_QUERY_TYPE_$1GST_QUERY_TYPE_$1GST_QUERY_TYPE_$1GST_QUERY_TYPE_$1GST_QUERY_TYPE_$1GST_QUERY_TYPE_$1GST_QUERY_TYPE_$1GST_QUERY_TYPE_$1GST_QUERY_TYPE_$1GST_QUERY_TYPE_$1use v6.c;
+use v6.c;
 
 use NativeCall;
 
@@ -51,9 +51,12 @@ constant GstPluginInitFullFunc             is export := Pointer;
 constant GstPluginInitFunc                 is export := Pointer;
 constant GstTaskFunction                   is export := Pointer;
 
+class GstAllocator         is repr('CPointer') does GTK::Roles::Pointers is export { }
+class GstAllocationParams  is repr('CPointer') does GTK::Roles::Pointers is export { }
 class GstBin               is repr('CPointer') does GTK::Roles::Pointers is export { }
 class GstBuffer            is repr('CPointer') does GTK::Roles::Pointers is export { }
 class GstBufferList        is repr('CPointer') does GTK::Roles::Pointers is export { }
+class GstBufferPool        is repr('CPointer') does GTK::Roles::Pointers is export { }
 class GstBus               is repr('CPointer') does GTK::Roles::Pointers is export { }
 class GstCaps              is repr('CPointer') does GTK::Roles::Pointers is export { }
 class GstChildProxy        is repr('CPointer') does GTK::Roles::Pointers is export { }
@@ -75,7 +78,7 @@ class GstPipeline          is repr('CPointer') does GTK::Roles::Pointers is expo
 class GstPlugin            is repr('CPointer') does GTK::Roles::Pointers is export { }
 class GstPluginFeature     is repr('CPointer') does GTK::Roles::Pointers is export { }
 class GstProbeInfo         is repr('CPointer') does GTK::Roles::Pointers is export { }
-class GstQuery             is repr('CPointer') does GTK::Roles::Pointers is export { }
+#class GstQuery             is repr('CPointer') does GTK::Roles::Pointers is export { }
 class GstStaticPadTemplate is repr('CPointer') does GTK::Roles::Pointers is export { }
 class GstStream            is repr('CPointer') does GTK::Roles::Pointers is export { }
 class GstStreamCollection  is repr('CPointer') does GTK::Roles::Pointers is export { }
@@ -667,6 +670,13 @@ our enum GstSeekTypeEnum is export (
   GST_SEEK_TYPE_END  => 2,
 );
 
+constant GstSchedulingFlags is export := guint;
+our enum GstSchedulingFlagsEnum is export (
+  GST_SCHEDULING_FLAG_SEEKABLE          => 1,
+  GST_SCHEDULING_FLAG_SEQUENTIAL        => (1 +< 1),
+  GST_SCHEDULING_FLAG_BANDWIDTH_LIMITED => (1 +< 2)
+);
+
 constant GstStackTraceFlags is export := guint;
 our enum GstStackTraceFlagsEnum is export (
   GST_STACK_TRACE_SHOW_FULL =>  1 +< 0,
@@ -694,7 +704,6 @@ our enum GstStateChangeEnum is export (
   GST_STATE_CHANGE_PAUSED_TO_PAUSED   => (GST_STATE_PAUSED.Int  +< 3) +| GST_STATE_PAUSED.Int,
   GST_STATE_CHANGE_PLAYING_TO_PLAYING => (GST_STATE_PLAYING.Int +< 3) +| GST_STATE_PLAYING.Int
 );
-
 
 constant GstStateChangeReturn is export := guint;
 our enum GstStateChangeReturnEnum is export (
@@ -934,7 +943,6 @@ class GstPluginDesc       is repr<CStruct>     does GTK::Roles::Pointers is expo
 };
 
 class GstQuery            is repr<CStruct>     does GTK::Roles::Pointers is export {
-{
   HAS GstMiniObject $!mini_object;
   has GstQueryType  $!type;
 

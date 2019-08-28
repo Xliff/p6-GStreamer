@@ -1,8 +1,12 @@
 use v6.c;
 
+use NativeCall;
+
 use GTK::Compat::Types;
 use GStreamer::Raw::Types;
 use GStreamer::Raw::Query;
+
+use GStreamer::Raw::Subs;
 
 use GStreamer::MiniObject;
 
@@ -39,7 +43,7 @@ class GStreamer::Query is GStreamer::MiniObject {
 
   multi method new (:$bitrate is required) {
     GStreamer::Query.new_bitrate;
-  }s
+  }
   method new_bitrate {
     self.bless( query  => gst_query_new_bitrate() );
   }
@@ -60,11 +64,11 @@ class GStreamer::Query is GStreamer::MiniObject {
     self.bless( querry => gst_query_new_caps($f) );
   }
 
-  multi method new (Str() $context, :$context is required) {
-    GStreamer::Query.new_context($context);
+  multi method new (Str() $ctxt, :$context is required) {
+    GStreamer::Query.new_context($ctxt);
   }
   method new_context (Str() $context) {
-    self.bless( query => gst_query_new_context($context);
+    self.bless( query => gst_query_new_context($context) );
   }
 
   multi method new (
@@ -76,10 +80,10 @@ class GStreamer::Query is GStreamer::MiniObject {
     GStreamer::Query.new_convert($src_format, $value, $dest_format);
   }
   method new_convert (Int() $src_format, Int() $value, Int() $dest_format) {
-    my gint64 $value;
+    my gint64 $v = 0;
     my GstFormat ($sf, $df) = ($src_format, $dest_format);
 
-    self.bless( query => gst_query_new_convert($sf, $value, $df) );
+    self.bless( query => gst_query_new_convert($sf, $v, $df) );
   }
 
   multi method new (
@@ -93,7 +97,7 @@ class GStreamer::Query is GStreamer::MiniObject {
     self.bless( query => gst_query_new_custom($type, $structure) );
   }
 
-  method new (:$drain is required) {
+  multi method new (:$drain is required) {
     GStreamer::Query.new_drain;
   }
   method new_drain {
@@ -123,7 +127,7 @@ class GStreamer::Query is GStreamer::MiniObject {
     self.bless(query => gst_query_new_latency() );
   }
 
-  multi method new_position (Int() $format, :$position is required) {
+  multi method new (Int() $format, :$position is required) {
     GStreamer::Query.new_position($format);
   }
   method new_position (Int() $format) {
@@ -164,28 +168,50 @@ class GStreamer::Query is GStreamer::MiniObject {
     self.bless(query => gst_query_new_uri() );
   }
 
-  method add_allocation_meta (GType $api, GstStructure $params) {
-    gst_query_add_allocation_meta($!q, $api, $params);
+  method add_allocation_meta (Int() $api, GstStructure() $params) {
+    my GType $a = $api;
+
+    gst_query_add_allocation_meta($!q, $a, $params);
   }
 
-  method add_allocation_param (GstAllocator $allocator, GstAllocationParams $params) {
+  method add_allocation_param (
+    GstAllocator() $allocator,
+    GstAllocationParams() $params
+  ) {
     gst_query_add_allocation_param($!q, $allocator, $params);
   }
 
-  method add_allocation_pool (GstBufferPool $pool, guint $size, guint $min_buffers, guint $max_buffers) {
-    gst_query_add_allocation_pool($!q, $pool, $size, $min_buffers, $max_buffers);
+  method add_allocation_pool (
+    GstBufferPool() $pool,
+    Int() $size,
+    Int() $min_buffers,
+    Int() $max_buffers
+  ) {
+    my guint ($s, $mnb, $mxb) = ($size, $min_buffers, $max_buffers);
+    gst_query_add_allocation_pool($!q, $pool, $s, $mnb, $mxb);
   }
 
-  method add_buffering_range (gint64 $start, gint64 $stop) {
-    gst_query_add_buffering_range($!q, $start, $stop);
+  method add_buffering_range (Int() $start, Int() $stop) {
+    my ($st, $sp) = ($start, $stop);
+
+    gst_query_add_buffering_range($!q, $st, $sp);
   }
 
-  method add_scheduling_mode (GstPadMode $mode) {
-    gst_query_add_scheduling_mode($!q, $mode);
+  method add_scheduling_mode (Int() $mode) {
+    my GstPadMode $m = $mode;
+
+    gst_query_add_scheduling_mode($!q, $m);
   }
 
-  method find_allocation_meta (GType $api, guint $index) {
-    gst_query_find_allocation_meta($!q, $api, $index);
+  # method copy {
+  #   self.bless( query => GStreamer::MiniObject.copy($!q.GstMiniObject) );
+  # }
+
+  method find_allocation_meta (Int() $api, Int() $index) {
+    my GType $a = $api;
+    my guint $i = $index;
+
+    so gst_query_find_allocation_meta($!q, $api, $index);
   }
 
   method get_n_allocation_metas {
@@ -216,24 +242,64 @@ class GStreamer::Query is GStreamer::MiniObject {
     gst_query_get_type();
   }
 
-  method has_scheduling_mode (GstPadMode $mode) {
-    gst_query_has_scheduling_mode($!q, $mode);
+  method has_scheduling_mode (Int() $mode) {
+    my GstPadMode $m = $mode;
+
+    gst_query_has_scheduling_mode($!q, $m);
   }
 
-  method has_scheduling_mode_with_flags (GstPadMode $mode, GstSchedulingFlags $flags) {
-    gst_query_has_scheduling_mode_with_flags($!q, $mode, $flags);
+  method has_scheduling_mode_with_flags (
+    Int() $mode,
+    Int() $flags
+  ) {
+    my GstPadMode $m = $mode;
+    my GstSchedulingFlags $f = $flags;
+
+    gst_query_has_scheduling_mode_with_flags($!q, $m, $f);
   }
 
-  method parse_accept_caps (GstCaps $caps) {
-    gst_query_parse_accept_caps($!q, $caps);
+  proto method parse_accept_caps (|)
+  { * }
+
+  multi method parse_accept_caps {
+    samewith ($);
+  }
+  multi method parse_accept_caps ($caps is rw, :$all = False) {
+    my $c = CArray[Pointer[GstCaps]].new;
+    $c[0] = Pointer[GstCaps].new;
+
+    my $rc = gst_query_parse_accept_caps($!q, $c);
+    ($caps) = ppr( $c[0] );
+    $all.not ?? $caps !! ($caps, $rc);
   }
 
-  method parse_accept_caps_result (gboolean $result) {
-    gst_query_parse_accept_caps_result($!q, $result);
+  proto method parse_accept_caps_result (|)
+  { * }
+
+  multi method parse_accept_caps_result (:$all = False) {
+    samewith($, :$all);
+  }
+  multi method parse_accept_caps_result ($result is rw, :$all = False) {
+    my gboolean $r = $result;
+
+    my $rc = gst_query_parse_accept_caps_result($!q, $r);
+    $result = $r;
+    $all.not ?? $result !! ($result, $rc);
   }
 
-  method parse_allocation (GstCaps $caps, gboolean $need_pool) {
-    gst_query_parse_allocation($!q, $caps, $need_pool);
+  proto method parse_allocation (|)
+  { * }
+
+  multi method parse_allocation {
+    samewith ($, $);
+  }
+  multi method parse_allocation (GstCaps() $caps, Int() $need_pool) {
+    my gboolean $np = 0;
+    my $c = CArray[Pointer[GstCaps]].new;
+    $c[0] = Pointer[GstCaps].new;
+
+    my $rc = gst_query_parse_allocation($!q, $c, $np);
+    ($caps, $need_pool) = ppr($c, $np);
   }
 
   method parse_bitrate (guint $nominal_bitrate) {
