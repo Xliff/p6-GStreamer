@@ -22,7 +22,7 @@ sub MAIN (
   my $pipeline = GStreamer::Pipeline.new('audio-player');
 
   %e{$_[0]} = GStreamer::ElementFactory.make($_[1], $_[2])
-    for  <source  filesrc       file-src>,
+    for  <source  filesrc       file-source>,
          <demuxer oggdemux      ogg-demuxer>,
          <decoder vorbisdec     vorbis-decoder>,
          <conv    audioconvert  converter>,
@@ -68,23 +68,22 @@ sub MAIN (
   # when the "pad-added" is emitted.
 
   # %e<demuxer>.pad-added.tap(-> *@a {
-    # CATCH { default { .message.say } }
-
-    # say 'PA';
-    # my $p = GStreamer::Pad.new( @a[1] );
-    # my $sinkpad = GStreamer::Element.get-static-pad('sink');
-
-    # $p.link($sinkpad);
-    # $sinkpad.unref;
-
-    # say 'Dynamic pad created, linking demuxer/decoder'
+  #   CATCH { default { .message.say } }
+  #
+  #   say 'PA';
+  #   my $p = GStreamer::Pad.new( @a[1] );
+  #   my $sinkpad = %e<decoder>.get-static-pad('sink');
+  #
+  #   $p.link($sinkpad);
+  #   $sinkpad.unref;
+  #
+  #   say 'Dynamic pad created, linking demuxer/decoder'
   # });
 
   say "Now playing: { $filename }";
   $pipeline.set_state(GST_STATE_PLAYING);
 
   say 'Running...';
-  %e.gist.say;
 
   $loop.run;
 

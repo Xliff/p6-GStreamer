@@ -10,7 +10,7 @@ sub nocr ($s) is export {
   $s.subst("\n", ' ', :g);
 }
 
-constant GstClockTime     is export := guint32;
+constant GstClockTime     is export := gint64;
 constant GstClockTimeDiff is export := int64;
 
 # cw: I now realize, that at some point, ALL of these will have to be functions
@@ -78,6 +78,7 @@ class GstTagList           is repr('CPointer') does GTK::Roles::Pointers is expo
 class GstToc               is repr('CPointer') does GTK::Roles::Pointers is export { }
 
 constant GST_OBJECT_FLAG_LAST is export = 1 +< 4;
+constant GST_CLOCK_TIME_NONE  is export = 18446744073709551615;
 
 our enum GstBufferingMode is export <
   GST_BUFFERING_STREAM

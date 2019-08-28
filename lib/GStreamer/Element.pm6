@@ -152,25 +152,42 @@ class GStreamer::Element is GStreamer::Object {
     gst_element_foreach_src_pad($!e, $func, $user_data);
   }
 
-  method get_base_time is also<get-base-time> {
+  method get_base_time
+    is also<
+      get-base-time
+      base_time
+      base-time
+    >
+  {
     gst_element_get_base_time($!e);
   }
 
-  method get_bus (:$raw = False) is also<get-bus> {
+  method get_bus (:$raw = False)
+    is also<
+      get-bus
+      bus
+    >
+  {
     my $b = gst_element_get_bus($!e);
 
     $b ??
-      ( $raw ?? $b !! GST::Bus.new($b) )
+      ( $raw ?? $b !! GStreamer::Bus.new($b) )
       !!
       Nil;
   }
 
-  method get_clock is also<get-clock> {
+  method get_clock (:$raw = False)
+    is also<
+      get-clock
+      clock
+    >
+  {
     gst_element_get_clock($!e);
     # ADD OBJECT CREATION
   }
 
-  method get_context (Str $context_type) is also<get-context> {
+  method get_context (Str $context_type) is also<get-context>
+  {
     gst_element_get_context($!e, $context_type);
     # ADD OBJECT CREATION
   }
@@ -182,12 +199,22 @@ class GStreamer::Element is GStreamer::Object {
     # ADD OBJECT CREATION
   }
 
-  method get_contexts is also<get-contexts> {
+  method get_contexts (:$raw = False)
+    is also<
+      get-contexts
+      contexts
+    >
+  {
     gst_element_get_contexts($!e);
     # ADD OBJECT CREATION
   }
 
-  method get_factory (:$raw = False) is also<get-factory> {
+  method get_factory (:$raw = False)
+    is also<
+      get-factory
+      factory
+    >
+  {
     my $f = gst_element_get_factory($!e);
 
     $f ??
@@ -227,7 +254,13 @@ class GStreamer::Element is GStreamer::Object {
       Nil;
   }
 
-  method get_start_time is also<get-start-time> {
+  method get_start_time
+    is also<
+      get-start-time
+      start_time
+      start-time
+    >
+  {
     gst_element_get_start_time($!e);
   }
 

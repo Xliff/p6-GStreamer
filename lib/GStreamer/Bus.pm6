@@ -6,6 +6,7 @@ use GTK::Compat::Types;
 use GStreamer::Raw::Types;
 use GStreamer::Raw::Bus;
 
+use GStreamer::Message;
 use GStreamer::Object;
 
 our subset BusAncestry is export of Mu
@@ -109,7 +110,7 @@ class GStreamer::Bus is GStreamer::Object {
   multi method get_pollfd {
     samewith(GPollFD.new);
   }
-  multi method get_pollfd (GPollFD $fd) {
+  multi method get_pollfd (GPollFD() $fd) {
     gst_bus_get_pollfd($!b, $fd);
     $fd;
   }
@@ -125,8 +126,12 @@ class GStreamer::Bus is GStreamer::Object {
   }
 
   method peek (:$raw = False) {
-    gst_bus_peek($!b);
-    # ADD OBJECT CREATION CODE
+    my $m = gst_bus_peek($!b);
+
+    $m ??
+      ( $raw ?? $m !! GStreamer::Message.new($m) )
+      !!
+      Nil;
   }
 
   method poll (
@@ -134,13 +139,21 @@ class GStreamer::Bus is GStreamer::Object {
     Int() $timeout,
     :$raw = False
   ) {
-    gst_bus_poll($!b, $events, $timeout);
-    # ADD OBJECT CREATION CODE
+    my $m = gst_bus_poll($!b, $events, $timeout);
+
+    $m ??
+      ( $raw ?? $m !! GStreamer::Message.new($m) )
+      !!
+      Nil;
   }
 
   method pop (:$raw = False) {
-    gst_bus_pop($!b);
-    # ADD OBJECT CREATION CODE
+    my $m = gst_bus_pop($!b);
+
+    $m ??
+      ( $raw ?? $m !! GStreamer::Message.new($m) )
+      !!
+      Nil;
   }
 
   method pop_filtered (
@@ -149,8 +162,13 @@ class GStreamer::Bus is GStreamer::Object {
   )
     is also<pop-filtered>
   {
-    gst_bus_pop_filtered($!b, $types);
-    # ADD OBJECT CREATION CODE
+    my guint $t = $types;
+    my $m = gst_bus_pop_filtered($!b, $t);
+
+    $m ??
+      ( $raw ?? $m !! GStreamer::Message.new($m) )
+      !!
+      Nil;
   }
 
   method post (GstMessage() $message) {
@@ -194,8 +212,13 @@ class GStreamer::Bus is GStreamer::Object {
   )
     is also<timed-pop>
   {
-    gst_bus_timed_pop($!b, $timeout);
-    # ADD OBJECT CREATION CODE
+    my uint64 $to = $timeout;
+    my $m = gst_bus_timed_pop($!b, $timeout);
+
+    $m ??
+      ( $raw ?? $m !! GStreamer::Message.new($m) )
+      !!
+      Nil;
   }
 
   method timed_pop_filtered (
@@ -205,8 +228,14 @@ class GStreamer::Bus is GStreamer::Object {
   )
     is also<timed-pop-filtered>
   {
-    gst_bus_timed_pop_filtered($!b, $timeout, $types);
-    # ADD OBJECT CREATION CODE
+    my uint64 $to = $timeout;
+    my guint $t = $types;
+    my $m = gst_bus_timed_pop_filtered($!b, $to, $t);
+
+    $m ??
+      ( $raw ?? $m !! GStreamer::Message.new($m) )
+      !!
+      Nil;
   }
 
 }
