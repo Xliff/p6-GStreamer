@@ -8,7 +8,9 @@ use GStreamer::Raw::Message;
 
 use GTK::Compat::Value;
 
-class GStreamer::Message {
+use GStreamer::MiniObject;
+
+class GStreamer::Message is GStreamer::MiniObject {
   has GstMessage $!m handles <type timestamp>;
 
   my sub ppr(*@a) {
@@ -21,11 +23,11 @@ class GStreamer::Message {
   }
 
   submethod BUILD (:$message) {
-    $!m = $message;
+    self.setMiniObject( cast(GstMiniObject, $!m = $message) );
   }
 
   multi method new (GstMessage $message) {
-    self.bless( :$message );
+    self.bless( :$message ) if $message.defined;
   }
   multi method new (
     GstObject() $src,

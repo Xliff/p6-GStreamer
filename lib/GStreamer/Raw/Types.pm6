@@ -27,6 +27,10 @@ constant GstIteratorFreeFunction           is export := Pointer;
 constant GstIteratorItemFunction           is export := Pointer;
 constant GstIteratorNextFunction           is export := Pointer;
 constant GstIteratorResyncFunction         is export := Pointer;
+constant GstMiniObjectCopyFunction         is export := Pointer;
+constant GstMiniObjectDisposeFunction      is export := Pointer;
+constant GstMiniObjectFreeFunction         is export := Pointer;
+constant GstMiniObjectNotify               is export := Pointer;
 constant GstPadActivateFunction            is export := Pointer;
 constant GstPadActivateModeFunction        is export := Pointer;
 constant GstPadChainFunction               is export := Pointer;
@@ -296,7 +300,8 @@ our enum GstLibraryError is export (
   'GST_LIBRARY_ERROR_NUM_ERRORS'
 );
 
-our enum GstLockFlags (
+constant GstLockFlags is export := guint;
+our enum GstLockFlagsEnum (
   GST_LOCK_FLAG_READ      => 1,
   GST_LOCK_FLAG_WRITE     => (1 +< 1),
   GST_LOCK_FLAG_EXCLUSIVE => (1 +< 2),
@@ -364,7 +369,8 @@ our enum GstPadDirection is export <
   GST_PAD_SINK
 >;
 
-our enum GstFlowReturn is export (
+our constant GstFlowReturn is export := gint;
+our enum GstFlowReturnEnum is export (
   GST_FLOW_CUSTOM_SUCCESS_2 => 102,
   GST_FLOW_CUSTOM_SUCCESS_1 => 101,
   GST_FLOW_CUSTOM_SUCCESS   => 100,
@@ -389,7 +395,8 @@ our enum GstPadLinkCheck is export (
   GST_PAD_LINK_CHECK_DEFAULT        => 1 +| (1 +< 2)
 );
 
-our enum GstPadLinkReturn is export (
+our constant GstPadLinkReturn is export := gint;
+our enum GstPadLinkReturnEnum is export (
   GST_PAD_LINK_OK               =>  0,
   GST_PAD_LINK_WRONG_HIERARCHY  => -1,
   GST_PAD_LINK_WAS_LINKED       => -2,
