@@ -8,21 +8,14 @@ use GTK::Compat::Types;
 use GStreamer::Raw::Types;
 use GStreamer::Raw::Message;
 
+use GStreamer::Raw::Subs;
+
 use GTK::Compat::Value;
 
 use GStreamer::MiniObject;
 
 class GStreamer::Message is GStreamer::MiniObject {
   has GstMessage $!m handles <type src timestamp>;
-
-  my sub ppr(*@a) {
-    @a.map({
-      $_ ~~ Pointer ??
-        ( .defined ?? ( +$_ != 0 ?? .deref !! Nil ) !! Nil )
-        !!
-        $_
-    })
-  }
 
   submethod BUILD (:$message) {
     self.setMiniObject( cast(GstMiniObject, $!m = $message) );
@@ -905,8 +898,7 @@ class GStreamer::Message is GStreamer::MiniObject {
   { * }
 
   multi method parse_async_done (:$all = False) {
-    my $rt;
-    samewith($rt, :$all);
+    samewith($, :$all);
   }
   multi method parse_async_done ($running_time is rw, :$all) {
     my gint $r = 0;
@@ -921,13 +913,12 @@ class GStreamer::Message is GStreamer::MiniObject {
   { * }
 
   multi method parse_buffering (:$all = False) {
-    my $p;
-    samewith($p, :$all);
+    samewith($, :$all);
   }
   multi method parse_buffering ($percent is rw, :$all = False) {
     my gint $p = 0;
     my $rc = gst_message_parse_buffering($!m, $p);
-    ($percent) = ppr($p[0]);
+    $percent = $p;
     $all.not ?? $percent !! ($percent, $rc);
   }
 
@@ -958,15 +949,16 @@ class GStreamer::Message is GStreamer::MiniObject {
     is also<parse-clock-lost>
   { * }
 
-  multi method parse_clock_lost (:$all = False) {
-    samewith(GstClock.new, :$all)
+  multi method parse_clock_lost (:$all = False, :$raw = False) {
+    samewith($, :$all, :$raw)
   }
-  multi method parse_clock_lost ($clock is rw, :$all = False) {
+  multi method parse_clock_lost ($clock is rw, :$all = False, :$raw = False) {
     my $ca = CArray[Pointer[GstClock]].new;
 
     $ca[0] = Pointer[GstClock].new;
     my $rc = gst_message_parse_clock_lost($!m, $ca);
-    ($clock) = ppr($ca[0]);
+    ($clock) = ppr($ca);
+    $clock = GStreamer::Clock.new($clock) unless $raw;
     $all.not ?? $clock !! ($clock, $rc);
   }
 
@@ -974,20 +966,22 @@ class GStreamer::Message is GStreamer::MiniObject {
     is also<parse-clock-provide>
   { * }
 
-  multi method parse_clock_provide {
+  multi method parse_clock_provide (:$raw = False) {
     my ($c, $r);
-    samewith($c, $r);
+    samewith($c, $r, :$raw);
   }
   multi method parse_clock_provide (
     $clock is rw,
     $ready is rw,
+    :$raw = False
   ) {
     my gboolean $r = 0;
     my $ca = CArray[Pointer[GstClock]].new;
 
     $ca[0] = Pointer[GstClock].new;
     my $rc = gst_message_parse_clock_provide($!m, $ca, $r);
-    ($clock, $ready) = ppr($ca[0], $r);
+    ($clock, $ready) = ppr($ca, $r);
+    $clock = GStreamer::Clock.new($clock) unless $raw;
     ($clock, $ready, $rc)
   }
 
@@ -995,31 +989,35 @@ class GStreamer::Message is GStreamer::MiniObject {
     is also<parse-context-type>
   { * }
 
-  multi method parse_context_type {
-    my $ct;
-    samewith($ct);
+  multi method parse_context_type ($all = False) {
+    samewith($, :$all);
   }
-  multi method parse_context_type ($context_type is rw) {
+  multi method parse_context_type ($context_type is rw, :$all = False) {
     my $ct = CArray[Str].new;
 
-    gst_message_parse_context_type($!m, $ct);
-    $context_type = ppr($ct[0]);
+    my $rc = gst_message_parse_context_type($!m, $ct);
+    $context_type = ppr($ct);
+    $all.not ?? $context_type !! ($context_type, $rc);
   }
 
   proto method parse_device_added (|)
     is also<parse-device-added>
   { * }
 
-  multi method parse_device_added (:$all = False) {
-    my $d;
-    samewith($d);
+  multi method parse_device_added (:$all = False, :$raw = False) {
+    samewith($, :$all, :$raw);
   }
-  multi method parse_device_added ($device is rw, :$all = False) {
+  multi method parse_device_added (
+    $device is rw,
+    :$all = False,
+    :$raw = False
+  ) {
     my $d = CArray[Pointer[GstDevice]].new;
 
     $d[0] = Pointer[GstDevice].new;
     my $rc = gst_message_parse_device_added($!m, $d);
-    ($device) = ppr( $d[0] );
+    ($device) = ppr($d);
+    $device = GStreamer::Device.new($device) unless $raw;
     $all.not ?? $device !! ($device, $rc);
   }
 
@@ -1027,19 +1025,24 @@ class GStreamer::Message is GStreamer::MiniObject {
     is also<parse-device-changed>
   { * }
 
-  multi method parse_device_changed  {
-    my ($d, $cd);
-    samewith($d, $cd);
+  multi method parse_device_changed (:$raw = False) {
+    samewith($, $, :$raw);
   }
   multi method parse_device_changed (
     $device         is rw,
-    $changed_device is rw
+    $changed_device is rw,
+    :$raw = False
   ) {
-    my $d = CArray[Pointer[GstDevice]].new;
+    my  $da = CArray[Pointer[GstDevice]].new;
+    my $cda = CArray[Pointer[GstDevice]].new;
 
-    ($d[0], $d[1]) = Pointer[GstDevice].new xx 2;
-    my $rc = gst_message_parse_device_changed($!m, $d[0], $d[1]);
-    ($device, $changed_device) = ppr( $d[0], $d[1] );
+    ($da[0], $cda[0]) = Pointer[GstDevice].new xx 2;
+    my $rc = gst_message_parse_device_changed($!m, $da, $cda);
+    ($device, $changed_device) = ppr( $da, $cda );
+    unless $raw {
+      $device         = GStreamer::Device.new($device);
+      $changed_device = GStreamer::Device.new($changed_device);
+    }
     ($device, $changed_device, $rc)
   }
 
@@ -1047,16 +1050,20 @@ class GStreamer::Message is GStreamer::MiniObject {
     is also<parse-device-removed>
   { * }
 
-  multi method parse_device_removed (:$all = False) {
-    my $d;
-    samewith($d);
+  multi method parse_device_removed (:$all = False, :$raw = False) {
+    samewith($, :$all, :$raw);
   }
-  multi method parse_device_removed ($device is rw, :$all = False) {
+  multi method parse_device_removed (
+    $device is rw,
+    :$all = False,
+    :$raw = False
+  ) {
     my $d = CArray[Pointer[GstDevice]].new;
 
     $d[0] = Pointer[GstDevice].new;
     my $rc = gst_message_parse_device_removed($!m, $device);
-    ($device) = ppr( $d[0] );
+    ($device) = ppr( $d );
+    $device = GStreamer::Device.new($device) unless $raw;
     $all.not ?? $device !! ($device, $rc);
   }
 
@@ -1065,8 +1072,7 @@ class GStreamer::Message is GStreamer::MiniObject {
   { * }
 
   multi method parse_error  {
-    my ($ge, $d);
-    samewith($ge, $d);
+    samewith($, $);
   }
   multi method parse_error ($gerror is rw, $debug is rw) {
     my $ge = CArray[Pointer[GError]].new;
@@ -1074,23 +1080,28 @@ class GStreamer::Message is GStreamer::MiniObject {
 
     $ge[0] = Pointer[GError].new;
     my $rc = gst_message_parse_error($!m, $ge, $d);
-    ($gerror, $debug, $rc) = ppr($ge[0], $d);
+    ($gerror, $debug) = ppr($ge, $d);
+    ($gerrpr, $debug, $rc);
   }
 
   proto method parse_error_details
     is also<parse-error-details>
   { * }
 
-  multi method parse_error_details (:$all = False) {
-    my $s;
-    samewith($s, :$all);
+  multi method parse_error_details (:$all = False, :$raw = False) {
+    samewith($, :$all, :$raw);
   }
-  multi method parse_error_details ($structure is rw, :$all = False) {
+  multi method parse_error_details (
+    $structure is rw,
+    :$all = False,
+    :$raw = False
+  ) {
     my $s = CArray[Pointer[GstStructure]].new;
 
     $s[0] = Pointer[GstStructure].new;
     my $rc = gst_message_parse_error_details($!m, $s);
-    ($structure) = ppr( $s[0] );
+    ($structure) = ppr( $s );
+    $structure = GStreamer::Structure.new($structur) unless $raw;
     $all.not ?? $structure !! ($structure, $all);
   }
 
@@ -1098,9 +1109,8 @@ class GStreamer::Message is GStreamer::MiniObject {
     is also<parse-group-id>
   { * }
 
-  multi method parse_group_id (:$all) {
-    my $g;
-    samewith($g, :$all);
+  multi method parse_group_id (:$all = False) {
+    samewith($, :$all);
   }
   multi method parse_group_id ($group_id is rw, :$all = False) {
     my $g = 0;
@@ -1114,16 +1124,20 @@ class GStreamer::Message is GStreamer::MiniObject {
     is also<parse-have-context>
   { * }
 
-  multi method parse_have_context (:$all = False) {
-    my $c;
-    samewith($c, :$all);
+  multi method parse_have_context (:$all = False, :$raw = False) {
+    samewith($, :$all, :$raw);
   }
-  multi method parse_have_context ($context is rw, :$all = False) {
+  multi method parse_have_context (
+    $context is rw,
+    :$all = False,
+    :$raw = False
+  ) {
     my $c = CArray[Pointer[GstContext]].new;
 
     $c[0] = Pointer[GstContext].new;
     my $rc = gst_message_parse_have_context($!m, $c);
-    ($context) = ppr( $c[0] );
+    ($context) = ppr( $c );
+    $context = GStreamer::Context.new($context) unless $raw;
     $all.not ?? $context !! ($context, $rc);
   }
 
@@ -1132,48 +1146,54 @@ class GStreamer::Message is GStreamer::MiniObject {
   { * }
 
   multi method parse_info  {
-    my ($g, $d);
-    samewith($g, $d);
+    samewith($, $);
   }
   multi method parse_info ($gerror is rw, $debug is rw) {
     my $ge = CArray[Pointer[GError]].new;
     my $d = CArray[Str].new;
 
     $ge[0] = Pointer[GError].new;
-    gst_message_parse_info($!m, $gerror, $debug);
-    ($gerror, $debug) = ppr( $ge[0], $d[0] );
+    my $rc = gst_message_parse_info($!m, $gerror, $debug);
+    ($gerror, $debug) = ppr( $ge, $d );
+    ($gerror, $debug, $rc);
   }
 
   proto method parse_info_details (|)
     is also<parse-info-details>
   { * }
 
-  multi method parse_info_details {
-    my $s;
-    samewith($s);
+  multi method parse_info_details (:$all = False, :$raw = False) {
+    samewith($);
   }
-  multi method parse_info_details ($structure is rw) {
+  multi method parse_info_details (
+    $structure is rw,
+    :$all = False,
+    :$raw = False
+  ) {
     my $s = CArray[Pointer[GstStructure]].new;
 
     $s[0] = Pointer[GstStructure].new;
-    gst_message_parse_info_details($!m, $s);
-    ($structure) = ppr( $s[0] );
+    my $rc = gst_message_parse_info_details($!m, $s);
+    ($structure) = ppr( $s );
+    $structure = GStreamer::Structure.new($structure) unless $raw;
+    $all.not ?? $structure !! ($structure, $rc);
   }
 
   proto method parse_new_clock (|)
     is also<parse-new-clock>
   { * }
 
-  multi method parse_new_clock {
-    my $c;
-    samewith($c);
+  multi method parse_new_clock (:$all = False, :$raw = False) {
+    samewith($, :$all, :$raw);
   }
-  multi method parse_new_clock ($clock is rw) {
+  multi method parse_new_clock ($clock is rw, :$all = False, :$raw = False) {
     my $c = CArray[Pointer[GstClock]].new;
 
     $c[0] = Pointer[GstClock].new;
-    gst_message_parse_new_clock($!m, $c);
-    ($clock) = ( $c[0] );
+    my $rc = gst_message_parse_new_clock($!m, $c);
+    ($clock) = ppr($c);
+    $clock = GStreamer::Clock.new($clock) unless $raw;
+    $all.not = $clock ?? ($clock, $rc);
   }
 
   proto method parse_progress (|)
@@ -1181,38 +1201,42 @@ class GStreamer::Message is GStreamer::MiniObject {
   { * }
 
   multi method parse_progress {
-    my ($ty, $c, $t);
-    samewith($ty, $c, $t);
+    samewith($, $, $);
   }
-  multi method parse_progress (GstProgressType $type, Str $code, Str $text) {
-    my $ty = CArray[Pointer[GstProgressType]].new;
+  multi method parse_progress ($type is rw, Str $code is rw, Str $text is rw) {
+    my GstProgressType $ty = 0;
     my ($c, $t) = CArray[Str].new xx 2;
 
-    $ty[0] = Pointer[GstProgressType].new;
-    gst_message_parse_progress($!m, $ty, $c, $t);
-    ($type, $code, $text) = ppr($ty[0], $c, $t);
+    my $rc = gst_message_parse_progress($!m, $ty, $c, $t);
+    ($type, $code, $text) = ppr($ty, $c, $t);
+    ($type, $code, $text, $rc)
   }
 
   proto method parse_property_notify (|)
     is also<parse-property-notify>
   { * }
 
-  multi method parse_property_notify {
-    my ($o, $p1, $p2);
-    samewith($o, $p1, $p2);
+  multi method parse_property_notify (:$raw = False) {
+    samewith($, $, $);
   }
   multi method parse_property_notify (
-    GstObject $object,
-    Str $property_name,
-    GValue $property_value
+    $object is rw,
+    $property_name is rw,
+    $property_value is rw,
+    :$raw = False
   ) {
     my $o = CArray[Pointer[GstObject]].new;
     my $pn = CArray[Str].new;
     my $pv = CArray[Pointer[GValue]].new;
 
     ($o[0], $pv[0]) = (Pointer[GstObject].new, Pointer[GValue].new);
-    gst_message_parse_property_notify($!m, $o, $pn, $pv);
-    ($object, $property_name, $property_value) = ppr( $o[0], $pn[0], $pv[0] );
+    my $rc = gst_message_parse_property_notify($!m, $o, $pn, $pv);
+    ($object, $property_name, $property_value) = ppr( $o, $pn, $pv );
+    unless $raw {
+      $object = GStreamer::Object.new($object);
+      $property_value = GTK::Compat::Value.new($property_value);
+    }
+    ($object, $property_name, $property_value, $rc);
   }
 
   proto method parse_qos (|)
@@ -1233,9 +1257,10 @@ class GStreamer::Message is GStreamer::MiniObject {
     my gboolean $l = 0;
     my guint64 ($r, $s, $t, $d) = 4 xx 0;
 
-    gst_message_parse_qos($!m, $l, $r, $s, $t, $d);
+    my $rc = gst_message_parse_qos($!m, $l, $r, $s, $t, $d);
     ($live, $running_time, $stream_time, $timestamp, $duration)
       = ($l, $r, $s, $t, $d)
+    ($live, $running_time, $stream_time, $timestamp, $duration, $rc)
   }
 
   proto method parse_qos_stats (|)
@@ -1251,12 +1276,12 @@ class GStreamer::Message is GStreamer::MiniObject {
     $processed is rw,
     $dropped   is rw
   ) {
-    my $f = CArray[Pointer[GstFormat]].new;
+    my GstFormat $f = 0;
     my guint64 ($p, $d) = 0;
 
-    $f[0] = Pointer[GstFormat].new;
-    gst_message_parse_qos_stats($!m, $f, $p, $d);
-    ($format, $processed, $dropped) = ppr($f[0], $p, $d);
+    my $rc = gst_message_parse_qos_stats($!m, $f, $p, $d);
+    ($format, $processed, $dropped) = $f, $p, $d);
+    ($format, $processed, $dropped, $rc)
   }
 
   proto method parse_qos_values (|)
@@ -1276,8 +1301,9 @@ class GStreamer::Message is GStreamer::MiniObject {
     my gdouble $p = 0e0;
     my gint $q = 0;
 
-    gst_message_parse_qos_values($!m, $j, $p, $q);
+    my $rc = gst_message_parse_qos_values($!m, $j, $p, $q);
     ($jitter, $proportion, $quality) = ($j, $p, $q);
+    ($jitter, $proportion, $quality, $rc);
   }
 
   proto method parse_redirect_entry (|)
@@ -1300,40 +1326,44 @@ class GStreamer::Message is GStreamer::MiniObject {
     my $es = CArray[Pointer[GstStructure]].new;
 
     ($tl[0], $es[0]) = (Pointer[GstTagList].new, Pointer[GstStructure].new);
-    gst_message_parse_redirect_entry($!m, $ei, $l, $tl, $es);
+    my $rc = gst_message_parse_redirect_entry($!m, $ei, $l, $tl, $es);
     ($entry_index, $location, $tag_list, $entry_struct) =
-      ppr($ei, $l[0], $tl[0], $es[0]);
+      ppr($ei, $l, $tl, $es);
+    unless $raw {
+      $tag_list = GStreamer::TagList.new($tag_list);
+      $entry_struct = GStreamer::Structure.new($entry_struct);
+    }
+    ($entry_index, $location, $tag_list, $entry_struct, $rc)
   }
 
   proto method parse_request_state (|)
     is also<parse-request-state>
   { * }
 
-  multi method parse_request_state {
-    my $s;
-    samewith($s);
+  multi method parse_request_state (:$all = False) {
+    samewith($, :$all);
   }
-  multi method parse_request_state ($state is rw) {
-    my $s = CArray[Pointer[GstState]].new;
+  multi method parse_request_state ($state is rw, :$all = False) {
+    my GstState $s = 0;
 
-    $s[0] = Pointer[GstState].new;
-    gst_message_parse_request_state($!m, $state);
-    ($state) = ppr($s[0]);
+    my $rc = gst_message_parse_request_state($!m, $s);
+    $state = $s;
+    $all.not ?? $state !! ($state, $rc);
   }
 
   proto method parse_reset_time (|)
     is also<parse-reset-time>
   { * }
 
-  multi method parse_reset_time {
-    my $rt;
-    samewith($rt);
+  multi method parse_reset_time (:$all = False) {
+    samewith($, :$all);
   }
-  multi method parse_reset_time ($running_time is rw) {
+  multi method parse_reset_time ($running_time is rw, :$all = False) {
     my guint $rt = 0;
 
-    gst_message_parse_reset_time($!m, $running_time);
+    my $rc = gst_message_parse_reset_time($!m, $running_time);
     $running_time = $rt;
+    $all.not ?? $running_time !! ($running_time, $rc);
   }
 
   proto method parse_segment_done (|)
@@ -1341,16 +1371,15 @@ class GStreamer::Message is GStreamer::MiniObject {
   { * }
 
   multi method parse_segment_done {
-    my ($f, $p);
-    samewith($f, $p);
+    samewith($, $);
   }
   multi method parse_segment_done ($format is rw, $position is rw) {
-    my $f = CArray[Pointer[GstFormat]].new;
+    my GstFormat $f = 0;
     my gint64 $p = 0;
 
-    $f[0] = Pointer[GstFormat].new;
-    gst_message_parse_segment_done($!m, $format, $position);
-    ($format, $position) = ppr($f[0], $p);
+    my $rc = gst_message_parse_segment_done($!m, $f, $p);
+    ($format, $position) = ($f, $p);
+    ($format, $position, $rc);
   }
 
   proto method parse_segment_start (|)
@@ -1358,16 +1387,15 @@ class GStreamer::Message is GStreamer::MiniObject {
   { * }
 
   multi method parse_segment_start {
-    my ($f, $p);
-    samewith($f, $p);
+    samewith($, $);
   }
   multi method parse_segment_start ($format is rw, $position is rw) {
-    my $f = CArray[Pointer[GstFormat]].new;
+    my GstFormat $f = 0;
     my gint64 $p = 0;
 
-    $f[0] = Pointer[GstFormat].new;
-    gst_message_parse_segment_start($!m, $format, $position);
-    ($format, $position) = ppr($f[0], $p);
+    my $rc = gst_message_parse_segment_start($!m, $format, $position);
+    ($format, $position) = ($f, $p);
+    ($format, $position, $rc);
   }
 
   proto method parse_state_changed (|)
@@ -1375,19 +1403,18 @@ class GStreamer::Message is GStreamer::MiniObject {
   { * }
 
   multi method parse_state_changed {
-    my ($o, $n, $p);
-    samewith ($o, $n, $p);
+    samewith ($, $, $);
   }
   multi method parse_state_changed (
     $oldstate is rw,
     $newstate is rw,
     $pending  is rw
   ) {
-    my ($o, $n, $p) = CArray[Pointer[GstState]].new xx 3;
-    ($o[0], $n[0], $p[0]) = Pointer[GstState].new xx 3;
+    my GstState ($o, $n, $p) = 0 xx 3;
 
     gst_message_parse_state_changed($!m, $o, $n, $p);
-    ($oldstate, $newstate, $pending) = ppr($o[0], $n[0], $p[0])
+    ($oldstate, $newstate, $pending) = ppr($o, $n, $p)
+    ($oldstate, $newstate, $pending, $rc);
   }
 
   proto method parse_step_done (|)
@@ -1395,8 +1422,7 @@ class GStreamer::Message is GStreamer::MiniObject {
   { * }
 
   multi method parse_step_done {
-    my ($f, $a, $r, $fl, $i, $d, $e);
-    samewith($f, $a, $r, $fl, $i, $d, $e);
+    samewith($, $, $, $, $, $, $);
   }
   multi method parse_step_done (
     $format       is rw,
@@ -1407,15 +1433,15 @@ class GStreamer::Message is GStreamer::MiniObject {
     $duration     is rw,
     $eos          is rw
   ) {
-    my $f = CArray[Pointer[GstFormat]].new;
+    my GstState $f = 0;
     my guint64 ($a, $d) = 0 xx 2;
     my gdouble $r = 0e0;
     my gboolean ($fl, $l, $i, $e) = 0 xx 4;
 
-    $f[0] = Pointer[GstFormat].new;
     gst_message_parse_step_done($!m, $f, $a, $r, $fl, $i, $d, $e);
     ($format, $amount, $rate, $flush, $intermediate, $duration, $eos)
-      = ppr($f[0], $a, $r, $fl, $i, $d, $e)
+      = ($f, $a, $r, $fl, $i, $d, $e);
+    ($format, $amount, $rate, $flush, $intermediate, $duration, $eos, $rc);
   }
 
   proto method parse_step_start (|)
@@ -1423,8 +1449,7 @@ class GStreamer::Message is GStreamer::MiniObject {
   { * }
 
   multi method parse_step_start {
-    my ($a, $f, $am, $r, $fl, $i);
-    samewith($a, $f, $am, $r, $fl, $i);
+    samewith($, $, $, $, $, $);
   }
   multi method parse_step_start (
     $active        is rw,
@@ -1436,116 +1461,126 @@ class GStreamer::Message is GStreamer::MiniObject {
   ) {
     my gboolean ($a, $fl, $i) = 0 xx 3;
     my guint64 $am = 0;
-    my $f = CArray[Pointer[GstFormat]].new;
+    my GstState $f = 0;
     my gdouble $r = 0e0;
 
-    $f[0] = Pointer[GstFormat].new;
-    gst_message_parse_step_start($!m, $a, $f, $am, $r, $fl, $i);
+    my $rc = gst_message_parse_step_start($!m, $a, $f, $am, $r, $fl, $i);
     ($active, $format, $amount, $rate, $flush, $intermediate) =
-      ppr($a, $f[0], $am, $r, $fl, $i);
+      ($a, $f, $am, $r, $fl, $i);
+    ($active, $format, $amount, $rate, $flush, $intermediate, $rc);
   }
 
   proto method parse_stream_collection (|)
     is also<parse-stream-collection>
   { * }
 
-  multi method parse_stream_collection {
-    my $c;
-    samewith($c);
+  multi method parse_stream_collection (:$all = False, :$raw = False) {
+    samewith($, :$all, :$raw);
   }
-  multi method parse_stream_collection ($collection is rw) {
+  multi method parse_stream_collection (
+    $collection is rw,
+    :$all = False,
+    :$raw = False
+  ) {
     my $c = CArray[Pointer[GstStreamCollection]].new;
 
     $c[0] = Pointer[GstStreamCollection];
-    gst_message_parse_stream_collection($!m, $collection);
-    ($collection) = ppr( $c[0] );
+    my $rc = gst_message_parse_stream_collection($!m, $collection);
+    ($collection) = ppr( $c );
+    $collection = GStreamer::StreamCollection.new($collection) unless $raw;
+    $all.not ?? $collection !! ($collection, $rc);
   }
 
   proto method parse_stream_status (|)
     is also<parse-stream-status>
   { * }
 
-  multi method parse_stream_status {
-    my ($t, $o);
-    samewith($t, $o);
+  multi method parse_stream_status (:$raw = False) {
+    samewith($, $);
   }
-  multi method parse_stream_status ($type is rw, $owner is rw) {
+  multi method parse_stream_status ($type is rw, $owner is rw, :$raw = False) {
     my guint $t = 0;
     my $o = CArray[Pointer[GstElement]].new;
 
     $o[0] = Pointer[GstElement].new;
-    gst_message_parse_stream_status($!m, $t, $o);
-    ($type, $owner) = ppr($t, $o[0]);
+    my $rc = gst_message_parse_stream_status($!m, $t, $o);
+    ($type, $owner) = ppr($t, $o);
+    $owner = GStreamer::Element.new($owner) unless $raw;
   }
 
   proto method parse_streams_selected (|)
     is also<parse-streams-selected>
   { * }
 
-  multi method parse_streams_selected {
-    my $c;
-    samewith($c);
+  multi method parse_streams_selected (:$raw = False) {
+    samewith($, :$raw);
   }
-  multi method parse_streams_selected ($collection is rw) {
+  multi method parse_streams_selected ($collection is rw, :$raw = False) {
     my $c = CArray[Pointer[GstStreamCollection]].new;
 
     $c[0] = Pointer[GstStreamCollection].new;
-    gst_message_parse_streams_selected($!m, $c);
-    ($collection) = ppr($c[0]);
+    my $rc = gst_message_parse_streams_selected($!m, $c);
+    ($collection) = ppr($c);
+    $collection = GStreamer::StreamCollection.new($collection) unless $raw;
+    $all.not ?? $collection !! ($collection, $rc);
   }
 
   proto method parse_structure_change (|)
     is also<parse-structure-change>
   { * }
 
-  multi method parse_structure_change {
-    my ($t, $o, $b);
-    samewith($t, $o, $b);
+  multi method parse_structure_change (:$raw = False) {
+    samewith($, $, $, :$raw);
   }
   multi method parse_structure_change (
     $type  is rw,
     $owner is rw,
-    $busy  is rw
+    $busy  is rw,
+    :$raw = False
   ) {
     my guint ($t, $b) = 0 xx 2;
     my $o = CArray[Pointer[GstElement]].new;
 
     $o[0] = Pointer[GstElement].new;
     gst_message_parse_structure_change($!m, $t, $o, $b);
-    ($type, $owner, $busy) = ppr($t, $o[0], $b);
+    ($type, $owner, $busy) = ppr($t, $o, $b);
+    $owner = GStreamer::Element.new($owner) unless $raw;
+    ($type, $owner, $busy, $rc);
   }
 
   proto method parse_tag (|)
     is also<parse-tag>
   { * }
 
-  multi method parse_tag {
-    my $t;
-    samewith($t);
+  multi method parse_tag (:$all, :$raw = False) {
+    samewith($, :$raw);
   }
-  multi method parse_tag ($tag_list is rw) {
+  multi method parse_tag ($tag_list is rw, :$all = False, :$raw = False) {
     my $t = CArray[Pointer[GstTagList]].new;
 
     $t[0] = Pointer[GstTagList].new;
-    gst_message_parse_tag($!m, $t);
-    ($tag_list) = ppr( $t[0] );
+    $rc = gst_message_parse_tag($!m, $t);
+    ($tag_list) = ppr( $t );
+    $tag_list = GStreamer::TagList.new($tag_list) unless $raw;
+    $all.not ?? $tag_list !! ($tag_list, $rc);
   }
 
   proto method parse_toc (|)
     is also<parse-toc>
   { * }
 
-  multi method parse_toc {
-    my ($t, $u);
-    samewith($t, $u);
+  multi method parse_toc (:$raw = False) {
+    samewith($, $, :$raw);
   }
-  multi method parse_toc ($toc is rw, $updated is rw) {
+  multi method parse_toc ($toc is rw, $updated is rw, :$raw = False) {
     my $t = CArray[Pointer[GstToc]].new;
     my gboolean $u = 0;
 
     $t[0] = Pointer[GstToc].new;
-    gst_message_parse_toc($!m, $toc, $updated);
-    ($toc, $updated) = ppr($t[0], $u);
+    my $rc = gst_message_parse_toc($!m, $toc, $updated);
+    ($toc, $updated) = ppr($t, $u);
+    $toc = GStreamer::TOC.new($toc) unless $raw;
+    ($toc, $updated, $rc);
   }
 
   proto method parse_warning (|)
@@ -1553,32 +1588,37 @@ class GStreamer::Message is GStreamer::MiniObject {
   { * }
 
   multi method parse_warning {
-    my ($ge, $d);
-    samewith($ge, $d);
+    samewith($, $);
   }
   multi method parse_warning ($gerror is rw, $debug is rw) {
     my $ge = CArray[Pointer[GError]].new;
     my $d = CArray[Str].new;
 
     $ge[0] = Pointer[GError].new;
-    gst_message_parse_warning($!m, $ge, $d);
-    ($gerror, $debug) = ppr( $ge[0], $d[0] );
+    my $rc = gst_message_parse_warning($!m, $ge, $d);
+    ($gerror, $debug) = ppr( $ge, $d );
+    ($gerror, $debug, $rc)
   }
 
   proto method parse_warning_details (|)
     is also<parse-warning-details>
   { * }
 
-  multi parse_warning_details {
-    my $s;
-    samewith($s);
+  multi parse_warning_details (:$all = False, :$raw = False) {
+    samewith($);
   }
-  multi method parse_warning_details ($structure is rw) {
+  multi method parse_warning_details (
+    $structure is rw
+    :$all = False,
+    :$raw = False
+  ) {
     my $s = CArray[Pointer[GstStructure]].new;
 
     $s[0] = Pointer[GstStructure].new;
-    gst_message_parse_warning_details($!m, $s);
-    ($structure) = ppr( $s[0] )
+    my $rc = gst_message_parse_warning_details($!m, $s);
+    ($structure) = ppr( $s )
+    $structure = GStreamer::Structure.new($structure) unless $raw;
+    $all.not ?? $structure ?? ($structure, $rc);
   }
 
   # Look at macro for gst_message_ref and gst_message_unref
