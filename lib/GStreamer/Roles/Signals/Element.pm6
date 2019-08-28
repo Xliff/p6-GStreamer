@@ -23,12 +23,13 @@ role GStreamer::Roles::Signals::Element {
       my $s = Supplier.new;
       $hid = g-connect-pad($obj, $signal,
         -> $, $gp, $ud {
-          CATCH {
-            default { $s.note($_) }
-          }
+          CATCH { default { $s.note($_) } }
+
+          say 'connect-pad';
           $s.emit( [self, $gp, $ud ] );
         },
         Pointer, 0
+        #Pointer, Pointer, 0
       );
       [ $s.Supply, $obj, $hid ];
     };
@@ -47,6 +48,20 @@ sub g-connect-pad(
   uint32 $flags
 )
   returns uint64
-  is native('gobject-2.0')
+  is native(gobject)
   is symbol('g_signal_connect_object')
   { * }
+
+# Could always try using g_signal_connect_data
+# sub g-connect-pad(
+#   Pointer $app,
+#   Str $name,
+#   &handler (Pointer, GstPad, Pointer),
+#   Pointer $data,
+#   Pointer $notify,
+#   uint32 $flags
+# )
+#   returns uint64
+#   is native(gobject)
+#   is symbol('g_signal_connect_data')
+#   { * }
