@@ -41,6 +41,15 @@ class GStreamer::MiniObject {
     gst_clear_mini_object($o);
   }
 
+  method copy (GstMiniObject $orig, :$raw) {
+    my $c = gst_mini_object_copy($orig);
+
+    $c ??
+      ( $raw ?? $c !! GStreamer::MiniObject.new($c) );
+      !!
+      Nil;
+  }
+
   method init (
     GstMiniObject $obj,
     Int() $flags,

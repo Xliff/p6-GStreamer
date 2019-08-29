@@ -128,3 +128,9 @@ sub gst_mini_object_weak_unref (
   is native(gstreamer)
   is export
 { * }
+
+sub gst_mini_object_copy (GstMiniObject $mini-object)
+  returns GstMiniObject
+  is native(gstreamer)
+  is export
+{ * }
