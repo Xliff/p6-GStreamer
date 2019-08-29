@@ -67,7 +67,7 @@ class GstClock             is repr('CPointer') does GTK::Roles::Pointers is expo
 class GstContext           is repr('CPointer') does GTK::Roles::Pointers is export { }
 class GstControlBinding    is repr('CPointer') does GTK::Roles::Pointers is export { }
 class GstDevice            is repr('CPointer') does GTK::Roles::Pointers is export { }
-class GstDateTime          is repr('CPointer') does GTK::Roles::Pointers is export { }
+#class GstDateTime          is repr('CPointer') does GTK::Roles::Pointers is export { }
 #class GstElement           is repr('CPointer') does GTK::Roles::Pointers is export { }
 class GstElementFactory    is repr('CPointer') does GTK::Roles::Pointers is export { }
 class GstEvent             is repr('CPointer') does GTK::Roles::Pointers is export { }
@@ -178,6 +178,16 @@ our enum GstCoreErrorEnum is export (
   'GST_CORE_ERROR_CLOCK',
   'GST_CORE_ERROR_DISABLED',
   'GST_CORE_ERROR_NUM_ERRORS'
+);
+
+constant GstDateTimeFields is export := guint;
+our enum GstDateTimeFieldsEnum is export (
+  GST_DATE_TIME_FIELDS_INVALID => 0,
+  'GST_DATE_TIME_FIELDS_Y',       # have year
+  'GST_DATE_TIME_FIELDS_YM',      # have year and month
+  'GST_DATE_TIME_FIELDS_YMD',     # have year, month and day
+  'GST_DATE_TIME_FIELDS_YMD_HM',
+  'GST_DATE_TIME_FIELDS_YMD_HMS'
 );
 
 constant GstDebugColorFlags is export := guint;
@@ -291,16 +301,16 @@ our enum GstEventTypeEnum is export (
 
 our constant GstFlowReturn is export := gint;
 our enum GstFlowReturnEnum is export (
-  GST_FLOW_CUSTOM_SUCCESS_2 => 102,
-  GST_FLOW_CUSTOM_SUCCESS_1 => 101,
-  GST_FLOW_CUSTOM_SUCCESS   => 100,
-  GST_FLOW_OK		            =>  0,
-  GST_FLOW_NOT_LINKED       => -1,
-  GST_FLOW_FLUSHING         => -2,
-  GST_FLOW_EOS              => -3,
-  GST_FLOW_NOT_NEGOTIATED   => -4,
-  GST_FLOW_ERROR	          => -5,
-  GST_FLOW_NOT_SUPPORTED    => -6,
+  GST_FLOW_CUSTOM_SUCCESS_2 =>  102,
+  GST_FLOW_CUSTOM_SUCCESS_1 =>  101,
+  GST_FLOW_CUSTOM_SUCCESS   =>  100,
+  GST_FLOW_OK		            =>    0,
+  GST_FLOW_NOT_LINKED       =>   -1,
+  GST_FLOW_FLUSHING         =>   -2,
+  GST_FLOW_EOS              =>   -3,
+  GST_FLOW_NOT_NEGOTIATED   =>   -4,
+  GST_FLOW_ERROR	          =>   -5,
+  GST_FLOW_NOT_SUPPORTED    =>   -6,
   GST_FLOW_CUSTOM_ERROR     => -100,
   GST_FLOW_CUSTOM_ERROR_1   => -101,
   GST_FLOW_CUSTOM_ERROR_2   => -102
@@ -314,6 +324,15 @@ our enum GstFormatEnum is export (
   GST_FORMAT_TIME      => 3,
   GST_FORMAT_BUFFERS   => 4,
   GST_FORMAT_PERCENT   => 5,
+);
+
+constant GstGLUploadReturn is export := gint32;
+our enum GstGLUploadReturnEnum is export (
+    GST_GL_UPLOAD_DONE                =>     1,
+    GST_GL_UPLOAD_ERROR               =>    -1,
+    GST_GL_UPLOAD_UNSUPPORTED         =>    -2,
+    GST_GL_UPLOAD_RECONFIGURE         =>    -3,
+    GST_GL_UPLOAD_UNSHARED_GL_CONTEXT =>  -100,
 );
 
 constant GstInterpolationMode is export := guint;
@@ -365,6 +384,18 @@ our enum GstLockFlagsEnum (
   GST_LOCK_FLAG_WRITE     => (1 +< 1),
   GST_LOCK_FLAG_EXCLUSIVE => (1 +< 2),
   GST_LOCK_FLAG_LAST      => (1 +< 8)
+);
+
+constant GstMIKEYType is export := gint32;
+our enum GstMIKEYTypeEnum is export (
+    GST_MIKEY_TYPE_INVALID    =>  -1,
+    GST_MIKEY_TYPE_PSK_INIT   =>   0,
+    GST_MIKEY_TYPE_PSK_VERIFY =>   1,
+    GST_MIKEY_TYPE_PK_INIT    =>   2,
+    GST_MIKEY_TYPE_PK_VERIFY  =>   3,
+    GST_MIKEY_TYPE_DH_INIT    =>   4,
+    GST_MIKEY_TYPE_DH_RESP    =>   5,
+    GST_MIKEY_TYPE_ERROR      =>   6,
 );
 
 constant GstMiniObjectFlags is export := guint;
@@ -631,6 +662,60 @@ our enum GstResourceErrorEnum is export (
   'GST_RESOURCE_ERROR_NUM_ERRORS'
 );
 
+constant GstRTCPSDESType is export := gint32;
+our enum GstRTCPSDESTypeEnum is export (
+    GST_RTCP_SDES_INVALID =>  -1,
+    GST_RTCP_SDES_END     =>   0,
+    GST_RTCP_SDES_CNAME   =>   1,
+    GST_RTCP_SDES_NAME    =>   2,
+    GST_RTCP_SDES_EMAIL   =>   3,
+    GST_RTCP_SDES_PHONE   =>   4,
+    GST_RTCP_SDES_LOC     =>   5,
+    GST_RTCP_SDES_TOOL    =>   6,
+    GST_RTCP_SDES_NOTE    =>   7,
+    GST_RTCP_SDES_PRIV    =>   8,
+);
+
+constant GstRTCPXRType is export := gint32;
+our enum GstRTCPXRTypeEnum is export (
+    GST_RTCP_XR_TYPE_INVALID      =>  -1,
+    GST_RTCP_XR_TYPE_LRLE         =>  1,
+    GST_RTCP_XR_TYPE_DRLE         =>  2,
+    GST_RTCP_XR_TYPE_PRT          =>  3,
+    GST_RTCP_XR_TYPE_RRT          =>  4,
+    GST_RTCP_XR_TYPE_DLRR         =>  5,
+    GST_RTCP_XR_TYPE_SSUMM        =>  6,
+    GST_RTCP_XR_TYPE_VOIP_METRICS =>  7,
+);
+
+constant GstRTSPResult is export := gint32;
+our enum GstRTSPResultEnum is export (
+    GST_RTSP_OK          =>   0,
+    GST_RTSP_ERROR       =>  -1,
+    GST_RTSP_EINVAL      =>  -2,
+    GST_RTSP_EINTR       =>  -3,
+    GST_RTSP_ENOMEM      =>  -4,
+    GST_RTSP_ERESOLV     =>  -5,
+    GST_RTSP_ENOTIMPL    =>  -6,
+    GST_RTSP_ESYS        =>  -7,
+    GST_RTSP_EPARSE      =>  -8,
+    GST_RTSP_EWSASTART   =>  -9,
+    GST_RTSP_EWSAVERSION =>  -10,
+    GST_RTSP_EEOF        =>  -11,
+    GST_RTSP_ENET        =>  -12,
+    GST_RTSP_ENOTIP      =>  -13,
+    GST_RTSP_ETIMEOUT    =>  -14,
+    GST_RTSP_ETGET       =>  -15,
+    GST_RTSP_ETPOST      =>  -16,
+    GST_RTSP_ELAST       =>  -17,
+);
+
+constant GstSDPResult is export := gint32;
+our enum GstSDPResultEnum is export (
+    GST_SDP_OK =>  0,
+    GST_SDP_EINVAL =>  -1,
+);
+
 constant GstSearchMode is export := guint;
 our enum GstSearchModeEnum is export (
   GST_SEARCH_MODE_EXACT =>  0,
@@ -770,6 +855,30 @@ our enum GstTagFlagEnum is export <
   GST_TAG_FLAG_COUNT
 >;
 
+constant GstTagImageType is export := gint32;
+our enum GstTagImageTypeEnum is export (
+    GST_TAG_IMAGE_TYPE_NONE =>  -1,
+    GST_TAG_IMAGE_TYPE_UNDEFINED =>  0,
+    'GST_TAG_IMAGE_TYPE_FRONT_COVER',
+    'GST_TAG_IMAGE_TYPE_BACK_COVER',
+    'GST_TAG_IMAGE_TYPE_LEAFLET_PAGE',
+    'GST_TAG_IMAGE_TYPE_MEDIUM',
+    'GST_TAG_IMAGE_TYPE_LEAD_ARTIST',
+    'GST_TAG_IMAGE_TYPE_ARTIST',
+    'GST_TAG_IMAGE_TYPE_CONDUCTOR',
+    'GST_TAG_IMAGE_TYPE_BAND_ORCHESTRA',
+    'GST_TAG_IMAGE_TYPE_COMPOSER',
+    'GST_TAG_IMAGE_TYPE_LYRICIST',
+    'GST_TAG_IMAGE_TYPE_RECORDING_LOCATION',
+    'GST_TAG_IMAGE_TYPE_DURING_RECORDING',
+    'GST_TAG_IMAGE_TYPE_DURING_PERFORMANCE',
+    'GST_TAG_IMAGE_TYPE_VIDEO_CAPTURE',
+    'GST_TAG_IMAGE_TYPE_FISH',
+    'GST_TAG_IMAGE_TYPE_ILLUSTRATION',
+    'GST_TAG_IMAGE_TYPE_BAND_ARTIST_LOGO',
+    'GST_TAG_IMAGE_TYPE_PUBLISHER_STUDIO_LOGO'
+);
+
 constant GstTagMergeMode is export := guint;
 our enum GstTagMergeModeEnum is export <
   GST_TAG_MERGE_UNDEFINED
@@ -794,6 +903,17 @@ our enum GstTaskStateEnum is export <
   GST_TASK_STOPPED
   GST_TASK_PAUSED
 >;
+
+constant GstTocEntryType is export := gint32;
+our enum GstTocEntryTypeEnum is export (
+    GST_TOC_ENTRY_TYPE_ANGLE   =>  -3,
+    GST_TOC_ENTRY_TYPE_VERSION =>  -2,
+    GST_TOC_ENTRY_TYPE_EDITION =>  -1,
+    GST_TOC_ENTRY_TYPE_INVALID =>   0,
+    GST_TOC_ENTRY_TYPE_TITLE   =>   1,
+    GST_TOC_ENTRY_TYPE_TRACK   =>   2,
+    GST_TOC_ENTRY_TYPE_CHAPTER =>   3,
+);
 
 constant GstTocLoopType is export := guint;
 our enum GstTocLoopTypeEnum is export (
@@ -842,6 +962,23 @@ our enum GstURITypeEnum is export <
   GST_URI_SRC
 >;
 
+constant GstVideoMultiviewMode is export := gint32;
+our enum GstVideoMultiviewModeEnum is export (
+    GST_VIDEO_MULTIVIEW_MODE_NONE =>  -1,
+    GST_VIDEO_MULTIVIEW_MODE_MONO =>  0,
+    'GST_VIDEO_MULTIVIEW_MODE_LEFT',
+    'GST_VIDEO_MULTIVIEW_MODE_RIGHT',
+    'GST_VIDEO_MULTIVIEW_MODE_SIDE_BY_SIDE',
+    'GST_VIDEO_MULTIVIEW_MODE_SIDE_BY_SIDE_QUINCUNX',
+    'GST_VIDEO_MULTIVIEW_MODE_COLUMN_INTERLEAVED',
+    'GST_VIDEO_MULTIVIEW_MODE_ROW_INTERLEAVED',
+    'GST_VIDEO_MULTIVIEW_MODE_TOP_BOTTOM',
+    'GST_VIDEO_MULTIVIEW_MODE_CHECKERBOARD',
+    GST_VIDEO_MULTIVIEW_MODE_FRAME_BY_FRAME =>  32,
+    'GST_VIDEO_MULTIVIEW_MODE_MULTIVIEW_FRAME_BY_FRAME',
+    'GST_VIDEO_MULTIVIEW_MODE_SEPARATED'
+);
+
 constant GST_PADDING = 4;
 
 class GstObject is repr<CStruct> does GTK::Roles::Pointers is export {
@@ -871,6 +1008,12 @@ class GstMiniObject is repr<CStruct> does GTK::Roles::Pointers is export {
   has guint    $!priv_uint;
   has gpointer $!priv_pointer;
 };
+
+class GstDateTime is repr<CStruct> does GTK::Roles::Pointers is export {
+  has GstMiniObject     $.mini_object;
+  has GDateTime         $.datetime;
+  has GstDateTimeFields $.fields;
+}
 
 class GstElement is repr<CStruct> does GTK::Roles::Pointers is export {
   HAS GstObject        $.object;
