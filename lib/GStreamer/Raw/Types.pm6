@@ -49,6 +49,9 @@ constant GstPadProbeCallback               is export := Pointer;
 constant GstPadUnlinkFunction              is export := Pointer;
 constant GstPluginInitFullFunc             is export := Pointer;
 constant GstPluginInitFunc                 is export := Pointer;
+constant GstStructureFilterMapFunc         is export := Pointer;
+constant GstStructureForeachFunc           is export := Pointer;
+constant GstStructureMapFunc               is export := Pointer;
 constant GstTaskFunction                   is export := Pointer;
 
 class GstAllocator         is repr('CPointer') does GTK::Roles::Pointers is export { }
@@ -64,6 +67,7 @@ class GstClock             is repr('CPointer') does GTK::Roles::Pointers is expo
 class GstContext           is repr('CPointer') does GTK::Roles::Pointers is export { }
 class GstControlBinding    is repr('CPointer') does GTK::Roles::Pointers is export { }
 class GstDevice            is repr('CPointer') does GTK::Roles::Pointers is export { }
+class GstDateTime          is repr('CPointer') does GTK::Roles::Pointers is export { }
 #class GstElement           is repr('CPointer') does GTK::Roles::Pointers is export { }
 class GstElementFactory    is repr('CPointer') does GTK::Roles::Pointers is export { }
 class GstEvent             is repr('CPointer') does GTK::Roles::Pointers is export { }
@@ -82,7 +86,7 @@ class GstProbeInfo         is repr('CPointer') does GTK::Roles::Pointers is expo
 class GstStaticPadTemplate is repr('CPointer') does GTK::Roles::Pointers is export { }
 class GstStream            is repr('CPointer') does GTK::Roles::Pointers is export { }
 class GstStreamCollection  is repr('CPointer') does GTK::Roles::Pointers is export { }
-class GstStructure         is repr('CPointer') does GTK::Roles::Pointers is export { }
+#class GstStructure         is repr('CPointer') does GTK::Roles::Pointers is export { }
 class GstTagList           is repr('CPointer') does GTK::Roles::Pointers is export { }
 class GstToc               is repr('CPointer') does GTK::Roles::Pointers is export { }
 
@@ -951,4 +955,10 @@ class GstQuery            is repr<CStruct>     does GTK::Roles::Pointers is expo
       FETCH => -> $           { GstQueryTypeEnum($!type) },
       STORE => -> $, Int() \t { $!type = t               };
   }
+};
+
+class GstStructure        is repr<CStruct>     does GTK::Roles::Pointers is export {
+  has GType  $.type;
+
+  has GQuark $!name;
 };
