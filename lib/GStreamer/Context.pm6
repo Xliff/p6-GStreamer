@@ -18,7 +18,10 @@ class GStreamer::Context is GStreamer::MiniObject {
   method GStreamer::Raw::Types::GstContext
   { $!c }
 
-  method new (Str() $type, Int() $persistent) {
+  multi method new (GstContext $context) {
+    self.bless( :$context );
+  }
+  multi method new (Str() $type, Int() $persistent) {
     my gboolean $p = $persistent;
     self.bless( context => gst_context_new($type, $p) );
   }
