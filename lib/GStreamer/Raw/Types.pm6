@@ -89,6 +89,7 @@ class GstStreamCollection  is repr('CPointer') does GTK::Roles::Pointers is expo
 #class GstStructure         is repr('CPointer') does GTK::Roles::Pointers is export { }
 class GstTagList           is repr('CPointer') does GTK::Roles::Pointers is export { }
 class GstToc               is repr('CPointer') does GTK::Roles::Pointers is export { }
+class GstTocEntry          is repr('CPointer') does GTK::Roles::Pointers is export { }
 
 constant GST_OBJECT_FLAG_LAST is export = 1 +< 4;
 constant GST_CLOCK_TIME_NONE  is export = 18446744073709551615;
@@ -1007,12 +1008,13 @@ class GstMiniObject is repr<CStruct> does GTK::Roles::Pointers is export {
 
   has guint    $!priv_uint;
   has gpointer $!priv_pointer;
-};
+}
 
+# Cheat. This really should be considered opaque.
 class GstDateTime is repr<CStruct> does GTK::Roles::Pointers is export {
   has GstMiniObject     $.mini_object;
-  has GDateTime         $.datetime;
-  has GstDateTimeFields $.fields;
+  has GDateTime         $!datetime;
+  has GstDateTimeFields $!fields;
 }
 
 class GstElement is repr<CStruct> does GTK::Roles::Pointers is export {
@@ -1059,7 +1061,7 @@ class GstMessage is repr<CStruct> does GTK::Roles::Pointers is export {
       STORE => -> $, Int() \t { $!type = t                 };
   }
 
-};
+}
 
 # Modification is currently NYI.
 class GstFormatDefinition is repr<CStruct>     does GTK::Roles::Pointers is export {
@@ -1087,7 +1089,7 @@ class GstPluginDesc       is repr<CStruct>     does GTK::Roles::Pointers is expo
   has gpointer  $!gst_reserved1;
   has gpointer  $!gst_reserved2;
   has gpointer  $!gst_reserved3;
-};
+}
 
 class GstQuery            is repr<CStruct>     does GTK::Roles::Pointers is export {
   HAS GstMiniObject $!mini_object;
@@ -1098,10 +1100,41 @@ class GstQuery            is repr<CStruct>     does GTK::Roles::Pointers is expo
       FETCH => -> $           { GstQueryTypeEnum($!type) },
       STORE => -> $, Int() \t { $!type = t               };
   }
-};
+}
 
 class GstStructure        is repr<CStruct>     does GTK::Roles::Pointers is export {
   has GType  $.type;
 
   has GQuark $!name;
-};
+}
+
+# NOTE -- For all CStruct definitions marked as Opaque -- this opens us up
+#         to ABI changes. This means that any changes in the ABI MUST be
+#         accounted for, but it is unknown if Perl6 has a mechanism to allow
+#         us to do so. If that happens, then version checking MUST be performed
+#         to insure we are working a supported library!!
+
+# Opaque. Grabbed from the implementation for struct-size purposes.
+class GstToc              is repr<CStruct>     does GTK::Roles::Pointers is export {
+  HAS GstMiniObject mini_object;
+
+  has GstTocScope $!scope;
+  has GList       $!entries;
+  has GstTagList  $!tags;
+}
+
+# Opaque. Grabbed from the implementation for struct-size purposes.
+class GstTocEntry         is repr<CStruct>     does GTK::Roles::Pointers is export {
+  HAS GstMiniObject   $.mini_object;
+
+  has GstToc          $!toc;
+  has GstTocEntry     $!parent;
+  has gchar           $!uid;
+  has GstTocEntryType $!type;
+  has GstClockTime    $!start
+  has GstClockTime    $!stop;
+  has GList           $!subentries;
+  has GstTagList      $!tags;
+  has GstTocLoopType  $!loop_type;
+  has gint            $!repeat_count;
+}
