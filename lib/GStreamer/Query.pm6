@@ -293,7 +293,7 @@ class GStreamer::Query is GStreamer::MiniObject {
   multi method parse_allocation {
     samewith ($, $);
   }
-  multi method parse_allocation (GstCaps() $caps, Int() $need_pool) {
+  multi method parse_allocation ($caps is rw, $need_pool is rw) {
     my gboolean $np = 0;
     my $c = CArray[Pointer[GstCaps]].new;
     $c[0] = Pointer[GstCaps].new;
@@ -302,20 +302,73 @@ class GStreamer::Query is GStreamer::MiniObject {
     ($caps, $need_pool) = ppr($c, $np);
   }
 
-  method parse_bitrate (guint $nominal_bitrate) {
-    gst_query_parse_bitrate($!q, $nominal_bitrate);
+  proto method parse_bitrate (|)
+  { * }
+
+  multi method parse_bitrate (:$all = False) {
+    samewith($, $, :$all);
+  }
+  multi method parse_bitrate ($nominal_bitrate is rw, :$all = False) {
+    my guint $nb = 0;
+    my $rc = gst_query_parse_bitrate($!q, $nb);
+
+    $nominal_bitrate = $nb;
+    $all.not ?? $nominal_bitrate !! ($nominal_bitrate, $rc);
   }
 
-  method parse_buffering_percent (gboolean $busy, gint $percent) {
-    gst_query_parse_buffering_percent($!q, $busy, $percent);
+  proto method parse_buffering_percent (|)
+  { * }
+
+  multi method parse_buffering_percent {
+    samewith($, $);
+  }
+  multi method parse_buffering_percent ($busy is rw, $percent is rw) {
+    my guint ($b, $p) = 0 xx 2;
+    my $rc = gst_query_parse_buffering_percent($!q, $b, $p);
+
+    ($busy, $percent) = ($b, $p);
+    ($busy, $percent, $rc);
   }
 
-  method parse_buffering_range (GstFormat $format, gint64 $start, gint64 $stop, gint64 $estimated_total) {
-    gst_query_parse_buffering_range($!q, $format, $start, $stop, $estimated_total);
+  proto method parse_buffering_range (|)
+  { * }
+
+  multi method parse_buffering_range {
+    samewith($, $, $, $);
+  }
+  multi method parse_buffering_range (
+    $format          is rw,
+    $start           is rw,
+    $stop            is rw,
+    $estimated_total is rw
+  ) {
+    my GstFormat $f = 0;
+    my gint64 ($st, $sp, $et) = 0 xx 3;
+    my $rc = gst_query_parse_buffering_range($!q, $f, $st, $sp, $et);
+
+    ($format, $start, $stop, $estimated_total) = ($f, $st, $sp, $et);
+    ($format, $start, $stop, $estimated_total, $rc);
   }
 
-  method parse_buffering_stats (GstBufferingMode $mode, gint $avg_in, gint $avg_out, gint64 $buffering_left) {
-    gst_query_parse_buffering_stats($!q, $mode, $avg_in, $avg_out, $buffering_left);
+  proto method parse_buffering_stats (|)
+  { * }
+
+  multi method parse_buffering_stats {
+    samewith($, $, $, $);
+  }
+  multi method parse_buffering_stats (
+    Int() $mode,
+    Int() $avg_in,
+    Int() $avg_out,
+    Int() $buffering_left
+  ) {
+    my GstBufferingMode $m = $mode;
+    my gint ($ai, $ao) = ($avg_in, $avg_out);
+    my gint64 $bl = $buffering_left;
+    my $rc = gst_query_parse_buffering_stats($!q, $m, $ain, $ao, $bl);
+
+    ($mode ,$avg_in ,$avg_out ,$buffering_left) = ($m, $ain, $ao, $bl);
+    ($mode ,$avg_in ,$avg_out ,$buffering_left, $rc);
   }
 
   method parse_caps (GstCaps $filter) {
@@ -334,7 +387,12 @@ class GStreamer::Query is GStreamer::MiniObject {
     gst_query_parse_context_type($!q, $context_type);
   }
 
-  method parse_convert (GstFormat $src_format, gint64 $src_value, GstFormat $dest_format, gint64 $dest_value) {
+  method parse_convert (
+    GstFormat $src_format,
+    gint64 $src_value,
+    GstFormat $dest_format,
+    gint64 $dest_value
+  ) {
     gst_query_parse_convert($!q, $src_format, $src_value, $dest_format, $dest_value);
   }
 
@@ -342,7 +400,11 @@ class GStreamer::Query is GStreamer::MiniObject {
     gst_query_parse_duration($!q, $format, $duration);
   }
 
-  method parse_latency (gboolean $live, GstClockTime $min_latency, GstClockTime $max_latency) {
+  method parse_latency (
+    gboolean $live,
+    GstClockTime $min_latency,
+    GstClockTime $max_latency
+  ) {
     gst_query_parse_latency($!q, $live, $min_latency, $max_latency);
   }
 
@@ -354,15 +416,29 @@ class GStreamer::Query is GStreamer::MiniObject {
     gst_query_parse_nth_allocation_meta($!q, $index, $params);
   }
 
-  method parse_nth_allocation_param (guint $index, GstAllocator $allocator, GstAllocationParams $params) {
+  method parse_nth_allocation_param (
+    guint $index,
+    GstAllocator $allocator,
+    GstAllocationParams $params
+  ) {
     gst_query_parse_nth_allocation_param($!q, $index, $allocator, $params);
   }
 
-  method parse_nth_allocation_pool (guint $index, GstBufferPool $pool, guint $size, guint $min_buffers, guint $max_buffers) {
+  method parse_nth_allocation_pool (
+    guint $index,
+    GstBufferPool $pool,
+    guint $size,
+    guint $min_buffers,
+    guint $max_buffers
+  ) {
     gst_query_parse_nth_allocation_pool($!q, $index, $pool, $size, $min_buffers, $max_buffers);
   }
 
-  method parse_nth_buffering_range (guint $index, gint64 $start, gint64 $stop) {
+  method parse_nth_buffering_range (
+    guint $index,
+    gint64 $start,
+    gint64 $stop
+  ) {
     gst_query_parse_nth_buffering_range($!q, $index, $start, $stop);
   }
 
@@ -378,15 +454,30 @@ class GStreamer::Query is GStreamer::MiniObject {
     gst_query_parse_position($!q, $format, $cur);
   }
 
-  method parse_scheduling (GstSchedulingFlags $flags, gint $minsize, gint $maxsize, gint $align) {
+  method parse_scheduling (
+    GstSchedulingFlags $flags,
+    gint $minsize,
+    gint $maxsize,
+    gint $align
+  ) {
     gst_query_parse_scheduling($!q, $flags, $minsize, $maxsize, $align);
   }
 
-  method parse_seeking (GstFormat $format, gboolean $seekable, gint64 $segment_start, gint64 $segment_end) {
+  method parse_seeking (
+    GstFormat $format,
+    gboolean $seekable,
+    gint64 $segment_start,
+    gint64 $segment_end
+  ) {
     gst_query_parse_seeking($!q, $format, $seekable, $segment_start, $segment_end);
   }
 
-  method parse_segment (gdouble $rate, GstFormat $format, gint64 $start_value, gint64 $stop_value) {
+  method parse_segment (
+    gdouble $rate,
+    GstFormat $format,
+    gint64 $start_value,
+    gint64 $stop_value
+  ) {
     gst_query_parse_segment($!q, $rate, $format, $start_value, $stop_value);
   }
 
@@ -426,11 +517,21 @@ class GStreamer::Query is GStreamer::MiniObject {
     gst_query_set_buffering_percent($!q, $busy, $percent);
   }
 
-  method set_buffering_range (GstFormat $format, gint64 $start, gint64 $stop, gint64 $estimated_total) {
+  method set_buffering_range (
+    GstFormat $format,
+    gint64 $start,
+    gint64 $stop,
+    gint64 $estimated_total
+  ) {
     gst_query_set_buffering_range($!q, $format, $start, $stop, $estimated_total);
   }
 
-  method set_buffering_stats (GstBufferingMode $mode, gint $avg_in, gint $avg_out, gint64 $buffering_left) {
+  method set_buffering_stats (
+    GstBufferingMode $mode,
+    gint $avg_in,
+    gint $avg_out,
+    gint64 $buffering_left
+  ) {
     gst_query_set_buffering_stats($!q, $mode, $avg_in, $avg_out, $buffering_left);
   }
 
@@ -442,7 +543,12 @@ class GStreamer::Query is GStreamer::MiniObject {
     gst_query_set_context($!q, $context);
   }
 
-  method set_convert (GstFormat $src_format, gint64 $src_value, GstFormat $dest_format, gint64 $dest_value) {
+  method set_convert (
+    GstFormat $src_format,
+    gint64 $src_value,
+    GstFormat $dest_format,
+    gint64 $dest_value
+  ) {
     gst_query_set_convert($!q, $src_format, $src_value, $dest_format, $dest_value);
   }
 
@@ -454,15 +560,29 @@ class GStreamer::Query is GStreamer::MiniObject {
     gst_query_set_formatsv($!q, $n_formats, $formats);
   }
 
-  method set_latency (gboolean $live, GstClockTime $min_latency, GstClockTime $max_latency) {
+  method set_latency (
+    gboolean $live,
+    GstClockTime $min_latency,
+    GstClockTime $max_latency
+  ) {
     gst_query_set_latency($!q, $live, $min_latency, $max_latency);
   }
 
-  method set_nth_allocation_param (guint $index, GstAllocator $allocator, GstAllocationParams $params) {
+  method set_nth_allocation_param (
+    guint $index,
+    GstAllocator $allocator,
+    GstAllocationParams $params
+  ) {
     gst_query_set_nth_allocation_param($!q, $index, $allocator, $params);
   }
 
-  method set_nth_allocation_pool (guint $index, GstBufferPool $pool, guint $size, guint $min_buffers, guint $max_buffers) {
+  method set_nth_allocation_pool (
+    guint $index,
+    GstBufferPool $pool,
+    guint $size,
+    guint $min_buffers,
+    guint $max_buffers
+  ) {
     gst_query_set_nth_allocation_pool($!q, $index, $pool, $size, $min_buffers, $max_buffers);
   }
 
@@ -470,15 +590,30 @@ class GStreamer::Query is GStreamer::MiniObject {
     gst_query_set_position($!q, $format, $cur);
   }
 
-  method set_scheduling (GstSchedulingFlags $flags, gint $minsize, gint $maxsize, gint $align) {
+  method set_scheduling (
+    GstSchedulingFlags $flags,
+    gint $minsize,
+    gint $maxsize,
+    gint $align
+  ) {
     gst_query_set_scheduling($!q, $flags, $minsize, $maxsize, $align);
   }
 
-  method set_seeking (GstFormat $format, gboolean $seekable, gint64 $segment_start, gint64 $segment_end) {
+  method set_seeking (
+    GstFormat $format,
+    gboolean $seekable,
+    gint64 $segment_start,
+    gint64 $segment_end
+  ) {
     gst_query_set_seeking($!q, $format, $seekable, $segment_start, $segment_end);
   }
 
-  method set_segment (gdouble $rate, GstFormat $format, gint64 $start_value, gint64 $stop_value) {
+  method set_segment (
+    gdouble $rate,
+    GstFormat $format,
+    gint64 $start_value,
+    gint64 $stop_value
+  ) {
     gst_query_set_segment($!q, $rate, $format, $start_value, $stop_value);
   }
 
@@ -494,16 +629,22 @@ class GStreamer::Query is GStreamer::MiniObject {
     gst_query_set_uri_redirection_permanent($!q, $permanent);
   }
 
-  method type_get_flags {
-    gst_query_type_get_flags($!q);
+  method type_get_flags (GStreamer::Query:U: Int() $type) {
+    my GstQueryType $qt = $type;
+
+    gst_query_type_get_flags($qt);
   }
 
-  method type_get_name {
-    gst_query_type_get_name($!q);
+  method type_get_name (GStreamer::Query:U: Int() $type) {
+    my GstQueryType $qt = $type;
+
+    gst_query_type_get_name($qt);
   }
 
-  method type_to_quark {
-    gst_query_type_to_quark($!q);
+  method type_to_quark (GStreamer::Query:U: Int() $type) {
+    my GstQueryType $qt = $type;
+
+    gst_query_type_to_quark($qt);
   }
 
   method writable_structure {
