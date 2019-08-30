@@ -57,6 +57,9 @@ constant GstStructureMapFunc               is export := Pointer;
 constant GstTagForeachFunc                 is export := Pointer;
 constant GstTagMergeFunc                   is export := Pointer;
 constant GstTaskFunction                   is export := Pointer;
+constant GstMetaInitFunction               is export := Pointer;
+constant GstMetaFreeFunction               is export := Pointer;
+constant GstMetaTransformFunction          is export := Pointer;
 
 #class GstAllocator         is repr('CPointer') does GTK::Roles::Pointers is export { }
 class GstAllocationParams  is repr('CPointer') does GTK::Roles::Pointers is export { }
@@ -1093,6 +1096,16 @@ class GstFormatDefinition is repr<CStruct>     does GTK::Roles::Pointers is expo
   has Str    $.nick;
   has Str    $.description;
   has GQuark $.quark;
+}
+
+class GstMetaInfo         is repr<CStruct>     does GTK::Roles::Pointers is export {
+  has GType    $.api;
+  has GType    $.type;
+  has gsize    $.size;
+
+  has gpointer $!init_func;
+  has gpointer $!free_func;
+  has gpointer $!transform_func;
 }
 
 class GstPluginDesc       is repr<CStruct>     does GTK::Roles::Pointers is export {
