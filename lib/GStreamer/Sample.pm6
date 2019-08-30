@@ -1,13 +1,45 @@
 use v6.c;
 
+use Method::Also;
+
 use GTK::Compat::Types;
 use GStreamer::Raw::Types;
 use GStreamer::Raw::Sample;
 
 use GStreamer::MiniObject;
 
+use GStreamer::Buffer;
+use GStreamer::BufferList;
+use GStreamer::Caps;
+use GStreamer::Segment;
+
 class GStreamer::Sample is GStreamer::MiniObject {
   has GstSample $!s;
+
+  submethod BUILD (:$sample) {
+    self.setSample($sample);
+  }
+
+  method setSample (GstSample $_) {
+    my $to-parent;
+
+    $!s = do {
+      when GstSample {
+        $to-parent = cast(GstMiniObject, $_);
+        $_;
+      }
+
+      default {
+        $to-parent = $_;
+        cast(GstSample, $_);
+      }
+    }
+    self.setMiniObject($to-parent);
+  }
+
+  method GStreamer::Raw::Types::GstSample
+    is also<GstSample>
+  { $!s }
 
   multi method new (GstSample $sample) {
     self.bless( :$sample );
@@ -21,56 +53,81 @@ class GStreamer::Sample is GStreamer::MiniObject {
     self.bless( sample => gst_sample_new($buffer, $caps, $segment, $info) );
   }
 
-  method buffer is rw {
+  method buffer (:$raw = False) is rw {
     Proxy.new(
       FETCH => sub ($) {
-        gst_sample_get_buffer($!s);
+        my $b = gst_sample_get_buffer($!s);
+
+        $b ??
+          ( $raw ?? $b !! GStreamer::Buffer.new($b) )
+          !!
+          Nil;
       },
-      STORE => sub ($, $buffer is copy) {
+      STORE => sub ($, GstBuffer() $buffer is copy) {
         gst_sample_set_buffer($!s, $buffer);
       }
     );
   }
 
-  method buffer_list is rw {
+  method buffer_list (:$raw = False) is rw is also<buffer-list> {
     Proxy.new(
       FETCH => sub ($) {
-        gst_sample_get_buffer_list($!s);
+        my $bl = gst_sample_get_buffer_list($!s);
+
+        $bl ??
+          ( $raw ?? $bl !! GStreamer::BufferList.new($bl) )
+          !!
+          Nil;
       },
-      STORE => sub ($, $buffer_list is copy) {
+      STORE => sub ($, GstBufferList() $buffer_list is copy) {
         gst_sample_set_buffer_list($!s, $buffer_list);
       }
     );
   }
 
-  method caps is rw {
+  method caps (:$raw = False) is rw {
     Proxy.new(
       FETCH => sub ($) {
-        gst_sample_get_caps($!s);
+        my $c = gst_sample_get_caps($!s);
+
+        $c ??
+          ( $raw ?? $c !! GStreamer::Caps.new($c) )
+          !!
+          Nil;
       },
-      STORE => sub ($, $caps is copy) {
+      STORE => sub ($, GstCaps() $caps is copy) {
         gst_sample_set_caps($!s, $caps);
       }
     );
   }
 
-  method info is rw {
+  method info (:$raw = False) is rw {
     Proxy.new(
       FETCH => sub ($) {
-        gst_sample_get_info($!s);
+        $s = gst_sample_get_info($!s);
+
+        $s ??
+          ( $raw ?? $s !! GStreamer::Structure.new($s) )
+          !!
+          Nil;
       },
-      STORE => sub ($, $info is copy) {
+      STORE => sub ($, GstStructure() $info is copy) {
         gst_sample_set_info($!s, $info);
       }
     );
   }
 
-  method segment is rw {
+  method segment (:$raw = False) is rw {
     Proxy.new(
       FETCH => sub ($) {
-        gst_sample_get_segment($!s);
+        my $s = gst_sample_get_segment($!s);
+
+        $s ??
+          ( $raw ?? $s !! GStreamer::Segment.new($s) )
+          !!
+          Nil;
       },
-      STORE => sub ($, $segment is copy) {
+      STORE => sub ($, GstSegment() $segment is copy) {
         gst_sample_set_segment($!s, $segment);
       }
     );
@@ -94,7 +151,7 @@ class GStreamer::Sample is GStreamer::MiniObject {
       Nil;
   }
 
-  method get_type {
+  method get_type is also<get-type> {
     state ($n, $t);
 
     unstable_get_type( self.^name, &gst_sample_get_type, $n, $t );
