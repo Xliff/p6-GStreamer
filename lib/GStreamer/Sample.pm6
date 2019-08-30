@@ -10,7 +10,7 @@ use GStreamer::MiniObject;
 
 use GStreamer::Buffer;
 use GStreamer::BufferList;
-use GStreamer::Caps;
+#use GStreamer::Caps;
 use GStreamer::Segment;
 
 class GStreamer::Sample is GStreamer::MiniObject {
@@ -44,7 +44,7 @@ class GStreamer::Sample is GStreamer::MiniObject {
   multi method new (GstSample $sample) {
     self.bless( :$sample );
   }
-  method new (
+  multi method new (
     GstBuffer() $buffer,
     GstCaps() $caps,
     GstSegment() $segment,
@@ -104,7 +104,7 @@ class GStreamer::Sample is GStreamer::MiniObject {
   method info (:$raw = False) is rw {
     Proxy.new(
       FETCH => sub ($) {
-        $s = gst_sample_get_info($!s);
+        my $s = gst_sample_get_info($!s);
 
         $s ??
           ( $raw ?? $s !! GStreamer::Structure.new($s) )
@@ -139,14 +139,14 @@ class GStreamer::Sample is GStreamer::MiniObject {
   multi method copy (:$raw = False) {
     samewith($!s, :$raw);
   }
-  method copy (GstSample() $s, :$raw = False) {
+  multi method copy (GstSample() $s, :$raw = False) {
     my $sample = cast(
       GstSample,
       GStreamer::MiniObject.copy( cast(GstMiniObject, $s), :$raw )
     );
 
     $sample ??
-      ( $raw !! $sample !! GStreamer::Sample.new($sample) )
+      ( $raw ?? $sample !! GStreamer::Sample.new($sample) )
       !!
       Nil;
   }

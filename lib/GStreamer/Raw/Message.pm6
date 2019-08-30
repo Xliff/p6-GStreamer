@@ -244,7 +244,7 @@ sub gst_message_new_redirect (
 
 sub gst_message_new_request_state (
   GstObject $src,
-  guint $state # GstState $state
+  GstState $state
 )
   returns GstMessage
   is native(gstreamer)
@@ -259,7 +259,7 @@ sub gst_message_new_reset_time (GstObject $src, GstClockTime $running_time)
 
 sub gst_message_new_segment_done (
   GstObject $src,
-  guint $format, # GstFormat $format,
+  GstFormat $format,
   gint64 $position
 )
   returns GstMessage
@@ -269,7 +269,7 @@ sub gst_message_new_segment_done (
 
 sub gst_message_new_segment_start (
   GstObject $src,
-  guint $format, # GstFormat $format,
+  GstFormat $format,
   gint64 $position
 )
   returns GstMessage
@@ -279,9 +279,9 @@ sub gst_message_new_segment_start (
 
 sub gst_message_new_state_changed (
   GstObject $src,
-  guint $oldstate,  # GstState $oldstate,
-  guint $newstate,  # GstState $newstate,
-  guint $pending    # GstState $pending
+  GstState $oldstate,
+  GstState $newstate,
+  GstState $pending
 )
   returns GstMessage
   is native(gstreamer)
@@ -296,7 +296,7 @@ sub gst_message_new_state_dirty (GstObject $src)
 
 sub gst_message_new_step_done (
   GstObject $src,
-  guint $format, # GstFormat $format,
+  GstFormat $format,
   guint64 $amount,
   gdouble $rate,
   gboolean $flush,
@@ -312,7 +312,7 @@ sub gst_message_new_step_done (
 sub gst_message_new_step_start (
   GstObject $src,
   gboolean $active,
-  guint $format, # GstFormat $format,
+  GstFormat $format,
   guint64 $amount,
   gdouble $rate,
   gboolean $flush,
@@ -339,7 +339,7 @@ sub gst_message_new_stream_start (GstObject $src)
 
 sub gst_message_new_stream_status (
   GstObject $src,
-  guint $type, # GstStreamStatusType $type,
+  GstStreamStatusType $type,
   GstElement $owner
 )
   returns GstMessage
@@ -358,7 +358,7 @@ sub gst_message_new_streams_selected (
 
 sub gst_message_new_structure_change (
   GstObject $src,
-  guint $type, # GstStructureChangeType $type,
+  GstStructureChangeType $type,
   GstElement $owner,
   gboolean $busy
 )
@@ -418,7 +418,7 @@ sub gst_message_parse_buffering (
 
 sub gst_message_parse_buffering_stats (
   GstMessage $message,
-  guint $mode            is rw, # GstBufferingMode $mode,
+  GstBufferingMode $mode is rw,
   gint $avg_in           is rw,
   gint $avg_out          is rw,
   gint64 $buffering_left is rw
@@ -539,7 +539,7 @@ sub gst_message_parse_new_clock (
 
 sub gst_message_parse_progress (
   GstMessage $message,
-  guint $type is rw, # GstProgressType $type,
+  GstProgressType $type is rw,
   CArray[Str] $code,
   CArray[Str] $text
 )
@@ -571,7 +571,7 @@ sub gst_message_parse_qos (
 
 sub gst_message_parse_qos_stats (
   GstMessage $message,
-  CArray[guint] $format,
+  GstFormat $format  is rw,
   guint64 $processed is rw,
   guint64 $dropped   is rw
 )
@@ -602,7 +602,7 @@ sub gst_message_parse_redirect_entry (
 
 sub gst_message_parse_request_state (
   GstMessage $message,
-  CArray[guint] $state
+  GstState $state is rw
 )
   is native(gstreamer)
   is export
@@ -618,7 +618,7 @@ sub gst_message_parse_reset_time (
 
 sub gst_message_parse_segment_done (
   GstMessage $message,
-  CArray[guint] $format,
+  GstFormat $format is rw,
   gint64 $position is rw
 )
   is native(gstreamer)
@@ -636,9 +636,9 @@ sub gst_message_parse_segment_start (
 
 sub gst_message_parse_state_changed (
   GstMessage $message,
-  guint $oldstate is rw,   # GstState $oldstate,
-  guint $newstate is rw,   # GstState $newstate,
-  guint $pending  is rw     # GstState $pending
+  GstState $oldstate is rw,
+  GstState $newstate is rw,
+  GstState $pending  is rw
 )
   is native(gstreamer)
   is export
@@ -646,7 +646,7 @@ sub gst_message_parse_state_changed (
 
 sub gst_message_parse_step_done (
   GstMessage $message,
-  CArray[guint] $format,
+  GstFormat $format      is rw,
   guint64 $amount        is rw,
   gdouble $rate          is rw,
   gboolean $flush        is rw,
@@ -661,7 +661,7 @@ sub gst_message_parse_step_done (
 sub gst_message_parse_step_start (
   GstMessage $message,
   gboolean $active       is rw,
-  CArray[guint] $format,
+  GstFormat $format      is rw,
   guint64 $amount        is rw,
   gdouble $rate          is rw,
   gboolean $flush        is rw,

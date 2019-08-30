@@ -8,7 +8,7 @@ use GStreamer::Raw::Device;
 
 use GStreamer::Object;
 
-use GStreamer::Caps;
+#use GStreamer::Caps;
 use GStreamer::Element;
 
 our subset DeviceAncestry is export of Mu

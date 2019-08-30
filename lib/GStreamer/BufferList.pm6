@@ -8,11 +8,32 @@ use GStreamer::Raw::BufferList;
 
 use GStreamer::MiniObject;
 
-our BufferListAncestry is export of Mu
+our subset BufferListAncestry is export of Mu
   where GstBufferList | GstMiniObject;
 
 class GStreamer::BufferList is GStreamer::MiniObject {
   has GstBufferList $!bl;
+
+  submethod BUILD (:$buffer-list) {
+    self.setBufferList($buffer-list);
+  }
+
+  method setBufferList(BufferListAncestry $_) {
+    my $to-parent;
+
+    $!bl = do {
+      when GstBufferList {
+        $to-parent = cast(GstMiniObject, $_);
+        $_;
+      }
+
+      default {
+        $to-parent = $_;
+        cast(GstBufferList, $_);
+      }
+    }
+    self.setMiniObject($to-parent);
+  }
 
   method GStreamer::Raw::Types::GstBufferList
     is also<GstBufferList>
@@ -38,10 +59,10 @@ class GStreamer::BufferList is GStreamer::MiniObject {
   multi method copy (:$raw = False) {
     GStreamer::BufferList.copy($!bl, :$raw);
   }
-  multi method copy (GstBufferList() $c, :$raw = False) {
+  multi method copy (GstBufferList() $cpy, :$raw = False) {
     my $c = cast(
       GstBufferList,
-      GStreamer::MiniObject.copy( cast(GstMiniObject, $c) )
+      GStreamer::MiniObject.copy( cast(GstMiniObject, $cpy) )
     );
 
     $c ??
@@ -59,10 +80,10 @@ class GStreamer::BufferList is GStreamer::MiniObject {
   }
   multi method copy_deep (
     GStreamer::BufferList:U:
-    GstBufferList() $c,
+    GstBufferList() $cpy,
     :$raw = False
   ) {
-    my $c = gst_buffer_list_copy_deep($!bl);
+    my $c = gst_buffer_list_copy_deep($cpy);
 
     $c ??
       ( $raw ?? $c !! GStreamer::BufferList.new($c) )
@@ -113,7 +134,7 @@ class GStreamer::BufferList is GStreamer::MiniObject {
   }
 
   method remove (Int() $idx, Int() $length) {
-    my guint ($i, $l) = ($idx, $lengt);
+    my guint ($i, $l) = ($idx, $length);
 
     gst_buffer_list_remove($!bl, $i, $l);
   }

@@ -366,7 +366,7 @@ class GStreamer::Buffer is GStreamer::MiniObject {
   multi method get_sizes (:$all = False) {
     samewith($, $, :$all);
   }
-  multi method get_sizes ($offset is rw, $maxsize is rw, :$all) {
+  multi method get_sizes ($offset is rw, $maxsize is rw, :$all = False) {
     my gsize ($o, $m)  = 0 xx 2;
 
     my $s = gst_buffer_get_sizes($!b, $o, $m);

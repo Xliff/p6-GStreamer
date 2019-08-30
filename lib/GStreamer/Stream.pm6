@@ -6,7 +6,7 @@ use GStreamer::Raw::Stream;
 
 use GStreamer::Object;
 
-use GStreamer::Caps;
+#use GStreamer::Caps;
 use GStreamer::TagList;
 
 our subset StreamAncestry is export of Mu
@@ -30,7 +30,7 @@ class GStreamer::Stream is GStreamer::Object {
 
       default {
         $to-parent = $_;
-        cast(GstStream, $_):
+        cast(GstStream, $_);
       }
     }
     self.setGstObject($to-parent);
@@ -51,7 +51,7 @@ class GStreamer::Stream is GStreamer::Object {
     my GstStreamType $t = $type;
     my GstStreamFlags $f = $flags;
 
-    self.bless( stream => gst_stream_new($!s, $caps, $t, $f) );
+    self.bless( stream => gst_stream_new($stream_id, $caps, $t, $f) );
   }
 
   method caps (:$raw = False) is rw {
@@ -60,7 +60,7 @@ class GStreamer::Stream is GStreamer::Object {
         my $c = gst_stream_get_caps($!s);
 
         $c ??
-          ($raw ?? $c !! GStreamer::Caps.new($c);
+          ( $raw ?? $c !! GStreamer::Caps.new($c) )
           !!
           Nil;
       },
@@ -73,7 +73,7 @@ class GStreamer::Stream is GStreamer::Object {
   method stream_flags is rw {
     Proxy.new(
       FETCH => sub ($) {
-        GStreamFlagsEnum( gst_stream_get_stream_flags($!s) );
+        GstStreamFlagsEnum( gst_stream_get_stream_flags($!s) );
       },
       STORE => sub ($, Int() $flags is copy) {
         my GstStreamFlags $f = $flags;

@@ -50,7 +50,6 @@ constant GstPadStickyEventsForeachFunction is export := Pointer;
 constant GstPadUnlinkFunction              is export := Pointer;
 constant GstPluginInitFullFunc             is export := Pointer;
 constant GstPluginInitFunc                 is export := Pointer;
-constant GstStreamFlags                    is export := Pointer;
 constant GstStructureFilterMapFunc         is export := Pointer;
 constant GstStructureForeachFunc           is export := Pointer;
 constant GstStructureMapFunc               is export := Pointer;
@@ -882,6 +881,14 @@ our enum GstStreamErrorEnum is export (
   'GST_STREAM_ERROR_DECRYPT',
   'GST_STREAM_ERROR_DECRYPT_NOKEY',
   'GST_STREAM_ERROR_NUM_ERRORS'
+);
+
+constant GstStreamFlags is export := guint;
+our enum GstStreamFlagsEnum is export (
+  GST_STREAM_FLAG_NONE     => 0,
+  GST_STREAM_FLAG_SPARSE   => 1,
+  GST_STREAM_FLAG_SELECT   => (1 +< 1),
+  GST_STREAM_FLAG_UNSELECT => (1 +< 2)
 );
 
 constant GstStreamStatusType is export := guint;

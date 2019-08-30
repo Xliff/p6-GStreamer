@@ -60,7 +60,10 @@ class GStreamer::Context is GStreamer::MiniObject {
   method writable_structure (:$raw = False) is also<writable-structure> {
     my $e = gst_context_writable_structure($!c);
 
-    $raw ?? $s !! GStreamer::Structure.new($e);
+    $e ??
+      ( $raw ?? $e !! GStreamer::Structure.new($e) )
+      !!
+      Nil;
   }
 
 }

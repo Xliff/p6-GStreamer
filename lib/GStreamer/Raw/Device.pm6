@@ -1,5 +1,7 @@
 use v6.c;
 
+use NativeCall;
+
 use GTK::Compat::Types;
 use GStreamer::Raw::Types;
 
@@ -47,7 +49,7 @@ sub gst_device_has_classes (GstDevice $device, Str $classes)
   is export
 { * }
 
-sub gst_device_has_classesv (GstDevice $device, Str $classes)
+sub gst_device_has_classesv (GstDevice $device, CArray[Str] $classes)
   returns uint32
   is native(gstreamer)
   is export

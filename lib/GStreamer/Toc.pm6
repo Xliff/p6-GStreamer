@@ -1,6 +1,6 @@
 use v6.c;
 
-use GTK::Raw::Types;
+use GTK::Compat::Types;
 use GStreamer::Raw::Types;
 use GStreamer::Raw::Toc;
 
@@ -16,13 +16,13 @@ class GStreamer::TocEntry is GStreamer::MiniObject {
   has GstTocEntry $!te;
 
   submethod BUILD (:$entry) {
-    self.setTocEntry($toc);
+    self.setTocEntry($entry);
   }
 
   method setTocEntry (TocEntryAncestry $_) {
     my $to-parent;
 
-    $!t = do {
+    $!te = do {
       when GstTocEntry {
         $to-parent = cast(GstMiniObject, $_);
         $_;
@@ -39,7 +39,7 @@ class GStreamer::TocEntry is GStreamer::MiniObject {
   method new (Int() $toc_entry_type, Str $uid) {
     my GstTocEntryType $et = $toc_entry_type;
 
-    self.bless(entry => gst_toc_entry_new($et, $uid);
+    self.bless( entry => gst_toc_entry_new($et, $uid) );
   }
 
   method GStreamer::Raw::Types::GstTocEntry
@@ -61,9 +61,9 @@ class GStreamer::TocEntry is GStreamer::MiniObject {
   }
   multi method get_loop ($loop_type is rw, $repeat_count is rw) {
     my GstTocLoopType $lt = 0;
-    my gint $rc = 0;
+    my gint $rpc = 0;
 
-    my $rc = so gst_toc_entry_get_loop($!te, $lt, $rc);
+    my $rc = so gst_toc_entry_get_loop($!te, $lt, $rpc);
     ($loop_type, $repeat_count) = ($lt, $rc);
     ($loop_type, $repeat_count, $rc);
   }
@@ -83,8 +83,8 @@ class GStreamer::TocEntry is GStreamer::MiniObject {
   multi method get_start_stop_times {
     samewith($, $);
   }
-  method get_start_stop_times ($start is rw, $stop is rw) {
-    my ginit64 ($st, $sp) = 0 xx 2;
+  multi method get_start_stop_times ($start is rw, $stop is rw) {
+    my gint64 ($st, $sp) = 0 xx 2;
     my $rc = so gst_toc_entry_get_start_stop_times($!te, $st, $sp);
 
     ($start, $stop) = ($st, $sp);
@@ -96,7 +96,7 @@ class GStreamer::TocEntry is GStreamer::MiniObject {
       but GTK::Compat::Roles::ListData[GstTocEntry];
 
     $se ??
-      ( $raw ?? $se.Array !! $se.Array.map({ GStreamer::TocEntry.new($_) });
+      ( $raw ?? $se.Array !! $se.Array.map({ GStreamer::TocEntry.new($_) }) )
       !!
       Nil;
   }
@@ -151,7 +151,7 @@ class GStreamer::TocEntry is GStreamer::MiniObject {
   }
 
   method set_start_stop_times (Int() $start, Int() $stop) {
-    my ginit64 ($st, $sp) = ($start, $stop);
+    my gint64 ($st, $sp) = ($start, $stop);
 
     gst_toc_entry_set_start_stop_times($!te, $start, $stop);
   }
@@ -163,7 +163,7 @@ class GStreamer::TocEntry is GStreamer::MiniObject {
   method type_get_nick (
     GStreamer::TocEntry:U:
     Int() $type
-  {
+  ) {
     my GstTocEntryType $t = $type;
 
     gst_toc_entry_type_get_nick($t);
@@ -171,8 +171,8 @@ class GStreamer::TocEntry is GStreamer::MiniObject {
 
 }
 
-our TocAncestry is export of Mu
-  where GstToc | GstMiniObject
+our subset TocAncestry is export of Mu
+  where GstToc | GstMiniObject;
 
 class GStreamer::Toc is GStreamer::MiniObject {
   has GstToc $!t;
@@ -181,7 +181,7 @@ class GStreamer::Toc is GStreamer::MiniObject {
     self.setToc($toc);
   }
 
-  method setToc (TocAncestry $t_) {
+  method setToc (TocAncestry $_) {
     my $to-parent;
 
     $!t = do {
@@ -213,7 +213,7 @@ class GStreamer::Toc is GStreamer::MiniObject {
         my $tl = gst_toc_get_tags($!t);
 
         $tl ??
-          ( $raw ?? $tl !! GStreamer::TagList.new($tl) );
+          ( $raw ?? $tl !! GStreamer::TagList.new($tl) )
           !!
           Nil;
       },

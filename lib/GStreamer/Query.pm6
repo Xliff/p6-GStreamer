@@ -365,9 +365,9 @@ class GStreamer::Query is GStreamer::MiniObject {
     my GstBufferingMode $m = $mode;
     my gint ($ai, $ao) = ($avg_in, $avg_out);
     my gint64 $bl = $buffering_left;
-    my $rc = gst_query_parse_buffering_stats($!q, $m, $ain, $ao, $bl);
+    my $rc = gst_query_parse_buffering_stats($!q, $m, $ai, $ao, $bl);
 
-    ($mode ,$avg_in ,$avg_out ,$buffering_left) = ($m, $ain, $ao, $bl);
+    ($mode ,$avg_in ,$avg_out ,$buffering_left) = ($m, $ai, $ao, $bl);
     ($mode ,$avg_in ,$avg_out ,$buffering_left, $rc);
   }
 
