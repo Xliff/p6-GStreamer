@@ -1108,6 +1108,26 @@ class GstStructure        is repr<CStruct>     does GTK::Roles::Pointers is expo
   has GQuark $!name;
 }
 
+class GstSegment         is repr<CStruct>     does GTK::Roles::Pointers is export {
+  has GstSegmentFlags $.flags        is rw;
+  has gdouble         $.rate         is rw;
+  has gdouble         $.applied_rate is rw;
+  has GstFormat       $.format       is rw;
+  has guint64         $.base         is rw;
+  has guint64         $.offset       is rw;
+  has guint64         $.start        is rw;
+  has guint64         $.stop         is rw;
+  has guint64         $.time         is rw;
+  has guint64         $.position     is rw;
+  has guint64         $.duration     is rw;
+
+  # private
+  has gpointer  $!gst_reserved0;
+  has gpointer  $!gst_reserved1;
+  has gpointer  $!gst_reserved2;
+  has gpointer  $!gst_reserved3;
+};
+
 # NOTE -- For all CStruct definitions marked as Opaque -- this opens us up
 #         to ABI changes. This means that any changes in the ABI MUST be
 #         accounted for, but it is unknown if Perl6 has a mechanism to allow
