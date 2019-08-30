@@ -112,7 +112,10 @@ class GStreamer::TagList is GStreamer::MiniObject {
   }
 
   method copy (GstTagList() $orig, :$raw = False) {
-    my $c = GStreamer::MiniObject.copy( cast(GstMiniObject, $orig), :raw );
+    my $c = cast(
+      GstTagList,
+      GStreamer::MiniObject.copy( cast(GstMiniObject, $orig), :raw )
+    );
 
     $c ??
       ( $raw ?? $c !! GStreamer::TagList.new($c) )

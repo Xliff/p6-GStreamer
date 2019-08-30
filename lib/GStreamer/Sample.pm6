@@ -76,6 +76,24 @@ class GStreamer::Sample is GStreamer::MiniObject {
     );
   }
 
+  proto method copy (|)
+  { * }
+
+  multi method copy (:$raw = False) {
+    samewith($!s, :$raw);
+  }
+  method copy (GstSample() $s, :$raw = False) {
+    my $sample = cast(
+      GstSample,
+      GStreamer::MiniObject.copy( cast(GstMiniObject, $s), :$raw )
+    );
+
+    $sample ??
+      ( $raw !! $sample !! GStreamer::Sample.new($sample) )
+      !!
+      Nil;
+  }
+
   method get_type {
     state ($n, $t);
 
