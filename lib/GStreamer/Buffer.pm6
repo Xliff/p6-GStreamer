@@ -12,40 +12,97 @@ class GStreamer::Buffer is GStreamer::MiniObject {
   method GStreamer::Raw::Types::GstBuffer {
   { $!b }
 
-  method new {
-    gst_buffer_new();
+  submethod BUILD (:$buffer) {
+    self.setBuffer($buffer);
   }
 
-  method new_allocate (gsize $size, GstAllocationParams $params) {
-    gst_buffer_new_allocate($!b, $size, $params);
+  multi method (GstBuffer $buffer) {
+    self.bless( :$buffer );
+  }
+  multi method new {
+    self.bless( buffer => gst_buffer_new() );
   }
 
-  method new_wrapped (gsize $size) {
-    gst_buffer_new_wrapped($!b, $size);
+  multi method new (
+    GstAllocator() $allocator,
+    Int() $size,
+    GstAllocationParams() $params,
+    :$allocator is required
+  ) {
+    GStreamer::Buffer.new_allocate($allocator, $size, $params);
+  }
+  method new_allocate (
+    GstAllocator() $allocator,
+    Int() $size,
+    GstAllocationParams() $params
+  ) {
+    my gsize $s = $size;
+
+    self.bless( buffer => gst_buffer_new_allocate($allocator, $s, $params) );
   }
 
-  method new_wrapped_bytes {
-    gst_buffer_new_wrapped_bytes($!b);
+  multi method new (
+    gpointer $data,
+    Int() $size,
+    :$wrapped is required
+  ) {
+    GStreamer::Buffer.new_wrapped($data, $size);
+  }
+  method new_wrapped (gpointer $data, Int() $size) {
+    my gsize $s = $size;
+
+    self.bless( buffer => gst_buffer_new_wrapped($data, $size) );
   }
 
+  multi method new (
+    GBytes() $bytes,
+    :wrapped-bytes(:$wrapped_bytes) is required
+  ) {
+    GStreamer::Buffer.new_wrapped_bytes($bytes);
+  }
+  method new_wrapped_bytes (GBytes() $bytes) {
+    gst_buffer_new_wrapped_bytes($bytes);
+  }
+
+  multi method new (
+    gpointer $data,
+    Int() $maxsize,
+    Int() $offset,
+    Int() $size,
+    gpointer $user_data    = gpointer,
+    GDestroyNotify $notify = gpointer,
+    :wrapped-full(:full($wrapped_full)) is required
+  } {
+    GStreamer::Buffer.new_wrapped_full(
+      $data,
+      $maxsize,
+      $offset,
+      $size,
+      $user_data,
+      $notify
+    );
+  }
   method new_wrapped_full (
     gpointer $data,
-    gsize $maxsize,
-    gsize $offset,
-    gsize $size,
-    gpointer $user_data,
-    GDestroyNotify $notify
+    Int() $maxsize,
+    Int() $offset,
+    Int() $size,
+    gpointer $user_data    = gpointer,
+    GDestroyNotify $notify = gpointer
   ) {
-    gst_buffer_new_wrapped_full($!b, $data, $maxsize, $offset, $size, $user_data, $notify);
+    my gsize ($m, $o, $s) = 0 xx 3;
+    gst_buffer_new_wrapped_full($!b, $data, $m, $o, $s, $user_data, $notify);
   }
 
   method flags is rw {
     Proxy.new(
       FETCH => sub ($) {
-        gst_buffer_get_flags($!b);
+        GstBufferFlagsEnum( gst_buffer_get_flags($!b) );
       },
-      STORE => sub ($, $flags is copy) {
-        gst_buffer_set_flags($!b, $flags);
+      STORE => sub ($, Int() $flags is copy) {
+        my GstBufferFlags $f = $flags;
+
+        gst_buffer_set_flags($!b, $f);
       }
     );
   }
@@ -55,7 +112,7 @@ class GStreamer::Buffer is GStreamer::MiniObject {
       FETCH => sub ($) {
         gst_buffer_get_size($!b);
       },
-      STORE => sub ($, $size is copy) {
+      STORE => sub ($, Int() $size is copy) {
         gst_buffer_set_size($!b, $size);
       }
     );
@@ -65,161 +122,331 @@ class GStreamer::Buffer is GStreamer::MiniObject {
     gst_buffer_add_meta($!b, $info, $params);
   }
 
-  method add_parent_buffer_meta (GstBuffer $ref) {
+  method add_parent_buffer_meta (GstBuffer() $ref) {
     gst_buffer_add_parent_buffer_meta($!b, $ref);
   }
 
   method add_reference_timestamp_meta (
-    GstCaps $reference,
-    GstClockTime $timestamp,
-    GstClockTime $duration
+    GstCaps() $reference,
+    Int() $timestamp,
+    Int() $duration
   ) {
-    gst_buffer_add_reference_timestamp_meta($!b, $reference, $timestamp, $duration);
+    my GstClockTime($t, $d) = ($timestamp, $duration);
+
+    gst_buffer_add_reference_timestamp_meta($!b, $reference, $t, $d);
   }
 
-  method append (GstBuffer $buf2) {
-    gst_buffer_append($!b, $buf2);
+  multi method append (GstBuffer() $buf2) {
+    GStreamer::Buffer.append($!b, $buf2);
+  }
+  multi method append (
+    GStreamer::Buffer:U:
+    GstBuffer() $buf1, GstBuffer() $buf2
+  ) {
+    gst_buffer_append($buf1, $buf2);
   }
 
-  method append_memory (GstMemory $mem) {
+  method append_memory (GstMemory() $mem) {
     gst_buffer_append_memory($!b, $mem);
   }
 
-  method append_region (GstBuffer $buf2, gssize $offset, gssize $size) {
-    gst_buffer_append_region($!b, $buf2, $offset, $size);
+  proto method append_region (|)
+  { * }
+
+  method append_region (GstBuffer() $buf2, Int() $offset, Int() $size) {
+    GStreamer::Buffer.append_region($!b, $buf2, $offset, $size);
+  }
+  method append_region (
+    GStreamer::Buffer:U:
+    GstBuffer() $buf2,
+    Int() $offset,
+    Int() $size
+  ) {
+    my gssize ($o, $s) = ($offset, $size);
+    gst_buffer_append_region($!b, $buf2, $o, $s);
   }
 
-  method copy_deep {
-    gst_buffer_copy_deep($!b);
+  multi method copy (:$raw = False) {
+    GStreamer::Buffer.copy($!b, :$raw);
+  }
+  multi method copy (GStreamer::Buffer:U: GstBuffer() $c, :$raw) {
+    my $c = cast(
+      GstBuffer,
+      GStreamer::MiniObject.copy( cast(GstMiniObject, $c) )
+    );
+
+    $c ??
+      ( $raw ?? $c !! GStreamer::Buffer.new($c) )
+      !!
+      Nil;
+  }
+
+
+  proto method copy_deep (|)
+  { * }
+
+  multi method copy_deep (:$raw = False) {
+    GStreamer::Buffer.copy_deep($!b, :$raw);
+  }
+  multi method copy_deep (GStreamer::Buffer:U: GstBuffer() $cd, :$raw = False) {
+    my $c = gst_buffer_copy_deep($!b);
+
+    $cd ??
+      ( $raw ?? $cd !! GStreamer::Buffer.new($cd) )
+      !!
+      Nil;
   }
 
   method copy_into (
     GstBuffer $src,
-    GstBufferCopyFlags $flags,
-    gsize $offset,
-    gsize $size
+    Int() $flags,
+    Int() $offset,
+    Int() $size
   ) {
-    gst_buffer_copy_into($!b, $src, $flags, $offset, $size);
+    my GstBufferCopyFlags $f = $flags;
+    my gsize ($o, $s) = ($offset, $size);
+
+    so gst_buffer_copy_into($!b, $src, $flags, $offset, $size);
   }
 
-  method copy_region (GstBufferCopyFlags $flags, gsize $offset, gsize $size) {
-    gst_buffer_copy_region($!b, $flags, $offset, $size);
+  proto method copy_region (|)
+  { * }
+
+  multi method copy_region (
+    Int() $flags,
+    Int() $offset,
+    Int() $size,
+    :$raw = False
+  ) {
+    GStreamer::Buffer.copy_region($!b, $flags, $offset, $size, :$raw);
+  }
+  multi method copy_region (
+    GstBuffer() $parent,
+    Int() $flags,
+    Int() $offset,
+    Int() $size,
+    :$raw = False;
+  ) {
+    my GstBufferCopyFlags $f = $flags;
+    my gsize ($o, $s) = ($offset, $size);
+    my $b = gst_buffer_copy_region($!b, $f, $o, $s);
+
+    $b ??
+      ( $raw ?? $b !! GStreamer::Buffer.new($b) )
+      !!
+      Nil;
   }
 
-  method extract (gsize $offset, gpointer $dest, gsize $size) {
-    gst_buffer_extract($!b, $offset, $dest, $size);
+  method extract (Int() $offset, gpointer $dest, Int() $size) {
+    my gsize ($o, $s) = ($offset, $size);
+
+    gst_buffer_extract($!b, $o, $dest, $s);
   }
 
   method extract_dup (
-    gsize $offset,
-    gsize $size,
+    Int() $offset,
+    Int() $size,
     gpointer $dest,
-    gsize $dest_size
+    Int() $dest_size
   ) {
-    gst_buffer_extract_dup($!b, $offset, $size, $dest, $dest_size);
+    my gsize ($o, $s, $d) = ($offset, $size, $dest_size);
+
+    gst_buffer_extract_dup($!b, $o, $s, $dest, $d);
   }
 
-  method fill (gsize $offset, gconstpointer $src, gsize $size) {
+  method fill (Int() $offset, gpointer $src, Int() $size) {
+    my gsize ($o, $s) = ($offset, $size);
+
     gst_buffer_fill($!b, $offset, $src, $size);
   }
 
-  method find_memory (
-    gsize $offset,
-    gsize $size,
-    guint $idx,
-    guint $length,
-    gsize $skip
+  proto method find_memory (|)
+  { * }
+
+  multi method find_memory (
+    Int() $offset,
+    Int() $size,
   ) {
-    gst_buffer_find_memory($!b, $offset, $size, $idx, $length, $skip);
+    samewith($offset, $size, $, $, $);
+  }
+  multi method find_memory (
+    Int() $offset,
+    Int() $size,
+    Int() $idx,
+    $length is rw,
+    $skip   is rw
+  ) {
+    my guint ($i, $l) = 0 xx 2;
+    my gsize $s = 0;
+
+    my $rc = gst_buffer_find_memory($!b, $offset, $size, $i, $l, $s);
+    ($idx, $length, $skip) = ($i, $l, $s);
+    ($idx, $length, $skip, $rc)
   }
 
-  method foreach_meta (GstBufferForeachMetaFunc $func, gpointer $user_data) {
+  method foreach_meta (
+    GstBufferForeachMetaFunc $func,
+    gpointer $user_data = gpointer
+  ) {
     gst_buffer_foreach_meta($!b, $func, $user_data);
   }
 
-  method get_all_memory {
-    gst_buffer_get_all_memory($!b);
+  method get_all_memory ($raw = False) {
+    my $m = gst_buffer_get_all_memory($!b);
+
+    $m ??
+      ( $raw ?? $m :: GStreamer::Memory.new($m) )
+      !!
+      Nil;
   }
 
   method get_max_memory {
-    gst_buffer_get_max_memory($!b);
+    GstBufferFlagsEnum( gst_buffer_get_max_memory($!b) );
   }
 
-  method get_memory (guint $idx) {
-    gst_buffer_get_memory($!b, $idx);
+  method get_memory (Int() $idx, :$raw = False) {
+    my guint $i = $idx;
+    my $m = gst_buffer_get_memory($!b, $i);
+
+    $m ??
+      ( $raw ?? $m :: GStreamer::Memory.new($m) )
+      !!
+      Nil;
   }
 
-  method get_memory_range (guint $idx, gint $length) {
-    gst_buffer_get_memory_range($!b, $idx, $length);
+  method get_memory_range (Int() $idx, Int() $length) {
+    my guint ($i, $l) = ($idx, $length);
+    my $m = gst_buffer_get_memory_range($!b, $idx, $length);
+
+    $m ??
+      ( $raw ?? $m :: GStreamer::Memory.new($m) )
+      !!
+      Nil;
   }
 
-  method get_meta (GType $api) {
-    gst_buffer_get_meta($!b, $api);
+  method get_meta (Int() $api) {
+    my GType $a = $api;
+
+    gst_buffer_get_meta($!b, $a);
   }
 
-  method get_n_meta (GType $api_type) {
-    gst_buffer_get_n_meta($!b, $api_type);
+  method get_n_meta (GType $api) {
+    my GType $a = $api;
+
+    gst_buffer_get_n_meta($!b, $a);
   }
 
-  method get_reference_timestamp_meta (GstCaps $reference) {
+  method get_reference_timestamp_meta (GstCaps() $reference) {
     gst_buffer_get_reference_timestamp_meta($!b, $reference);
   }
 
-  method get_sizes (gsize $offset, gsize $maxsize) {
-    gst_buffer_get_sizes($!b, $offset, $maxsize);
+  proto method get_sizes (|)
+  { * }
+
+  multi method get_sizes (:$all = False) {
+    samewith($, $, :$all);
+  }
+  multi method get_sizes ($offset is rw, $maxsize is rw, :$all) {
+    my gsize ($o, $m)  = 0 xx 2;
+
+    my $s = gst_buffer_get_sizes($!b, $o, $m);
+    ($offset, $maxsize) = ($o, $m);
+    $all.not ?? $s !! ($s, $o, $m);
   }
 
+  proto method get_sizes_range (|)
+  { * }
+
+  method get_sizes_range (
+    Int() $idx,
+    Int() $length,
+    :$all = False
+  ) {
+    samewith($idx, $length, $, $, :$all);
+  }
   method get_sizes_range (
     guint $idx,
     gint $length,
-    gsize $offset,
-    gsize $maxsize
+    $offset  is rw,
+    $maxsize is rw,
+    :$all = False
   ) {
-    gst_buffer_get_sizes_range($!b, $idx, $length, $offset, $maxsize);
+    my guint $i = $idx;
+    my gint $l = $length;
+    my gsize ($o, $m) = 0 xx 2;
+    my $rc = gst_buffer_get_sizes_range($!b, $i, $l, $o, $m);
+
+    ($offset, $maxsize) = ($o, $m);
+    $all.not ?? $rc !! ($rc, $offset, $maxsize);
   }
 
   method get_type {
-    gst_buffer_get_type();
+    state ($n, $t);
+
+    unstable_get_type( self.^name, &gst_buffer_get_type, $n, $t );
   }
 
-  method gst_parent_buffer_meta_api_get_type {
-    gst_parent_buffer_meta_api_get_type();
+  # To implement, later.
+  # method gst_parent_buffer_meta_api_get_type {
+  #   gst_parent_buffer_meta_api_get_type();
+  # }
+  #
+  # method gst_parent_buffer_meta_get_info {
+  #   gst_parent_buffer_meta_get_info($!b);
+  # }
+  #
+  # method gst_reference_timestamp_meta_api_get_type {
+  #   gst_reference_timestamp_meta_api_get_type();
+  # }
+  #
+  # method gst_reference_timestamp_meta_get_info {
+  #   gst_reference_timestamp_meta_get_info($!b);
+  # }
+
+  method has_flags (Int() $flags) {
+    my GstBufferFlags $flags = $f
+
+    so gst_buffer_has_flags($!b, $f);
   }
 
-  method gst_parent_buffer_meta_get_info {
-    gst_parent_buffer_meta_get_info($!b);
-  }
+  method insert_memory (Int() $idx, GstMemory() $mem) {
+    my gint $i = $idx;
 
-  method gst_reference_timestamp_meta_api_get_type {
-    gst_reference_timestamp_meta_api_get_type();
-  }
-
-  method gst_reference_timestamp_meta_get_info {
-    gst_reference_timestamp_meta_get_info($!b);
-  }
-
-  method has_flags (GstBufferFlags $flags) {
-    gst_buffer_has_flags($!b, $flags);
-  }
-
-  method insert_memory (gint $idx, GstMemory $mem) {
-    gst_buffer_insert_memory($!b, $idx, $mem);
+    gst_buffer_insert_memory($!b, $i, $mem);
   }
 
   method is_all_memory_writable {
-    gst_buffer_is_all_memory_writable($!b);
+    so gst_buffer_is_all_memory_writable($!b);
   }
 
-  method is_memory_range_writable (guint $idx, gint $length) {
-    gst_buffer_is_memory_range_writable($!b, $idx, $length);
+  method is_memory_range_writable (Int() $idx, Int() $length) {
+    my guint $i = $idx;
+    my gint $l = $length;
+
+    so gst_buffer_is_memory_range_writable($!b, $i, $l);
   }
 
-  method iterate_meta (gpointer $state) {
-    gst_buffer_iterate_meta($!b, $state);
+  method iterate_meta (gpointer $state, :$raw = False;) {
+    my $m = gst_buffer_iterate_meta($!b, $state);
+
+    $m ??
+      ( $raw ?? $m !! GStreamer::Meta.new($m) )
+      !!
+      Nil;
   }
 
-  method iterate_meta_filtered (gpointer $state, GType $meta_api_type) {
-    gst_buffer_iterate_meta_filtered($!b, $state, $meta_api_type);
+  method iterate_meta_filtered (
+    gpointer $state,
+    Int() $meta_api_type,
+    :$raw = False
+  ) {
+    my GType $m = $meta_api_type;
+    my $meta = gst_buffer_iterate_meta_filtered($!b, $state, $m);
+
+    $meta ??
+      ( $raw ?? $meta !! GStreamer::Meta.new($meta) )
+      !!
+      Nil;
   }
 
   method map (GstMapInfo $info, GstMapFlags $flags) {
