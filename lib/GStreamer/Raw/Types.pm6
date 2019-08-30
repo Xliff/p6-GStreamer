@@ -17,11 +17,12 @@ constant GstClockTimeDiff is export := int64;
 #     to account for the various distributions and OSes out there.
 constant gstreamer is export = 'gstreamer-1.0',v0;
 
+constant GstBufferListFunc                 is export := Pointer;
 constant GstBusSyncHandler                 is export := Pointer;
-constant GstElementCallAsyncFunc           is export := Pointer;
-constant GstElementForeachPadFunc          is export := Pointer;
 constant GstClockCallback                  is export := Pointer;
 constant GstClockID                        is export := Pointer;
+constant GstElementCallAsyncFunc           is export := Pointer;
+constant GstElementForeachPadFunc          is export := Pointer;
 constant GstIteratorCopyFunction           is export := Pointer;
 constant GstIteratorFoldFunction           is export := Pointer;
 constant GstIteratorForeachFunction        is export := Pointer;
@@ -43,18 +44,21 @@ constant GstPadForwardFunction             is export := Pointer;
 constant GstPadGetRangeFunction            is export := Pointer;
 constant GstPadIterIntLinkFunction         is export := Pointer;
 constant GstPadLinkFunction                is export := Pointer;
-constant GstPadStickyEventsForeachFunction is export := Pointer;
-constant GstPadQueryFunction               is export := Pointer;
 constant GstPadProbeCallback               is export := Pointer;
+constant GstPadQueryFunction               is export := Pointer;
+constant GstPadStickyEventsForeachFunction is export := Pointer;
 constant GstPadUnlinkFunction              is export := Pointer;
 constant GstPluginInitFullFunc             is export := Pointer;
 constant GstPluginInitFunc                 is export := Pointer;
+constant GstStreamFlags                    is export := Pointer;
 constant GstStructureFilterMapFunc         is export := Pointer;
 constant GstStructureForeachFunc           is export := Pointer;
 constant GstStructureMapFunc               is export := Pointer;
+constant GstTagForeachFunc                 is export := Pointer;
+constant GstTagMergeFunc                   is export := Pointer;
 constant GstTaskFunction                   is export := Pointer;
 
-class GstAllocator         is repr('CPointer') does GTK::Roles::Pointers is export { }
+#class GstAllocator         is repr('CPointer') does GTK::Roles::Pointers is export { }
 class GstAllocationParams  is repr('CPointer') does GTK::Roles::Pointers is export { }
 class GstBin               is repr('CPointer') does GTK::Roles::Pointers is export { }
 class GstBuffer            is repr('CPointer') does GTK::Roles::Pointers is export { }
@@ -83,13 +87,14 @@ class GstPlugin            is repr('CPointer') does GTK::Roles::Pointers is expo
 class GstPluginFeature     is repr('CPointer') does GTK::Roles::Pointers is export { }
 class GstProbeInfo         is repr('CPointer') does GTK::Roles::Pointers is export { }
 #class GstQuery             is repr('CPointer') does GTK::Roles::Pointers is export { }
+class GstSample            is repr('CPointer') does GTK::Roles::Pointers is export { }
 class GstStaticPadTemplate is repr('CPointer') does GTK::Roles::Pointers is export { }
 class GstStream            is repr('CPointer') does GTK::Roles::Pointers is export { }
 class GstStreamCollection  is repr('CPointer') does GTK::Roles::Pointers is export { }
 #class GstStructure         is repr('CPointer') does GTK::Roles::Pointers is export { }
-class GstTagList           is repr('CPointer') does GTK::Roles::Pointers is export { }
-class GstToc               is repr('CPointer') does GTK::Roles::Pointers is export { }
-class GstTocEntry          is repr('CPointer') does GTK::Roles::Pointers is export { }
+#class GstTagList           is repr('CPointer') does GTK::Roles::Pointers is export { }
+#class GstToc               is repr('CPointer') does GTK::Roles::Pointers is export { }
+#class GstTocEntry          is repr('CPointer') does GTK::Roles::Pointers is export { }
 
 constant GST_OBJECT_FLAG_LAST is export = 1 +< 4;
 constant GST_CLOCK_TIME_NONE  is export = 18446744073709551615;
@@ -1010,6 +1015,26 @@ class GstMiniObject is repr<CStruct> does GTK::Roles::Pointers is export {
   has gpointer $!priv_pointer;
 }
 
+class GstAllocator is repr<CStruct> does GTK::Roles::Pointers is export {
+  HAS GstObject $!object;
+
+  has Str       $.mem_type;
+  has gpointer  $!mem_map;         # GstMemoryMapFunction
+  has gpointer  $!mem_unmap;       # GstMemoryUnmapFunction
+
+  has gpointer  $!mem_copy;        # GstMemoryCopyFunction
+  has gpointer  $!mem_share;       # GstMemoryShareFunction
+  has gpointer  $!mem_is_span;     # GstMemoryIsSpanFunction
+
+  has gpointer  $!mem_map_full;    # GstMemoryMapFullFunction
+  has gpointer  $!mem_unmap_full;  # GstMemoryUnmapFullFunction
+
+  # private
+  has gpointer  $!gst_reserved0;
+  has gpointer  $!gst_reserved1;
+  has gpointer  $!priv;
+};
+
 # Cheat. This really should be considered opaque.
 class GstDateTime is repr<CStruct> does GTK::Roles::Pointers is export {
   has GstMiniObject     $.mini_object;
@@ -1043,7 +1068,6 @@ class GstElement is repr<CStruct> does GTK::Roles::Pointers is export {
   has gpointer         $!gst_reserved0;
   has gpointer         $!gst_reserved1;
   has gpointer         $!gst_reserved2;
-  has gpointer         $!gst_reserved3;
 }
 
 class GstMessage is repr<CStruct> does GTK::Roles::Pointers is export {
@@ -1128,6 +1152,10 @@ class GstSegment         is repr<CStruct>     does GTK::Roles::Pointers is expor
   has gpointer  $!gst_reserved3;
 };
 
+class GstTagList          is repr<CStruct>     does GTK::Roles::Pointers is export {
+  HAS GstMiniObject   $.mini_object;
+}
+
 # NOTE -- For all CStruct definitions marked as Opaque -- this opens us up
 #         to ABI changes. This means that any changes in the ABI MUST be
 #         accounted for, but it is unknown if Perl6 has a mechanism to allow
@@ -1136,11 +1164,11 @@ class GstSegment         is repr<CStruct>     does GTK::Roles::Pointers is expor
 
 # Opaque. Grabbed from the implementation for struct-size purposes.
 class GstToc              is repr<CStruct>     does GTK::Roles::Pointers is export {
-  HAS GstMiniObject mini_object;
+  HAS GstMiniObject   $.mini_object;
 
-  has GstTocScope $!scope;
-  has GList       $!entries;
-  has GstTagList  $!tags;
+  has GstTocScope     $!scope;
+  has GList           $!entries;
+  has GstTagList      $!tags;
 }
 
 # Opaque. Grabbed from the implementation for struct-size purposes.
@@ -1151,7 +1179,7 @@ class GstTocEntry         is repr<CStruct>     does GTK::Roles::Pointers is expo
   has GstTocEntry     $!parent;
   has gchar           $!uid;
   has GstTocEntryType $!type;
-  has GstClockTime    $!start
+  has GstClockTime    $!start;
   has GstClockTime    $!stop;
   has GList           $!subentries;
   has GstTagList      $!tags;
