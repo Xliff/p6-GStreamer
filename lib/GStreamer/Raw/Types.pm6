@@ -60,11 +60,12 @@ constant GstTaskFunction                   is export := Pointer;
 constant GstMetaInitFunction               is export := Pointer;
 constant GstMetaFreeFunction               is export := Pointer;
 constant GstMetaTransformFunction          is export := Pointer;
+constant GstBufferForeachMetaFunc          is export := Pointer;
 
 #class GstAllocator         is repr('CPointer') does GTK::Roles::Pointers is export { }
 class GstAllocationParams  is repr('CPointer') does GTK::Roles::Pointers is export { }
 class GstBin               is repr('CPointer') does GTK::Roles::Pointers is export { }
-class GstBuffer            is repr('CPointer') does GTK::Roles::Pointers is export { }
+#class GstBuffer            is repr('CPointer') does GTK::Roles::Pointers is export { }
 class GstBufferList        is repr('CPointer') does GTK::Roles::Pointers is export { }
 class GstBufferPool        is repr('CPointer') does GTK::Roles::Pointers is export { }
 class GstBus               is repr('CPointer') does GTK::Roles::Pointers is export { }
@@ -99,9 +100,54 @@ class GstStreamCollection  is repr('CPointer') does GTK::Roles::Pointers is expo
 #class GstToc               is repr('CPointer') does GTK::Roles::Pointers is export { }
 #class GstTocEntry          is repr('CPointer') does GTK::Roles::Pointers is export { }
 
-constant GST_OBJECT_FLAG_LAST is export = 1 +< 4;
-constant GST_CLOCK_TIME_NONE  is export = 18446744073709551615;
-constant GST_TIME_FORMAT      is export = '%u:%02u:%02u.%09u';
+class GstMapInfo is repr('CPointer') does GTK::Roles::Pointers is export { }
+#class GstMemory is repr('CPointer') does GTK::Roles::Pointers is export { }
+class GstMeta is repr('CPointer') does GTK::Roles::Pointers is export { }
+class GstParentBufferMeta is repr('CPointer') does GTK::Roles::Pointers is export { }
+class GstReferenceTimestampMeta is repr('CPointer') does GTK::Roles::Pointers is export { }
+
+constant GST_OBJECT_FLAG_LAST      is export = 1 +< 4;
+constant GST_CLOCK_TIME_NONE       is export = 18446744073709551615;
+constant GST_TIME_FORMAT           is export = '%u:%02u:%02u.%09u';
+
+constant GstMiniObjectFlags is export := guint;
+our enum GstMiniObjectFlagsEnum is export (
+  GST_MINI_OBJECT_FLAG_LOCKABLE      => 1,
+  GST_MINI_OBJECT_FLAG_LOCK_READONLY => (1 +< 1),
+  GST_MINI_OBJECT_FLAG_MAY_BE_LEAKED => (1 +< 2),
+  # Padding
+  GST_MINI_OBJECT_FLAG_LAST          => (1 +< 4)
+);
+
+constant GstBufferCopyFlags is export := guint32;
+our enum GstBufferCopyFlagsEnum is export (
+  GST_BUFFER_COPY_NONE           => 0,
+  GST_BUFFER_COPY_FLAGS          => 1,
+  GST_BUFFER_COPY_TIMESTAMPS     => (1 +< 1),
+  GST_BUFFER_COPY_META           => (1 +< 2),
+  GST_BUFFER_COPY_MEMORY         => (1 +< 3),
+  GST_BUFFER_COPY_MERGE          => (1 +< 4),
+  GST_BUFFER_COPY_DEEP           => (1 +< 5)
+);
+
+constant GstBufferFlags is export := guint32;
+our enum GstBufferFlagsEnum is export (
+  GST_BUFFER_FLAG_LIVE          => (GST_MINI_OBJECT_FLAG_LAST +< 0),
+  GST_BUFFER_FLAG_DECODE_ONLY   => (GST_MINI_OBJECT_FLAG_LAST +< 1),
+  GST_BUFFER_FLAG_DISCONT       => (GST_MINI_OBJECT_FLAG_LAST +< 2),
+  GST_BUFFER_FLAG_RESYNC        => (GST_MINI_OBJECT_FLAG_LAST +< 3),
+  GST_BUFFER_FLAG_CORRUPTED     => (GST_MINI_OBJECT_FLAG_LAST +< 4),
+  GST_BUFFER_FLAG_MARKER        => (GST_MINI_OBJECT_FLAG_LAST +< 5),
+  GST_BUFFER_FLAG_HEADER        => (GST_MINI_OBJECT_FLAG_LAST +< 6),
+  GST_BUFFER_FLAG_GAP           => (GST_MINI_OBJECT_FLAG_LAST +< 7),
+  GST_BUFFER_FLAG_DROPPABLE     => (GST_MINI_OBJECT_FLAG_LAST +< 8),
+  GST_BUFFER_FLAG_DELTA_UNIT    => (GST_MINI_OBJECT_FLAG_LAST +< 9),
+  GST_BUFFER_FLAG_TAG_MEMORY    => (GST_MINI_OBJECT_FLAG_LAST +< 10),
+  GST_BUFFER_FLAG_SYNC_AFTER    => (GST_MINI_OBJECT_FLAG_LAST +< 11),
+  GST_BUFFER_FLAG_NON_DROPPABLE => (GST_MINI_OBJECT_FLAG_LAST +< 12),
+
+  GST_BUFFER_FLAG_LAST          => (GST_MINI_OBJECT_FLAG_LAST +< 16)
+);
 
 constant GstBufferingMode is export := guint;
 our enum GstBufferingModeEnum is export <
@@ -395,6 +441,24 @@ our enum GstLockFlagsEnum (
   GST_LOCK_FLAG_LAST      => (1 +< 8)
 );
 
+constant GstMapFlags is export := guint32;
+our enum GstMapFlagsEnum is export (
+  GST_MAP_READ      => GST_LOCK_FLAG_READ,
+  GST_MAP_WRITE     => GST_LOCK_FLAG_WRITE,
+  GST_MAP_FLAG_LAST => (1 +< 16)
+);
+
+constant GstMemoryFlags is export := guint32;
+our enum GstMemoryFlagsEnum is export (
+  GST_MEMORY_FLAG_READONLY              => GST_MINI_OBJECT_FLAG_LOCK_READONLY,
+  GST_MEMORY_FLAG_NO_SHARE              => (GST_MINI_OBJECT_FLAG_LAST +< 0),
+  GST_MEMORY_FLAG_ZERO_PREFIXED         => (GST_MINI_OBJECT_FLAG_LAST +< 1),
+  GST_MEMORY_FLAG_ZERO_PADDED           => (GST_MINI_OBJECT_FLAG_LAST +< 2),
+  GST_MEMORY_FLAG_PHYSICALLY_CONTIGUOUS => (GST_MINI_OBJECT_FLAG_LAST +< 3),
+  GST_MEMORY_FLAG_NOT_MAPPABLE          => (GST_MINI_OBJECT_FLAG_LAST +< 4),
+  GST_MEMORY_FLAG_LAST                  => (GST_MINI_OBJECT_FLAG_LAST +< 16)
+);
+
 constant GstMIKEYType is export := gint32;
 our enum GstMIKEYTypeEnum is export (
     GST_MIKEY_TYPE_INVALID    =>  -1,
@@ -405,15 +469,6 @@ our enum GstMIKEYTypeEnum is export (
     GST_MIKEY_TYPE_DH_INIT    =>   4,
     GST_MIKEY_TYPE_DH_RESP    =>   5,
     GST_MIKEY_TYPE_ERROR      =>   6,
-);
-
-constant GstMiniObjectFlags is export := guint;
-our enum GstMiniObjectFlagsEnum is export (
-  GST_MINI_OBJECT_FLAG_LOCKABLE      => 1,
-  GST_MINI_OBJECT_FLAG_LOCK_READONLY => (1 +< 1),
-  GST_MINI_OBJECT_FLAG_MAY_BE_LEAKED => (1 +< 2),
-  # Padding
-  GST_MINI_OBJECT_FLAG_LAST          => (1 +< 4)
 );
 
 # C wants gint, but Perl might get confused. At the time of this writing,
@@ -1038,9 +1093,19 @@ class GstAllocator is repr<CStruct> does GTK::Roles::Pointers is export {
   has gpointer  $!priv;
 };
 
+class GstBuffer           is repr<CStruct> does GTK::Roles::Pointers is export {
+  HAS GstMiniObject  $.mini_object is rw;
+  has GstBufferPool  $.pool;
+  has GstClockTime   $.pts         is rw;
+  has GstClockTime   $.dts         is rw;
+  has GstClockTime   $.duration    is rw;
+  has guint64        $.offset      is rw;
+  has guint64        $.offset_end  is rw;
+};
+
 # Cheat. This really should be considered opaque.
 class GstDateTime is repr<CStruct> does GTK::Roles::Pointers is export {
-  has GstMiniObject     $.mini_object;
+  HAS GstMiniObject     $.mini_object;
   has GDateTime         $!datetime;
   has GstDateTimeFields $!fields;
 }
@@ -1097,6 +1162,17 @@ class GstFormatDefinition is repr<CStruct>     does GTK::Roles::Pointers is expo
   has Str    $.description;
   has GQuark $.quark;
 }
+
+class GstMemory           is repr<CStruct>     does GTK::Roles::Pointers is export {
+  HAS GstMiniObject  $.mini_object;
+  has GstAllocator   $.allocator;
+  has GstMemory      $.parent;
+  has gsize          $.maxsize;
+  has gsize          $.align;
+  has gsize          $.offset;
+  has gsize          $.size;
+}
+
 
 class GstMetaInfo         is repr<CStruct>     does GTK::Roles::Pointers is export {
   has GType    $.api;
