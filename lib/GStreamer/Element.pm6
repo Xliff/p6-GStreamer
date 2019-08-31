@@ -574,7 +574,7 @@ class GStreamer::Element is GStreamer::Object {
   ) {
     my GstFormat ($sf, $df) = ($src_format, $dest_format);
     my gint64 $dv = 0;
-    my $rc = gst_element_query_convert(
+    my $rc = so gst_element_query_convert(
       $!e,
       $src_format,
       $src_val,
@@ -597,7 +597,7 @@ class GStreamer::Element is GStreamer::Object {
     is also<query-duration>
   {
     my guint64 $d = 0;
-    my $rc = gst_element_query_duration($!e, $format, $d);
+    my $rc = so gst_element_query_duration($!e, $format, $d);
     $duration = $rc ?? $d !! Nil;
     $all.not ?? $duration !! ($duration, $rc);
   }
@@ -614,7 +614,7 @@ class GStreamer::Element is GStreamer::Object {
   {
     my GstFormat $f = $format;
     my guint64 $c = 0;
-    my $rc = gst_element_query_position($!e, $f, $c);
+    my $rc = so gst_element_query_position($!e, $f, $c);
 
     $cur = $rc ?? $c !! Nil;
     $all.not ?? $cur !! ($cur, $rc);

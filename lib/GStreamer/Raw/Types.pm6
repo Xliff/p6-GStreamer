@@ -108,6 +108,24 @@ class GstReferenceTimestampMeta is repr('CPointer') does GTK::Roles::Pointers is
 constant GST_OBJECT_FLAG_LAST      is export = 1 +< 4;
 constant GST_CLOCK_TIME_NONE       is export = 18446744073709551615;
 constant GST_TIME_FORMAT           is export = '%u:%02u:%02u.%09u';
+constant GST_SECOND                is export = 1000000000;
+
+sub postfix:<sec> ($s) is export {
+  $s * GST_SECOND;
+}
+
+# Method::Also does not work for subs.
+sub time-args ($d) is export {
+  time_args($d);
+}
+sub time_args ($d) is export {
+  $d != GST_CLOCK_TIME_NONE ?? (
+     $d / (GST_SECOND * 60²),
+    ($d / (GST_SECOND * 60)) % 60,
+    ($d / GST_SECOND) % 60,
+     $d % GST_SECOND
+  ) !! (99, 99, 99, 999999999)
+}
 
 constant GstMiniObjectFlags is export := guint;
 our enum GstMiniObjectFlagsEnum is export (

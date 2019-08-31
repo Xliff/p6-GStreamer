@@ -407,10 +407,10 @@ sub gst_query_parse_scheduling (
 
 sub gst_query_parse_seeking (
   GstQuery $query,
-  GstFormat $format,
-  gboolean $seekable,
-  gint64 $segment_start,
-  gint64 $segment_end
+  GstFormat $format     is rw,
+  gboolean $seekable    is rw,
+  gint64 $segment_start is rw,
+  gint64 $segment_end   is rw
 )
   is native(gstreamer)
   is export

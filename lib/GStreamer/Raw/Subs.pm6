@@ -8,7 +8,7 @@ sub ppr(*@a) is export {
   @a.map({
     if $_ ~~ CArray {
       if .[0].defined { if   .[0] ~~ Str { .[0] }
-                        else             { +$_ != 0 ?? .[0].deref !! Nil }
+                        else             { +.[0] != 0 ?? .[0].deref !! Nil }
       }
       else { Nil }
     }

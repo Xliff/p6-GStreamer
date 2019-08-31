@@ -18,12 +18,12 @@ sub handle_msg ($msg) {
     when GST_MESSAGE_ERROR {
       ($err, $debug) = $msg.parse-error;
       say "Error received from element { $msg.src.name }: { $err.message }";
-      say "Debugging information: { $debug }";
+      say "Debugging information: { $debug  }" if $debug;
       %data<terminate> = True;
     }
 
     when GST_MESSAGE_EOS {
-      say "End-Of-Stream reached.";
+      say "\nEnd-Of-Stream reached.";
       %data<terminate> = True;
     }
 
@@ -33,28 +33,31 @@ sub handle_msg ($msg) {
 
     when GST_MESSAGE_STATE_CHANGED {
       my ($os, $ns) = $msg.parse-state-changed;
+      my ($osn, $nsn) = ($os, $ns).map({
+        GStreamer::Element.state-get-name($_)
+      });
 
       if +$msg.src.p == %data<playbin>.GstObject.p {
-        say "Pipeline state changed from { $os } to { $ns }";
-      }
+        say "Pipeline state changed from { $osn } to { $nsn }";
 
-      if %data<playing> = ($ns == GST_STATE_PLAYING) {
-        my $query = GStreamer::Query.new(:seeking, GST_FORMAT_TIME);
-        if %data<playbin>.query($query) {
-          my ($start, $end);
-          ($, %data<seek-enabled>, $start, $end) = $query.parse-seeking;
-          if %data<seek-enabled> {
-            sprintf(
-              "Seeking is ENABLED from {GST_TIME_FORMAT} to {GST_TIME_FORMAT}",
-              $start, $end
-            ).say;
+        if %data<playing> = ($ns == GST_STATE_PLAYING) {
+          my $query = GStreamer::Query.new(:seeking, GST_FORMAT_TIME);
+          if %data<playbin>.query($query) {
+            my ($start, $end);
+            ($, %data<seek-enabled>, $start, $end) = $query.parse-seeking;
+            if %data<seek-enabled> {
+              sprintf(
+                "Seeking is ENABLED from {GST_TIME_FORMAT} to {GST_TIME_FORMAT}",
+                |$start.&time-args, |$end.&time-args
+              ).say;
+            } else {
+              say 'Seeking is DISABLED for this stream.';
+            }
           } else {
-            say 'Seeking is DISABLED for this stream.';
+            say 'Seeking query failed.';
           }
-        } else {
-          say 'Seeking query failed.';
+          $query.unref;
         }
-        $query.unref;
       }
     }
 
@@ -75,7 +78,7 @@ sub MAIN {
   %data<playbin>.prop_set(
     'uri',
     gv_str(
-      'https://www.freedesktop.org/software/gstreamer-sdk/data/media/sintel_trailer-480p.web'
+      'https://www.freedesktop.org/software/gstreamer-sdk/data/media/sintel_trailer-480p.webm'
     )
   );
 
@@ -97,25 +100,30 @@ sub MAIN {
       handle_msg($msg);
     } else {
       if %data<playing> {
-        my ($current, $qf) = %data<playbin>.query-position(:all);
-        say 'Could not query current position.' unless $qf;
+        my $f = GST_FORMAT_TIME;
+        my ($current, $qf) = %data<playbin>.query_position($f, :all);
+        say "Could not query current position.\n" unless $qf;
 
-        if %data.duration == GST_CLOCK_TIME_NONE {
-          (%data<duration>, $qf) = %data<playbin>.query-duration(:all);
-          say 'Could not query duration' unless $qf;
+        if %data<duration> == GST_CLOCK_TIME_NONE {
+          (%data<duration>, $qf) = %data<playbin>.query_duration($f, :all);
+          say 'Could not query current duration' unless $qf;
         }
 
         sprintf(
-          "Position {GST_TIME_FORMAT} / {GST_TIME_FORMAT}",
-          $current, %data<duration>
-        ).say;
+          "Position {GST_TIME_FORMAT} / {GST_TIME_FORMAT}\r",
+          |$current.&time-args, |%data<duration>.&time-args
+        ).print;
 
-        if %data<seel-enabled> && not %data<seek-done> && $current > 10 * 1e9 {
+        if [&&](
+          %data<seek-enabled>,
+          %data<seek-done>.not,
+          $current > 10sec
+        ) {
           say 'Reached 10s, performing seek...';
           %data<playbin>.seek-simple(
             GST_FORMAT_TIME,
             GST_SEEK_FLAG_FLUSH +| GST_SEEK_FLAG_KEY_UNIT,
-            30 * 1e9
+            30sec
           );
           %data<seek-done> = True;
         }
