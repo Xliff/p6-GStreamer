@@ -5,6 +5,7 @@ use Method::Also;
 use GTK::Compat::Types;
 use GStreamer::Raw::Types;
 use GStreamer::Raw::Pad;
+use GStreamer::Raw::Utils;
 
 use GStreamer::Object;
 use GStreamer::Iterator;
@@ -540,6 +541,72 @@ class GStreamer::Pad is GStreamer::Object {
 
   method unlink (GstPad() $sinkpad) {
     so gst_pad_unlink($!p, $sinkpad);
+  }
+
+  # From GStreamer::Raw::gst_util_seqnum_next
+
+  proto method query_convert(|)
+  { * }
+
+  multi method query_convert (
+    Int() $src_format,
+    Int() $src_val,
+    Int() $dest_format,
+    :$all = False
+  ) {
+    samewith($src_format, $src_val, $dest_format, $, :$all);
+  }
+  multi method query_convert (
+    Int() $src_format,
+    Int() $src_val,
+    Int() $dest_format,
+    $dest_val is rw,
+    :$all = False
+  ) {
+    my GstFormat ($sf, $df) = ($src_format, $dest_format);
+    my gint64 ($sv, $dv) = ($src_val, 0);
+
+    my $rc = gst_pad_query_convert($!p, $sf, $sv, $df, $dv);
+    $dest_val = $rc ?? $dv !! Nil;
+    $all.not ?? $dest_val !! ($dest_val, $rc);
+  }
+
+  proto method query_duration (|)
+  { * }
+
+  multi method query_duration (Int() $format, :$all = False) {
+    samewith($format, $, :$all);
+  }
+  multi method query_duration (
+    Int() $format,
+    $duration is rw,
+    :$all = False
+  ) {
+    my GstFormat $f = $format;
+    my guint64 $d = 0;
+    my $rc = gst_pad_query_duration($!p, $f, $d);
+
+    $duration = $rc ?? $d !! Nil;
+    $all.not ?? $duration !! ($duration, $rc);
+  }
+
+  proto method query_position (|)
+  { * }
+
+  multi method query_position (Int() $format, :$all = False) {
+    samewith($format, $, :$all);
+  }
+  multi method query_position (
+    Int() $format,
+    $position is rw,
+    :$all = False
+  ) {
+    my GstFormat $f = $format;
+    my gint64 $c = 0;
+    my $rc = gst_pad_query_position ($!p, $f, $c);
+
+    $position = $rc ?? $c !! Nil;
+    $all.not ?? $position !! ($position, $rc);
   }
 
 }

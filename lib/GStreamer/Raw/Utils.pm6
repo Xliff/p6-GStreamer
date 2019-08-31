@@ -163,7 +163,7 @@ sub gst_pad_peer_query_convert (
   GstFormat $src_format,
   gint64 $src_val,
   GstFormat $dest_format,
-  gint64 $dest_val
+  gint64 $dest_val is rw
 )
   returns uint32
   is native(gstreamer)
@@ -219,7 +219,7 @@ sub gst_pad_query_convert (
   GstFormat $src_format,
   gint64 $src_val,
   GstFormat $dest_format,
-  gint64 $dest_val
+  gint64 $dest_val is rw
 )
   returns uint32
   is native(gstreamer)
@@ -229,7 +229,7 @@ sub gst_pad_query_convert (
 sub gst_pad_query_duration (
   GstPad $pad,
   GstFormat $format,
-  gint64 $duration
+  gint64 $duration is rw
 )
   returns uint32
   is native(gstreamer)
@@ -239,7 +239,7 @@ sub gst_pad_query_duration (
 sub gst_pad_query_position (
   GstPad $pad,
   GstFormat $format,
-  gint64 $cur
+  gint64 $cur is rw
 )
   returns uint32
   is native(gstreamer)
@@ -509,7 +509,7 @@ sub gst_element_query_convert (
   GstFormat $src_format,
   gint64 $src_val,
   GstFormat $dest_format,
-  gint64 $dest_val
+  gint64 $dest_val is rw
 )
   returns uint32
   is native(gstreamer)
