@@ -237,21 +237,21 @@ sub gst_query_parse_accept_caps_result (GstQuery $query, gboolean $result)
 sub gst_query_parse_allocation (
   GstQuery $query,
   GstCaps $caps,
-  gboolean $need_pool
+  gboolean $need_pool is rw
 )
   is native(gstreamer)
   is export
 { * }
 
-sub gst_query_parse_bitrate (GstQuery $query, guint $nominal_bitrate)
+sub gst_query_parse_bitrate (GstQuery $query, guint $nominal_bitrate is rw)
   is native(gstreamer)
   is export
 { * }
 
 sub gst_query_parse_buffering_percent (
   GstQuery $query,
-  gboolean $busy,
-  gint $percent
+  gboolean $busy is rw,
+  gint $percent  is rw
 )
   is native(gstreamer)
   is export
@@ -259,10 +259,10 @@ sub gst_query_parse_buffering_percent (
 
 sub gst_query_parse_buffering_range (
   GstQuery $query,
-  guint $format, # GstFormat $format,
-  gint64 $start,
-  gint64 $stop,
-  gint64 $estimated_total
+  GstFormat $format       is rw,
+  gint64 $start           is rw,
+  gint64 $stop            is rw,
+  gint64 $estimated_total is rw
 )
   is native(gstreamer)
   is export
@@ -270,10 +270,10 @@ sub gst_query_parse_buffering_range (
 
 sub gst_query_parse_buffering_stats (
   GstQuery $query,
-  GstBufferingMode $mode,
-  gint $avg_in,
-  gint $avg_out,
-  gint64 $buffering_left
+  GstBufferingMode $mode is rw,
+  gint $avg_in           is rw,
+  gint $avg_out          is rw,
+  gint64 $buffering_left is rw
 )
   is native(gstreamer)
   is export
@@ -294,7 +294,10 @@ sub gst_query_parse_context (GstQuery $query, GstContext $context)
   is export
 { * }
 
-sub gst_query_parse_context_type (GstQuery $query, Str $context_type)
+sub gst_query_parse_context_type (
+  GstQuery $query,
+  CArray[Str] $context_type
+)
   returns uint32
   is native(gstreamer)
   is export
@@ -302,10 +305,10 @@ sub gst_query_parse_context_type (GstQuery $query, Str $context_type)
 
 sub gst_query_parse_convert (
   GstQuery $query,
-  GstFormat $src_format,
-  gint64 $src_value,
-  GstFormat $dest_format,
-  gint64 $dest_value
+  GstFormat $src_format  is rw,
+  gint64 $src_value      is rw,
+  GstFormat $dest_format is rw,
+  gint64 $dest_value     is rw
 )
   is native(gstreamer)
   is export
@@ -313,8 +316,8 @@ sub gst_query_parse_convert (
 
 sub gst_query_parse_duration (
   GstQuery $query,
-  GstFormat $format,
-  gint64 $duration
+  GstFormat $format is rw,
+  gint64 $duration  is rw
 )
   is native(gstreamer)
   is export
@@ -322,23 +325,23 @@ sub gst_query_parse_duration (
 
 sub gst_query_parse_latency (
   GstQuery $query,
-  gboolean $live,
-  GstClockTime $min_latency,
-  GstClockTime $max_latency
+  gboolean $live            is rw,
+  GstClockTime $min_latency is rw,
+  GstClockTime $max_latency is rw
 )
   is native(gstreamer)
   is export
 { * }
 
-sub gst_query_parse_n_formats (GstQuery $query, guint $n_formats)
+sub gst_query_parse_n_formats (GstQuery $query, guint $n_formats is rw)
   is native(gstreamer)
   is export
 { * }
 
 sub gst_query_parse_nth_allocation_meta (
   GstQuery $query,
-  guint $index,
-  GstStructure $params
+  guint $index is rw,
+  CArray[Pointer[GstStructure]] $params
 )
   returns GType
   is native(gstreamer)
@@ -347,9 +350,9 @@ sub gst_query_parse_nth_allocation_meta (
 
 sub gst_query_parse_nth_allocation_param (
   GstQuery $query,
-  guint $index,
-  GstAllocator $allocator,
-  GstAllocationParams $params
+  guint $index is rw,
+  CArray[Pointer[GstAllocator]] $allocator,
+  CArray[Pointer[GstAllocationParams]] $params
 )
   is native(gstreamer)
   is export
@@ -358,10 +361,10 @@ sub gst_query_parse_nth_allocation_param (
 sub gst_query_parse_nth_allocation_pool (
   GstQuery $query,
   guint $index,
-  GstBufferPool $pool,
-  guint $size,
-  guint $min_buffers,
-  guint $max_buffers
+  GstBufferPool $pool is rw,
+  guint $size         is rw,
+  guint $min_buffers  is rw,
+  guint $max_buffers  is rw
 )
   is native(gstreamer)
   is export
@@ -370,15 +373,19 @@ sub gst_query_parse_nth_allocation_pool (
 sub gst_query_parse_nth_buffering_range (
   GstQuery $query,
   guint $index,
-  gint64 $start,
-  gint64 $stop
+  gint64 $start is rw,
+  gint64 $stop  is rw
 )
   returns uint32
   is native(gstreamer)
   is export
 { * }
 
-sub gst_query_parse_nth_format (GstQuery $query, guint $nth, GstFormat $format)
+sub gst_query_parse_nth_format (
+  GstQuery $query,
+  guint $nth        is rw,
+  GstFormat $format is rw
+)
   is native(gstreamer)
   is export
 { * }
@@ -389,17 +396,21 @@ sub gst_query_parse_nth_scheduling_mode (GstQuery $query, guint $index)
   is export
 { * }
 
-sub gst_query_parse_position (GstQuery $query, GstFormat $format, gint64 $cur)
+sub gst_query_parse_position (
+  GstQuery $query,
+  GstFormat $format is rw,
+  gint64 $cur       is rw
+)
   is native(gstreamer)
   is export
 { * }
 
 sub gst_query_parse_scheduling (
   GstQuery $query,
-  GstSchedulingFlags $flags,
-  gint $minsize,
-  gint $maxsize,
-  gint $align
+  GstSchedulingFlags $flags is rw,
+  gint $minsize             is rw,
+  gint $maxsize             is rw,
+  gint $align               is rw
 )
   is native(gstreamer)
   is export
@@ -418,28 +429,28 @@ sub gst_query_parse_seeking (
 
 sub gst_query_parse_segment (
   GstQuery $query,
-  gdouble $rate,
-  GstFormat $format,
-  gint64 $start_value,
-  gint64 $stop_value
+  gdouble $rate       is rw,
+  GstFormat $format   is rw,
+  gint64 $start_value is rw,
+  gint64 $stop_value  is rw
 )
   is native(gstreamer)
   is export
 { * }
 
-sub gst_query_parse_uri (GstQuery $query, Str $uri)
+sub gst_query_parse_uri (GstQuery $query, CArray[Str] $uri)
   is native(gstreamer)
   is export
 { * }
 
-sub gst_query_parse_uri_redirection (GstQuery $query, Str $uri)
+sub gst_query_parse_uri_redirection (GstQuery $query, CArray[Str] $uri)
   is native(gstreamer)
   is export
 { * }
 
 sub gst_query_parse_uri_redirection_permanent (
   GstQuery $query,
-  gboolean $permanent
+  gboolean $permanent is rw
 )
   is native(gstreamer)
   is export
@@ -534,7 +545,7 @@ sub gst_query_set_duration (
 sub gst_query_set_formatsv (
   GstQuery $query,
   gint $n_formats,
-  GstFormat $formats
+  CArray[GstFormat] $formats
 )
   is native(gstreamer)
   is export
@@ -648,6 +659,15 @@ sub gst_query_type_to_quark (GstQueryType $type)
 
 sub gst_query_writable_structure (GstQuery $query)
   returns GstStructure
+  is native(gstreamer)
+  is export
+{ * }
+
+sub gst_query_replace (
+  CArray[Pointer[GstQuery]] $old_query,
+  GstQuery $new_query
+)
+  returns gboolean
   is native(gstreamer)
   is export
 { * }

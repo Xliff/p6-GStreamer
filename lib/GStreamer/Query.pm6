@@ -275,12 +275,16 @@ class GStreamer::Query is GStreamer::MiniObject {
     gst_query_get_n_scheduling_modes($!q);
   }
 
+  # ===
+
   method get_structure is also<get-structure> {
     gst_query_get_structure($!q);
   }
 
   method get_type is also<get-type> {
-    gst_query_get_type();
+    state ($n, $t);
+
+    unstable_get_type( self.^name, &gst_query_get_type, $n, $t );
   }
 
   method has_scheduling_mode (Int() $mode) is also<has-scheduling-mode> {
@@ -599,10 +603,28 @@ class GStreamer::Query is GStreamer::MiniObject {
     gst_query_remove_nth_allocation_pool($!q, $index);
   }
 
-  method set_accept_caps_result (gboolean $result)
+  method replace (GstQuery() $q) {
+    my $nq = CArray[Pointer[GstQuery]].new;
+    $nq[0] = Pointer[GstQuery].new;
+
+    my $rc = gst_query_replace($nq, $q);
+    if $rc {
+      ($nq) = ppr($nq);
+      if $nq {
+        self.setQuery($nq)
+      } else {
+        $rc = False;
+      }
+    }
+    $rc;
+  }
+
+  method set_accept_caps_result (Int() $result)
     is also<set-accept-caps-result>
   {
-    gst_query_set_accept_caps_result($!q, $result);
+    my gboolean $r = $result;
+
+    gst_query_set_accept_caps_result($!q, $r);
   }
 
   method set_bitrate (guint $nominal_bitrate) is also<set-bitrate> {
