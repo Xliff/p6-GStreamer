@@ -13,6 +13,8 @@ Switch to that directory and clone both p6-GtkPlus and p6-GStreamer
 ```
 $ git clone https://github.com/Xliff/p6-GtkPlus.git
 $ git clone https://github.com/Xliff/p6-GStreamer.git
+$ cd p6-GtkPlus
+$ zef install --deps-only .
 ```
 
 [Optional] To build all of GStreamer and the required GTK modules, you can change to the p6-GStreamer directory and do:
