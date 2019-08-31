@@ -9,6 +9,7 @@ use GStreamer::Raw::Utils;
 
 use GStreamer::Object;
 use GStreamer::Bus;
+use GStreamer::Iterator;
 use GStreamer::Pad;
 
 use GStreamer::Roles::Signals::Element;

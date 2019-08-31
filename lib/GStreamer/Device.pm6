@@ -7,6 +7,7 @@ use GStreamer::Raw::Types;
 use GStreamer::Raw::Device;
 
 use GStreamer::Object;
+use GStreamer::Structure;
 
 #use GStreamer::Caps;
 use GStreamer::Element;

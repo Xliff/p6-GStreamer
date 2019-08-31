@@ -9,6 +9,7 @@ use GStreamer::Raw::PluginFeature;
 use GTK::Compat::GList;
 
 use GStreamer::Object;
+#use GStreamer::Plugin;
 
 our subset PluginFeatureAncestry is export of Mu
   where GstPluginFeature | GstObject;

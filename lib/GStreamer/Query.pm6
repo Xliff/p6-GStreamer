@@ -11,6 +11,7 @@ use GStreamer::Raw::Query;
 use GStreamer::Raw::Subs;
 
 use GStreamer::MiniObject;
+use GStreamer::Structure;
 
 our subset QueryAncestry is export of Mu
   where GstQuery | GstMiniObject;
@@ -277,8 +278,13 @@ class GStreamer::Query is GStreamer::MiniObject {
 
   # ===
 
-  method get_structure is also<get-structure> {
-    gst_query_get_structure($!q);
+  method get_structure (:$raw = False) is also<get-structure> {
+    my $s = gst_query_get_structure($!q);
+
+    $s ??
+      ( $raw ?? $s !! GStreamer::Structure.new($s) )
+      !!
+      Nil;
   }
 
   method get_type is also<get-type> {

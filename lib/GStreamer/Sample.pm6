@@ -12,6 +12,7 @@ use GStreamer::Buffer;
 use GStreamer::BufferList;
 #use GStreamer::Caps;
 use GStreamer::Segment;
+use GStreamer::Structure;
 
 class GStreamer::Sample is GStreamer::MiniObject {
   has GstSample $!s;

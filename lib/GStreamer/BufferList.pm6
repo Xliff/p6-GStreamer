@@ -8,6 +8,8 @@ use GStreamer::Raw::BufferList;
 
 use GStreamer::MiniObject;
 
+use GStreamer::Buffer;
+
 our subset BufferListAncestry is export of Mu
   where GstBufferList | GstMiniObject;
 

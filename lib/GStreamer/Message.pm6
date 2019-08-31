@@ -18,6 +18,7 @@ use GStreamer::Element;
 use GStreamer::Clock;
 use GStreamer::Context;
 use GStreamer::Device;
+use GStreamer::Object;
 use GStreamer::StreamCollection;
 use GStreamer::Structure;
 use GStreamer::TagList;
@@ -474,7 +475,7 @@ class GStreamer::Message is GStreamer::MiniObject {
     GstState() $state,
     :request-state(:$request_state) is required
   ) {
-    GStreamer::Messaeg.new_request_state($src, $state);
+    GStreamer::Message.new_request_state($src, $state);
   }
   method new_request_state (GstObject() $src, GstState() $state)
     is also<new-request-state>
@@ -1584,7 +1585,7 @@ class GStreamer::Message is GStreamer::MiniObject {
     $t[0] = Pointer[GstToc].new;
     gst_message_parse_toc($!m, $toc, $updated);
     ($toc, $updated) = ppr($t, $u);
-    $toc = GStreamer::TOC.new($toc) unless $raw;
+    $toc = GStreamer::Toc.new($toc) unless $raw;
     ($toc, $updated);
   }
 

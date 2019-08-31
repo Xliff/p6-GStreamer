@@ -7,6 +7,7 @@ use GStreamer::Raw::Types;
 use GStreamer::Raw::Pipeline;
 
 use GStreamer::Bin;
+use GStreamer::Bus;
 
 our subset PipelineAncestry is export of Mu
   where GstPipeline | BinAncestry;

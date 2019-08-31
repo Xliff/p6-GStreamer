@@ -7,6 +7,7 @@ use GStreamer::Raw::Types;
 use GStreamer::Raw::Bin;
 
 use GStreamer::Element;
+use GStreamer::Iterator;
 
 use GStreamer::Roles::ChildProxy;
 

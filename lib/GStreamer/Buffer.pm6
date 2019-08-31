@@ -6,6 +6,9 @@ use GStreamer::Raw::Buffer;
 
 use GStreamer::MiniObject;
 
+#use GStreamer::Memory;
+#use GStreamer::Meta;
+
 our subset BufferAncestry is export of Mu
   where GstBuffer | GstMiniObject;
 
