@@ -20,7 +20,6 @@ $ zef install --deps-only .
 [Optional] To build all of GStreamer and the required GTK modules, you can change to the p6-GStreamer directory and do:
 
 ```
-zef install --deps-only .
 ./build.sh
 ```
 
