@@ -101,11 +101,11 @@ sub MAIN {
     } else {
       if %data<playing> {
         my $f = GST_FORMAT_TIME;
-        my ($current, $qf) = %data<playbin>.query_position($f, :all);
+        my ($current, $qf) = %data<playbin>.query-position($f, :all);
         say "Could not query current position.\n" unless $qf;
 
         if %data<duration> == GST_CLOCK_TIME_NONE {
-          (%data<duration>, $qf) = %data<playbin>.query_duration($f, :all);
+          (%data<duration>, $qf) = %data<playbin>.query-duration($f, :all);
           say 'Could not query current duration' unless $qf;
         }
 

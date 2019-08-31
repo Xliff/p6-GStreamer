@@ -588,14 +588,13 @@ class GStreamer::Element is GStreamer::Object {
 
 
   proto method query_duration (|)
+    is also<query-duration>
   { * }
 
   multi method query_duration (Int() $format, :$all = False) {
     samewith($format, $, :$all);
   }
-  multi method query_duration (Int() $format, $duration is rw, :$all = False)
-    is also<query-duration>
-  {
+  multi method query_duration (Int() $format, $duration is rw, :$all = False) {
     my guint64 $d = 0;
     my $rc = so gst_element_query_duration($!e, $format, $d);
     $duration = $rc ?? $d !! Nil;
@@ -604,14 +603,14 @@ class GStreamer::Element is GStreamer::Object {
 
 
   proto method query_position (|)
+    is also<query-position>
   { * }
 
   multi method query_position (Int() $format, :$all = False) {
     samewith($format, $, :$all)
   }
-  multi method query_position (Int() $format, $cur is rw, :$all = False)
-    is also<query-position>
-  {
+
+  multi method query_position (Int() $format, $cur is rw, :$all = False) {
     my GstFormat $f = $format;
     my guint64 $c = 0;
     my $rc = so gst_element_query_position($!e, $f, $c);
