@@ -463,13 +463,25 @@ class GStreamer::Query is GStreamer::MiniObject {
     gst_query_parse_scheduling($!q, $flags, $minsize, $maxsize, $align);
   }
 
-  method parse_seeking (
-    GstFormat $format,
-    gboolean $seekable,
-    gint64 $segment_start,
-    gint64 $segment_end
+  proto method parse_seeking (|)
+  { * }
+
+  multi method parse_seeking {
+    samewith($, $, $, $);
+  }
+  multi method parse_seeking (
+    Int() $format        is rw,
+    Int() $seekable      is rw,
+    Int() $segment_start is rw,
+    Int() $segment_end   is rw
   ) {
-    gst_query_parse_seeking($!q, $format, $seekable, $segment_start, $segment_end);
+    my GstFormat $f = 0;
+    my gboolean  $s = 0;
+    my gint64    ($ss, $se) = 0 xx 2;
+
+    my $rc = gst_query_parse_seeking($!q, $f, $s, $ss, $se);
+    ($format, $seekable, $segment_start, $segment_end) = ($f, $s, $ss, $se);
+    ($format, $seekable, $segment_start, $segment_end, $rc)
   }
 
   method parse_segment (

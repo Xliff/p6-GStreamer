@@ -553,58 +553,107 @@ class GStreamer::Element is GStreamer::Object {
     gst_element_link_pads_full($!e, $srcpadname, $dest, $destpadname, $flags);
   }
 
-  method query_convert (
+  proto method query_convert (|)
+    is also<query-convert>
+  { * }
+
+  multi method query_convert (
+    Int() $src_format,
+    Int() $src_val,
+    Int() $dest_format,
+    :$all = False
+  ) {
+    samewith($src_format, $src_val, $dest_format, $, :$all);
+  }
+  multi method query_convert (
     GstFormat $src_format,
     gint64 $src_val,
     GstFormat $dest_format,
-    gint64 $dest_val
-  )
-    is also<query-convert>
-  {
-    gst_element_query_convert(
+    $dest_val is rw,
+    :$all = False;
+  ) {
+    my GstFormat ($sf, $df) = ($src_format, $dest_format);
+    my gint64 $dv = 0;
+    my $rc = gst_element_query_convert(
       $!e,
       $src_format,
       $src_val,
       $dest_format,
-      $dest_val
+      $dv
     );
+
+    $dest_val = $rc ?? $dv !! Nil;
+    $all.not ?? $dest_val !! ($dest_val, $rc);
   }
 
-  method query_duration (GstFormat $format, gint64 $duration)
+
+  proto method query_duration (|)
+  { * }
+
+  multi method query_duration (Int() $format, :$all = False) {
+    samewith($format, $, :$all);
+  }
+  multi method query_duration (Int() $format, $duration is rw, :$all = False)
     is also<query-duration>
   {
-    gst_element_query_duration($!e, $format, $duration);
+    my guint64 $d = 0;
+    my $rc = gst_element_query_duration($!e, $format, $d);
+    $duration = $rc ?? $d !! Nil;
+    $all.not ?? $duration !! ($duration, $rc);
   }
 
-  method query_position (GstFormat $format, gint64 $cur)
+
+  proto method query_position (|)
+  { * }
+
+  multi method query_position (Int() $format, :$all = False) {
+    samewith($format, $, :$all)
+  }
+  multi method query_position (Int() $format, $cur is rw, :$all = False)
     is also<query-position>
   {
-    gst_element_query_position($!e, $format, $cur);
+    my GstFormat $f = $format;
+    my guint64 $c = 0;
+    my $rc = gst_element_query_position($!e, $f, $c);
+
+    $cur = $rc ?? $c !! Nil;
+    $all.not ?? $cur !! ($cur, $rc);
   }
 
   method seek_simple (
-    GstFormat $format,
-    GstSeekFlags $seek_flags,
-    gint64 $seek_pos
+    Int() $format,
+    Int() $seek_flags,
+    Int() $seek_pos
   )
     is also<seek-simple>
   {
-    gst_element_seek_simple($!e, $format, $seek_flags, $seek_pos);
+    my GstFormat $f = $format;
+    my GstSeekFlags $sf = $seek_flags;
+    my gint64 $sp = $seek_pos;
+
+    gst_element_seek_simple($!e, $f, $sf, $sp);
   }
 
-  method state_change_return_get_name is also<state-change-return-get-name> {
-    gst_element_state_change_return_get_name($!e);
+  method state_change_return_get_name (
+    GStreamer::Element:U:
+    Int() $stateChangeReturn
+  )
+    is also<state-change-return-get-name>
+  {
+    gst_element_state_change_return_get_name($stateChangeReturn);
   }
 
-  method state_get_name is also<state-get-name> {
-    gst_element_state_get_name($!e);
+  method state_get_name (GStreamer::Element:U: Int() $state)
+    is also<state-get-name>
+  {
+    gst_element_state_get_name($state);
   }
 
-  method unlink (GstElement $dest) {
+  method unlink (GstElement() $dest) {
     gst_element_unlink($!e, $dest);
   }
 
-  method unlink_pads (Str $srcpadname, GstElement $dest, Str $destpadname)
+  method unlink_pads (Str $srcpadname, GstElement() $dest, Str() $destpadname)
     is also<unlink-pads>
   {
     gst_element_unlink_pads($!e, $srcpadname, $dest, $destpadname);

@@ -913,7 +913,7 @@ class GStreamer::Message is GStreamer::MiniObject {
     my gint $r = 0;
     my $rc = gst_message_parse_async_done($!m, $r);
 
-    $running_time = $r;
+    $running_time = $rc ?? $r !! Nil;
     $all.not ?? $running_time !! ($running_time, $rc)
   }
 
@@ -927,7 +927,7 @@ class GStreamer::Message is GStreamer::MiniObject {
   multi method parse_buffering ($percent is rw, :$all = False) {
     my gint $p = 0;
     my $rc = gst_message_parse_buffering($!m, $p);
-    $percent = $p;
+    $percent = $rc ?? $p !! Nil;
     $all.not ?? $percent !! ($percent, $rc);
   }
 
@@ -950,7 +950,8 @@ class GStreamer::Message is GStreamer::MiniObject {
     my gint64 $bl = 0;
 
     my $rc = gst_message_parse_buffering_stats($!m, $m, $ai, $ao, $bl);
-    ($mode, $avg_in, $avg_out, $buffering_left) = ($m, $ai, $ao, $bl);
+    ($mode, $avg_in, $avg_out, $buffering_left) =
+      $rc ?? ($m, $ai, $ao, $bl) !! Nil xx 4;
     ($mode, $avg_in, $avg_out, $buffering_left, $rc);
   }
 
@@ -966,8 +967,12 @@ class GStreamer::Message is GStreamer::MiniObject {
 
     $ca[0] = Pointer[GstClock].new;
     my $rc = gst_message_parse_clock_lost($!m, $ca);
-    ($clock) = ppr($ca);
-    $clock = GStreamer::Clock.new($clock) unless $raw;
+    if $rc {
+      ($clock) = ppr($ca);
+      $clock = GStreamer::Clock.new($clock) unless $raw;
+    } else {
+      $clock = Nil;
+    }
     $all.not ?? $clock !! ($clock, $rc);
   }
 
@@ -989,8 +994,12 @@ class GStreamer::Message is GStreamer::MiniObject {
 
     $ca[0] = Pointer[GstClock].new;
     my $rc = gst_message_parse_clock_provide($!m, $ca, $r);
-    ($clock, $ready) = ppr($ca, $r);
-    $clock = GStreamer::Clock.new($clock) unless $raw;
+    if $rc {
+      ($clock, $ready) = ppr($ca, $r);
+      $clock = GStreamer::Clock.new($clock) unless $raw;
+    } else {
+      ($clock, $ready) = Nil xx 2;
+    }
     ($clock, $ready, $rc)
   }
 
@@ -1005,7 +1014,7 @@ class GStreamer::Message is GStreamer::MiniObject {
     my $ct = CArray[Str].new;
 
     my $rc = gst_message_parse_context_type($!m, $ct);
-    $context_type = ppr($ct);
+    $context_type = $rc ?? ppr($ct) !! Nil;
     $all.not ?? $context_type !! ($context_type, $rc);
   }
 
@@ -1025,8 +1034,12 @@ class GStreamer::Message is GStreamer::MiniObject {
 
     $d[0] = Pointer[GstDevice].new;
     my $rc = gst_message_parse_device_added($!m, $d);
-    ($device) = ppr($d);
-    $device = GStreamer::Device.new($device) unless $raw;
+    if $rc {
+      ($device) = ppr($d);
+      $device = GStreamer::Device.new($device) unless $raw;
+    } else {
+      $device = Nil;
+    }
     $all.not ?? $device !! ($device, $rc);
   }
 
@@ -1047,10 +1060,14 @@ class GStreamer::Message is GStreamer::MiniObject {
 
     ($da[0], $cda[0]) = Pointer[GstDevice].new xx 2;
     my $rc = gst_message_parse_device_changed($!m, $da, $cda);
-    ($device, $changed_device) = ppr( $da, $cda );
-    unless $raw {
-      $device         = GStreamer::Device.new($device);
-      $changed_device = GStreamer::Device.new($changed_device);
+    if $rc {
+      ($device, $changed_device) = ppr( $da, $cda );
+      unless $raw {
+        $device         = GStreamer::Device.new($device);
+        $changed_device = GStreamer::Device.new($changed_device);
+      }
+    } else {
+      ($device, $changed_device) = Nil xx 2;
     }
     ($device, $changed_device, $rc)
   }
@@ -1071,8 +1088,12 @@ class GStreamer::Message is GStreamer::MiniObject {
 
     $d[0] = Pointer[GstDevice].new;
     my $rc = gst_message_parse_device_removed($!m, $device);
-    ($device) = ppr( $d );
-    $device = GStreamer::Device.new($device) unless $raw;
+    if $rc {
+      ($device) = ppr( $d );
+      $device = GStreamer::Device.new($device) unless $raw;
+    } else {
+      $device = Nil;
+    }
     $all.not ?? $device !! ($device, $rc);
   }
 
@@ -1089,7 +1110,7 @@ class GStreamer::Message is GStreamer::MiniObject {
 
     $ge[0] = Pointer[GError].new;
     my $rc = gst_message_parse_error($!m, $ge, $d);
-    ($gerror, $debug) = ppr($ge, $d);
+    ($gerror, $debug) = $rc ?? ppr($ge, $d) !! Nil xx 2;
     ($gerror, $debug, $rc);
   }
 
@@ -1109,8 +1130,12 @@ class GStreamer::Message is GStreamer::MiniObject {
 
     $s[0] = Pointer[GstStructure].new;
     my $rc = gst_message_parse_error_details($!m, $s);
-    ($structure) = ppr( $s );
-    $structure = GStreamer::Structure.new($structure) unless $raw;
+    if $rc {
+      ($structure) = ppr( $s );
+      $structure = GStreamer::Structure.new($structure) unless $raw;
+    } else {
+      $structure = Nil;
+    }
     $all.not ?? $structure !! ($structure, $all);
   }
 
@@ -1125,7 +1150,7 @@ class GStreamer::Message is GStreamer::MiniObject {
     my $g = 0;
 
     my $rc = gst_message_parse_group_id($!m, $g);
-    $group_id = $g;
+    $group_id = $rc ?? $g !! Nil;
     $all.not ?? $group_id !! ($group_id, $rc);
   }
 
@@ -1145,8 +1170,12 @@ class GStreamer::Message is GStreamer::MiniObject {
 
     $c[0] = Pointer[GstContext].new;
     my $rc = gst_message_parse_have_context($!m, $c);
-    ($context) = ppr( $c );
-    $context = GStreamer::Context.new($context) unless $raw;
+    if $rc {
+      ($context) = ppr( $c );
+      $context = GStreamer::Context.new($context) unless $raw;
+    } else {
+      $context = Nil;
+    }
     $all.not ?? $context !! ($context, $rc);
   }
 
@@ -1163,7 +1192,7 @@ class GStreamer::Message is GStreamer::MiniObject {
 
     $ge[0] = Pointer[GError].new;
     my $rc = gst_message_parse_info($!m, $gerror, $debug);
-    ($gerror, $debug) = ppr( $ge, $d );
+    ($gerror, $debug) = $rc ?? ppr( $ge, $d ) !! Nil xx 2;
     ($gerror, $debug, $rc);
   }
 
@@ -1183,8 +1212,12 @@ class GStreamer::Message is GStreamer::MiniObject {
 
     $s[0] = Pointer[GstStructure].new;
     my $rc = gst_message_parse_info_details($!m, $s);
-    ($structure) = ppr( $s );
-    $structure = GStreamer::Structure.new($structure) unless $raw;
+    if $rc {
+      ($structure) = ppr( $s );
+      $structure = GStreamer::Structure.new($structure) unless $raw;
+    } else {
+      $structure = Nil;
+    }
     $all.not ?? $structure !! ($structure, $rc);
   }
 
@@ -1200,8 +1233,12 @@ class GStreamer::Message is GStreamer::MiniObject {
 
     $c[0] = Pointer[GstClock].new;
     my $rc = gst_message_parse_new_clock($!m, $c);
-    ($clock) = ppr($c);
-    $clock = GStreamer::Clock.new($clock) unless $raw;
+    if $rc {
+      ($clock) = ppr($c);
+      $clock = GStreamer::Clock.new($clock) unless $raw;
+    } else {
+      $clock = Nil;
+    }
     $all.not ?? $clock !! ($clock, $rc);
   }
 
@@ -1217,7 +1254,7 @@ class GStreamer::Message is GStreamer::MiniObject {
     my ($c, $t) = CArray[Str].new xx 2;
 
     my $rc = gst_message_parse_progress($!m, $ty, $c, $t);
-    ($type, $code, $text) = ppr($ty, $c, $t);
+    ($type, $code, $text) = $rc ?? ppr($ty, $c, $t) !! Nil xx 3;
     ($type, $code, $text, $rc)
   }
 
@@ -1240,10 +1277,14 @@ class GStreamer::Message is GStreamer::MiniObject {
 
     ($o[0], $pv[0]) = (Pointer[GstObject].new, Pointer[GValue].new);
     my $rc = gst_message_parse_property_notify($!m, $o, $pn, $pv);
-    ($object, $property_name, $property_value) = ppr( $o, $pn, $pv );
-    unless $raw {
-      $object = GStreamer::Object.new($object);
-      $property_value = GTK::Compat::Value.new($property_value);
+    if $rc {
+      ($object, $property_name, $property_value) = ppr( $o, $pn, $pv );
+      unless $raw {
+        $object = GStreamer::Object.new($object);
+        $property_value = GTK::Compat::Value.new($property_value);
+      }
+    } else {
+      ($object, $property_name, $property_value) = Nil xx 3;
     }
     ($object, $property_name, $property_value, $rc);
   }
@@ -1268,7 +1309,7 @@ class GStreamer::Message is GStreamer::MiniObject {
 
     my $rc = gst_message_parse_qos($!m, $l, $r, $s, $t, $d);
     ($live, $running_time, $stream_time, $timestamp, $duration)
-      = ($l, $r, $s, $t, $d);
+      = $rc ?? ($l, $r, $s, $t, $d) !! Nil xx 5;
     ($live, $running_time, $stream_time, $timestamp, $duration, $rc)
   }
 
@@ -1289,7 +1330,7 @@ class GStreamer::Message is GStreamer::MiniObject {
     my guint64 ($p, $d) = 0;
 
     my $rc = gst_message_parse_qos_stats($!m, $f, $p, $d);
-    ($format, $processed, $dropped) = ($f, $p, $d);
+    ($format, $processed, $dropped) = $rc ?? ($f, $p, $d) !! Nil xx 3;
     ($format, $processed, $dropped, $rc)
   }
 
@@ -1311,7 +1352,7 @@ class GStreamer::Message is GStreamer::MiniObject {
     my gint $q = 0;
 
     my $rc = gst_message_parse_qos_values($!m, $j, $p, $q);
-    ($jitter, $proportion, $quality) = ($j, $p, $q);
+    ($jitter, $proportion, $quality) = $rc ?? ($j, $p, $q) !! Nil xx 3;
     ($jitter, $proportion, $quality, $rc);
   }
 
@@ -1337,11 +1378,15 @@ class GStreamer::Message is GStreamer::MiniObject {
 
     ($tl[0], $es[0]) = (Pointer[GstTagList].new, Pointer[GstStructure].new);
     my $rc = gst_message_parse_redirect_entry($!m, $ei, $l, $tl, $es);
-    ($entry_index, $location, $tag_list, $entry_struct) =
-      ppr($ei, $l, $tl, $es);
-    unless $raw {
-      $tag_list = GStreamer::TagList.new($tag_list);
-      $entry_struct = GStreamer::Structure.new($entry_struct);
+    if $rc {
+      ($entry_index, $location, $tag_list, $entry_struct) =
+        ppr($ei, $l, $tl, $es);
+      unless $raw {
+        $tag_list = GStreamer::TagList.new($tag_list);
+        $entry_struct = GStreamer::Structure.new($entry_struct);
+      }
+    } else {
+      ($entry_index, $location, $tag_list, $entry_struct) = Nil xx 4;
     }
     ($entry_index, $location, $tag_list, $entry_struct, $rc)
   }
@@ -1357,7 +1402,7 @@ class GStreamer::Message is GStreamer::MiniObject {
     my GstState $s = 0;
 
     my $rc = gst_message_parse_request_state($!m, $s);
-    $state = $s;
+    $state = $rc ?? $s !! Nil;
     $all.not ?? $state !! ($state, $rc);
   }
 
@@ -1372,7 +1417,7 @@ class GStreamer::Message is GStreamer::MiniObject {
     my guint $rt = 0;
 
     my $rc = gst_message_parse_reset_time($!m, $running_time);
-    $running_time = $rt;
+    $running_time = $rc ?? $rt !! Nil;
     $all.not ?? $running_time !! ($running_time, $rc);
   }
 
@@ -1388,7 +1433,7 @@ class GStreamer::Message is GStreamer::MiniObject {
     my gint64 $p = 0;
 
     my $rc = gst_message_parse_segment_done($!m, $f, $p);
-    ($format, $position) = ($f, $p);
+    ($format, $position) = $rc ?? ($f, $p) !! Nil xx 2;
     ($format, $position, $rc);
   }
 
@@ -1404,7 +1449,7 @@ class GStreamer::Message is GStreamer::MiniObject {
     my gint64 $p = 0;
 
     my $rc = gst_message_parse_segment_start($!m, $format, $position);
-    ($format, $position) = ($f, $p);
+    ($format, $position) = $rc ?? ($f, $p) !! Nil xx 2;
     ($format, $position, $rc);
   }
 
@@ -1423,7 +1468,7 @@ class GStreamer::Message is GStreamer::MiniObject {
     my GstState ($o, $n, $p) = 0 xx 3;
 
     my $rc = gst_message_parse_state_changed($!m, $o, $n, $p);
-    ($oldstate, $newstate, $pending) = ppr($o, $n, $p);
+    ($oldstate, $newstate, $pending) = $rc ?? ppr($o, $n, $p) !! Nil xx 3;
     ($oldstate, $newstate, $pending, $rc);
   }
 
@@ -1450,7 +1495,7 @@ class GStreamer::Message is GStreamer::MiniObject {
 
     my $rc = gst_message_parse_step_done($!m, $f, $a, $r, $fl, $i, $d, $e);
     ($format, $amount, $rate, $flush, $intermediate, $duration, $eos)
-      = ($f, $a, $r, $fl, $i, $d, $e);
+      = $rc ?? ($f, $a, $r, $fl, $i, $d, $e) !! Nil xx 7;
     ($format, $amount, $rate, $flush, $intermediate, $duration, $eos, $rc);
   }
 
@@ -1476,7 +1521,7 @@ class GStreamer::Message is GStreamer::MiniObject {
 
     my $rc = gst_message_parse_step_start($!m, $a, $f, $am, $r, $fl, $i);
     ($active, $format, $amount, $rate, $flush, $intermediate) =
-      ($a, $f, $am, $r, $fl, $i);
+      $rc ?? ($a, $f, $am, $r, $fl, $i) !! Nil xx 6;
     ($active, $format, $amount, $rate, $flush, $intermediate, $rc);
   }
 
@@ -1496,8 +1541,12 @@ class GStreamer::Message is GStreamer::MiniObject {
 
     $c[0] = Pointer[GstStreamCollection];
     my $rc = gst_message_parse_stream_collection($!m, $collection);
-    ($collection) = ppr( $c );
-    $collection = GStreamer::StreamCollection.new($collection) unless $raw;
+    if $rc {
+      ($collection) = ppr( $c );
+      $collection = GStreamer::StreamCollection.new($collection) unless $raw;
+    } else {
+      $collection = Nil;
+    }
     $all.not ?? $collection !! ($collection, $rc);
   }
 
@@ -1514,8 +1563,13 @@ class GStreamer::Message is GStreamer::MiniObject {
 
     $o[0] = Pointer[GstElement].new;
     my $rc = gst_message_parse_stream_status($!m, $t, $o);
-    ($type, $owner) = ppr($t, $o);
-    $owner = GStreamer::Element.new($owner) unless $raw;
+    if $rc {
+      ($type, $owner) = ppr($t, $o);
+      $owner = GStreamer::Element.new($owner) unless $raw;
+    } else {
+      ($type, $owner) = Nil xx 2;
+    }
+    ($type, $owner, $rc)
   }
 
   proto method parse_streams_selected (|)
@@ -1534,8 +1588,12 @@ class GStreamer::Message is GStreamer::MiniObject {
 
     $c[0] = Pointer[GstStreamCollection].new;
     my $rc = gst_message_parse_streams_selected($!m, $c);
-    ($collection) = ppr($c);
-    $collection = GStreamer::StreamCollection.new($collection) unless $raw;
+    if $rc {
+      ($collection) = ppr($c);
+      $collection = GStreamer::StreamCollection.new($collection) unless $raw;
+    } else {
+      $collection = Nil;
+    }
     $all.not ?? $collection !! ($collection, $rc);
   }
 
@@ -1557,8 +1615,12 @@ class GStreamer::Message is GStreamer::MiniObject {
 
     $o[0] = Pointer[GstElement].new;
     my $rc = gst_message_parse_structure_change($!m, $t, $o, $b);
-    ($type, $owner, $busy) = ppr($t, $o, $b);
-    $owner = GStreamer::Element.new($owner) unless $raw;
+    if $rc {
+      ($type, $owner, $busy) = ppr($t, $o, $b);
+      $owner = GStreamer::Element.new($owner) unless $raw;
+    } else {
+      ($type, $owner, $busy) = Nil xx 3;
+    }
     ($type, $owner, $busy, $rc);
   }
 
@@ -1574,8 +1636,12 @@ class GStreamer::Message is GStreamer::MiniObject {
 
     $t[0] = Pointer[GstTagList].new;
     my $rc = gst_message_parse_tag($!m, $t);
-    ($tag_list) = ppr( $t );
-    $tag_list = GStreamer::TagList.new($tag_list) unless $raw;
+    if $rc {
+      ($tag_list) = ppr( $t );
+      $tag_list = GStreamer::TagList.new($tag_list) unless $raw;
+    } else {
+      $tag_list = Nil;
+    }
     $all.not ?? $tag_list !! ($tag_list, $rc);
   }
 
@@ -1592,8 +1658,12 @@ class GStreamer::Message is GStreamer::MiniObject {
 
     $t[0] = Pointer[GstToc].new;
     my $rc = gst_message_parse_toc($!m, $toc, $updated);
-    ($toc, $updated) = ppr($t, $u);
-    $toc = GStreamer::TOC.new($toc) unless $raw;
+    if $rc {
+      ($toc, $updated) = ppr($t, $u);
+      $toc = GStreamer::TOC.new($toc) unless $raw;
+    } else {
+      ($toc, $updated) = Nil xx 2;
+    }
     ($toc, $updated, $rc);
   }
 
@@ -1610,7 +1680,7 @@ class GStreamer::Message is GStreamer::MiniObject {
 
     $ge[0] = Pointer[GError].new;
     my $rc = gst_message_parse_warning($!m, $ge, $d);
-    ($gerror, $debug) = ppr( $ge, $d );
+    ($gerror, $debug) = $rc ?? ppr( $ge, $d ) !! Nil xx 2;
     ($gerror, $debug, $rc)
   }
 
@@ -1630,8 +1700,12 @@ class GStreamer::Message is GStreamer::MiniObject {
 
     $s[0] = Pointer[GstStructure].new;
     my $rc = gst_message_parse_warning_details($!m, $s);
-    ($structure) = ppr($s);
-    $structure = GStreamer::Structure.new($structure) unless $raw;
+    if $rc {
+      ($structure) = ppr($s);
+      $structure = GStreamer::Structure.new($structure) unless $raw;
+    } else {
+      $structure = Nil;
+    }
     $all.not ?? $structure !! ($structure, $rc);
   }
 
