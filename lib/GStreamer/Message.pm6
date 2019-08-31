@@ -1458,7 +1458,7 @@ class GStreamer::Message is GStreamer::MiniObject {
   { * }
 
   multi method parse_state_changed {
-    samewith ($, $, $);
+    samewith($, $, $);
   }
   multi method parse_state_changed (
     $oldstate is rw,

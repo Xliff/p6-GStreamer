@@ -2,12 +2,14 @@ use v6.c;
 
 use GStreamer::Raw::Types;
 
+use GTK::Compat::Value;
+
 use GStreamer::ElementFactory;
 use GStreamer::Main;
 use GStreamer::Message;
 use GStreamer::Query;
 
-my $data;
+my %data;
 
 sub handle_msg ($msg) {
   my ($err, $debug);
@@ -15,7 +17,7 @@ sub handle_msg ($msg) {
   given $msg.type {
     when GST_MESSAGE_ERROR {
       ($err, $debug) = $msg.parse-error;
-      say "Error received from element { $msg.src.name }: { $error.message }";
+      say "Error received from element { $msg.src.name }: { $err.message }";
       say "Debugging information: { $debug }";
       %data<terminate> = True;
     }
@@ -25,19 +27,19 @@ sub handle_msg ($msg) {
       %data<terminate> = True;
     }
 
-    when GST_MESSAGE_DURATION {
+    when GST_MESSAGE_DURATION_CHANGED {
       %data<duration> = GST_CLOCK_TIME_NONE;
     }
 
     when GST_MESSAGE_STATE_CHANGED {
       my ($os, $ns) = $msg.parse-state-changed;
 
-      if +$msg.src.GstObject.p == %data<playbin>.GstObject.p {
+      if +$msg.src.p == %data<playbin>.GstObject.p {
         say "Pipeline state changed from { $os } to { $ns }";
       }
 
       if %data<playing> = ($ns == GST_STATE_PLAYING) {
-        my $query = GStreamer::Query.new-seeking(GST_FORMAT_TIME);
+        my $query = GStreamer::Query.new(:seeking, GST_FORMAT_TIME);
         if %data<playbin>.query($query) {
           my ($start, $end);
           ($, %data<seek-enabled>, $start, $end) = $query.parse-seeking;
@@ -72,7 +74,9 @@ sub MAIN {
 
   %data<playbin>.prop_set(
     'uri',
-    'https://www.freedesktop.org/software/gstreamer-sdk/data/media/sintel_trailer-480p.web'
+    gv_str(
+      'https://www.freedesktop.org/software/gstreamer-sdk/data/media/sintel_trailer-480p.web'
+    )
   );
 
   if %data<playbin>.set_state(GST_STATE_PLAYING) == GST_STATE_CHANGE_FAILURE {
@@ -81,12 +85,12 @@ sub MAIN {
     exit -1;
   }
 
-  $bus = %data<playbin>.bus;
-  loop {
+  my $bus = %data<playbin>.bus;
+  repeat {
     my $msg = $bus.timed-pop-filtered(
       100 * 1e6,
       [+|]( GST_MESSAGE_STATE_CHANGED, GST_MESSAGE_ERROR, GST_MESSAGE_EOS,
-            GST_MESSAGE_DURATION )
+            GST_MESSAGE_DURATION_CHANGED )
     );
 
     if $msg {
