@@ -4,6 +4,7 @@ use v6.c;
 use GTK::Compat::Types;
 use GStreamer::Raw::Types;
 
+use GDK::Threads;
 use GTK::Compat::IOChannel;
 use GTK::Compat::MainLoop;
 
@@ -43,6 +44,7 @@ sub send-seek-event {
 
   reset-sink;
   %data<video-sink>.send-event($seek-event);
+  say "Current rate: { %data<rate> }";
 }
 
 sub handle-keyboard {
@@ -53,7 +55,7 @@ sub handle-keyboard {
   return unless $rc = G_IO_STATUS_NORMAL;
 
   given $in.substr(0, 1) {
-    when 'p' {
+    when 'p' | 'P' {
       %data<playing> .= not;
       %data<pipeline>.set_state(
         %data<playing> ?? GST_STATE_PLAYING !! GST_STATE_PAUSED
@@ -65,12 +67,12 @@ sub handle-keyboard {
       send-seek-event;
     }
 
-    when 'd' {
+    when 'D' | 'd' {
       %data<rate> *= -1;
       send-seek-event;
     }
 
-    when 'n' {
+    when 'N' | 'n' {
       reset-sink;
       %data<video-sink>.send-event(
         GStreamer::Event.new(
@@ -85,7 +87,7 @@ sub handle-keyboard {
       say 'Stepping one frame';
     }
 
-    when 'q' { %data<loop>.quit }
+    when 'q'  | 'Q' { %data<loop>.quit }
   }
 
   # cw: Do we have to worry about freeing $in??
@@ -106,6 +108,7 @@ sub MAIN  {
   %data<pipeline> = GStreamer::Parse.launch(
     "playbin uri=https://www.freedesktop.org/software/gstreamer-sdk/data/media/sintel_trailer-480p.webm"
   ) but GStreamer::Roles::Plugins::Playbin;
+  %data<pipeline>.attach-role;
 
   %data<stdin> = GTK::Compat::IOChannel.unix_new($*IN.native-descriptor);
   %data<stdin>.add_watch(G_IO_IN, -> *@a --> gboolean { handle-keyboard; 1 });
@@ -118,6 +121,7 @@ sub MAIN  {
   %data<playing> = True;
   %data<rate> = 1;
   ( %data<loop> = GTK::Compat::MainLoop.new ).run;
+
 
   LEAVE {
     %data<pipeline>.set-state(GST_STATE_NULL) if %data<pipeline>.defined;

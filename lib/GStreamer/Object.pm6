@@ -21,7 +21,7 @@ class GStreamer::Object {
   }
 
   method setGstObject(GstObject $object) {
-    $!prop = cast(GObject, $!o = $object);    # GTK::Roles::Properties
+    self!setObject( cast(GObject, $!o = $object) )
   }
 
   method GStreamer::Raw::Types::GstObject

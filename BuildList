@@ -2,6 +2,7 @@ GTK::Compat::GList
 GTK::Compat::Roles::ListData
 GTK::Compat::Types
 GTK::Compat::Value
+GTK::Raw::ReturnedValue
 GTK::Raw::Utils
 GTK::Roles::Properties
 GTK::Roles::Signals::Generic
@@ -66,13 +67,13 @@ GStreamer::Event
 GStreamer::Format
 GStreamer::Parse
 GStreamer::Query
-GStreamer::Roles::Plugins::Playbin
 GStreamer::Sample
 GStreamer::TagList
 GStreamer::Toc
 GStreamer::Bin
 GStreamer::Device
 GStreamer::Pipeline
+GStreamer::Roles::Plugins::Playbin
 GStreamer::Stream
 GStreamer::StreamCollection
 GStreamer::Message

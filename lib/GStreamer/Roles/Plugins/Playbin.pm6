@@ -1,6 +1,9 @@
 use v6.c;
 
+use NativeCall;
+
 use GTK::Compat::Types;
+use GTK::Raw::ReturnedValue;
 use GStreamer::Raw::Types;
 use GStreamer::Roles::Plugins::Raw::Playbin;
 
@@ -10,8 +13,20 @@ use GStreamer::Buffer;
 use GStreamer::Element;
 use GStreamer::Sample;
 
+use GTK::Roles::Signals::Generic;
+
 role GStreamer::Roles::Plugins::Playbin {
   also does GTK::Roles::Properties;
+  also does GTK::Roles::Signals::Generic;
+
+  has $!pb;
+  has %!signals-pb;
+
+  submethod TWEAK {
+    $!pb = cast(GObject, self.GstObject);
+  }
+
+  # DESTROY for signals!
 
   # Type: GstElement
   method audio-sink (:$raw = False) is rw  {
@@ -580,6 +595,228 @@ role GStreamer::Roles::Plugins::Playbin {
         self.prop_set('video-stream-combiner', $gv);
       }
     );
+  }
+
+  # Is originally:
+  # GstPlayBin, gpointer --> void
+  method about-to-finish {
+    self.connect($!pb, 'about-to-finish');
+  }
+
+  # Is originally:
+  # GstPlayBin, gpointer --> void
+  method audio-changed {
+    self.connect($!pb, 'audio-changed');
+  }
+
+  # Is originally:
+  # GstPlayBin, gint, gpointer --> void
+  method audio-tags-changed {
+    self.connect-tags-changed($!pb, 'audio-tags-changed');
+  }
+
+  # Is originally:
+  # GstPlayBin, GstCaps, gpointer --> GstSample
+  method convert-sample {
+    self.connect-convert-sample($!pb);
+  }
+
+  # Is originally:
+  # GstPlayBin, gint, gpointer --> GstPad
+  method get-audio-pad {
+    self.connect-get-pad($!pb, 'get-audio-pad');
+  }
+
+  # Is originally:
+  # GstPlayBin, gint, gpointer --> GstTagList
+  method get-audio-tags {
+    self.connect-get-tags($!pb, 'get-audio-tags');
+  }
+
+  # Is originally:
+  # GstPlayBin, gint, gpointer --> GstPad
+  method get-text-pad {
+    self.connect-get-pad($!pb, 'get-text-pad');
+  }
+
+  # Is originally:
+  # GstPlayBin, gint, gpointer --> GstTagList
+  method get-text-tags {
+    self.connect-get-tags($!pb, 'get-text-tags');
+  }
+
+  # Is originally:
+  # GstPlayBin, gint, gpointer --> GstPad
+  method get-video-pad {
+    self.connect-get-pad($!pb, 'get-video-pad');
+  }
+
+  # Is originally:
+  # GstPlayBin, gint, gpointer --> GstTagList
+  method get-video-tags {
+    self.connect-get-tags($!pb, 'get-video-tags');
+  }
+
+  # Is originally:
+  # GstPlayBin, GstElement, gpointer --> void
+  method source-setup {
+    self.connect-source-setup($!pb);
+  }
+
+  # Is originally:
+  # GstPlayBin, gpointer --> void
+  method text-changed {
+    self.connect($!pb, 'text-changed');
+  }
+
+  # Is originally:
+  # GstPlayBin, gint, gpointer --> void
+  method text-tags-changed {
+    self.connect-tags-changed($!pb, 'text-tags-changed');
+  }
+
+  # Is originally:
+  # GstPlayBin, gpointer --> void
+  method video-changed {
+    self.connect($!pb, 'video-changed');
+  }
+
+  # Is originally:
+  # GstPlayBin, gint, gpointer --> void
+  method video-tags-changed {
+    self.connect-tags-changed($!pb, 'video-tags-changed');
+  }
+
+  # GstPlayBin, gint, gpointer
+  method connect-tags-changed (
+    $obj,
+    $signal,
+    &handler?
+  ) {
+    my $hid;
+    %!signals-pb{$signal} //= do {
+      my $s = Supplier.new;
+      $hid = g-connect-tags-changed($obj, $signal,
+        -> $, $g, $ud {
+          CATCH {
+            default { $s.note($_) }
+          }
+
+          $s.emit( [self, $g, $ud ] );
+        },
+        Pointer, 0
+      );
+      [ $s.Supply, $obj, $hid ];
+    };
+    %!signals-pb{$signal}[0].tap(&handler) with &handler;
+    %!signals-pb{$signal}[0];
+  }
+
+  # GstPlayBin, GstCaps, gpointer --> GstSample
+  method connect-convert-sample (
+    $obj,
+    $signal = 'convert-sample',
+    &handler?
+  ) {
+    my $hid;
+    %!signals-pb{$signal} //= do {
+      my $s = Supplier.new;
+      $hid = g-connect-convert-sample($obj, $signal,
+        -> $, $gc, $ud --> GstSample {
+          CATCH {
+            default { $s.note($_) }
+          }
+
+          my $r = ReturnedValue.new;
+          $s.emit( [self, $gc, $ud, $r] );
+          $r.r;
+        },
+        Pointer, 0
+      );
+      [ $s.Supply, $obj, $hid ];
+    };
+    %!signals-pb{$signal}[0].tap(&handler) with &handler;
+    %!signals-pb{$signal}[0];
+  }
+
+  # GstPlayBin, gint, gpointer --> GstPad
+  method connect-get-pad (
+    $obj,
+    $signal,
+    &handler?
+  ) {
+    my $hid;
+    %!signals-pb{$signal} //= do {
+      my $s = Supplier.new;
+      $hid = g-connect-get-pad($obj, $signal,
+        -> $, $g, $ud --> GstPad {
+          CATCH {
+            default { $s.note($_) }
+          }
+
+          my $r = ReturnedValue.new;
+          $s.emit( [self, $g, $ud, $r] );
+          $r.r;
+        },
+        Pointer, 0
+      );
+      [ $s.Supply, $obj, $hid ];
+    };
+    %!signals-pb{$signal}[0].tap(&handler) with &handler;
+    %!signals-pb{$signal}[0];
+  }
+
+
+  # GstPlayBin, gint, gpointer --> GstTagList
+  method connect-get-tags (
+    $obj,
+    $signal,
+    &handler?
+  ) {
+    my $hid;
+    %!signals-pb{$signal} //= do {
+      my $s = Supplier.new;
+      $hid = g-connect-get-tags($obj, $signal,
+        -> $, $g, $ud --> GstTagList {
+          CATCH {
+            default { $s.note($_) }
+          }
+
+          my $r = ReturnedValue.new;
+          $s.emit( [self, $g, $ud, $r] );
+          $r.r;
+        },
+        Pointer, 0
+      );
+      [ $s.Supply, $obj, $hid ];
+    };
+    %!signals-pb{$signal}[0].tap(&handler) with &handler;
+    %!signals-pb{$signal}[0];
+  }
+
+  # GstPlayBin, GstElement, gpointer
+  method connect-source-setup (
+    $obj,
+    $signal = 'source-setup',
+    &handler?
+  ) {
+    my $hid;
+    %!signals-pb{$signal} //= do {
+      my $s = Supplier.new;
+      $hid = g-connect-source-setup($obj, $signal,
+        -> $, $ge, $ud {
+          CATCH {
+            default { $s.note($_) }
+          }
+
+          $s.emit( [self, $ge, $ud ] );
+        },
+        Pointer, 0
+      );
+      [ $s.Supply, $obj, $hid ];
+    };
+    %!signals-pb{$signal}[0].tap(&handler) with &handler;
+    %!signals-pb{$signal}[0];
   }
 
 }
