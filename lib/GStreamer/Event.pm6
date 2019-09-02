@@ -1,10 +1,12 @@
 use v6.c;
 
+use NativeCall;
+
 use GTK::Compat::Types;
 use GStreamer::Raw::Types;
 use GStreamer::Raw::Event;
 
-use VStreamer::MiniObject;
+use GStreamer::MiniObject;
 
 our subset EventAncestry is export of Mu
   where GstEvent | GstMiniObject;
@@ -33,45 +35,45 @@ class GStreamer::Event is GStreamer::MiniObject {
     self.setMiniObject($to-parent);
   }
 
-  method new_buffer_size (gint64 $minsize, gint64 $maxsize, gboolean $async) {
-    gst_event_new_buffer_size($!e, $minsize, $maxsize, $async);
-  }
-
-  method new_caps {
-    gst_event_new_caps($!e);
-  }
-
-  method new_custom (GstStructure() $structure) {
-    gst_event_new_custom($!e, $structure);
-  }
-
-  method new_eos {
-    gst_event_new_eos($!e);
-  }
-
-  method new_flush_start {
-    gst_event_new_flush_start($!e);
-  }
-
-  method new_flush_stop {
-    gst_event_new_flush_stop($!e);
-  }
-
-  method new_gap (GstClockTime $duration) {
-    gst_event_new_gap($!e, $duration);
-  }
-
-  method new_latency {
-    gst_event_new_latency($!e);
-  }
-
-  method new_navigation {
-    gst_event_new_navigation($!e);
-  }
-
-  method new_protection (GstBuffer() $data, Str() $origin) {
-    gst_event_new_protection($!e, $data, $origin);
-  }
+  # method new_buffer_size (gint64 $minsize, gint64 $maxsize, gboolean $async) {
+  #   gst_event_new_buffer_size($!e, $minsize, $maxsize, $async);
+  # }
+  #
+  # method new_caps {
+  #   gst_event_new_caps($!e);
+  # }
+  #
+  # method new_custom (GstStructure() $structure) {
+  #   gst_event_new_custom($!e, $structure);
+  # }
+  #
+  # method new_eos {
+  #   gst_event_new_eos($!e);
+  # }
+  #
+  # method new_flush_start {
+  #   gst_event_new_flush_start($!e);
+  # }
+  #
+  # method new_flush_stop {
+  #   gst_event_new_flush_stop($!e);
+  # }
+  #
+  # method new_gap (GstClockTime $duration) {
+  #   gst_event_new_gap($!e, $duration);
+  # }
+  #
+  # method new_latency {
+  #   gst_event_new_latency($!e);
+  # }
+  #
+  # method new_navigation {
+  #   gst_event_new_navigation($!e);
+  # }
+  #
+  # method new_protection (GstBuffer() $data, Str() $origin) {
+  #   gst_event_new_protection($!e, $data, $origin);
+  # }
 
   method new_qos (
     gdouble $proportion,
@@ -81,69 +83,112 @@ class GStreamer::Event is GStreamer::MiniObject {
     gst_event_new_qos($!e, $proportion, $diff, $timestamp);
   }
 
-  method new_reconfigure {
-    gst_event_new_reconfigure($!e);
-  }
+  # method new_reconfigure {
+  #   gst_event_new_reconfigure($!e);
+  # }
 
+  multi method new (
+    Num() $rate,
+    Int() $format,
+    Int() $flags,
+    Int() $start_type,
+    Int() $start,
+    Int() $stop_type,
+    Int() $stop,
+    :$seek is required
+  ) {
+    ::?CLASS.new_seek(
+      $rate,
+      $format,
+      $flags,
+      $start_type,
+      $start,
+      $stop_type,
+      $stop
+    );
+  }
   method new_seek (
-    GstFormat $format,
-    GstSeekFlags $flags,
-    GstSeekType $start_type,
-    gint64 $start,
-    GstSeekType $stop_type,
-    gint64 $stop
+    Num() $rate,
+    Int() $format,
+    Int() $flags,
+    Int() $start_type,
+    Int() $start,
+    Int() $stop_type,
+    Int() $stop
   ) {
-    gst_event_new_seek($!e, $format, $flags, $start_type, $start, $stop_type, $stop);
+    my gdouble $r = $rate;
+    my GstFormat $f = $format;
+    my GstSeekFlags $fl = $flags;
+    my GstSeekType ($stt, $spt) = ($start_type, $stop_type);
+    my gint64 ($st, $sp) = ($start, $stop);
+
+    gst_event_new_seek($r, $f, $f, $stt, $st, $spt, $sp);
   }
 
-  method new_segment {
-    gst_event_new_segment($!e);
-  }
+  # method new_segment {
+  #   gst_event_new_segment($!e);
+  # }
+  #
+  # method new_segment_done (gint64 $position) {
+  #   gst_event_new_segment_done($!e, $position);
+  # }
+  #
+  # method new_select_streams {
+  #   gst_event_new_select_streams($!e);
+  # }
+  #
+  # method new_sink_message (GstMessage() $msg) {
+  #   gst_event_new_sink_message($!e, $msg);
+  # }
 
-  method new_segment_done (gint64 $position) {
-    gst_event_new_segment_done($!e, $position);
+  multi method new (
+    Int() $format,
+    Int() $amount,
+    Num() $rate,
+    Int() $flush,
+    Int() $intermediate,
+    :$step is required
+  ) {
+    GStreamer::Event.new_step($format, $amount, $rate, $flush, $intermediate);
   }
-
-  method new_select_streams {
-    gst_event_new_select_streams($!e);
-  }
-
-  method new_sink_message (GstMessage() $msg) {
-    gst_event_new_sink_message($!e, $msg);
-  }
-
   method new_step (
-    guint64 $amount,
-    gdouble $rate,
-    gboolean $flush,
-    gboolean $intermediate
+    Int() $format,
+    Int() $amount,
+    Num() $rate,
+    Int() $flush,
+    Int() $intermediate
   ) {
-    gst_event_new_step($!e, $amount, $rate, $flush, $intermediate);
+    my GstFormat $f = $format;
+    my guint64 $a = $amount;
+    my gdouble $r = $rate;
+    my gboolean ($fl, $i) = ($flush, $intermediate);
+
+    gst_event_new_step($!e, $f, $a, $r, $fl, $i);
   }
 
-  method new_stream_collection {
-    gst_event_new_stream_collection($!e);
-  }
-
-  method new_stream_group_done {
-    gst_event_new_stream_group_done($!e);
-  }
-
-  method new_stream_start {
-    gst_event_new_stream_start($!e);
-  }
-
-  method new_tag {
-    gst_event_new_tag($!e);
-  }
-
-  method new_toc (gboolean $updated) {
-    gst_event_new_toc($!e, $updated);
-  }
-
-  method new_toc_select {
-    gst_event_new_toc_select($!e);
-  }
+  # method new_stream_collection {
+  #   gst_event_new_stream_collection($!e);
+  # }
+  #
+  # method new_stream_group_done {
+  #   gst_event_new_stream_group_done($!e);
+  # }
+  #
+  # method new_stream_start {
+  #   gst_event_new_stream_start($!e);
+  # }
+  #
+  # method new_tag {
+  #   gst_event_new_tag($!e);
+  # }
+  #
+  # method new_toc (gboolean $updated) {
+  #   gst_event_new_toc($!e, $updated);
+  # }
+  #
+  # method new_toc_select {
+  #   gst_event_new_toc_select($!e);
+  # }
 
   method running_time_offset is rw {
     Proxy.new(
@@ -213,11 +258,11 @@ class GStreamer::Event is GStreamer::MiniObject {
   proto method parse_group_id
   { * }
 
-  method parse_group_id (:$all = False) {
+  multi method parse_group_id (:$all = False) {
     samewith($, :$all)
   }
-  method parse_group_id ($group_id is rw, :$all = False) {
-    my guint $g = 0
+  multi method parse_group_id ($group_id is rw, :$all = False) {
+    my guint $g = 0;
     my $rc = gst_event_parse_group_id($!e, $g);
 
     $group_id = $rc ?? $g !! Nil;
@@ -265,11 +310,11 @@ class GStreamer::Event is GStreamer::MiniObject {
     gst_event_parse_segment_done($!e, $format, $position);
   }
 
-  method parse_select_streams (GList $streams) {
+  method parse_select_streams (CArray[Pointer[GList]] $streams) {
     gst_event_parse_select_streams($!e, $streams);
   }
 
-  method parse_sink_message (GstMessage $msg) {
+  method parse_sink_message (CArray[Pointer[GstMessage]] $msg) {
     gst_event_parse_sink_message($!e, $msg);
   }
 
@@ -283,15 +328,17 @@ class GStreamer::Event is GStreamer::MiniObject {
     gst_event_parse_step($!e, $format, $amount, $rate, $flush, $intermediate);
   }
 
-  method parse_stream (GstStream $stream) {
+  method parse_stream (CArray[Pointer[GstStream]] $stream) {
     gst_event_parse_stream($!e, $stream);
   }
 
-  method parse_stream_collection (GstStreamCollection() $collection) {
+  method parse_stream_collection (
+    CArray[Pointer[GstStreamCollection]] $collection
+  ) {
     gst_event_parse_stream_collection($!e, $collection);
   }
 
-  method parse_stream_flags (GstStreamFlags $flags) {
+  method parse_stream_flags (CArray[GstStreamFlags] $flags) {
     gst_event_parse_stream_flags($!e, $flags);
   }
 

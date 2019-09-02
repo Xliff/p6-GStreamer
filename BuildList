@@ -8,6 +8,7 @@ GTK::Roles::Signals::Generic
 Method::Also
 GStreamer::Raw::Types
 GStreamer::Raw::Subs
+GStreamer::Raw::Allocator
 GStreamer::Raw::Bin
 GStreamer::Raw::Buffer
 GStreamer::Raw::BufferList
@@ -18,6 +19,7 @@ GStreamer::Raw::Context
 GStreamer::Raw::Device
 GStreamer::Raw::Element
 GStreamer::Raw::ElementFactory
+GStreamer::Raw::Event
 GStreamer::Raw::Format
 GStreamer::Raw::Iterator
 GStreamer::Raw::Main
@@ -39,6 +41,7 @@ GStreamer::Raw::TagList
 GStreamer::Raw::Toc
 GStreamer::Raw::Utils
 GStreamer::Roles::ChildProxy
+GStreamer::Roles::Plugins::Raw::Playbin
 GStreamer::Roles::Signals::Element
 GStreamer::Segment
 GStreamer::Structure
@@ -51,7 +54,7 @@ GStreamer::Object
 GStreamer::Pad
 GStreamer::Plugin
 GStreamer::PluginFeature
-GStreamer::Query
+GStreamer::Allocator
 GStreamer::Buffer
 GStreamer::BufferList
 GStreamer::Bus
@@ -59,8 +62,11 @@ GStreamer::Clock
 GStreamer::Context
 GStreamer::Element
 GStreamer::ElementFactory
+GStreamer::Event
 GStreamer::Format
 GStreamer::Parse
+GStreamer::Query
+GStreamer::Roles::Plugins::Playbin
 GStreamer::Sample
 GStreamer::TagList
 GStreamer::Toc

@@ -1,5 +1,7 @@
 use v6.c;
 
+use NativeCall;
+
 use GTK::Compat::Types;
 use GStreamer::Raw::Types;
 
@@ -198,10 +200,10 @@ sub gst_event_new_toc_select (Str $uid)
 
 sub gst_event_parse_buffer_size (
   GstEvent $event,
-  GstFormat $formatis rw,
-  gint64 $minsize  is rw,
-  gint64 $maxsize  is rw,
-  gboolean $async  is rw
+  GstFormat $format is rw,
+  gint64 $minsize   is rw,
+  gint64 $maxsize   is rw,
+  gboolean $async   is rw
 )
   is native(gstreamer)
   is export
