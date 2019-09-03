@@ -53,7 +53,7 @@ sub g-connect-convert-sample(
   is export
   is native('gobject-2.0')
   is symbol('g_signal_connect_object')
-  { * }
+{ * }
 
 # GstPlayBin, gint, gpointer --> GstTagList
 sub g-connect-get-tags(
@@ -67,7 +67,7 @@ sub g-connect-get-tags(
   is export
   is native('gobject-2.0')
   is symbol('g_signal_connect_object')
-  { * }
+{ * }
 
 # GstPlayBin, gint, gpointer --> GstPad
 sub g-connect-get-pad(
@@ -81,7 +81,7 @@ sub g-connect-get-pad(
   is export
   is native('gobject-2.0')
   is symbol('g_signal_connect_object')
-  { * }
+{ * }
 
 # GstPlayBin, GstElement, gpointer
 sub g-connect-source-setup(
@@ -95,7 +95,7 @@ sub g-connect-source-setup(
   is export
   is native('gobject-2.0')
   is symbol('g_signal_connect_object')
-  { * }
+{ * }
 
 # GstPlayBin, gint, gpointer
 sub g-connect-tags-changed(
@@ -109,4 +109,16 @@ sub g-connect-tags-changed(
   is export
   is native('gobject-2.0')
   is symbol('g_signal_connect_object')
-  { * }
+{ * }
+
+sub g-signal-emit-get-tags (
+  Pointer $instance,
+  Str $detailed_signal,
+  guint $index,
+  CArray[Pointer[GstTagList]] $taglist,
+  guint64
+)
+  is export
+  is native('gobject-2.0')
+  is symbol('g_signal_emit_by_name')
+{ * }

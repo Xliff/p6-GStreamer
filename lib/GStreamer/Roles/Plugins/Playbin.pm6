@@ -1,18 +1,22 @@
 use v6.c;
 
+use Method::Also;
+
 use NativeCall;
 
 use GTK::Compat::Types;
-use GTK::Raw::ReturnedValue;
 use GStreamer::Raw::Types;
-use GStreamer::Roles::Plugins::Raw::Playbin;
 
-use GTK::Roles::Properties;
+use GTK::Raw::ReturnedValue;
+use GStreamer::Raw::Subs;
+use GStreamer::Roles::Plugins::Raw::Playbin;
 
 use GStreamer::Buffer;
 use GStreamer::Element;
 use GStreamer::Sample;
+use GStreamer::TagList;
 
+use GTK::Roles::Properties;
 use GTK::Roles::Signals::Generic;
 
 role GStreamer::Roles::Plugins::Playbin {
@@ -23,13 +27,13 @@ role GStreamer::Roles::Plugins::Playbin {
   has %!signals-pb;
 
   submethod TWEAK {
-    $!pb = cast(GObject, self.GstObject);
+    self!setObject( $!pb = cast(GObject, self.GstObject) );
   }
 
   # DESTROY for signals!
 
   # Type: GstElement
-  method audio-sink (:$raw = False) is rw  {
+  method audio-sink (:$raw = False) is rw  is also<audio_sink> {
     my GTK::Compat::Value $gv .= new( G_TYPE_OBJECT );
     Proxy.new(
       FETCH => -> $ {
@@ -72,7 +76,7 @@ role GStreamer::Roles::Plugins::Playbin {
   }
 
   # Type: gchar
-  method subtitle-font-desc is rw  {
+  method subtitle-font-desc is rw  is also<subtitle_font_desc> {
     my GTK::Compat::Value $gv .= new( G_TYPE_STRING );
     Proxy.new(
       FETCH => -> $ {
@@ -88,7 +92,7 @@ role GStreamer::Roles::Plugins::Playbin {
   }
 
   # Type: GstElement
-  method video-sink (:$raw = False) is rw  {
+  method video-sink (:$raw = False) is rw  is also<video_sink> {
     my GTK::Compat::Value $gv .= new( G_TYPE_OBJECT );
     Proxy.new(
       FETCH => -> $ {
@@ -110,7 +114,7 @@ role GStreamer::Roles::Plugins::Playbin {
   }
 
   # Type: GstElement
-  method vis-plugin (:$raw = False) is rw  {
+  method vis-plugin (:$raw = False) is rw  is also<vis_plugin> {
     my GTK::Compat::Value $gv .= new( G_TYPE_OBJECT );
     Proxy.new(
       FETCH => -> $ {
@@ -149,7 +153,7 @@ role GStreamer::Roles::Plugins::Playbin {
   }
 
   # Type: guint64
-  method connection-speed is rw  {
+  method connection-speed is rw  is also<connection_speed> {
     my GTK::Compat::Value $gv .= new( G_TYPE_UINT64 );
     Proxy.new(
       FETCH => -> $ {
@@ -166,7 +170,7 @@ role GStreamer::Roles::Plugins::Playbin {
   }
 
   # Type: gint64
-  method av-offset is rw  {
+  method av-offset is rw  is also<av_offset> {
     my GTK::Compat::Value $gv .= new( G_TYPE_INT64 );
     Proxy.new(
       FETCH => -> $ {
@@ -183,7 +187,7 @@ role GStreamer::Roles::Plugins::Playbin {
   }
 
   # Type: gint64
-  method buffer-duration is rw  {
+  method buffer-duration is rw  is also<buffer_duration> {
     my GTK::Compat::Value $gv .= new( G_TYPE_INT64 );
     Proxy.new(
       FETCH => -> $ {
@@ -200,7 +204,7 @@ role GStreamer::Roles::Plugins::Playbin {
   }
 
   # Type: gint
-  method buffer-size is rw  {
+  method buffer-size is rw  is also<buffer_size> {
     my GTK::Compat::Value $gv .= new( G_TYPE_INT );
     Proxy.new(
       FETCH => -> $ {
@@ -217,7 +221,7 @@ role GStreamer::Roles::Plugins::Playbin {
   }
 
   # Type: gint
-  method current-audio is rw  {
+  method current-audio is rw  is also<current_audio> {
     my GTK::Compat::Value $gv .= new( G_TYPE_INT );
     Proxy.new(
       FETCH => -> $ {
@@ -234,7 +238,7 @@ role GStreamer::Roles::Plugins::Playbin {
   }
 
   # Type: gint
-  method current-text is rw  {
+  method current-text is rw  is also<current_text> {
     my GTK::Compat::Value $gv .= new( G_TYPE_INT );
     Proxy.new(
       FETCH => -> $ {
@@ -251,7 +255,7 @@ role GStreamer::Roles::Plugins::Playbin {
   }
 
   # Type: gint
-  method current-video is rw  {
+  method current-video is rw  is also<current_video> {
     my GTK::Compat::Value $gv .= new( G_TYPE_INT );
     Proxy.new(
       FETCH => -> $ {
@@ -275,7 +279,7 @@ role GStreamer::Roles::Plugins::Playbin {
         $gv = GTK::Compat::Value.new(
           self.prop_get('flags', $gv)
         );
-        GstPlayFlagsEnum( $gv.boxed );
+        GstPlayFlagsEnum( $gv.uint );
       },
       STORE => -> $, Int() $val is copy {
         $gv.uint = $val;
@@ -303,7 +307,7 @@ role GStreamer::Roles::Plugins::Playbin {
   }
 
   # Type: gint
-  method n-audio is rw  {
+  method n-audio is rw  is also<n_audio> {
     my GTK::Compat::Value $gv .= new( G_TYPE_INT );
     Proxy.new(
       FETCH => -> $ {
@@ -319,7 +323,7 @@ role GStreamer::Roles::Plugins::Playbin {
   }
 
   # Type: gint
-  method n-text is rw  {
+  method n-text is rw  is also<n_text> {
     my GTK::Compat::Value $gv .= new( G_TYPE_INT );
     Proxy.new(
       FETCH => -> $ {
@@ -335,7 +339,7 @@ role GStreamer::Roles::Plugins::Playbin {
   }
 
   # Type: gint
-  method n-video is rw  {
+  method n-video is rw  is also<n_video> {
     my GTK::Compat::Value $gv .= new( G_TYPE_INT );
     Proxy.new(
       FETCH => -> $ {
@@ -351,7 +355,7 @@ role GStreamer::Roles::Plugins::Playbin {
   }
 
   # Type: guint64
-  method ring-buffer-max-size is rw  {
+  method ring-buffer-max-size is rw  is also<ring_buffer_max_size> {
     my GTK::Compat::Value $gv .= new( G_TYPE_UINT64 );
     Proxy.new(
       FETCH => -> $ {
@@ -410,7 +414,7 @@ role GStreamer::Roles::Plugins::Playbin {
   }
 
   # Type: gchar
-  method subtitle-encoding is rw  {
+  method subtitle-encoding is rw  is also<subtitle_encoding> {
     my GTK::Compat::Value $gv .= new( G_TYPE_STRING );
     Proxy.new(
       FETCH => -> $ {
@@ -444,7 +448,7 @@ role GStreamer::Roles::Plugins::Playbin {
   }
 
   # Type: GstElement
-  method text-sink (:$raw = False) is rw  {
+  method text-sink (:$raw = False) is rw  is also<text_sink> {
     my GTK::Compat::Value $gv .= new( G_TYPE_OBJECT );
     Proxy.new(
       FETCH => -> $ {
@@ -483,7 +487,7 @@ role GStreamer::Roles::Plugins::Playbin {
   }
 
   # Type: gchar
-  method current-suburi is rw  {
+  method current-suburi is rw  is also<current_suburi> {
     my GTK::Compat::Value $gv .= new( G_TYPE_STRING );
     Proxy.new(
       FETCH => -> $ {
@@ -499,7 +503,7 @@ role GStreamer::Roles::Plugins::Playbin {
   }
 
   # Type: gchar
-  method current-uri is rw  {
+  method current-uri is rw  is also<current_uri> {
     my GTK::Compat::Value $gv .= new( G_TYPE_STRING );
     Proxy.new(
       FETCH => -> $ {
@@ -515,7 +519,7 @@ role GStreamer::Roles::Plugins::Playbin {
   }
 
   # Type: gboolean
-  method force-aspect-ratio is rw  {
+  method force-aspect-ratio is rw  is also<force_aspect_ratio> {
     my GTK::Compat::Value $gv .= new( G_TYPE_BOOLEAN );
     Proxy.new(
       FETCH => -> $ {
@@ -532,7 +536,9 @@ role GStreamer::Roles::Plugins::Playbin {
   }
 
   # Type: GstElement
-  method audio-stream-combiner (:$raw = False) is rw  {
+  method audio-stream-combiner (:$raw = False) is rw
+    is also<audio_stream_combiner>
+  {
     my GTK::Compat::Value $gv .= new( G_TYPE_OBJECT );
     Proxy.new(
       FETCH => -> $ {
@@ -554,7 +560,7 @@ role GStreamer::Roles::Plugins::Playbin {
   }
 
   # Type: GstElement
-  method text-stream-combiner (:$raw = False) is rw  {
+  method text-stream-combiner (:$raw = False) is rw  is also<text_stream_combiner> {
     my GTK::Compat::Value $gv .= new( G_TYPE_OBJECT );
     Proxy.new(
       FETCH => -> $ {
@@ -576,7 +582,7 @@ role GStreamer::Roles::Plugins::Playbin {
   }
 
   # Type: GstElement
-  method video-stream-combiner (:$raw = False) is rw  {
+  method video-stream-combiner (:$raw = False) is rw  is also<video_stream_combiner> {
     my GTK::Compat::Value $gv .= new( G_TYPE_OBJECT );
     Proxy.new(
       FETCH => -> $ {
@@ -599,92 +605,120 @@ role GStreamer::Roles::Plugins::Playbin {
 
   # Is originally:
   # GstPlayBin, gpointer --> void
-  method about-to-finish {
+  method about-to-finish is also<about_to_finish> {
     self.connect($!pb, 'about-to-finish');
   }
 
   # Is originally:
   # GstPlayBin, gpointer --> void
-  method audio-changed {
+  method audio-changed is also<audio_changed> {
     self.connect($!pb, 'audio-changed');
   }
 
   # Is originally:
   # GstPlayBin, gint, gpointer --> void
-  method audio-tags-changed {
+  method audio-tags-changed is also<audio_tags_changed> {
     self.connect-tags-changed($!pb, 'audio-tags-changed');
   }
 
   # Is originally:
   # GstPlayBin, GstCaps, gpointer --> GstSample
-  method convert-sample {
+  method convert-sample is also<convert_sample> {
     self.connect-convert-sample($!pb);
   }
 
   # Is originally:
   # GstPlayBin, gint, gpointer --> GstPad
-  method get-audio-pad {
+  method get-audio-pad is also<get_audio_pad> {
     self.connect-get-pad($!pb, 'get-audio-pad');
   }
 
   # Is originally:
   # GstPlayBin, gint, gpointer --> GstTagList
-  method get-audio-tags {
+  method get-audio-tags is also<get_audio_tags> {
     self.connect-get-tags($!pb, 'get-audio-tags');
   }
 
   # Is originally:
   # GstPlayBin, gint, gpointer --> GstPad
-  method get-text-pad {
+  method get-text-pad is also<get_text_pad> {
     self.connect-get-pad($!pb, 'get-text-pad');
   }
 
   # Is originally:
   # GstPlayBin, gint, gpointer --> GstTagList
-  method get-text-tags {
+  method get-text-tags is also<get_text_tags> {
     self.connect-get-tags($!pb, 'get-text-tags');
   }
 
   # Is originally:
   # GstPlayBin, gint, gpointer --> GstPad
-  method get-video-pad {
+  method get-video-pad is also<get_video_pad> {
     self.connect-get-pad($!pb, 'get-video-pad');
   }
 
   # Is originally:
   # GstPlayBin, gint, gpointer --> GstTagList
-  method get-video-tags {
+  method get-video-tags is also<get_video_tags> {
     self.connect-get-tags($!pb, 'get-video-tags');
   }
 
   # Is originally:
   # GstPlayBin, GstElement, gpointer --> void
-  method source-setup {
+  method source-setup is also<source_setup> {
     self.connect-source-setup($!pb);
   }
 
   # Is originally:
   # GstPlayBin, gpointer --> void
-  method text-changed {
+  method text-changed is also<text_changed> {
     self.connect($!pb, 'text-changed');
   }
 
   # Is originally:
   # GstPlayBin, gint, gpointer --> void
-  method text-tags-changed {
+  method text-tags-changed is also<text_tags_changed> {
     self.connect-tags-changed($!pb, 'text-tags-changed');
   }
 
   # Is originally:
   # GstPlayBin, gpointer --> void
-  method video-changed {
+  method video-changed is also<video_changed> {
     self.connect($!pb, 'video-changed');
   }
 
   # Is originally:
   # GstPlayBin, gint, gpointer --> void
-  method video-tags-changed {
+  method video-tags-changed is also<video_tags_changed> {
     self.connect-tags-changed($!pb, 'video-tags-changed');
+  }
+
+  proto method emit-get-tags (|)
+      is also<emit_get_tags>
+  { * }
+
+  multi method emit-get-tags (
+    Str() $name,
+    Int() $i
+  ) {
+    samewith($name, $i, $);
+  }
+  multi method emit-get-tags (
+    Str() $name,
+    Int() $i,
+    $taglist is rw,
+    :$raw = False
+  ) {
+    my $tl = CArray[Pointer[GstTagList]].new;
+
+    $tl[0] = Pointer[GstTagList].new;
+    g-signal-emit-get-tags($!pb, $name, $i, $tl, G_TYPE_NONE);
+
+    ($taglist) = ppr($tl);
+    $taglist ??
+      ( $raw ?? $taglist !! GStreamer::TagList.new($taglist) )
+      !!
+      Nil;
   }
 
   # GstPlayBin, gint, gpointer

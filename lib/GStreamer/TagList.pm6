@@ -52,7 +52,7 @@ class GStreamer::TagList is GStreamer::MiniObject {
   multi method new (GstTagList $taglist) {
     self.bless( :$taglist )
   }
-  multi method new (Str() $string) {
+  multi method new (Str $string) {
     GStreamer::TagList.new_from_string($string);
   }
   multi method new (*@a) {
