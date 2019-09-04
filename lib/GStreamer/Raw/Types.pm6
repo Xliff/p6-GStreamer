@@ -60,6 +60,10 @@ constant GstMetaInitFunction               is export := Pointer;
 constant GstMetaFreeFunction               is export := Pointer;
 constant GstMetaTransformFunction          is export := Pointer;
 constant GstBufferForeachMetaFunc          is export := Pointer;
+constant GstCapsFeatures                   is export := Pointer;
+constant GstCapsFilterMapFunc              is export := Pointer;
+constant GstCapsForeachFunc                is export := Pointer;
+constant GstCapsMapFunc                    is export := Pointer;
 
 #class GstAllocator         is repr('CPointer') does GTK::Roles::Pointers is export { }
 class GstAllocationParams  is repr('CPointer') does GTK::Roles::Pointers is export { }
@@ -91,6 +95,7 @@ class GstPluginFeature     is repr('CPointer') does GTK::Roles::Pointers is expo
 class GstProbeInfo         is repr('CPointer') does GTK::Roles::Pointers is export { }
 #class GstQuery             is repr('CPointer') does GTK::Roles::Pointers is export { }
 class GstSample            is repr('CPointer') does GTK::Roles::Pointers is export { }
+class GstStaticCaps        is repr('CPointer') does GTK::Roles::Pointers is export { }
 class GstStaticPadTemplate is repr('CPointer') does GTK::Roles::Pointers is export { }
 class GstStream            is repr('CPointer') does GTK::Roles::Pointers is export { }
 class GstStreamCollection  is repr('CPointer') does GTK::Roles::Pointers is export { }

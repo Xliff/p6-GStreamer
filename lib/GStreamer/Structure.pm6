@@ -28,11 +28,7 @@ class GStreamer::Structure {
 
   multi method new(
     $name is copy,
-    *%pairs where *.keys.all ne <
-      empty
-      from_string from-string
-      id_empty    id-$empty
-    >.any
+    *%pairs where *.keys.all ne <empty from_string from-string>.any
   ) {
     die '<name> parameter must be Str-compatible!'
       unless $name.^can('Str').elems;
@@ -40,7 +36,7 @@ class GStreamer::Structure {
 
     # Callier is responsible for assigning proper values.
     die 'The values in %pairs must only contain GValue-compatible elements!'
-      unless %pairs.values.all ~~ (GTK::Compat::Value, GValues).any;
+      unless %pairs.values.all ~~ (GTK::Compat::Value, GValue).any;
 
     my $o = ::?CLASS.new_empty($name);
     $o.set_value(.key, .value) for %pairs.pairs;
@@ -79,14 +75,13 @@ class GStreamer::Structure {
     self.bless( structure => gst_structure_new_from_string($desc) );
   }
 
-  multi method new (Int() $quark, :id-empty($id_empty) is required) {
-    ::?CLASS.new_id_empty($quark);
-  }
-  method new_id_empty (Int() $quark) is also<new-id-empty> {
-    my GQuark $q = $quark;
-
-    self.bless( structure => gst_structure_new_id_empty($q) );
-  }
+  # Requires var args beyond the two Quarks.
+  #   Could replace the var-args with a GValue... think about it.
+  # method new_id_empty (Int $name-q, Int() $value-q) is also<new-id-empty> {
+  #   my GQuark ($nq, $vq) = ($name-q, $value-q);
+  #
+  #   gst_structure_new_id_empty($q);
+  # }
 
   proto method from_string (|)
       is also<from-string>
