@@ -6,10 +6,15 @@ use GTK::Compat::Value;
 
 use GStreamer::ElementFactory;
 use GStreamer::Main;
+use GStreamer::Message;
 use GStreamer::Pipeline;
 
-sub MAIN {
+sub MAIN (
+  Int :$pattern  #= Valid values are 0-25
+) {
   GStreamer::Main.init;
+
+  die 'Illegal value for --pattern' unless $pattern ~~ 0..25;
 
   my $source   = GStreamer::ElementFactory.make('videotestsrc', 'source');
   my $sink     = GStreamer::ElementFactory.make('autovideosink', 'sink');
@@ -28,7 +33,7 @@ sub MAIN {
     exit 1;
   }
 
-  $source.prop_set('pattern', gv_int(0));
+  $source.prop_set('pattern', gv_int($pattern));
 
   if $pipeline.set-state(GST_STATE_PLAYING) == GST_STATE_CHANGE_FAILURE {
     say 'Unable to set the pipeline to the playing state.';

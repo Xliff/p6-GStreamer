@@ -7,6 +7,8 @@ use GStreamer::Raw::Types;
 
 unit package GStreamer::Roles::Plugins::Raw::Playbin;
 
+constant playback = 'gstplayback';
+
 constant GstAutoplugSelectResult is export := guint32;
 our enum GstAutoplugSelectResultEnum is export <
     GST_AUTOPLUG_SELECT_TRY
@@ -51,7 +53,7 @@ sub g-connect-convert-sample(
 )
   returns uint64
   is export
-  is native('gobject-2.0')
+  is native(gobject)
   is symbol('g_signal_connect_object')
 { * }
 
@@ -65,7 +67,7 @@ sub g-connect-get-tags(
 )
   returns uint64
   is export
-  is native('gobject-2.0')
+  is native(gobject)
   is symbol('g_signal_connect_object')
 { * }
 
@@ -79,7 +81,7 @@ sub g-connect-get-pad(
 )
   returns uint64
   is export
-  is native('gobject-2.0')
+  is native(gobject)
   is symbol('g_signal_connect_object')
 { * }
 
@@ -93,7 +95,7 @@ sub g-connect-source-setup(
 )
   returns uint64
   is export
-  is native('gobject-2.0')
+  is native(gobject)
   is symbol('g_signal_connect_object')
 { * }
 
@@ -107,7 +109,7 @@ sub g-connect-tags-changed(
 )
   returns uint64
   is export
-  is native('gobject-2.0')
+  is native(gobject)
   is symbol('g_signal_connect_object')
 { * }
 
@@ -119,6 +121,12 @@ sub g-signal-emit-get-tags (
   guint64
 )
   is export
-  is native('gobject-2.0')
+  is native(gobject)
   is symbol('g_signal_emit_by_name')
+{ * }
+
+sub gst_play_flags_get_type ()
+  returns GType
+  is export
+  is native(playback)
 { * }

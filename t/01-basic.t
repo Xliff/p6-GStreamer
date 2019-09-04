@@ -5,6 +5,7 @@ use GStreamer::Raw::Types;
 use GStreamer::Bus;
 use GStreamer::Element;
 use GStreamer::Main;
+use GStreamer::Message;
 use GStreamer::Parse;
 
 sub MAIN {

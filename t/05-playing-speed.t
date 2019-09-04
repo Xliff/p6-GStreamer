@@ -108,7 +108,6 @@ sub MAIN  {
   %data<pipeline> = GStreamer::Parse.launch(
     "playbin uri=https://www.freedesktop.org/software/gstreamer-sdk/data/media/sintel_trailer-480p.webm"
   ) but GStreamer::Roles::Plugins::Playbin;
-  %data<pipeline>.attach-role;
 
   %data<stdin> = GTK::Compat::IOChannel.unix_new($*IN.native-descriptor);
   %data<stdin>.add_watch(G_IO_IN, -> *@a --> gboolean { handle-keyboard; 1 });

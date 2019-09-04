@@ -32,6 +32,11 @@ role GStreamer::Roles::Plugins::Playbin {
 
   # DESTROY for signals!
 
+  method !flags-get-type {
+    state ($n, $t);
+    unstable_get_type( self.^name, &gst_play_flags_get_type, $n, $t );
+  }
+
   # Type: GstElement
   method audio-sink (:$raw = False) is rw  is also<audio_sink> {
     my GTK::Compat::Value $gv .= new( G_TYPE_OBJECT );
@@ -273,13 +278,13 @@ role GStreamer::Roles::Plugins::Playbin {
 
   # Type: GstPlayFlags
   method flags is rw  {
-    my GTK::Compat::Value $gv .= new( G_TYPE_UINT );
+    my GTK::Compat::Value $gv .= new( self!flags-get-type );
     Proxy.new(
       FETCH => -> $ {
         $gv = GTK::Compat::Value.new(
           self.prop_get('flags', $gv)
         );
-        GstPlayFlagsEnum( $gv.uint );
+        GstPlayFlagsEnum( $gv.flags );
       },
       STORE => -> $, Int() $val is copy {
         $gv.uint = $val;
