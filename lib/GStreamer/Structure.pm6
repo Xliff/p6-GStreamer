@@ -36,7 +36,7 @@ class GStreamer::Structure {
 
     # Callier is responsible for assigning proper values.
     die 'The values in %pairs must only contain GValue-compatible elements!'
-      unless %pairs.values.all ~~ (GTK::Compat::Value, GValue).any;
+      unless %pairs.values.all ~~ (GTK::Compat::Value, GValues).any;
 
     my $o = ::?CLASS.new_empty($name);
     $o.set_value(.key, .value) for %pairs.pairs;
