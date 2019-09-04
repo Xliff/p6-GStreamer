@@ -28,7 +28,11 @@ class GStreamer::Structure {
 
   multi method new(
     $name is copy,
-    *%pairs where *.keys.all ne <empty from_string from-string>.any
+    *%pairs where *.keys.all ne <
+      empty
+      from_string from-string
+      id_empty    id-$empty
+    >.any
   ) {
     die '<name> parameter must be Str-compatible!'
       unless $name.^can('Str').elems;
@@ -75,6 +79,15 @@ class GStreamer::Structure {
     self.bless( structure => gst_structure_new_from_string($desc) );
   }
 
+  multi method new (Int() $quark, :id-empty($id_empty) is required) {
+    ::?CLASS.new_id_empty($quark);
+  }
+  method new_id_empty (Int() $quark) is also<new-id-empty> {
+    my GQuark $q = $quark;
+
+    self.bless( structure => gst_structure_new_id_empty($q) );
+  }
+
   proto method from_string (|)
       is also<from-string>
   { * }
@@ -87,12 +100,6 @@ class GStreamer::Structure {
   }
   multi method from_string (Str() $desc, CArray[Str] $end) {
     self.bless( structure => gst_structure_from_string($desc, $end) );
-  }
-
-  method new_id_empty (Int() $quark) is also<new-id-empty> {
-    my GQuark $q = $quark;
-
-    gst_structure_new_id_empty($q);
   }
 
   method name is rw {
