@@ -22,14 +22,55 @@ class GStreamer::Structure {
   method GStreamer::Raw::Types::GstStructure
   { $!s }
 
-  method new (GstStructure $structure) {
+  multi method new (GstStructure $structure) {
     self.bless( :$structure );
   }
 
+  multi method new(
+    $name is copy,
+    *%pairs where *.keys.all ne <empty from_string from-string>.any
+  ) {
+    die '<name> parameter must be Str-compatible!'
+      unless $name.^can('Str').elems;
+    $name .= Str unless $name ~~ Str;
+
+    # Callier is responsible for assigning proper values.
+    die 'The values in %pairs must only contain GValue-compatible elements!'
+      unless %pairs.values.all ~~ (GTK::Compat::Value, GValue).any;
+
+    my $o = ::?CLASS.new_empty($name);
+    $o.set_value(.key, .value) for %pairs.pairs;
+    $o;
+  }
+
+  multi method new (Str() $name, :$empty is required, *%pairs) {
+    die qq:to/DIE/ if %pairs;
+      Hash key "empty" is reserved! Please do { ''
+      } NOT use them in your key-value specifications!
+      If you must use these key names, you can add them later using the { ''
+      } appropriate set function.
+      DIE
+
+    ::?CLASS.new_empty($name);
+  }
   method new_empty (Str() $name) is also<new-empty> {
     self.bless( structure => gst_structure_new_empty($name) );
   }
 
+  multi method new (
+    Str() $desc,
+    :from-string(:$from_string) is required,
+    *%pairs
+  ) {
+    die qq:to/DIE/ if %pairs;
+      Hash keys "from-string" and "from_string" are reserved! Please do { ''
+      } NOT use them in your key-value specifications!
+      If you must use these key names, you can add them later using the { ''
+      } appropriate set function.
+      DIE
+
+    ::?CLASS.new_from_string($desc);
+  }
   method new_from_string (Str() $desc) is also<new-from-string> {
     self.bless( structure => gst_structure_new_from_string($desc) );
   }
