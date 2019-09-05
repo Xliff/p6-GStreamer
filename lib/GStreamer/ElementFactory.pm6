@@ -51,7 +51,13 @@ class GStreamer::ElementFactory is GStreamer::PluginFeature {
     GStreamer::ElementFactory.new( gst_element_factory_find($name) );
   }
 
-  method get_element_type is also<get-element-type> {
+  method get_element_type
+    is also<
+      get-element-type
+      element_type
+      element-type
+    >
+  {
     gst_element_factory_get_element_type($!ef);
   }
 
@@ -59,7 +65,13 @@ class GStreamer::ElementFactory is GStreamer::PluginFeature {
     gst_element_factory_get_metadata($!ef, $key);
   }
 
-  method get_metadata_keys is also<get-metadata-keys> {
+  method get_metadata_keys
+    is also<
+      get-metadata-keys
+      metadata_keys
+      metadata-keys
+    >
+  {
     my $mk = gst_element_factory_get_metadata_keys($!ef);
 
     my ($cnt, $k, @mk) = (0);
@@ -67,11 +79,23 @@ class GStreamer::ElementFactory is GStreamer::PluginFeature {
     @mk;
   }
 
-  method get_num_pad_templates is also<get-num-pad-templates> {
+  method get_num_pad_templates
+    is also<
+      get-num-pad-templates
+      num_pad_templates
+      num-pad-templates
+    >
+  {
     gst_element_factory_get_num_pad_templates($!ef);
   }
 
-  method get_static_pad_templates is also<get-static-pad-templates> {
+  method get_static_pad_templates (:$raw = False)
+    is also<
+      get-static-pad-templates
+      static_pad_templates
+      static-pad-templates
+    >
+  {
     # LTA: Parameterized role throws weird error if parameter is not defined!
     my $pt = gst_element_factory_get_static_pad_templates($!ef)
       but GTK::Compat::Roles:::ListData[GstPadTemplate];
@@ -85,7 +109,13 @@ class GStreamer::ElementFactory is GStreamer::PluginFeature {
     unstable_get_type( self.^name, &gst_element_factory_get_type, $n, $t );
   }
 
-  method get_uri_type is also<get-uri-type> {
+  method get_uri_type
+    is also<
+      get-uri-type
+      uri_type
+      uri-type
+    >
+  {
     gst_element_factory_get_uri_type($!ef);
   }
 

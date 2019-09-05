@@ -73,6 +73,7 @@ class GstBufferList        is repr('CPointer') does GTK::Roles::Pointers is expo
 class GstBufferPool        is repr('CPointer') does GTK::Roles::Pointers is export { }
 class GstBus               is repr('CPointer') does GTK::Roles::Pointers is export { }
 class GstCaps              is repr('CPointer') does GTK::Roles::Pointers is export { }
+class GstCapFeatures       is repr('CPointer') does GTK::Roles::Pointers is export { }
 class GstChildProxy        is repr('CPointer') does GTK::Roles::Pointers is export { }
 class GstClock             is repr('CPointer') does GTK::Roles::Pointers is export { }
 class GstContext           is repr('CPointer') does GTK::Roles::Pointers is export { }
@@ -1141,36 +1142,36 @@ class GstDateTime is repr<CStruct> does GTK::Roles::Pointers is export {
 }
 
 class GstElement is repr<CStruct> does GTK::Roles::Pointers is export {
-  HAS GstObject        $.object;
-  HAS GRecMutex        $.state_lock;
-  HAS GCond            $.state_cond;
-  has guint32          $.state_cookie;
-  has guint            $.target_state;    # GstState
-  has guint            $.current_state;   # GstState
-  has guint            $.next_state;      # GstState
-  has guint            $.pending_state;   # GstState
-  has guint            $.last_return;     # GstStateChangeReturn
-  has GstBus           $.bus;
-  has GstClock         $.clock;
-  has GstClockTimeDiff $.base_time;
-  has GstClockTime     $.start_time;
-  has guint16          $.numpads;
-  has GList            $.pads;
-  has guint16          $.numsrcpads;
-  has GList            $.srcpads;
-  has guint16          $.numsinkpads;
-  has GList            $.sinkpads;
-  has guint32          $.pads_cookie;
-  has GList            $.contexts;
+  HAS GstObject            $.object;
+  HAS GRecMutex            $.state_lock;
+  HAS GCond                $.state_cond;
+  has guint32              $.state_cookie;
+  has GstState             $.target_state;
+  has GstState             $.current_state;
+  has GstState             $.next_state;
+  has GstState             $.pending_state;
+  has GstStateChangeReturn $.last_return;
+  has GstBus               $.bus;
+  has GstClock             $.clock;
+  has GstClockTimeDiff     $.base_time;
+  has GstClockTime         $.start_time;
+  has guint16              $.numpads;
+  has GList                $.pads;
+  has guint16              $.numsrcpads;
+  has GList                $.srcpads;
+  has guint16              $.numsinkpads;
+  has GList                $.sinkpads;
+  has guint32              $.pads_cookie;
+  has GList                $.contexts;
 
-  has gpointer         $!gst_reserved0;
-  has gpointer         $!gst_reserved1;
-  has gpointer         $!gst_reserved2;
+  has gpointer             $!gst_reserved0;
+  has gpointer             $!gst_reserved1;
+  has gpointer             $!gst_reserved2;
 }
 
 class GstMessage is repr<CStruct> does GTK::Roles::Pointers is export {
   HAS GstMiniObject   $!mini_object;
-  has guint           $!type;        # GstMessageType
+  has GstMessageType  $!type;
   has guint64         $.timestamp;
   has GstObject       $.src;
   has guint32         $.seqnum;
@@ -1304,4 +1305,12 @@ class GstTocEntry         is repr<CStruct>     does GTK::Roles::Pointers is expo
   has GstTagList      $!tags;
   has GstTocLoopType  $!loop_type;
   has gint            $!repeat_count;
+}
+
+# BOXED!
+class GstCapsFeatures     is repr<CStruct>     does GTK::Roles::Pointers is export {
+  has GType        $!type;
+  has CArray[gint] $!parent_refcount;   # gint *parent_refcount
+  has GArray       $!array;
+  has gboolean     $!is_any;
 }

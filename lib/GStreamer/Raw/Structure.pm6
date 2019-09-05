@@ -92,7 +92,7 @@ sub gst_structure_fixate_field_string (
 
 sub gst_structure_foreach (
   GstStructure $structure,
-  GstStructureForeachFunc $func,
+  &func (GQuark, GValue, Pointer --> gboolean),
   gpointer $user_data
 )
   returns uint32

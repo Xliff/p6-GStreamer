@@ -201,7 +201,7 @@ class GStreamer::Structure {
   }
 
   method foreach (
-    GstStructureForeachFunc $func,
+    &func,
     gpointer $user_data = gpointer
   ) {
     gst_structure_foreach($!s, $func, $user_data);

@@ -123,12 +123,11 @@ class GStreamer::Caps is GStreamer::MiniObject {
 
   method append_structure_full (
     GstStructure() $structure,
-    Int() $features;
+    GstCapsFeatures() $features
   )
     is also<append-structure-full>
   {
-    my GstCapsFeatures $f = $features;
-    gst_caps_append_structure_full($!c, $structure, $f);
+    gst_caps_append_structure_full($!c, $structure, $features);
   }
 
   method can_intersect (GstCaps() $caps2) is also<can-intersect> {
@@ -254,14 +253,12 @@ class GStreamer::Caps is GStreamer::MiniObject {
   }
 
   method is_subset_structure_full (
-    GstStructure $structure,
-    Int() $feature
+    GstStructure() $structure,
+    GstCapsFeatures() $features
   )
     is also<is-subset-structure-full>
   {
-    my GstCapsFeatures $f = $feature;
-
-    so gst_caps_is_subset_structure_full($!c, $structure, $f);
+    so gst_caps_is_subset_structure_full($!c, $structure, $features);
   }
 
   method map_in_place (
@@ -282,14 +279,12 @@ class GStreamer::Caps is GStreamer::MiniObject {
   }
 
   method merge_structure_full (
-    GstStructure $structure,
-    Int() $features
+    GstStructure() $structure,
+    GstCapsFeatures() $features;
   )
     is also<merge-structure-full>
   {
-    my GstCapsFeatures $f = $features;
-
-    gst_caps_merge_structure_full($!c, $structure, $f);
+    gst_caps_merge_structure_full($!c, $structure, $features);
   }
 
   method normalize {
@@ -304,20 +299,19 @@ class GStreamer::Caps is GStreamer::MiniObject {
 
   method set_features (
     Int() $index,
-    Int() $features
+    GstCapFeatures() $features
   )
     is also<set-features>
   {
-    my GstCapsFeatures $f = $features;
     my guint $i = $index;
 
-    gst_caps_set_features($!c, $i, $f);
+    gst_caps_set_features($!c, $i, $features);
   }
 
-  method set_features_simple (Int() $features) is also<set-features-simple> {
-    my GstCapsFeatures $f = $features;
-
-    gst_caps_set_features_simple($!c, $f);
+  method set_features_simple (GstCapFeatures() $features)
+    is also<set-features-simple>
+  {
+    gst_caps_set_features_simple($!c, $features);
   }
 
   method set_value (Str() $field, GValue() $value) is also<set-value> {
