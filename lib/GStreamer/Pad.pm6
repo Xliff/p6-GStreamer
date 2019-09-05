@@ -7,6 +7,7 @@ use GStreamer::Raw::Types;
 use GStreamer::Raw::Pad;
 use GStreamer::Raw::Utils;
 
+use GStreamer::Caps;
 use GStreamer::Object;
 use GStreamer::Iterator;
 
@@ -45,7 +46,9 @@ class GStreamer::Pad is GStreamer::Object {
     self.bless( :$pad );
   }
   multi method new (Str() $name, Int() $direction) {
-    self.bless( pad => gst_pad_new($name, $direction) );
+    my GstPadDirection $d = $direction;
+
+    self.bless( pad => gst_pad_new($name, $d) );
   }
 
   method new_from_static_template (
@@ -89,7 +92,9 @@ class GStreamer::Pad is GStreamer::Object {
         gst_pad_get_offset($!p);
       },
       STORE => sub ($, Int() $offset is copy) {
-        gst_pad_set_offset($!p, $offset);
+        my guint64 $o = $offset;
+
+        gst_pad_set_offset($!p, $o);
       }
     );
   }
@@ -97,22 +102,24 @@ class GStreamer::Pad is GStreamer::Object {
   method activate_mode (GstPadMode() $mode, Int() $active)
     is also<activate-mode>
   {
-    gst_pad_activate_mode($!p, $mode, $active);
+    so gst_pad_activate_mode($!p, $mode, $active);
   }
 
   method add_probe (
-    Int() $mask,                   # GstPadProbeType $mask,
+    Int() $mask,
     GstPadProbeCallback $callback,
     gpointer $user_data          = gpointer,
     GDestroyNotify $destroy_data = gpointer
   )
     is also<add-probe>
   {
-    gst_pad_add_probe($!p, $mask, $callback, $user_data, $destroy_data);
+    my GstPadProbeType $m = $mask;
+
+    gst_pad_add_probe($!p, $m, $callback, $user_data, $destroy_data);
   }
 
   method can_link (GstPad() $sinkpad) is also<can-link> {
-    gst_pad_can_link($!p, $sinkpad);
+    so gst_pad_can_link($!p, $sinkpad);
   }
 
   method chain (GstBuffer() $buffer) {
@@ -124,7 +131,16 @@ class GStreamer::Pad is GStreamer::Object {
   }
 
   method check_reconfigure is also<check-reconfigure> {
-    gst_pad_check_reconfigure($!p);
+    so gst_pad_check_reconfigure($!p);
+  }
+
+  method create_stream_id (
+    GstElement() $parent,
+    Str() $stream_id
+  )
+    is also<create-stream-id>
+  {
+    gst_pad_create_stream_id($!p, $parent, $stream_id);
   }
 
   method event_default (GstObject() $parent, GstEvent() $event)
@@ -141,13 +157,21 @@ class GStreamer::Pad is GStreamer::Object {
   }
 
   method get_allowed_caps (:$raw = False) is also<get-allowed-caps> {
-    gst_pad_get_allowed_caps($!p);
-    # ADD OBJECT CREATION CODE
+    my $c = gst_pad_get_allowed_caps($!p);
+
+    $c ??
+      ( $raw ?? $c !! GStreamer::Caps.new($c) )
+      !!
+      Nil;
   }
 
   method get_current_caps (:$raw = False) is also<get-current-caps> {
-    gst_pad_get_current_caps($!p);
-    # ADD OBJECT CREATION CODE
+    my $c = gst_pad_get_current_caps($!p);
+
+    $c ??
+      ( $raw ?? $c !! GStreamer::Caps.new($c) )
+      !!
+      Nil;
   }
 
   method get_direction is also<get-direction> {
@@ -159,13 +183,37 @@ class GStreamer::Pad is GStreamer::Object {
   }
 
   method get_pad_template (:$raw = False) is also<get-pad-template> {
-    gst_pad_get_pad_template($!p);
-    # ADD OBJECT CREATION CODE
+    my $pt = gst_pad_get_pad_template($!p);
+
+    $pt ??
+      ( $raw ?? $pt !! GStreamer::PadTemplate.new($pt) )
+      !!
+      Nil;
   }
 
-  method get_pad_template_caps (:$raw = False) is also<get-pad-template-caps> {
-    gst_pad_get_pad_template_caps($!p);
-    # ADD OBJECT CREATION CODE
+  method get_pad_template_caps (:$raw = False)
+    is also<get-pad-template-caps>
+  {
+    my $c = gst_pad_get_pad_template_caps($!p);
+
+    $c ??
+      ( $raw ?? $c !! GStreamer::Caps.new($c) )
+      !!
+      Nil;
+  }
+
+  method get_parent (:$raw = False)
+    is also<
+      get-parent
+      parent
+    >
+  {
+    my $pe = gst_pad_get_parent_element($!p);
+
+    $pe ??
+      ( $raw ?? $pe !! GStreamer::Element.new($pe) )
+      !!
+      Nil;
   }
 
   method get_peer (:$raw = False) is also<get-peer> {
@@ -178,22 +226,28 @@ class GStreamer::Pad is GStreamer::Object {
   }
 
   method get_range (
-    Int() $offset, # guint64 $offset,
-    Int() $size,   # guint $size,
+    Int() $offset,
+    Int() $size,
     GstBuffer() $buffer
   )
     is also<get-range>
   {
-    gst_pad_get_range($!p, $offset, $size, $buffer);
+    my guint64 $o = $offset;
+    my guint $s = $size;
+
+    gst_pad_get_range($!p, $o, $s, $buffer);
   }
 
   method get_sticky_event (
-    Int() $event_type, # GstEventType $event_type,
-    Int() $idx         # guint $idx
+    Int() $event_type,
+    Int() $idx
   )
     is also<get-sticky-event>
   {
-    gst_pad_get_sticky_event($!p, $event_type, $idx);
+    my GstEventType $et = $event_type;
+    my guint $i = $idx;
+
+    gst_pad_get_sticky_event($!p, $et, $i);
   }
 
   method get_task_state is also<get-task-state> {
@@ -264,11 +318,13 @@ class GStreamer::Pad is GStreamer::Object {
 
   method link_full (
     GstPad() $sinkpad,
-    Int() $flags      # GstPadLinkCheck $flags
+    Int() $flags
   )
     is also<link-full>
   {
-    GstPadLinkReturnEnum( gst_pad_link_full($!p, $sinkpad, $flags) );
+    my GstPadLinkCheck $f = $flags;
+
+    GstPadLinkReturnEnum( gst_pad_link_full($!p, $sinkpad, $f) );
   }
 
   method link_get_name is also<link-get-name> {
@@ -341,13 +397,16 @@ class GStreamer::Pad is GStreamer::Object {
   # }
 
   method pull_range (
-    Int() $offset,       # guint64 $offset,
-    Int() $size,         # guint $size,
+    Int() $offset,
+    Int() $size,
     GstBuffer() $buffer
   )
     is also<pull-range>
   {
-    GstFlowReturn( gst_pad_pull_range($!p, $offset, $size, $buffer) );
+    my guint64 $o = $offset;
+    my guint $s = $size;
+
+    GstFlowReturn( gst_pad_pull_range($!p, $o, $s, $buffer) );
   }
 
   method push (GstBuffer() $buffer) {
@@ -373,11 +432,13 @@ class GStreamer::Pad is GStreamer::Object {
   }
 
   method remove_probe (
-    Int() $id # uint64
+    Int() $id
   )
     is also<remove-probe>
   {
-    gst_pad_remove_probe($!p, $id);
+    my guint64 $i = $id;
+
+    gst_pad_remove_probe($!p, $i);
   }
 
   method send_event (GstEvent() $event) is also<send-event> {
@@ -410,10 +471,12 @@ class GStreamer::Pad is GStreamer::Object {
   }
 
   method set_active (
-    Int() $active # gboolean $active
+    Int() $active
   )
     is also<set-active>
   {
+    my gboolean $a = $active;
+
     so gst_pad_set_active($!p, $active);
   }
 
@@ -546,6 +609,7 @@ class GStreamer::Pad is GStreamer::Object {
   # From GStreamer::Raw::gst_util_seqnum_next
 
   proto method query_convert(|)
+    is also<query-convert>
   { * }
 
   multi method query_convert (
@@ -572,6 +636,7 @@ class GStreamer::Pad is GStreamer::Object {
   }
 
   proto method query_duration (|)
+    is also<query-duration>
   { * }
 
   multi method query_duration (Int() $format, :$all = False) {
@@ -591,6 +656,7 @@ class GStreamer::Pad is GStreamer::Object {
   }
 
   proto method query_position (|)
+    is also<query-position>
   { * }
 
   multi method query_position (Int() $format, :$all = False) {

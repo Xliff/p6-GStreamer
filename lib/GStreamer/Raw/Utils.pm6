@@ -106,18 +106,6 @@ sub gst_object_default_error (
   is export
 { * }
 
-sub gst_pad_create_stream_id (GstPad $pad, GstElement $parent, Str $stream_id)
-  returns Str
-  is native(gstreamer)
-  is export
-{ * }
-
-sub gst_pad_get_parent_element (GstPad $pad)
-  returns GstElement
-  is native(gstreamer)
-  is export
-{ * }
-
 sub gst_pad_get_stream (GstPad $pad)
   returns GstStream
   is native(gstreamer)

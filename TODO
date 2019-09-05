@@ -1,0 +1,9 @@
+- Currently p6-GStreamer is VERY vulnerable to ABI changes as mentioned in
+  #<007e6cb6e9be21c74a9d99df4895166825391f2a>. Unfortunately, there is no
+  real mechanism to handle such changes, especially if the plan is to support
+  a wide range of versions.
+
+  Such a mechanism should be designed. One thought is to abandon the use
+  of non-public CStructs and go back to pointers. This would require a
+  C-based helper library, to provide private structure sizes in the case
+  where those private structures are to be used in a ::TypedBuffer.

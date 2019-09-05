@@ -299,7 +299,7 @@ class GStreamer::Caps is GStreamer::MiniObject {
 
   method set_features (
     Int() $index,
-    GstCapFeatures() $features
+    GstCapsFeatures() $features
   )
     is also<set-features>
   {
@@ -308,7 +308,7 @@ class GStreamer::Caps is GStreamer::MiniObject {
     gst_caps_set_features($!c, $i, $features);
   }
 
-  method set_features_simple (GstCapFeatures() $features)
+  method set_features_simple (GstCapsFeatures() $features)
     is also<set-features-simple>
   {
     gst_caps_set_features_simple($!c, $features);

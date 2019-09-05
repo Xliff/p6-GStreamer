@@ -53,6 +53,16 @@ sub gst_pad_check_reconfigure (GstPad $pad)
   is export
 { * }
 
+sub gst_pad_create_stream_id (
+  GstPad     $pad,
+  GstElement $parent,
+  Str        $stream_id
+)
+  returns Str
+  is native(gstreamer)
+  is export
+{ * }
+
 sub gst_pad_event_default (GstPad $pad, GstObject $parent, GstEvent $event)
   returns uint32
   is native(gstreamer)
@@ -101,6 +111,12 @@ sub gst_pad_get_pad_template (GstPad $pad)
 
 sub gst_pad_get_pad_template_caps (GstPad $pad)
   returns GstCaps
+  is native(gstreamer)
+  is export
+{ * }
+
+sub gst_pad_get_parent_element (GstPad $pad)
+  returns GstElement
   is native(gstreamer)
   is export
 { * }
