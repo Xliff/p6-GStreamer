@@ -60,7 +60,6 @@ constant GstMetaInitFunction               is export := Pointer;
 constant GstMetaFreeFunction               is export := Pointer;
 constant GstMetaTransformFunction          is export := Pointer;
 constant GstBufferForeachMetaFunc          is export := Pointer;
-constant GstCapsFeatures                   is export := Pointer;
 constant GstCapsFilterMapFunc              is export := Pointer;
 constant GstCapsForeachFunc                is export := Pointer;
 constant GstCapsMapFunc                    is export := Pointer;
@@ -73,7 +72,6 @@ class GstBufferList        is repr('CPointer') does GTK::Roles::Pointers is expo
 class GstBufferPool        is repr('CPointer') does GTK::Roles::Pointers is export { }
 class GstBus               is repr('CPointer') does GTK::Roles::Pointers is export { }
 class GstCaps              is repr('CPointer') does GTK::Roles::Pointers is export { }
-class GstCapFeatures       is repr('CPointer') does GTK::Roles::Pointers is export { }
 class GstChildProxy        is repr('CPointer') does GTK::Roles::Pointers is export { }
 class GstClock             is repr('CPointer') does GTK::Roles::Pointers is export { }
 class GstContext           is repr('CPointer') does GTK::Roles::Pointers is export { }
