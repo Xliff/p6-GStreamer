@@ -156,7 +156,13 @@ class GStreamer::Pad is GStreamer::Object {
     so gst_pad_forward($!p, $forward, $user_data);
   }
 
-  method get_allowed_caps (:$raw = False) is also<get-allowed-caps> {
+  method get_allowed_caps (:$raw = False)
+    is also<
+      get-allowed-caps
+      allowed_caps
+      allowed-caps
+    >
+  {
     my $c = gst_pad_get_allowed_caps($!p);
 
     $c ??
@@ -165,7 +171,13 @@ class GStreamer::Pad is GStreamer::Object {
       Nil;
   }
 
-  method get_current_caps (:$raw = False) is also<get-current-caps> {
+  method get_current_caps (:$raw = False)
+    is also<
+      get-current-caps
+      current_caps
+      current-caps
+    >
+  {
     my $c = gst_pad_get_current_caps($!p);
 
     $c ??
@@ -174,15 +186,32 @@ class GStreamer::Pad is GStreamer::Object {
       Nil;
   }
 
-  method get_direction is also<get-direction> {
+  method get_direction
+    is also<
+      get-direction
+      direction
+    >
+  {
     GstPadDirectionEnum( gst_pad_get_direction($!p) );
   }
 
-  method get_last_flow_return is also<get-last-flow-return> {
+  method get_last_flow_return
+    is also<
+      get-last-flow-return
+      last_flow_return
+      last-flow-return
+    >
+  {
     GstFlowReturnEnum( gst_pad_get_last_flow_return($!p) );
   }
 
-  method get_pad_template (:$raw = False) is also<get-pad-template> {
+  method get_pad_template (:$raw = False)
+    is also<
+      get-pad-template
+      pad_template
+      pad-template
+    >
+  {
     my $pt = gst_pad_get_pad_template($!p);
 
     $pt ??
@@ -192,7 +221,11 @@ class GStreamer::Pad is GStreamer::Object {
   }
 
   method get_pad_template_caps (:$raw = False)
-    is also<get-pad-template-caps>
+    is also<
+      get-pad-template-caps
+      pad_template_caps
+      pad-template-caps
+    >
   {
     my $c = gst_pad_get_pad_template_caps($!p);
 
@@ -216,7 +249,12 @@ class GStreamer::Pad is GStreamer::Object {
       Nil;
   }
 
-  method get_peer (:$raw = False) is also<get-peer> {
+  method get_peer (:$raw = False)
+    is also<
+      get-peer
+      peer
+    >
+  {
     my $p = gst_pad_get_peer($!p);
 
     $p ??
@@ -250,7 +288,13 @@ class GStreamer::Pad is GStreamer::Object {
     gst_pad_get_sticky_event($!p, $et, $i);
   }
 
-  method get_task_state is also<get-task-state> {
+  method get_task_state
+    is also<
+      get-task-state
+      task_state
+      task-state
+    >
+  {
     GstTaskStateEnum( gst_pad_get_task_state($!p) );
   }
 
@@ -429,6 +473,22 @@ class GStreamer::Pad is GStreamer::Object {
     is also<query-default>
   {
     so gst_pad_query_default($!p, $parent, $query);
+  }
+
+  proto method query_caps (|)
+    is also<query-caps>
+  { * }
+
+  multi method query_caps {
+    samewith(GstCaps);
+  }
+  multi method query_caps (GstCaps() $filter, :$raw = False) {
+    my $c = gst_pad_query_caps($!p, $filter);
+
+    $c ??
+      ( $raw ?? $c !! GStreamer::Caps.new($c) )
+      !!
+      Nil;
   }
 
   method remove_probe (
