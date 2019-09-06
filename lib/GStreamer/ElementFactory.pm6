@@ -8,6 +8,9 @@ use GStreamer::Raw::ElementFactory;
 
 use GStreamer::Element;
 use GStreamer::PluginFeature;
+use GStreamer::PadTemplate;
+
+use GTK::Compat::Roles::ListData;
 
 our subset ElementFactoryAncestry is export of Mu
   where GstElementFactory | GstPluginFeature;
@@ -43,12 +46,22 @@ class GStreamer::ElementFactory is GStreamer::PluginFeature {
     self.bless( :$factory );
   }
 
-  method create (Str() $name) {
-    gst_element_factory_create($!ef, $name);
+  method create (Str() $name, :$raw = False) {
+    my $e = gst_element_factory_create($!ef, $name);
+
+    $e ??
+      ( $raw ?? $e !! GStreamer::Element.new($e) )
+      !!
+      Nil
   }
 
-  method find (Str() $name) {
-    GStreamer::ElementFactory.new( gst_element_factory_find($name) );
+  method find (Str() $name, :$raw = False) {
+    my $ef = gst_element_factory_find($name);
+
+    die "Could not find an ElementFactory with the name '$name'!"
+      unless $ef.defined;
+
+    $raw ?? $ef !! GStreamer::ElementFactory.new($ef);
   }
 
   method get_element_type
@@ -59,6 +72,51 @@ class GStreamer::ElementFactory is GStreamer::PluginFeature {
     >
   {
     gst_element_factory_get_element_type($!ef);
+  }
+
+  method get_author
+    is also<
+      get-author
+      author
+    >
+  {
+    self.get_metadata(GST_ELEMENT_METADATA_AUTHOR);
+  }
+
+  method get_documentation
+    is also<
+      get-documentation
+      documentation
+    >
+  {
+    self.get_metadata(GST_ELEMENT_METADATA_DOC_URI);
+  }
+
+  method get_icon_name
+    is also<
+      get-icon-name
+      icon-name
+    >
+  {
+    self.get_metadata(GST_ELEMENT_METADATA_ICON_NAME);
+  }
+
+  method get_description
+    is also<
+      get-description
+      description
+    >
+  {
+    self.get_metadata(GST_ELEMENT_METADATA_DESCRIPTION);
+  }
+
+  method get_longname
+    is also<
+      get-longname
+      longname
+    >
+  {
+    self.get_metadata(GST_ELEMENT_METADATA_LONGNAME);
   }
 
   method get_metadata (Str() $key) is also<get-metadata> {
@@ -96,12 +154,18 @@ class GStreamer::ElementFactory is GStreamer::PluginFeature {
       static-pad-templates
     >
   {
-    # LTA: Parameterized role throws weird error if parameter is not defined!
-    my $pt = gst_element_factory_get_static_pad_templates($!ef)
-      but GTK::Compat::Roles:::ListData[GstPadTemplate];
+    my $pt = GTK::Compat::GList.new(
+      gst_element_factory_get_static_pad_templates($!ef)
+    );
+
+    $pt = $pt but GTK::Compat::Roles::ListData[GstStaticPadTemplate] if $pt;
 
     # Check for object.
-    $pt ?? $pt.Array !! Nil;
+    $pt ??
+      ( $raw ?? $pt.Array !!
+                $pt.Array.map({ GStreamer::StaticPadTemplate.new($_) }) )
+      !!
+      Nil;
   }
 
   method get_type is also<get-type> {
@@ -132,13 +196,15 @@ class GStreamer::ElementFactory is GStreamer::PluginFeature {
   )
     is also<list-filter>
   {
-    my $ef =
+    my $ef = GTK::Compat::GList.new(
       gst_element_factory_list_filter($list, $caps, $direction, $subsetonly)
-      but
-      GTK::Compat::Roles::ListData[GstElementFactory];
+    );
+
+    $ef = $ef but GTK::Compat::Roles::ListData[GstElementFactory] if $ef;
 
     $ef ??
-      ( $raw ?? $ef.Array !! $ef.Array({ GStreamer::ElementFactory.new($_ ) }) )
+      ( $raw ?? $ef.Array !!
+                $ef.Array({ GStreamer::ElementFactory.new($_ ) }) )
       !!
       Nil
   }
@@ -150,8 +216,11 @@ class GStreamer::ElementFactory is GStreamer::PluginFeature {
   )
     is also<list-get-elements>
   {
-    my $ef = gst_element_factory_list_get_elements($type, $minrank)
-      but GTK::Compat::Roles::ListData[GstElementFactory];
+    my $ef = GTK::Compat::GList.new(
+      gst_element_factory_list_get_elements($type, $minrank)
+    );
+
+    $ef = $ef but GTK::Compat::Roles::ListData[GstElementFactory] if $ef;
 
     $ef ??
       ( $raw ??

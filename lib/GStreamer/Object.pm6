@@ -20,6 +20,8 @@ class GStreamer::Object {
     self.setGstObject($object) if $object;
   }
 
+  multi method Numeric { $!o.p }
+
   method setGstObject(GstObject $object) {
     self!setObject( cast(GObject, $!o = $object) )
   }

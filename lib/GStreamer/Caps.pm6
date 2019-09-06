@@ -185,18 +185,6 @@ class GStreamer::Caps is GStreamer::MiniObject {
     unstable_get_type( self.^name, &gst_caps_get_type, $n, $t );
   }
 
-  # method gst_static_caps_cleanup {
-  #   gst_static_caps_cleanup($!c);
-  # }
-  #
-  # method gst_static_caps_get {
-  #   gst_static_caps_get($!c);
-  # }
-  #
-  # method gst_static_caps_get_type {
-  #   gst_static_caps_get_type();
-  # }
-
   method intersect (GstCaps() $caps2) {
     gst_caps_intersect($!c, $caps2);
   }
@@ -345,4 +333,39 @@ class GStreamer::Caps is GStreamer::MiniObject {
     ::?CLASS.new( gst_caps_truncate($!c) );
   }
 
+}
+
+class GStreamer::StaticCaps {
+  has GstStaticCaps $!sc handles<string>;
+
+  submethod BUILD (:$static-caps) {
+    $!sc = $static-caps;
+  }
+
+  method GStreamer::Raw::Types::GstStaticCaps
+    is also<GstStaticCaps>
+  { $!sc }
+
+  method new (GstStaticCaps $static-caps) {
+    self.bless( :$static-caps );
+  }
+
+  method cleanup {
+    gst_static_caps_cleanup($!sc);
+  }
+
+  method get (:$raw = False) {
+    my $c = gst_static_caps_get($!sc);
+
+    $c ??
+      ( $raw ?? $c !! GStreamer::Caps.new($c) )
+      !!
+      Nil
+  }
+
+  method get_type {
+    state ($n, $t);
+
+    unstable_get_type( self.^name, &gst_static_caps_get_type, $n, $t );
+  }
 }

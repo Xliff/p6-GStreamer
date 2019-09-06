@@ -92,13 +92,19 @@ class GStreamer::TocEntry is GStreamer::MiniObject {
   }
 
   method get_sub_entries (:$raw = False) {
-    my $se = gst_toc_entry_get_sub_entries($!te)
-      but GTK::Compat::Roles::ListData[GstTocEntry];
+    my $sel = gst_toc_entry_get_sub_entries($!te)
 
-    $se ??
-      ( $raw ?? $se.Array !! $se.Array.map({ GStreamer::TocEntry.new($_) }) )
-      !!
-      Nil;
+    do if $sel {
+      my $se = GTK::Compat::GList.new($sel)
+        but GTK::Compat::Roles::ListData[GstTocEntry];
+
+      $se ??
+        ( $raw ?? $se.Array !! $se.Array.map({ GStreamer::TocEntry.new($_) }) )
+        !!
+        Nil;
+    } else {
+      Nil
+    }
   }
 
   method get_tags (:$raw = False) {
@@ -236,13 +242,18 @@ class GStreamer::Toc is GStreamer::MiniObject {
   }
 
   method get_entries (:$raw = False) {
-    my $el = gst_toc_get_entries($!t)
-      but GTK::Compat::Roles::ListData[GstTocEntry];
+    my $ell = gst_toc_get_entries($!t);
 
-    $el ??
-      ( $raw ?? $el.Array !! $el.Array.map({ GStreamer::TocEntry.new($_) }) )
-      !!
-      Nil
+    do if $ell {
+      my $el = $but GTK::Compat::Roles::ListData[GstTocEntry];
+
+      $el ??
+        ( $raw ?? $el.Array !! $el.Array.map({ GStreamer::TocEntry.new($_) }) )
+        !!
+        Nil
+    } else {
+      Nil;
+    }
   }
 
   method get_scope {

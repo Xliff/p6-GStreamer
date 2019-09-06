@@ -6,12 +6,16 @@ use GTK::Compat::Types;
 
 unit package GStreamer::Raw::Types;
 
+# Number of forced compiles made.
+constant forced = 1;
+
 sub nocr ($s) is export {
   $s.subst("\n", ' ', :g);
 }
 
-constant GstClockTime     is export := gint64;
-constant GstClockTimeDiff is export := int64;
+constant GstClockTime              is export := int64;
+constant GstClockTimeDiff          is export := int64;
+constant GstElementFactoryListType is export := uint64;
 
 # cw: I now realize, that at some point, ALL of these will have to be functions
 #     to account for the various distributions and OSes out there.
@@ -94,7 +98,7 @@ class GstPluginFeature     is repr('CPointer') does GTK::Roles::Pointers is expo
 class GstProbeInfo         is repr('CPointer') does GTK::Roles::Pointers is export { }
 #class GstQuery             is repr('CPointer') does GTK::Roles::Pointers is export { }
 class GstSample            is repr('CPointer') does GTK::Roles::Pointers is export { }
-class GstStaticCaps        is repr('CPointer') does GTK::Roles::Pointers is export { }
+#class GstStaticCaps        is repr('CPointer') does GTK::Roles::Pointers is export { }
 #class GstStaticPadTemplate is repr('CPointer') does GTK::Roles::Pointers is export { }
 class GstStream            is repr('CPointer') does GTK::Roles::Pointers is export { }
 class GstStreamCollection  is repr('CPointer') does GTK::Roles::Pointers is export { }
@@ -113,6 +117,12 @@ constant GST_OBJECT_FLAG_LAST      is export = 1 +< 4;
 constant GST_CLOCK_TIME_NONE       is export = 18446744073709551615;
 constant GST_TIME_FORMAT           is export = '%u:%02u:%02u.%09u';
 constant GST_SECOND                is export = 1000000000;
+
+constant GST_ELEMENT_METADATA_LONGNAME    is export = 'long-name';
+constant GST_ELEMENT_METADATA_DESCRIPTION is export = 'description';
+constant GST_ELEMENT_METADATA_AUTHOR      is export = 'author';
+constant GST_ELEMENT_METADATA_DOC_URI     is export = 'doc-uri';
+constant GST_ELEMENT_METADATA_ICON_NAME   is export = 'icon-name';
 
 sub postfix:<sec> ($s) is export {
   $s * GST_SECOND;
@@ -1074,7 +1084,7 @@ our enum GstVideoMultiviewModeEnum is export (
 
 constant GST_PADDING = 4;
 
-class GstObject            is repr<CStruct> does GTK::Roles::Pointers is export {
+class GstObject            is repr<CStruct>      does GTK::Roles::Pointers is export {
   HAS GObjectStruct     $.object;  # GInitiallyUnowned
   HAS GMutex            $.lock;
   has Str               $.name;
@@ -1087,7 +1097,7 @@ class GstObject            is repr<CStruct> does GTK::Roles::Pointers is export 
   has gpointer          $!gst_reserved;
 }
 
-class GstMiniObject        is repr<CStruct> does GTK::Roles::Pointers is export {
+class GstMiniObject        is repr<CStruct>      does GTK::Roles::Pointers is export {
   has GType    $.type;
 
   has gint     $.refcount;
@@ -1102,7 +1112,7 @@ class GstMiniObject        is repr<CStruct> does GTK::Roles::Pointers is export 
   has gpointer $!priv_pointer;
 }
 
-class GstAllocator         is repr<CStruct> does GTK::Roles::Pointers is export {
+class GstAllocator         is repr<CStruct>      does GTK::Roles::Pointers is export {
   HAS GstObject $!object;
 
   has Str       $.mem_type;
@@ -1122,7 +1132,7 @@ class GstAllocator         is repr<CStruct> does GTK::Roles::Pointers is export 
   has gpointer  $!priv;
 };
 
-class GstBuffer            is repr<CStruct> does GTK::Roles::Pointers is export {
+class GstBuffer            is repr<CStruct>      does GTK::Roles::Pointers is export {
   HAS GstMiniObject  $.mini_object is rw;
   has GstBufferPool  $.pool;
   has GstClockTime   $.pts         is rw;
@@ -1133,13 +1143,13 @@ class GstBuffer            is repr<CStruct> does GTK::Roles::Pointers is export 
 };
 
 # Cheat. This really should be considered opaque.
-class GstDateTime          is repr<CStruct> does GTK::Roles::Pointers is export {
+class GstDateTime          is repr<CStruct>      does GTK::Roles::Pointers is export {
   HAS GstMiniObject     $.mini_object;
   has GDateTime         $!datetime;
   has GstDateTimeFields $!fields;
 }
 
-class GstElement           is repr<CStruct> does GTK::Roles::Pointers is export {
+class GstElement           is repr<CStruct>      does GTK::Roles::Pointers is export {
   HAS GstObject            $.object;
   HAS GRecMutex            $.state_lock;
   HAS GCond                $.state_cond;
@@ -1167,7 +1177,7 @@ class GstElement           is repr<CStruct> does GTK::Roles::Pointers is export 
   has gpointer             $!gst_reserved2;
 }
 
-class GstMessage           is repr<CStruct> does GTK::Roles::Pointers is export {
+class GstMessage           is repr<CStruct>      does GTK::Roles::Pointers is export {
   HAS GstMiniObject   $!mini_object;
   has GstMessageType  $!type;
   has guint64         $.timestamp;
@@ -1185,14 +1195,14 @@ class GstMessage           is repr<CStruct> does GTK::Roles::Pointers is export 
 }
 
 # Modification is currently NYI.
-class GstFormatDefinition  is repr<CStruct>     does GTK::Roles::Pointers is export {
+class GstFormatDefinition  is repr<CStruct>      does GTK::Roles::Pointers is export {
   has guint  $.value; # GstFormat
   has Str    $.nick;
   has Str    $.description;
   has GQuark $.quark;
 }
 
-class GstMemory            is repr<CStruct>     does GTK::Roles::Pointers is export {
+class GstMemory            is repr<CStruct>      does GTK::Roles::Pointers is export {
   HAS GstMiniObject  $.mini_object;
   has GstAllocator   $.allocator;
   has GstMemory      $.parent;
@@ -1203,7 +1213,7 @@ class GstMemory            is repr<CStruct>     does GTK::Roles::Pointers is exp
 }
 
 
-class GstMetaInfo          is repr<CStruct>     does GTK::Roles::Pointers is export {
+class GstMetaInfo          is repr<CStruct>      does GTK::Roles::Pointers is export {
   has GType    $.api;
   has GType    $.type;
   has gsize    $.size;
@@ -1213,7 +1223,7 @@ class GstMetaInfo          is repr<CStruct>     does GTK::Roles::Pointers is exp
   has gpointer $!transform_func;
 }
 
-class GstPluginDesc        is repr<CStruct>     does GTK::Roles::Pointers is export {
+class GstPluginDesc        is repr<CStruct>      does GTK::Roles::Pointers is export {
   has gint      $.major_version;
   has gint      $.minor_version;
   has Str       $.name;
@@ -1233,7 +1243,7 @@ class GstPluginDesc        is repr<CStruct>     does GTK::Roles::Pointers is exp
   has gpointer  $!gst_reserved3;
 }
 
-class GstQuery             is repr<CStruct>     does GTK::Roles::Pointers is export {
+class GstQuery             is repr<CStruct>      does GTK::Roles::Pointers is export {
   HAS GstMiniObject $!mini_object;
   has GstQueryType  $!type;
 
@@ -1244,13 +1254,13 @@ class GstQuery             is repr<CStruct>     does GTK::Roles::Pointers is exp
   }
 }
 
-class GstStructure         is repr<CStruct>     does GTK::Roles::Pointers is export {
+class GstStructure         is repr<CStruct>      does GTK::Roles::Pointers is export {
   has GType  $.type;
 
   has GQuark $!name;
 }
 
-class GstSegment           is repr<CStruct>     does GTK::Roles::Pointers is export {
+class GstSegment           is repr<CStruct>      does GTK::Roles::Pointers is export {
   has GstSegmentFlags $.flags        is rw;
   has gdouble         $.rate         is rw;
   has gdouble         $.applied_rate is rw;
@@ -1264,13 +1274,13 @@ class GstSegment           is repr<CStruct>     does GTK::Roles::Pointers is exp
   has guint64         $.duration     is rw;
 
   # private
-  has gpointer  $!gst_reserved0;
-  has gpointer  $!gst_reserved1;
-  has gpointer  $!gst_reserved2;
-  has gpointer  $!gst_reserved3;
+  has gpointer        $!gst_reserved0;
+  has gpointer        $!gst_reserved1;
+  has gpointer        $!gst_reserved2;
+  has gpointer        $!gst_reserved3;
 };
 
-class GstTagList           is repr<CStruct>     does GTK::Roles::Pointers is export {
+class GstTagList           is repr<CStruct>      does GTK::Roles::Pointers is export {
   HAS GstMiniObject   $.mini_object;
 }
 
@@ -1281,7 +1291,7 @@ class GstTagList           is repr<CStruct>     does GTK::Roles::Pointers is exp
 #         to insure we are working a supported library!!
 
 # Opaque. Grabbed from the implementation for struct-size purposes.
-class GstToc               is repr<CStruct>     does GTK::Roles::Pointers is export {
+class GstToc               is repr<CStruct>      does GTK::Roles::Pointers is export {
   HAS GstMiniObject   $.mini_object;
 
   has GstTocScope     $!scope;
@@ -1290,7 +1300,7 @@ class GstToc               is repr<CStruct>     does GTK::Roles::Pointers is exp
 }
 
 # Opaque. Grabbed from the implementation for struct-size purposes.
-class GstTocEntry          is repr<CStruct>     does GTK::Roles::Pointers is export {
+class GstTocEntry          is repr<CStruct>      does GTK::Roles::Pointers is export {
   HAS GstMiniObject   $.mini_object;
 
   has GstToc          $!toc;
@@ -1305,8 +1315,8 @@ class GstTocEntry          is repr<CStruct>     does GTK::Roles::Pointers is exp
   has gint            $!repeat_count;
 }
 
-# BOXED!
-class GstCapsFeatures      is repr<CStruct>     does GTK::Roles::Pointers is export {
+# BOXED! - Also Opaque.
+class GstCapsFeatures      is repr<CStruct>      does GTK::Roles::Pointers is export {
   has GType        $!type;
   has CArray[gint] $!parent_refcount;   # gint *parent_refcount
   has GArray       $!array;
@@ -1318,14 +1328,14 @@ class GstPadStruct_abi      is repr<CStruct> {
 }
 
 class GstPadStruct_resv     is repr<CStruct> {
-  has gpointer $.r0;
-  has gpointer $.r1;
-  has gpointer $.r2;
-  has gpointer $.r3;
+  has gpointer $!r0;
+  has gpointer $!r1;
+  has gpointer $!r2;
+  has gpointer $!r3;
 }
 
 class GstPadStructABI       is repr<CUnion> {
-  HAS GstPadStruct_resv $.reserved;
+  HAS GstPadStruct_resv $!reserved;
   HAS GstPadStruct_abi  $.abi;
 }
 
@@ -1338,9 +1348,19 @@ class GstPadTemplate        is repr<CStruct>     does GTK::Roles::Pointers is ex
   HAS GstPadStructABI  $!ABI;
 };
 
-class GstStaticPadTemplate is repr<CStruct>     does GTK::Roles::Pointers is export {
-  has Str             $.name_template;
-  has GstPadDirection $.direction;
-  has GstPadPresence  $.presence;
-  has GstStaticCaps   $.static_caps;
+class GstStaticCaps        is repr<CStruct>      does GTK::Roles::Pointers is export {
+  has GstCaps          $.caps;
+  has Str              $.string;
+  has gpointer         $!r0;
+  has gpointer         $!r1;
+  has gpointer         $!r3;
+  has gpointer         $!r2;
+}
+
+# Test assumption: If the last element is HAS, it will be interpreted as if it were a NULL pointer.
+class GstStaticPadTemplate is repr<CStruct>      does GTK::Roles::Pointers is export {
+  has Str              $.name_template;
+  has GstPadDirection  $.direction;
+  has GstPadPresence   $.presence;
+  HAS GstStaticCaps    $.static_caps;
 };

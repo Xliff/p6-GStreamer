@@ -1,5 +1,7 @@
 use v6.c;
 
+use Method::Also;
+
 use GTK::Compat::Types;
 use GStreamer::Raw::Types;
 use GStreamer::Raw::PadTemplate;
@@ -57,7 +59,9 @@ class GStreamer::PadTemplate is GStreamer::Object {
   method new_from_static_pad_template_with_gtype (
     GstStaticPadTemplate() $pad_template,
     Int() $pad_type
-  ) {
+  )
+    is also<new-from-static-pad-template-with-gtype>
+  {
     my GType $pt = $pad_type;
 
     self.bless(
@@ -74,7 +78,9 @@ class GStreamer::PadTemplate is GStreamer::Object {
     Int() $presence,
     GstCaps() $caps,
     Int() $pad_type
-  ) {
+  )
+    is also<new-with-gtype>
+  {
     my GstPadDirection $d = $direction;
     my GstPadPresence $p = $presence;
     my GType $pt = $pad_type;
@@ -84,7 +90,7 @@ class GStreamer::PadTemplate is GStreamer::Object {
     );
   }
 
-  method get_caps (:$raw = False) {
+  method get_caps (:$raw = False) is also<get-caps> {
     my $c = gst_pad_template_get_caps($!pt);
 
     $c ??
@@ -93,20 +99,20 @@ class GStreamer::PadTemplate is GStreamer::Object {
       Nil;
   }
 
-  method get_type {
+  method get_type is also<get-type> {
     state ($n, $t);
 
     unstable_get_type( self.^name, &gst_pad_template_get_type, $n, $t );
   }
 
-  method emit_pad_created (GstPad() $pad) {
+  method emit_pad_created (GstPad() $pad) is also<emit-pad-created> {
     gst_pad_template_pad_created($!pt, $pad);
   }
 
 }
 
 class GStreamer::StaticPadTemplate {
-  has GstStaticPadTemplate $!spt;
+  has GstStaticPadTemplate $!spt handles <name_template>;
 
   submethod BUILD (:$static-template) {
     $!spt = $static-template;
@@ -114,6 +120,10 @@ class GStreamer::StaticPadTemplate {
 
   method new (GstStaticPadTemplate $static-template) {
     self.bless( :$static-template );
+  }
+
+  method direction {
+    GstPadDirectionEnum( $!spt.direction );
   }
 
   method get (:$raw = False) {
@@ -125,7 +135,7 @@ class GStreamer::StaticPadTemplate {
       Nil;
   }
 
-  method get_caps (:$raw = False) {
+  method get_caps (:$raw = False) is also<get-caps> {
     my $c = gst_static_pad_template_get_caps($!spt);
 
     $c ??
@@ -134,10 +144,23 @@ class GStreamer::StaticPadTemplate {
       Nil;
   }
 
-  method get_type {
+  method get_type is also<get-type> {
     state ($n, $t);
 
     unstable_get_type( self.^name, &gst_static_pad_template_get_type, $n, $t );
+  }
+
+  method name-template {
+    self.name_template;
+  }
+
+  method presence {
+    GstPadPresenceEnum( $!spt.presence );
+  }
+
+  method static_caps (:$raw = False) is also<static-caps> {
+    $raw ?? $!spt.static_caps !!
+            GStreamer::StaticCaps.new($!spt.static_caps);
   }
 
 }

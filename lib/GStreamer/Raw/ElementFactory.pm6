@@ -56,7 +56,7 @@ sub gst_element_factory_get_type ()
 { * }
 
 sub gst_element_factory_get_uri_type (GstElementFactory $factory)
-  returns guint      # GstURIType
+  returns GstURIType
   is native(gstreamer)
   is export
 { * }
@@ -73,7 +73,7 @@ sub gst_element_factory_has_interface (
 sub gst_element_factory_list_filter (
   GList $list,
   GstCaps $caps,
-  guint $direction,  # GstPadDirection $direction,
+  GstPadDirection $direction,
   gboolean $subsetonly
 )
   returns GList
@@ -82,8 +82,8 @@ sub gst_element_factory_list_filter (
 { * }
 
 sub gst_element_factory_list_get_elements (
-  uint64 $type,      # GstElementFactoryListType $type
-  guint $minrank     # GstRank $minrank
+  GstElementFactoryListType $type,
+  GstRank $minrank
 )
   returns GList
   is native(gstreamer)
@@ -92,7 +92,7 @@ sub gst_element_factory_list_get_elements (
 
 sub gst_element_factory_list_is_type (
   GstElementFactory $factory,
-  uint64 $type     # GstElementFactoryListType $type
+  GstElementFactoryListType $type
 )
   returns uint32
   is native(gstreamer)

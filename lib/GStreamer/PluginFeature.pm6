@@ -18,7 +18,7 @@ class GStreamer::PluginFeature is GStreamer::Object {
   has GstPluginFeature $!pf;
 
   submethod BUILD (:$plugin-feature) {
-    self.setPluginFeature($plugin-feature);
+    self.setPluginFeature($plugin-feature) if $plugin-feature;
   }
 
   method setPluginFeature (PluginFeatureAncestry $_) {
