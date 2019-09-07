@@ -49,8 +49,8 @@ sub MAIN {
   ( %data<loop> = GTK::Compat::MainLoop.new ).run;
 
   %data<playbin>.set_state(GST_STATE_NULL);
-  for %data<loop stdin bus playbin> {
-    unless .defined {
+  for <loop stdin bus playbin> {
+    unless %data{$_}.defined {
       say "$_ is not defined!";
       next;
     }
@@ -151,10 +151,10 @@ sub handle-message($m is copy) {
 }
 
 sub handle-keyboard {
-  my ($in, $, $, $rc) = %data<stdin>.read_line;
+  my ($in, $a, $b, $rc) = %data<stdin>.read_line;
 
   if $rc == G_IO_STATUS_NORMAL {
-    if $in !~~ IntStr {
+    if $in !~~ /^ (\d) $$ / {
       say 'Invalid entry.';
     } elsif $in !~~ 0 ..^ %data<n-audio> {
       say 'Index out of bounds';
