@@ -7,3 +7,6 @@
   of non-public CStructs and go back to pointers. This would require a
   C-based helper library, to provide private structure sizes in the case
   where those private structures are to be used in a ::TypedBuffer.
+
+- When late binding, attempt to detect the Failure object and emit a helpful
+  message. see GStreamer::Bus for an example.

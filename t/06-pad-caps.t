@@ -53,8 +53,8 @@ sub print-pad-templates-information ($f) {
     }
     say "{ $cs } { $pt.name-template }";
 
-    # Unless this is done, the StaticPadTemplate will not contain
-    # static_caps data!
+    # Unless $pt.get is called, $pt will not contain .static_caps data!
+    # This is not necessary in the C version.
     my $ppt = $pt.get;
 
     $cs = do given $pt.presence {
