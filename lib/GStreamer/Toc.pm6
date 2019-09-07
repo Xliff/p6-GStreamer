@@ -92,7 +92,7 @@ class GStreamer::TocEntry is GStreamer::MiniObject {
   }
 
   method get_sub_entries (:$raw = False) {
-    my $sel = gst_toc_entry_get_sub_entries($!te)
+    my $sel = gst_toc_entry_get_sub_entries($!te);
 
     do if $sel {
       my $se = GTK::Compat::GList.new($sel)
@@ -104,7 +104,7 @@ class GStreamer::TocEntry is GStreamer::MiniObject {
         Nil;
     } else {
       Nil
-    }
+    };
   }
 
   method get_tags (:$raw = False) {
@@ -245,7 +245,8 @@ class GStreamer::Toc is GStreamer::MiniObject {
     my $ell = gst_toc_get_entries($!t);
 
     do if $ell {
-      my $el = $but GTK::Compat::Roles::ListData[GstTocEntry];
+      my $el = GTK::Compat::GList($ell)
+        but GTK::Compat::Roles::ListData[GstTocEntry];
 
       $el ??
         ( $raw ?? $el.Array !! $el.Array.map({ GStreamer::TocEntry.new($_) }) )

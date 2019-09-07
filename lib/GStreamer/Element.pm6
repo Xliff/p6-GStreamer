@@ -275,8 +275,13 @@ class GStreamer::Element is GStreamer::Object {
     gst_element_get_state($!e, $state, $pending, $timeout);
   }
 
-  method get_static_pad (Str() $name) is also<get-static-pad> {
-    gst_element_get_static_pad($!e, $name);
+  method get_static_pad (Str() $name, :$raw = False) is also<get-static-pad> {
+    my $sp = gst_element_get_static_pad($!e, $name);
+
+    $sp ??
+      ( $raw ?? $sp !! GStreamer::Pad.new($sp) )
+      !!
+      Nil;
   }
 
   method get_type is also<get-type> {

@@ -9,12 +9,21 @@ use GStreamer::Caps;
 use GStreamer::ElementFactory;
 use GStreamer::Pad;
 use GStreamer::Main;
+use GStreamer::Message;
+use GStreamer::Pipeline;
+use GStreamer::Value;
 
 sub print-caps ($caps, $pfx) {
   return unless $caps.defined;
 
-  say "{ $pfx }ANY"    && return if $caps.is-any;
-  say "{ $pfx }EMPTY " && return if $caps.is-empty;
+  if $caps.is-any {
+    say "{ $pfx }ANY";
+    return;
+  }
+  if $caps.is-empty {
+    say "{ $pfx }EMPTY ";
+    return;
+  }
 
   for ^$caps.get-size {
     my $s = $caps.get-structure($_);
@@ -26,7 +35,7 @@ sub print-caps ($caps, $pfx) {
       my $v = GStreamer::Value.new( @a[1] );
       my $s = $v.serialize;
 
-      say "{ $pfx }{ GLib::Quark.to_string( @a[0] ).fmt('%15s') }{ $s }";
+      say "{ $pfx }{ GLib::Quark.to_string( @a[0] ).fmt('%15s') }: { $s }";
       1;
     });
   }
@@ -112,9 +121,10 @@ sub MAIN {
   print-pad-capabilities($sink, 'sink');
 
   say 'Unable to set the pipeline to the playing state (check the bus for error messages).'
-    if $pipeline.set-state == GST_STATE_CHANGE_FAILURE;
+    if $pipeline.set-state(GST_STATE_PLAYING) == GST_STATE_CHANGE_FAILURE;
 
   my ($bus, $terminate) = ($pipeline.bus, False);
+
   repeat {
     my $msg = $bus.timed-pop-filtered(
       GST_CLOCK_TIME_NONE,
