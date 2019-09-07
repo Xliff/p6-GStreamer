@@ -17,11 +17,13 @@ sub print-caps ($caps, $pfx) {
   say "{ $pfx }EMPTY " && return if $caps.is-empty;
 
   for ^$caps.get-size {
-    my $s = $caps.get_structure($_);
+    my $s = $caps.get-structure($_);
 
-    say "{ $pfx }{ $s.get-name }";
+    say "{ $pfx }{ $s.name }";
     $s.foreach(-> *@a --> gboolean {
-      my $v = GTK::Compat::Value.new( @a[1] );
+      CATCH { default { .message.say } }
+
+      my $v = GStreamer::Value.new( @a[1] );
       my $s = $v.serialize;
 
       say "{ $pfx }{ GLib::Quark.to_string( @a[0] ).fmt('%15s') }{ $s }";
@@ -41,6 +43,10 @@ sub print-pad-templates-information ($f) {
       default           { '  UNKNOWN!!! template:' }
     }
     say "{ $cs } { $pt.name-template }";
+
+    # Unless this is done, the StaticPadTemplate will not contain
+    # static_caps data!
+    my $ppt = $pt.get;
 
     $cs = do given $pt.presence {
       when GST_PAD_ALWAYS    { 'Always'     }

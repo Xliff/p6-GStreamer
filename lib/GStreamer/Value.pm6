@@ -362,7 +362,7 @@ class GStreamer::Value is GTK::Compat::Value {
     gst_value_set_flagset(self.gvalue, $f, $m);
   }
 
-  method set_fraction (gint $numerator, gint $denominator) {
+  method set_fraction (Int() $numerator, Int() $denominator) {
     my gint ($n, $d) = ($numerator, $denominator);
 
     gst_value_set_fraction(self.gvalue, $n, $d);

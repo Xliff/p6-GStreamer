@@ -215,7 +215,7 @@ class GStreamer::Pad is GStreamer::Object {
     my $pt = gst_pad_get_pad_template($!p);
 
     $pt ??
-      ( $raw ?? $pt !! GStreamer::PadTemplate.new($pt) )
+      ( $raw ?? $pt !! ::('GStreamer::PadTemplate').new($pt) )
       !!
       Nil;
   }
@@ -244,7 +244,7 @@ class GStreamer::Pad is GStreamer::Object {
     my $pe = gst_pad_get_parent_element($!p);
 
     $pe ??
-      ( $raw ?? $pe !! GStreamer::Element.new($pe) )
+      ( $raw ?? $pe !! ::('GStreamer::Element').new($pe) )
       !!
       Nil;
   }

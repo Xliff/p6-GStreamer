@@ -173,10 +173,14 @@ class GStreamer::Caps is GStreamer::MiniObject {
     gst_caps_get_size($!c);
   }
 
-  method get_structure (Int() $index) is also<get-structure> {
+  method get_structure (Int() $index, :$raw = False) is also<get-structure> {
     my guint $i = $index;
+    my       $s = gst_caps_get_structure($!c, $index);
 
-    gst_caps_get_structure($!c, $index);
+    $s ??
+      ( $raw ?? $s !! GStreamer::Structure.new($s) )
+      !!
+      Nil;
   }
 
   method get_type is also<get-type> {

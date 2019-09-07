@@ -37,6 +37,7 @@ class GStreamer::PadTemplate is GStreamer::Object {
   }
 
   method GStreamer::Raw::Types::GstPadTemplate
+    is also<GstPadTemplate>
   { $!pt }
 
   multi method new (GstPadTemplate $template) {
@@ -159,7 +160,7 @@ class GStreamer::StaticPadTemplate {
   }
 
   method static_caps (:$raw = False) is also<static-caps> {
-    $raw ?? $!spt.static_caps !!
+    $raw ?? $!spt.static_caps.defined !!
             GStreamer::StaticCaps.new($!spt.static_caps);
   }
 
