@@ -59,7 +59,11 @@ sub gst_tag_list_get_boolean_index (
   is export
 { * }
 
-sub gst_tag_list_get_date (GstTagList $list, Str $tag, GDate $value)
+sub gst_tag_list_get_date (
+  GstTagList $list,
+  Str $tag,
+  CArray[Pointer[GDate]] $value
+)
   returns uint32
   is native(gstreamer)
   is export
@@ -69,14 +73,18 @@ sub gst_tag_list_get_date_index (
   GstTagList $list,
   Str $tag,
   guint $index,
-  GDate $value
+  CArray[Pointer[GDate]] $value
 )
   returns uint32
   is native(gstreamer)
   is export
 { * }
 
-sub gst_tag_list_get_date_time (GstTagList $list, Str $tag, GstDateTime $value)
+sub gst_tag_list_get_date_time (
+  GstTagList $list,
+  Str $tag,
+  CArray[Pointer[GstDateTime]] $value
+)
   returns uint32
   is native(gstreamer)
   is export
@@ -86,7 +94,7 @@ sub gst_tag_list_get_date_time_index (
   GstTagList $list,
   Str $tag,
   guint $index,
-  GstDateTime $value
+  CArray[Pointer[GstDateTime]] $value
 )
   returns uint32
   is native(gstreamer)
@@ -178,7 +186,11 @@ sub gst_tag_list_get_pointer_index (
   is export
 { * }
 
-sub gst_tag_list_get_sample (GstTagList $list, Str $tag, GstSample $sample)
+sub gst_tag_list_get_sample (
+  GstTagList $list,
+  Str $tag,
+  CArray[Pointer[GstSample]] $sample
+)
   returns uint32
   is native(gstreamer)
   is export
@@ -188,7 +200,7 @@ sub gst_tag_list_get_sample_index (
   GstTagList $list,
   Str $tag,
   guint $index,
-  GstSample $sample
+  CArray[Pointer[GstSample]] $sample
 )
   returns uint32
   is native(gstreamer)
@@ -201,7 +213,7 @@ sub gst_tag_list_get_scope (GstTagList $list)
   is export
 { * }
 
-sub gst_tag_list_get_string (GstTagList $list, Str $tag, Str $value)
+sub gst_tag_list_get_string (GstTagList $list, Str $tag, CArray[Str] $value)
   returns uint32
   is native(gstreamer)
   is export
@@ -211,7 +223,7 @@ sub gst_tag_list_get_string_index (
   GstTagList $list,
   Str $tag,
   guint $index,
-  Str $value
+  CArray[Str] $value
 )
   returns uint32
   is native(gstreamer)
@@ -335,7 +347,7 @@ sub gst_tag_list_peek_string_index (
   GstTagList $list,
   Str $tag,
   guint $index,
-  Str $value
+  CArray[Str] $value
 )
   returns uint32
   is native(gstreamer)

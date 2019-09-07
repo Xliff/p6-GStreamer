@@ -108,7 +108,9 @@ class GStreamer::TagList is GStreamer::MiniObject {
     }
   }
 
-  method add_value (Int() $mode, Str() $tag, GValue() $value) is also<add-value> {
+  method add_value (Int() $mode, Str() $tag, GValue() $value)
+    is also<add-value>
+  {
     my GstTagMergeMode $m = $mode;
 
     gst_tag_list_add_value($!tl, $mode, $tag, $value);
@@ -204,10 +206,11 @@ class GStreamer::TagList is GStreamer::MiniObject {
     samewith($tag, $, :$all);
   }
   multi method get_date (Str() $tag, $value is rw, :$all = False) {
-    my GDate $v = 0;
+    my $v = CArray[GDate].new;
+    $v[0] = 0;
     my $rc = gst_tag_list_get_date($!tl, $tag, $v);
 
-    $value = $v;
+    $value = ppr($v);
     $all.not ?? $value !! ($value, $rc);
   }
 
@@ -215,16 +218,22 @@ class GStreamer::TagList is GStreamer::MiniObject {
       is also<get-date-index>
   { * }
 
-  multi method get_date_index (Str() $tag) {
-    samewith($tag, $, $);
+  multi method get_date_index (Str() $tag, Int() $index, :$all = False) {
+    samewith($tag, $index, $, :$all);
   }
-  multi method get_date_index (Str() $tag, $index is rw, $value is rw) {
+  multi method get_date_index (
+    Str() $tag,
+    Int() $index,
+    $value is rw,
+    :$all = False
+  ) {
     my guint $i = 0;
-    my GDate $v = 0;
+    my $v = CArray[GDate].new;
+    $v[0] = 0;
 
     my $rc = gst_tag_list_get_date_index($!tl, $tag, $i, $v);
-    ($index, $value) = ($i, $v);
-    ($index, $value, $rc)
+    $value = ppr($v);
+    $all.not ?? $value !! ($value, $rc);
   }
 
   proto method get_date_time (|)
@@ -248,17 +257,22 @@ class GStreamer::TagList is GStreamer::MiniObject {
       is also<get-date-time-index>
   { * }
 
-  multi method get_date_time_index (Str() $tag) {
-    samewith($tag, $, $);
+  multi method get_date_time_index (Str() $tag, Int() $index, :$all = False) {
+    samewith($tag, $index, $, :$all);
   }
-  multi method get_date_time_index (Str() $tag, $index is rw, $value is rw) {
+  multi method get_date_time_index (
+    Str() $tag,
+    Int() $index,
+    $value is rw,
+    :$all = False
+  ) {
     my guint $i = 0;
     my $da = CArray[Pointer[GstDateTime]].new;
 
     $da[0] = Pointer[GstDateTime].new;
     my $rc = gst_tag_list_get_date_time_index($!tl, $tag, $i, $da);
-    ($index, $value) = ppr($i, $da);
-    ($index, $value, $rc)
+    $value = ppr($da);
+    $all.not ?? $value !! ($value, $rc);
   }
 
   proto method get_double (|)
@@ -280,16 +294,21 @@ class GStreamer::TagList is GStreamer::MiniObject {
       is also<get-double-index>
   { * }
 
-  multi method get_double_index (Str() $tag) {
-    samewith($tag, $, $);
+  multi method get_double_index (Str() $tag, $index, :$all = False) {
+    samewith($tag, $index, $, :$all);
   }
-  multi method get_double_index (Str() $tag, $index is rw, $value is rw) {
-    my gint $i = 0;
+  multi method get_double_index (
+    Str() $tag,
+    Int() $index, 
+    $value is rw,
+    :$all = False
+  ) {
+    my gint $i = $index;
     my gdouble $v = 0e0;
     my $rc = gst_tag_list_get_double_index($!tl, $tag, $i, $v);
 
-    ($index, $value) = ($i, $v);
-    ($index, $value, $rc);
+    $value = $v;
+    $all.not ?? $value !! ($value, $rc);
   }
 
   proto method get_float (|)
