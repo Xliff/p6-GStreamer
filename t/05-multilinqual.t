@@ -69,36 +69,36 @@ sub analyze-streams {
   );
 
   for <n-video n-audio n-text> -> $t {
-    for ^ %data{$t} {
-
+    for ^( %data{$t} ) -> $sn {
+      
       my $tags = %data<playbin>.emit-get-tags(
         "get-{ $t.substr(2) }-tags",
-        $_
+        $sn
       );
 
       if $tags.defined {
         $tags = GStreamer::TagList.new($tags);
 
         given $t {
-          when 'video' {
+          when 'n-video' {
             say qq:to/VIDEO/;
-              video-stream {$_}:
+              video-stream { $sn }:
                 codec: { $tags.get_string(GST_TAG_VIDEO_CODEC) // 'unknown' }
               VIDEO
           }
 
-          when 'audio' {
+          when 'n-audio' {
             say qq:to/AUDIO/;
-              video-stream {$_}:
+              audio-stream { $sn }:
                 codec: { $tags.get_string(GST_TAG_AUDIO_CODEC) // 'unknown' }
                 language: { $tags.get_string(GST_TAG_LANGUAGE_CODE) // 'unknown' }
                 bitrate: {$tags.get_uint(GST_TAG_BITRATE) // 'unknown' }
               AUDIO
           }
 
-          when 'text' {
+          when 'n-text' {
               say qq:to/TEXT/;
-                subtitle-stream {$_}:
+                subtitle-stream { $sn }:
                   language: { $tags.get_string(GST_TAG_LANGUAGE_CODE) // 'unknown' }
                 TEXT
           }

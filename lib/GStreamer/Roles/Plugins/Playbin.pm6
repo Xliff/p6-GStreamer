@@ -278,13 +278,14 @@ role GStreamer::Roles::Plugins::Playbin {
 
   # Type: GstPlayFlags
   method flags is rw  {
-    my GTK::Compat::Value $gv .= new( self!flags-get-type );
+    #my GTK::Compat::Value $gv .= new( self!flags-get-type );
+    my GTK::Compat::Value $gv .= new( G_TYPE_INT );
     Proxy.new(
       FETCH => -> $ {
         $gv = GTK::Compat::Value.new(
           self.prop_get('flags', $gv)
         );
-        GstPlayFlagsEnum( $gv.flags );
+        GstPlayFlagsEnum( $gv.int );
       },
       STORE => -> $, Int() $val is copy {
         $gv.uint = $val;
