@@ -19,6 +19,7 @@ GStreamer::Raw::CapsFeatures
 GStreamer::Raw::ChildProxy
 GStreamer::Raw::Clock
 GStreamer::Raw::Context
+GStreamer::Raw::DateTime
 GStreamer::Raw::Device
 GStreamer::Raw::Element
 GStreamer::Raw::ElementFactory
@@ -50,10 +51,11 @@ GStreamer::Roles::Plugins::Raw::Playbin
 GStreamer::Roles::Signals::Element
 GStreamer::Segment
 GStreamer::Structure
-GStreamer::Raw::Tags
 GStreamer::Tag
+GStreamer::Raw::Tags
 GStreamer::Value
 GStreamer::CapsFeatures
+GStreamer::DateTime
 GStreamer::Iterator
 GStreamer::Main
 GStreamer::MiniObject
