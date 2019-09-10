@@ -38,7 +38,7 @@ class GStreamer::Tag {
   }
 
   method is_fixed (Str() $tag) is also<is-fixed> {
-    gst_tag_is_fixed($tag);
+    so gst_tag_is_fixed($tag);
   }
 
   method merge_strings_with_comma (GValue() $dest, GValue() $src)
