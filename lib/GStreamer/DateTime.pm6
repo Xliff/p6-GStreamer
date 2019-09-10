@@ -6,6 +6,8 @@ use GTK::Compat::Types;
 use GStreamer::Raw::Types;
 use GStreamer::Raw::DateTime;
 
+use GTK::Compat::DateTime;
+
 # BOXED
 
 class GStreamer::DateTime {
@@ -226,9 +228,13 @@ class GStreamer::DateTime {
     self;
   }
 
-  # Object currently NYII
-  method to_g_date_time is also<to-g-date-time> {
-    gst_date_time_to_g_date_time($!dt);
+  method to_g_date_time (:$raw = False) is also<to-g-date-time> {
+    my $gdt = gst_date_time_to_g_date_time($!dt);
+
+    $gdt ??
+      ( $raw ?? $gdt !! GTK::Compat::DateTime.new($gdt) )
+      !!
+      Nil;
   }
 
   method to_iso8601_string is also<to-iso8601-string> {
