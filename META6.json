@@ -99,4 +99,32 @@
     ],
     "support": {"source": null},
     "authors": ["clifton.wood@gmail.com"]
+    resources: [
+	"resources/plugins/ext/alsa/alsa.so",
+	"resources/plugins/ext/pango/pango.so",
+	"resources/plugins/ext/gl/gl.so",
+	"resources/plugins/ext/vorbis/vorbis.so",
+	"resources/plugins/ext/ogg/ogg.so",
+	"resources/plugins/gst/gio/gio.so",
+	"resources/plugins/gst/videoscale/videoscale.so",
+	"resources/plugins/gst/rawparse/rawparse.so",
+	"resources/plugins/gst/tcp/tcp.so",
+	"resources/plugins/gst/videoconvert/videoconvert.so",
+	"resources/plugins/gst/playback/playback.so",
+	"resources/plugins/gst/audiorate/audiorate.so",
+	"resources/plugins/gst/audiotestsrc/audiotestsrc.so",
+	"resources/plugins/gst/volume/volume.so",
+	"resources/plugins/gst/adder/adder.so",
+	"resources/plugins/gst/audioconvert/audioconvert.so",
+	"resources/plugins/gst/videorate/videorate.so",
+	"resources/plugins/gst/compositor/compositor.so",
+	"resources/plugins/gst/subparse/subparse.so",
+	"resources/plugins/gst/overlaycomposition/overlaycomposition.so",
+	"resources/plugins/gst/audiomixer/audiomixer.so",
+	"resources/plugins/gst/encoding/encoding.so",
+	"resources/plugins/gst/videotestsrc/videotestsrc.so",
+	"resources/plugins/gst/audioresample/audioresample.so",
+	"resources/plugins/sys/ximage/ximage.so",
+	"resources/plugins/sys/xvimage/xvimage.so"
+    ]
 }
