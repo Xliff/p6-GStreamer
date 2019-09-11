@@ -14,7 +14,7 @@ use GStreamer::Bus;
 use GStreamer::Device;
 
 our subset DeviceMonitorAncestry is export of Mu
-  where GstDeviceMonitor | GstObject
+  where GstDeviceMonitor | GstObject;
 
 class GStreamer::DeviceMonitor is GStreamer::Object {
   has GstDeviceMonitor $!dm;
@@ -41,7 +41,7 @@ class GStreamer::DeviceMonitor is GStreamer::Object {
   }
 
   multi method new ($monitor) {
-    self.bless( :$monitor ):
+    self.bless( :$monitor );
   }
   multi method new {
     self.bless( monitor => gst_device_monitor_new() );
@@ -88,7 +88,7 @@ class GStreamer::DeviceMonitor is GStreamer::Object {
       but GTK::Compat::Roles::ListData[GstDevice];
 
     $d ??
-      ( $raw ?? $d.Array !! $d.Array.map({ GStreamer::Device.new($d) })
+      ( $raw ?? $d.Array !! $d.Array.map({ GStreamer::Device.new($_) }) )
       !!
       Nil;
   }
@@ -99,10 +99,11 @@ class GStreamer::DeviceMonitor is GStreamer::Object {
       providers
     >
   {
+    my @p;
     my $pa = gst_device_monitor_get_providers($!dm);
 
     if $pa {
-      my ($pa-idx, @p) = (0);
+      my $pa-idx = 0;
       repeat {
         @p.push( $pa[$pa-idx] );
       } while $pa[$pa-idx++];
