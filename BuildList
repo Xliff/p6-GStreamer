@@ -1,3 +1,4 @@
+GTK::Compat::DateTime
 GTK::Compat::GList
 GTK::Compat::Roles::ListData
 GTK::Compat::Types
@@ -10,9 +11,11 @@ Method::Also
 GStreamer::Raw::Types
 GStreamer::Raw::Subs
 GStreamer::Raw::Allocator
+GStreamer::Raw::AtomicQueue
 GStreamer::Raw::Bin
 GStreamer::Raw::Buffer
 GStreamer::Raw::BufferList
+GStreamer::Raw::BufferPool
 GStreamer::Raw::Bus
 GStreamer::Raw::Caps
 GStreamer::Raw::CapsFeatures
@@ -21,6 +24,7 @@ GStreamer::Raw::Clock
 GStreamer::Raw::Context
 GStreamer::Raw::DateTime
 GStreamer::Raw::Device
+GStreamer::Raw::DeviceMonitor
 GStreamer::Raw::Element
 GStreamer::Raw::ElementFactory
 GStreamer::Raw::Event
@@ -54,6 +58,7 @@ GStreamer::Structure
 GStreamer::Tag
 GStreamer::Raw::Tags
 GStreamer::Value
+GStreamer::AtomicQueue
 GStreamer::CapsFeatures
 GStreamer::DateTime
 GStreamer::Iterator
@@ -65,6 +70,7 @@ GStreamer::PluginFeature
 GStreamer::Allocator
 GStreamer::Buffer
 GStreamer::BufferList
+GStreamer::BufferPool
 GStreamer::Bus
 GStreamer::Caps
 GStreamer::Clock
@@ -85,5 +91,6 @@ GStreamer::Stream
 GStreamer::StreamCollection
 GStreamer::Bin
 GStreamer::Device
+GStreamer::DeviceMonitor
 GStreamer::Message
 GStreamer::Pipeline

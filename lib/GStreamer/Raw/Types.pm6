@@ -189,6 +189,15 @@ our enum GstBufferingModeEnum is export <
   GST_BUFFERING_LIVE
 >;
 
+constant GstBufferPoolAcquireFlags is export := guint;
+our enum GstBufferPoolAcquireFlagsEnum is export (
+  GST_BUFFER_POOL_ACQUIRE_FLAG_NONE     => 0,
+  GST_BUFFER_POOL_ACQUIRE_FLAG_KEY_UNIT => 1,
+  GST_BUFFER_POOL_ACQUIRE_FLAG_DONTWAIT => (1 +< 1),
+  GST_BUFFER_POOL_ACQUIRE_FLAG_DISCONT  => (1 +< 2),
+  GST_BUFFER_POOL_ACQUIRE_FLAG_LAST     => (1 +< 16),
+);
+
 constant GstBusSyncReply is export := guint;
 our enum GstBusSyncReplyEnum is export (
   GST_BUS_DROP  => 0,
@@ -1133,7 +1142,21 @@ class GstAllocator         is repr<CStruct>      does GTK::Roles::Pointers is ex
   has gpointer             $!priv;
 };
 
-class GstBuffer            is repr<CStruct>      does GTK::Roles::Pointers is export {
+class GstBufferPoolAcquireParams is repr<CStruct> does GTK::Roles::Pointers is export {
+  has GstFormat                  $.format is rw;
+  has gint64                     $.start  is rw;
+  has gint64                     $.stop   is rw;
+  has GstBufferPoolAcquireFlags  $.flags  is rw;
+
+  # private
+  has gpointer                   $!gst_reserved0;
+  has gpointer                   $!gst_reserved1;
+  has gpointer                   $!gst_reserved2;
+  has gpointer                   $!gst_reserved3;
+};
+
+
+class GstBuffer                  is repr<CStruct> does GTK::Roles::Pointers is export {
   HAS GstMiniObject        $.mini_object is rw;
   has GstBufferPool        $.pool;
   has GstClockTime         $.pts         is rw;
