@@ -15,11 +15,15 @@ role GStreamer::Roles::ChildProxy {
     is also<GstChildProxy>
   { $!cp }
 
-  method child_added (GObject() $child, Str() $name) is also<child-added> {
+  method emit_child_added (GObject() $child, Str() $name)
+    is also<emit-child-added>
+  {
     gst_child_proxy_child_added($!cp, $child, $name);
   }
 
-  method child_removed (GObject() $child, Str() $name) is also<child-removed> {
+  method emit_child_removed (GObject() $child, Str() $name)
+    is also<emit-child-removed>
+  {
     gst_child_proxy_child_removed($!cp, $child, $name);
   }
 

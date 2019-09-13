@@ -25,6 +25,7 @@ GStreamer::Raw::Context
 GStreamer::Raw::DateTime
 GStreamer::Raw::Device
 GStreamer::Raw::DeviceMonitor
+GStreamer::Raw::DeviceProvider
 GStreamer::Raw::Element
 GStreamer::Raw::ElementFactory
 GStreamer::Raw::Event
@@ -75,6 +76,7 @@ GStreamer::Bus
 GStreamer::Caps
 GStreamer::Clock
 GStreamer::Context
+GStreamer::DeviceProvider
 GStreamer::Event
 GStreamer::Format
 GStreamer::Pad
