@@ -60,8 +60,6 @@ sub MAIN (
           }
         }
 
-
-
         # Due to various unforseen issues, it's better to just compile the
         # helper with ALL of the .o files found in a plugin's directory, to
         # insure that it compiles properly!!
@@ -108,10 +106,21 @@ sub MAIN (
         my $lpd = $*CWD.add('resources').add('plugins');
         $lpd .= add($_) for @dirs;
 
-        my $bn = $*SPEC.splitdir($lpd)[* - 1];
+        my $pdir = $*SPEC.splitdir($lpd);
+        my $bn = $pdir[* - 1].IO.basename;
         if %resolver.keys {
-          my ($h-io, $c-io, $so-io, $mod-io)
-            = <h c so pm6>.map({ $lpd.add("{$bn}.{$_}") });
+          my ($h-io, $c-io, $so-io)
+            = <h c so>.map({ $lpd.add("{$bn}.{$_}") });
+
+          # Concerned about the naked 2, but this should hold for all current
+          # plugins packages.
+          my $mod-io = $*CWD.add('lib').add('Plugins');
+          my $pdir-comp = $pdir.reverse.head(2).reverse.map( *.lc.tc );
+          my $plugin-dir = $pdir-comp[ ^(* - 1) ];
+          $mod-io .= add($_) for $plugin-dir;
+          $mod-io.dirname.IO.mkdir;
+          $mod-io .= add($pdir-comp[* - 1] ~ '.pm6');
+          #$mod-io.say;
 
           # Create and write out header file.
           $lpd.mkdir;
@@ -166,17 +175,20 @@ sub MAIN (
             }
           }
 
-          # Output NativeCall definitions.
+          # Output NativeCall definitions. -- Needs fixing. Base on $mod-io!
           my $plugin-base = $so-io.extension('').basename;
-          my $plugin-package = "GStreamer::Plugins::{
-            $package ?? "{$package}::{$plugin-base}" !! "{$plugin-base}"
-          }";
+          my $plugin-rel = gather for $*SPEC.splitdir($mod-io.extension('')).reverse {
+            last if $_ eq 'Plugins';
+            take $_;
+          };
+          my $plugin-package =
+            "GStreamer::Plugins::{ $plugin-rel.reverse.join('::') }";
           my $nc-defs  = qq:to/NC-PRE/;
             use NativeCall;
 
             unit package {$plugin-package};
 
-            constant {$plugin-base} = \%?RESOURCES<plugins/lib/{$plugin-base}/{$plugin-base}>;
+            constant {$plugin-base} = \%?RESOURCES<plugins/lib/{$plugin-base}/{$plugin-base}>.Str;
             \n
             NC-PRE
 
@@ -191,6 +203,7 @@ sub MAIN (
           $nc-defs ~= qqx{$cmd};
 
           $mod-io.spurt: $nc-defs;
+          say "\t\t\tWriting .pm6 file '{$mod-io}'";
           @pm-files.push: ($mod-io, $plugin-package);
         }
       }
@@ -224,7 +237,7 @@ sub MAIN (
       #   - Prepend newline on first entry
       @pm-files[0].substr-rw(0, 0) = "\n ";
       #   - Remove trailing comma
-      @pm-files[* - 1] .= chop;
+      @pm-files[* - 1] ~~ s/',' \s* //;
       @provides.append: @pm-files;
       # Replace section.
       $meta ~~ s[ <provides> ] =
