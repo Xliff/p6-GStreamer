@@ -120,7 +120,6 @@ sub MAIN (
           $mod-io .= add($_) for $plugin-dir;
           $mod-io.dirname.IO.mkdir;
           $mod-io .= add($pdir-comp[* - 1] ~ '.pm6');
-          #$mod-io.say;
 
           # Create and write out header file.
           $lpd.mkdir;
@@ -183,12 +182,16 @@ sub MAIN (
           };
           my $plugin-package =
             "GStreamer::Plugins::{ $plugin-rel.reverse.join('::') }";
+          my $lib-resource = $*CWD.add('plugins').add('lib');
+          $lib-resource .= add($_) for $*SPEC.splitdir($so-io)[* - 3 .. * - 1];
+
           my $nc-defs  = qq:to/NC-PRE/;
             use NativeCall;
 
             unit package {$plugin-package};
 
-            constant {$plugin-base} = \%?RESOURCES<plugins/lib/{$plugin-base}/{$plugin-base}>.Str;
+            constant {$plugin-base} = { ''
+              }\%?RESOURCES<{ $lib-resource.relative($*CWD) }>.Str;
             \n
             NC-PRE
 
