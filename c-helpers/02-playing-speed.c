@@ -115,6 +115,9 @@ main (int argc, char *argv[])
   /* Initialize our data structure */
   memset (&data, 0, sizeof (data));
 
+  /* Cheat and use this as harness for debug info! */
+  printf ("GstPadTemplate: %ld\n", sizeof(GstStaticPadTemplate));
+
   /* Print usage map */
   g_print ("USAGE: Choose one of the following options, then press enter:\n"
       " 'P' to toggle between PAUSE and PLAY\n"

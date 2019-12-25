@@ -60,44 +60,6 @@ sub MAIN (
           }
         }
 
-        # Due to various unforseen issues, it's better to just compile the
-        # helper with ALL of the .o files found in a plugin's directory, to
-        # insure that it compiles properly!!
-
-        # BEGIN ---------------- XXX --- unforseen issues with this approach!
-        # if @locals {
-        #   # Now scan all .o files for anything found in @locals
-        #   my @o-io = $pd.dir( test => {$pd.add($_).extension eq 'o'} );
-        #   for @o-io -> $obj-io {
-        #     my $nm = qqx{nm -s $obj-io};
-        #
-        #     for $nm.lines {
-        #       next unless .trim;
-        #
-        #       my @f = .split(/\s+/);
-        #
-        #       if @f[2] eq @locals.any {
-        #         my ($k, $v) = @locals.kv.rotor(2).grep({ .[1] eq @f[2] }).flat;
-        #
-        #         # say "L: { @f[2] } / {@f[1]} / {$k // 'NOT FOUND'}";
-        #
-        #         # Check if routine is defined in this module.
-        #         if $k.defined && @f[1] eq <T t>.any {
-        #           # say "K: { @locals[$k] }";
-        #           %resolver{ @locals[$k] }.push: $obj-io;
-        #           @locals.splice($k, 1);
-        #         }
-        #       }
-        #     }
-        #   }
-        # }
-        #
-        # if @locals {
-        #   say "\t\t\tThe following routines were not found in the object files:";
-        #   .say for @locals.map( "\t\t\t\t" ~ * );
-        # }
-        # - EMD --------------- XXX --- unforseen issues with this approach!
-
         my @dirs = (do gather for $*SPEC.splitdir( $pd.absolute ).reverse {
           take $_;
           last if $_ eq $sd;
@@ -183,7 +145,8 @@ sub MAIN (
           my $plugin-package =
             "GStreamer::Plugins::{ $plugin-rel.reverse.join('::') }";
           my $lib-resource = $*CWD.add('plugins').add('lib');
-          $lib-resource .= add($_) for $*SPEC.splitdir($so-io)[* - 3 .. * - 1];
+          #$lib-resource .= add($_) for $*SPEC.splitdir($so-io)[* - 3 .. * - 1];
+          $lib-resource .= add($_) for $*SPEC.splitdir($so-io).tail(3);
 
           my $nc-defs  = qq:to/NC-PRE/;
             use NativeCall;
@@ -224,7 +187,10 @@ sub MAIN (
       '"provides":' \s* '{' ~ '}' (<-[ \} ]>+)
     }
     sub ol {
-      $^a.map({ "        \"$_\"" }).join(",\n");
+      $^a.skip(1).map({
+        s! ^ 'resource/' !!;
+        "        \"$_\""
+      }).join(",\n");
     }
 
     # Extract provides section and add in plugin modules.
@@ -248,8 +214,10 @@ sub MAIN (
     }
 
     # Write out resources directive.
-    $meta ~~ s[ <resources> ] =
-      "\"resources\": [\n{ @so-files.&ol }\n    ]";
+    if $meta ~~ &resources {
+      $meta ~~ s[ <resources> ] =
+        "\"resources\": [\n{ @so-files.&ol }\n    ]";
+    }
     $metafile.rename( $metafile.extension('bak') );
     $metafile.spurt: $meta;
   }

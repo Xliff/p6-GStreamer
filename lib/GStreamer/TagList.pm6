@@ -8,7 +8,7 @@ use GStreamer::Raw::Types;
 use GStreamer::Raw::TagList;
 use GStreamer::Raw::Tags;
 
-use GTK::Compat::Value;
+use GLib::Value;
 
 use GStreamer::Raw::Subs;
 
@@ -101,7 +101,7 @@ class GStreamer::TagList is GStreamer::MiniObject {
 
   method add_valuesv (Int() $mode, *@a) is also<add-valuesv> {
     die 'Values portion of list must be a GValue'
-      unless @a.skip(1).rotor(1 => 1).all ~~ (GTK::Compat::Value, GValue).any;
+      unless @a.skip(1).rotor(1 => 1).all ~~ (GLib::Value, GValue).any;
 
     for @a.rotor(2) -> ($t, $v) {
       self.add_value($mode, $t, $v);
@@ -152,7 +152,7 @@ class GStreamer::TagList is GStreamer::MiniObject {
     my $rc = gst_tag_list_copy_value($dest, $list, $tag);
     my $rv = $dest;
 
-    $rv = GTK::Compat::Value.new($dest) unless $raw;
+    $rv = GLib::Value.new($dest) unless $raw;
     $all.not ?? $rv !! ($rv, $rc);
   }
 
@@ -595,7 +595,7 @@ class GStreamer::TagList is GStreamer::MiniObject {
     my $v = gst_tag_list_get_value_index($!tl, $tag, $index);
 
     $v ??
-      ( $raw ?? $v !! GTK::Compat::Value.new($v) )
+      ( $raw ?? $v !! GLib::Value.new($v) )
       !!
       Nil;
   }

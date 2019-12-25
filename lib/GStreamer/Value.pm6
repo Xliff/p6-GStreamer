@@ -4,9 +4,9 @@ use GTK::Compat::Types;
 use GStreamer::Raw::Types;
 use GStreamer::Raw::Value;
 
-use GTK::Compat::Value;
+use GLib::Value;
 
-class GStreamer::Value is GTK::Compat::Value {
+class GStreamer::Value is GLib::Value {
 
   method bitmask is rw {
     Proxy.new(

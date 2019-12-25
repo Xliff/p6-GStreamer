@@ -11,6 +11,9 @@ use GTK::Raw::ReturnedValue;
 use GStreamer::Raw::Subs;
 use GStreamer::Roles::Plugins::Raw::Playbin;
 
+use GStreamer::Plugins::Gst::Playback;
+
+use GLib::Value;
 use GStreamer::Buffer;
 use GStreamer::Element;
 use GStreamer::Sample;
@@ -30,6 +33,8 @@ role GStreamer::Roles::Plugins::Playbin {
     self!setObject( $!pb = cast(GObject, self.GstObject) );
   }
 
+  # Check to insure all methods are provided!
+
   # DESTROY for signals!
 
   method !flags-get-type {
@@ -39,10 +44,10 @@ role GStreamer::Roles::Plugins::Playbin {
 
   # Type: GstElement
   method audio-sink (:$raw = False) is rw  is also<audio_sink> {
-    my GTK::Compat::Value $gv .= new( G_TYPE_OBJECT );
+    my GLib::Value $gv .= new( G_TYPE_OBJECT );
     Proxy.new(
       FETCH => -> $ {
-        $gv = GTK::Compat::Value.new(
+        $gv = GLib::Value.new(
           self.prop_get('audio-sink', $gv)
         );
         my $e = cast(GstElement, $gv.object);
@@ -61,10 +66,10 @@ role GStreamer::Roles::Plugins::Playbin {
 
   # Type: GstBuffer
   method frame (:$raw = False) is rw  {
-    my GTK::Compat::Value $gv .= new( GStreamer::Buffer.get_type );
+    my GLib::Value $gv .= new( GStreamer::Buffer.get_type );
     Proxy.new(
       FETCH => -> $ {
-        $gv = GTK::Compat::Value.new(
+        $gv = GLib::Value.new(
           self.prop_get('frame', $gv)
         );
         my $b = cast(GstBuffer, $gv.boxed);
@@ -82,7 +87,7 @@ role GStreamer::Roles::Plugins::Playbin {
 
   # Type: gchar
   method subtitle-font-desc is rw  is also<subtitle_font_desc> {
-    my GTK::Compat::Value $gv .= new( G_TYPE_STRING );
+    my GLib::Value $gv .= new( G_TYPE_STRING );
     Proxy.new(
       FETCH => -> $ {
         warn 'subtitle-font-desc does not allow reading' if $DEBUG;
@@ -98,10 +103,10 @@ role GStreamer::Roles::Plugins::Playbin {
 
   # Type: GstElement
   method video-sink (:$raw = False) is rw  is also<video_sink> {
-    my GTK::Compat::Value $gv .= new( G_TYPE_OBJECT );
+    my GLib::Value $gv .= new( G_TYPE_OBJECT );
     Proxy.new(
       FETCH => -> $ {
-        $gv = GTK::Compat::Value.new(
+        $gv = GLib::Value.new(
           self.prop_get('video-sink', $gv)
         );
         my $v = cast(GstElement, $gv.object);
@@ -120,10 +125,10 @@ role GStreamer::Roles::Plugins::Playbin {
 
   # Type: GstElement
   method vis-plugin (:$raw = False) is rw  is also<vis_plugin> {
-    my GTK::Compat::Value $gv .= new( G_TYPE_OBJECT );
+    my GLib::Value $gv .= new( G_TYPE_OBJECT );
     Proxy.new(
       FETCH => -> $ {
-        $gv = GTK::Compat::Value.new(
+        $gv = GLib::Value.new(
           self.prop_get('vis-plugin', $gv)
         );
         my $v = cast(GstElement, $gv.object);
@@ -142,10 +147,10 @@ role GStreamer::Roles::Plugins::Playbin {
 
   # Type: gdouble
   method volume is rw  {
-    my GTK::Compat::Value $gv .= new( G_TYPE_DOUBLE );
+    my GLib::Value $gv .= new( G_TYPE_DOUBLE );
     Proxy.new(
       FETCH => -> $ {
-        $gv = GTK::Compat::Value.new(
+        $gv = GLib::Value.new(
           self.prop_get('volume', $gv)
         );
         $gv.double;
@@ -159,10 +164,10 @@ role GStreamer::Roles::Plugins::Playbin {
 
   # Type: guint64
   method connection-speed is rw  is also<connection_speed> {
-    my GTK::Compat::Value $gv .= new( G_TYPE_UINT64 );
+    my GLib::Value $gv .= new( G_TYPE_UINT64 );
     Proxy.new(
       FETCH => -> $ {
-        $gv = GTK::Compat::Value.new(
+        $gv = GLib::Value.new(
           self.prop_get('connection-speed', $gv)
         );
         $gv.uint64;
@@ -176,10 +181,10 @@ role GStreamer::Roles::Plugins::Playbin {
 
   # Type: gint64
   method av-offset is rw  is also<av_offset> {
-    my GTK::Compat::Value $gv .= new( G_TYPE_INT64 );
+    my GLib::Value $gv .= new( G_TYPE_INT64 );
     Proxy.new(
       FETCH => -> $ {
-        $gv = GTK::Compat::Value.new(
+        $gv = GLib::Value.new(
           self.prop_get('av-offset', $gv)
         );
         $gv.int64;
@@ -193,10 +198,10 @@ role GStreamer::Roles::Plugins::Playbin {
 
   # Type: gint64
   method buffer-duration is rw  is also<buffer_duration> {
-    my GTK::Compat::Value $gv .= new( G_TYPE_INT64 );
+    my GLib::Value $gv .= new( G_TYPE_INT64 );
     Proxy.new(
       FETCH => -> $ {
-        $gv = GTK::Compat::Value.new(
+        $gv = GLib::Value.new(
           self.prop_get('buffer-duration', $gv)
         );
         $gv.int64;
@@ -210,10 +215,10 @@ role GStreamer::Roles::Plugins::Playbin {
 
   # Type: gint
   method buffer-size is rw  is also<buffer_size> {
-    my GTK::Compat::Value $gv .= new( G_TYPE_INT );
+    my GLib::Value $gv .= new( G_TYPE_INT );
     Proxy.new(
       FETCH => -> $ {
-        $gv = GTK::Compat::Value.new(
+        $gv = GLib::Value.new(
           self.prop_get('buffer-size', $gv)
         );
         $gv.int;
@@ -227,10 +232,10 @@ role GStreamer::Roles::Plugins::Playbin {
 
   # Type: gint
   method current-audio is rw  is also<current_audio> {
-    my GTK::Compat::Value $gv .= new( G_TYPE_INT );
+    my GLib::Value $gv .= new( G_TYPE_INT );
     Proxy.new(
       FETCH => -> $ {
-        $gv = GTK::Compat::Value.new(
+        $gv = GLib::Value.new(
           self.prop_get('current-audio', $gv)
         );
         $gv.int;
@@ -244,10 +249,10 @@ role GStreamer::Roles::Plugins::Playbin {
 
   # Type: gint
   method current-text is rw  is also<current_text> {
-    my GTK::Compat::Value $gv .= new( G_TYPE_INT );
+    my GLib::Value $gv .= new( G_TYPE_INT );
     Proxy.new(
       FETCH => -> $ {
-        $gv = GTK::Compat::Value.new(
+        $gv = GLib::Value.new(
           self.prop_get('current-text', $gv)
         );
         $gv.int;
@@ -261,10 +266,10 @@ role GStreamer::Roles::Plugins::Playbin {
 
   # Type: gint
   method current-video is rw  is also<current_video> {
-    my GTK::Compat::Value $gv .= new( G_TYPE_INT );
+    my GLib::Value $gv .= new( G_TYPE_INT );
     Proxy.new(
       FETCH => -> $ {
-        $gv = GTK::Compat::Value.new(
+        $gv = GLib::Value.new(
           self.prop_get('current-video', $gv)
         );
         $gv.int;
@@ -278,14 +283,20 @@ role GStreamer::Roles::Plugins::Playbin {
 
   # Type: GstPlayFlags
   method flags is rw  {
-    #my GTK::Compat::Value $gv .= new( self!flags-get-type );
-    my GTK::Compat::Value $gv .= new( G_TYPE_INT );
+    my GLib::Value $gv .= new(
+      do {
+        state ($n, $t);
+
+        unstable_get_type( self.^name, &global_gst_play_flags_get_type, $n, $t )
+      }
+    );
+    #my GLib::Value $gv .= new( G_TYPE_INT );
     Proxy.new(
       FETCH => -> $ {
-        $gv = GTK::Compat::Value.new(
+        $gv = GLib::Value.new(
           self.prop_get('flags', $gv)
         );
-        GstPlayFlagsEnum( $gv.int );
+        GstPlayFlagsEnum( $gv.flags );
       },
       STORE => -> $, Int() $val is copy {
         $gv.uint = $val;
@@ -297,10 +308,10 @@ role GStreamer::Roles::Plugins::Playbin {
 
   # Type: gboolean
   method mute is rw  {
-    my GTK::Compat::Value $gv .= new( G_TYPE_BOOLEAN );
+    my GLib::Value $gv .= new( G_TYPE_BOOLEAN );
     Proxy.new(
       FETCH => -> $ {
-        $gv = GTK::Compat::Value.new(
+        $gv = GLib::Value.new(
           self.prop_get('mute', $gv)
         );
         $gv.boolean;
@@ -314,10 +325,10 @@ role GStreamer::Roles::Plugins::Playbin {
 
   # Type: gint
   method n-audio is rw  is also<n_audio> {
-    my GTK::Compat::Value $gv .= new( G_TYPE_INT );
+    my GLib::Value $gv .= new( G_TYPE_INT );
     Proxy.new(
       FETCH => -> $ {
-        $gv = GTK::Compat::Value.new(
+        $gv = GLib::Value.new(
           self.prop_get('n-audio', $gv)
         );
         $gv.int;
@@ -330,10 +341,10 @@ role GStreamer::Roles::Plugins::Playbin {
 
   # Type: gint
   method n-text is rw  is also<n_text> {
-    my GTK::Compat::Value $gv .= new( G_TYPE_INT );
+    my GLib::Value $gv .= new( G_TYPE_INT );
     Proxy.new(
       FETCH => -> $ {
-        $gv = GTK::Compat::Value.new(
+        $gv = GLib::Value.new(
           self.prop_get('n-text', $gv)
         );
         $gv.int;
@@ -346,10 +357,10 @@ role GStreamer::Roles::Plugins::Playbin {
 
   # Type: gint
   method n-video is rw  is also<n_video> {
-    my GTK::Compat::Value $gv .= new( G_TYPE_INT );
+    my GLib::Value $gv .= new( G_TYPE_INT );
     Proxy.new(
       FETCH => -> $ {
-        $gv = GTK::Compat::Value.new(
+        $gv = GLib::Value.new(
           self.prop_get('n-video', $gv)
         );
         $gv.int;
@@ -362,10 +373,10 @@ role GStreamer::Roles::Plugins::Playbin {
 
   # Type: guint64
   method ring-buffer-max-size is rw  is also<ring_buffer_max_size> {
-    my GTK::Compat::Value $gv .= new( G_TYPE_UINT64 );
+    my GLib::Value $gv .= new( G_TYPE_UINT64 );
     Proxy.new(
       FETCH => -> $ {
-        $gv = GTK::Compat::Value.new(
+        $gv = GLib::Value.new(
           self.prop_get('ring-buffer-max-size', $gv)
         );
         $gv.uint64;
@@ -379,10 +390,10 @@ role GStreamer::Roles::Plugins::Playbin {
 
   # Type: GstSample
   method sample (:$raw = False) is rw  {
-    my GTK::Compat::Value $gv .= new( G_TYPE_BOXED );
+    my GLib::Value $gv .= new( G_TYPE_BOXED );
     Proxy.new(
       FETCH => -> $ {
-        $gv = GTK::Compat::Value.new(
+        $gv = GLib::Value.new(
           self.prop_get('sample', $gv)
         );
         my $s = cast(GstSample, $gv.boxed);
@@ -400,10 +411,10 @@ role GStreamer::Roles::Plugins::Playbin {
 
   # Type: GstElement
   method source (:$raw = False) is rw  {
-    my GTK::Compat::Value $gv .= new( G_TYPE_OBJECT );
+    my GLib::Value $gv .= new( G_TYPE_OBJECT );
     Proxy.new(
       FETCH => -> $ {
-        $gv = GTK::Compat::Value.new(
+        $gv = GLib::Value.new(
           self.prop_get('source', $gv)
         );
         my $e = cast(GstElement, $gv.object);
@@ -421,10 +432,10 @@ role GStreamer::Roles::Plugins::Playbin {
 
   # Type: gchar
   method subtitle-encoding is rw  is also<subtitle_encoding> {
-    my GTK::Compat::Value $gv .= new( G_TYPE_STRING );
+    my GLib::Value $gv .= new( G_TYPE_STRING );
     Proxy.new(
       FETCH => -> $ {
-        $gv = GTK::Compat::Value.new(
+        $gv = GLib::Value.new(
           self.prop_get('subtitle-encoding', $gv)
         );
         $gv.string;
@@ -438,10 +449,10 @@ role GStreamer::Roles::Plugins::Playbin {
 
   # Type: gchar
   method suburi is rw  {
-    my GTK::Compat::Value $gv .= new( G_TYPE_STRING );
+    my GLib::Value $gv .= new( G_TYPE_STRING );
     Proxy.new(
       FETCH => -> $ {
-        $gv = GTK::Compat::Value.new(
+        $gv = GLib::Value.new(
           self.prop_get('suburi', $gv)
         );
         $gv.string;
@@ -455,10 +466,10 @@ role GStreamer::Roles::Plugins::Playbin {
 
   # Type: GstElement
   method text-sink (:$raw = False) is rw  is also<text_sink> {
-    my GTK::Compat::Value $gv .= new( G_TYPE_OBJECT );
+    my GLib::Value $gv .= new( G_TYPE_OBJECT );
     Proxy.new(
       FETCH => -> $ {
-        $gv = GTK::Compat::Value.new(
+        $gv = GLib::Value.new(
           self.prop_get('text-sink', $gv)
         );
         my $s = cast(GstElement, $gv.object);
@@ -477,10 +488,10 @@ role GStreamer::Roles::Plugins::Playbin {
 
   # Type: gchar
   method uri is rw  {
-    my GTK::Compat::Value $gv .= new( G_TYPE_STRING );
+    my GLib::Value $gv .= new( G_TYPE_STRING );
     Proxy.new(
       FETCH => -> $ {
-        $gv = GTK::Compat::Value.new(
+        $gv = GLib::Value.new(
           self.prop_get('uri', $gv)
         );
         $gv.string;
@@ -494,10 +505,10 @@ role GStreamer::Roles::Plugins::Playbin {
 
   # Type: gchar
   method current-suburi is rw  is also<current_suburi> {
-    my GTK::Compat::Value $gv .= new( G_TYPE_STRING );
+    my GLib::Value $gv .= new( G_TYPE_STRING );
     Proxy.new(
       FETCH => -> $ {
-        $gv = GTK::Compat::Value.new(
+        $gv = GLib::Value.new(
           self.prop_get('current-suburi', $gv)
         );
         $gv.string;
@@ -510,10 +521,10 @@ role GStreamer::Roles::Plugins::Playbin {
 
   # Type: gchar
   method current-uri is rw  is also<current_uri> {
-    my GTK::Compat::Value $gv .= new( G_TYPE_STRING );
+    my GLib::Value $gv .= new( G_TYPE_STRING );
     Proxy.new(
       FETCH => -> $ {
-        $gv = GTK::Compat::Value.new(
+        $gv = GLib::Value.new(
           self.prop_get('current-uri', $gv)
           );
         $gv.string;
@@ -526,10 +537,10 @@ role GStreamer::Roles::Plugins::Playbin {
 
   # Type: gboolean
   method force-aspect-ratio is rw  is also<force_aspect_ratio> {
-    my GTK::Compat::Value $gv .= new( G_TYPE_BOOLEAN );
+    my GLib::Value $gv .= new( G_TYPE_BOOLEAN );
     Proxy.new(
       FETCH => -> $ {
-        $gv = GTK::Compat::Value.new(
+        $gv = GLib::Value.new(
           self.prop_get('force-aspect-ratio', $gv)
         );
         $gv.boolean;
@@ -545,10 +556,10 @@ role GStreamer::Roles::Plugins::Playbin {
   method audio-stream-combiner (:$raw = False) is rw
     is also<audio_stream_combiner>
   {
-    my GTK::Compat::Value $gv .= new( G_TYPE_OBJECT );
+    my GLib::Value $gv .= new( G_TYPE_OBJECT );
     Proxy.new(
       FETCH => -> $ {
-        $gv = GTK::Compat::Value.new(
+        $gv = GLib::Value.new(
           self.prop_get('audio-stream-combiner', $gv)
         );
         my $e = cast(GstElement, $gv.object);
@@ -566,11 +577,13 @@ role GStreamer::Roles::Plugins::Playbin {
   }
 
   # Type: GstElement
-  method text-stream-combiner (:$raw = False) is rw  is also<text_stream_combiner> {
-    my GTK::Compat::Value $gv .= new( G_TYPE_OBJECT );
+  method text-stream-combiner (:$raw = False) is rw
+    is also<text_stream_combiner>
+  {
+    my GLib::Value $gv .= new( G_TYPE_OBJECT );
     Proxy.new(
       FETCH => -> $ {
-        $gv = GTK::Compat::Value.new(
+        $gv = GLib::Value.new(
           self.prop_get('text-stream-combiner', $gv)
         );
         my $e = cast(GstElement, $gv.object);
@@ -588,11 +601,13 @@ role GStreamer::Roles::Plugins::Playbin {
   }
 
   # Type: GstElement
-  method video-stream-combiner (:$raw = False) is rw  is also<video_stream_combiner> {
-    my GTK::Compat::Value $gv .= new( G_TYPE_OBJECT );
+  method video-stream-combiner (:$raw = False) is rw
+    is also<video_stream_combiner>
+  {
+    my GLib::Value $gv .= new( G_TYPE_OBJECT );
     Proxy.new(
       FETCH => -> $ {
-        $gv = GTK::Compat::Value.new(
+        $gv = GLib::Value.new(
           self.prop_get('video-stream-combiner', $gv)
         );
         my $e = cast(GstElement, $gv.object);

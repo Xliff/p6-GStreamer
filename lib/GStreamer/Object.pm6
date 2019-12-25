@@ -9,6 +9,8 @@ use GStreamer::Raw::Object;
 
 use GTK::Raw::Utils;
 
+use GLib::Value;
+
 use GTK::Roles::Properties;
 
 class GStreamer::Object {
@@ -152,7 +154,7 @@ class GStreamer::Object {
     );
 
     $v ??
-      ( $raw ?? $v.Array !! $v.Array.map({ GTK::Compat::Value.new($_) }) )
+      ( $raw ?? $v.Array !! $v.Array.map({ GLib::Value.new($_) }) )
       !!
       Nil;
   }

@@ -10,7 +10,7 @@ use GStreamer::Raw::Structure;
 
 use GStreamer::Raw::Subs;
 
-use GTK::Compat::Value;
+use GLib::Value;
 
 class GStreamer::Structure {
   has GstStructure $!s handles <type>;
@@ -36,7 +36,7 @@ class GStreamer::Structure {
 
     # Callier is responsible for assigning proper values.
     die 'The values in %pairs must only contain GValue-compatible elements!'
-      unless %pairs.values.all ~~ (GTK::Compat::Value, GValue).any;
+      unless %pairs.values.all ~~ (GLib::Value, GValue).any;
 
     my $o = ::?CLASS.new_empty($name);
     $o.set_value(.key, .value) for %pairs.pairs;
@@ -363,7 +363,7 @@ class GStreamer::Structure {
     my $v = gst_structure_get_value($!s, $fieldname);
 
     $v ??
-      ( $raw ?? $v !! GTK::Compat::Value.new($v) )
+      ( $raw ?? $v !! GLib::Value.new($v) )
       !!
       Nil;
   }
@@ -393,7 +393,7 @@ class GStreamer::Structure {
     my $v = gst_structure_id_get_value($!s, $f);
 
     $v ??
-      ( $raw ?? $v !! GTK::Compat::Value.new($v) )
+      ( $raw ?? $v !! GLib::Value.new($v) )
       !!
       Nil;
   }

@@ -10,7 +10,7 @@ use GStreamer::Raw::Message;
 
 use GStreamer::Raw::Subs;
 
-use GTK::Compat::Value;
+use GLib::Value;
 
 use GStreamer::MiniObject;
 
@@ -857,7 +857,7 @@ class GStreamer::Message is GStreamer::MiniObject {
         my $v = gst_message_get_stream_status_object($!m);
 
         $v ??
-          ( $raw ?? $v !! GTK::Compat::Value.new($v) )
+          ( $raw ?? $v !! GLib::Value.new($v) )
           !!
           Nil;
       },
@@ -1244,7 +1244,7 @@ class GStreamer::Message is GStreamer::MiniObject {
     ($object, $property_name, $property_value) = ppr( $o, $pn, $pv );
     unless $raw {
       $object = GStreamer::Object.new($object);
-      $property_value = GTK::Compat::Value.new($property_value);
+      $property_value = GLib::Value.new($property_value);
     }
     ($object, $property_name, $property_value);
   }
