@@ -4,8 +4,8 @@ use GTK::Compat::Types;
 use GStreamer::Raw::Types;
 
 use GTK::Compat::MainLoop;
-use GTK::Compat::Source;
-use GTK::Compat::Value; # for prop_set call.
+use GLib::Source;
+use GLib::Value; # for prop_set call.
 
 use GStreamer::ElementFactory;
 use GStreamer::Main;
@@ -92,6 +92,6 @@ sub MAIN (
 
   say 'Deleting pipeline...';
   $pipeline.unref;
-  GTK::Compat::Source.remove($watch-id);
+  GLib::Source.remove($watch-id);
   $loop.unref;
 }

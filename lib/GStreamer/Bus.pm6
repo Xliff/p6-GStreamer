@@ -6,6 +6,7 @@ use GTK::Compat::Types;
 use GStreamer::Raw::Types;
 use GStreamer::Raw::Bus;
 
+use GLib::Source;
 use GStreamer::Object;
 
 our subset BusAncestry is export of Mu
@@ -89,7 +90,7 @@ class GStreamer::Bus is GStreamer::Object {
     my $s = gst_bus_create_watch($!b);
 
     $s ??
-      ( $raw ?? $s !! GTK::Compat::Source.new($s) )
+      ( $raw ?? $s !! GLib::Source.new($s) )
       !!
       Nil;
   }

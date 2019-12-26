@@ -2,7 +2,7 @@ use v6.c;
 
 use GStreamer::Raw::Types;
 
-use GTK::Compat::Value;
+use GLib::Value;
 
 use GStreamer::ElementFactory;
 use GStreamer::Main;
