@@ -7,7 +7,7 @@ use GStreamer::Raw::Toc;
 use GStreamer::MiniObject;
 use GStreamer::TagList;
 
-use GTK::Compat::Roles::ListData;
+use GLib::Roles::ListData;
 
 our subset TocEntryAncestry is export of Mu
   where GstTocEntry | GstMiniObject;
@@ -95,8 +95,8 @@ class GStreamer::TocEntry is GStreamer::MiniObject {
     my $sel = gst_toc_entry_get_sub_entries($!te);
 
     do if $sel {
-      my $se = GTK::Compat::GList.new($sel)
-        but GTK::Compat::Roles::ListData[GstTocEntry];
+      my $se = GLib::GList.new($sel)
+        but GLib::Roles::ListData[GstTocEntry];
 
       $se ??
         ( $raw ?? $se.Array !! $se.Array.map({ GStreamer::TocEntry.new($_) }) )
@@ -245,8 +245,8 @@ class GStreamer::Toc is GStreamer::MiniObject {
     my $ell = gst_toc_get_entries($!t);
 
     do if $ell {
-      my $el = GTK::Compat::GList($ell)
-        but GTK::Compat::Roles::ListData[GstTocEntry];
+      my $el = GLib::GList($ell)
+        but GLib::Roles::ListData[GstTocEntry];
 
       $el ??
         ( $raw ?? $el.Array !! $el.Array.map({ GStreamer::TocEntry.new($_) }) )

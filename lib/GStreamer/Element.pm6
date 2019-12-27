@@ -238,7 +238,7 @@ class GStreamer::Element is GStreamer::Object {
   {
     my $tl = gst_element_get_pad_template_list($!e)
       but
-      GTK::Compat::Roles::ListData[GstPadTemplate];
+      GLib::Roles::ListData[GstPadTemplate];
 
     # ADD OBJECT CREATION
     $tl;

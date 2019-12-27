@@ -8,7 +8,7 @@ use GStreamer::Raw::DeviceMonitor;
 
 use GStreamer::Object;
 
-use GTK::Compat::GList;
+use GLib::GList;
 
 use GStreamer::Bus;
 use GStreamer::Device;
@@ -84,8 +84,8 @@ class GStreamer::DeviceMonitor is GStreamer::Object {
       devices
     >
   {
-    my $d = GTK::Compat::GList.new( gst_device_monitor_get_devices($!dm) )
-      but GTK::Compat::Roles::ListData[GstDevice];
+    my $d = GLib::GList.new( gst_device_monitor_get_devices($!dm) )
+      but GLib::Roles::ListData[GstDevice];
 
     $d ??
       ( $raw ?? $d.Array !! $d.Array.map({ GStreamer::Device.new($_) }) )

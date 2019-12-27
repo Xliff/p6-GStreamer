@@ -10,7 +10,7 @@ use GStreamer::Element;
 use GStreamer::PluginFeature;
 use GStreamer::PadTemplate;
 
-use GTK::Compat::Roles::ListData;
+use GLib::Roles::ListData;
 
 our subset ElementFactoryAncestry is export of Mu
   where GstElementFactory | GstPluginFeature;
@@ -154,11 +154,11 @@ class GStreamer::ElementFactory is GStreamer::PluginFeature {
       static-pad-templates
     >
   {
-    my $pt = GTK::Compat::GList.new(
+    my $pt = GLib::GList.new(
       gst_element_factory_get_static_pad_templates($!ef)
     );
 
-    $pt = $pt but GTK::Compat::Roles::ListData[GstStaticPadTemplate] if $pt;
+    $pt = $pt but GLib::Roles::ListData[GstStaticPadTemplate] if $pt;
 
     # Check for object.
     $pt ??
@@ -196,11 +196,11 @@ class GStreamer::ElementFactory is GStreamer::PluginFeature {
   )
     is also<list-filter>
   {
-    my $ef = GTK::Compat::GList.new(
+    my $ef = GLib::GList.new(
       gst_element_factory_list_filter($list, $caps, $direction, $subsetonly)
     );
 
-    $ef = $ef but GTK::Compat::Roles::ListData[GstElementFactory] if $ef;
+    $ef = $ef but GLib::Roles::ListData[GstElementFactory] if $ef;
 
     $ef ??
       ( $raw ?? $ef.Array !!
@@ -216,11 +216,11 @@ class GStreamer::ElementFactory is GStreamer::PluginFeature {
   )
     is also<list-get-elements>
   {
-    my $ef = GTK::Compat::GList.new(
+    my $ef = GLib::GList.new(
       gst_element_factory_list_get_elements($type, $minrank)
     );
 
-    $ef = $ef but GTK::Compat::Roles::ListData[GstElementFactory] if $ef;
+    $ef = $ef but GLib::Roles::ListData[GstElementFactory] if $ef;
 
     $ef ??
       ( $raw ??

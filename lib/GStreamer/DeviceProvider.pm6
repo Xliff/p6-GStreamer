@@ -78,8 +78,8 @@ class GStreamer::DeviceProvider is GStreamer::Object {
     my $d = gst_device_provider_get_devices($!dp);
     return $d if $raw-list;
 
-    $d = GTK::Compat::GList.new($d)
-      but GTK::Compat::Roles::ListData[GstDevice];
+    $d = GLib::GList.new($d)
+      but GLib::Roles::ListData[GstDevice];
 
     $d ??
       ( $raw ?? $d.Array !! $d.Array.map({ GStreamer::Device.new($_) }) )

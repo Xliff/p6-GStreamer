@@ -6,7 +6,7 @@ use GTK::Compat::Types;
 use GStreamer::Raw::Types;
 use GStreamer::Raw::PluginFeature;
 
-use GTK::Compat::GList;
+use GLib::GList;
 
 use GStreamer::Object;
 #use GStreamer::Plugin;
@@ -113,7 +113,7 @@ class GStreamer::PluginFeature is GStreamer::Object {
     my $l = gst_plugin_feature_list_copy($list);
 
     $l ??
-      ( $raw ?? $l !! GTK::Compat::GList.new($list) )
+      ( $raw ?? $l !! GLib::GList.new($list) )
       !!
       Nil;
   }
