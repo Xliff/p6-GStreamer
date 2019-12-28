@@ -4,7 +4,7 @@ use GTK::Compat::Types;
 use GStreamer::Raw::Types;
 use GStreamer::Raw::Tags;
 
-use GTK::Compat::MainLoop;
+use GLib::MainLoop;
 use GTK::Compat::IOChannel;
 
 use GStreamer::ElementFactory;
@@ -46,7 +46,7 @@ sub MAIN {
     exit 1;
   }
 
-  ( %data<loop> = GTK::Compat::MainLoop.new ).run;
+  ( %data<loop> = GLib::MainLoop.new ).run;
 
   %data<playbin>.set_state(GST_STATE_NULL);
   for <loop stdin bus playbin> {

@@ -3,7 +3,7 @@ use v6.c;
 use GTK::Compat::Types;
 use GStreamer::Raw::Types;
 
-use GTK::Compat::MainLoop;
+use GLib::MainLoop;
 use GLib::Source;
 use GLib::Value; # for prop_set call.
 
@@ -18,7 +18,7 @@ sub MAIN (
   GStreamer::Main.init;
 
   my %e;
-  my $loop     = GTK::Compat::MainLoop.new;
+  my $loop     = GLib::MainLoop.new;
   my $pipeline = GStreamer::Pipeline.new('audio-player');
 
   %e{$_[0]} = GStreamer::ElementFactory.make($_[1], $_[2])

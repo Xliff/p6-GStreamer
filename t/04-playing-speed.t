@@ -6,7 +6,7 @@ use GStreamer::Raw::Types;
 
 use GDK::Threads;
 use GTK::Compat::IOChannel;
-use GTK::Compat::MainLoop;
+use GLib::MainLoop;
 
 use GStreamer::Element;
 use GStreamer::Event;
@@ -119,7 +119,7 @@ sub MAIN  {
   }
   %data<playing> = True;
   %data<rate> = 1;
-  ( %data<loop> = GTK::Compat::MainLoop.new ).run;
+  ( %data<loop> = GLib::MainLoop.new ).run;
 
 
   LEAVE {
