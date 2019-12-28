@@ -956,7 +956,7 @@ class GStreamer::Query is GStreamer::MiniObject {
       unless @params.all ~~ (GStreamer::Allocator, GstAllocator).any;
 
     my $ne = @params.elems;
-    my $p = GTK::Compat::Roles::TypedBuffer[GstAllocator].new( size => $ne );
+    my $p = GLib::Roles::TypedBuffer[GstAllocator].new( size => $ne );
 
     $p.bind($_, @params[$_]) for ^$ne;
     samewith($index, $allocator, $p.p);

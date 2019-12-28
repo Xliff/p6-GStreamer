@@ -149,7 +149,7 @@ class GStreamer::Object {
       $n_values,
       $values
     );
-    my $v = $values but GTK::Compat::Roles::TypedBuffer[GValue].new(
+    my $v = $values but GLib::Roles::TypedBuffer[GValue].new(
       size => $n_values
     );
 
