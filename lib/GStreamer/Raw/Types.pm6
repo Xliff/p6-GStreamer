@@ -1233,7 +1233,7 @@ class GstMessage           is repr<CStruct>      does GTK::Roles::Pointers is ex
 
   method type is rw {
     Proxy.new:
-      FETCH => -> $           { GstMessageTypeEnum($!type) },
+      FETCH => sub ($)           { GstMessageTypeEnum($!type) },
       STORE => -> $, Int() \t { $!type = t                 };
   }
 
@@ -1294,7 +1294,7 @@ class GstQuery             is repr<CStruct>      does GTK::Roles::Pointers is ex
 
   method type is rw {
     Proxy.new:
-      FETCH => -> $           { GstQueryTypeEnum($!type) },
+      FETCH => sub ($)           { GstQueryTypeEnum($!type) },
       STORE => -> $, Int() \t { $!type = t               };
   }
 }

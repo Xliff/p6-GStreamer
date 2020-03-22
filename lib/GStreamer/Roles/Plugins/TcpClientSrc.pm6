@@ -16,7 +16,7 @@ role GStreamer::Roles::Plugins::TcpClientSrc {
   method host is rw  {
     my GLib::Value $gv .= new( G_TYPE_STRING );
     Proxy.new(
-      FETCH => -> $ {
+      FETCH => sub ($) {
         $gv = GLib::Value.new(
           self.prop_get('host', $gv)
         );
@@ -33,7 +33,7 @@ role GStreamer::Roles::Plugins::TcpClientSrc {
   method port is rw  {
     my GLib::Value $gv .= new( G_TYPE_INT );
     Proxy.new(
-      FETCH => -> $ {
+      FETCH => sub ($) {
         $gv = GLib::Value.new(
           self.prop_get('port', $gv)
         );
@@ -50,7 +50,7 @@ role GStreamer::Roles::Plugins::TcpClientSrc {
   method protocol is rw  {
     my GLib::Value $gv .= new( G_TYPE_UINT );
     Proxy.new(
-      FETCH => -> $ {
+      FETCH => sub ($) {
         $gv = GLib::Value.new(
           self.prop_get('protocol', $gv)
         );
