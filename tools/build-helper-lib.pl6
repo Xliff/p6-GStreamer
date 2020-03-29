@@ -26,6 +26,15 @@ sub MAIN (
   my $gobj-ldflags = qqx{pkg-config gobject-2.0 --libs};
   my $dir = $directory.IO;
 
+  # GREEK ORDERING FOR CLARITY!
+  # α] .so files MUST go into resources/native/<package>/<lib>.so
+  # β] ,pm6 files MUST go into resources/GStreamer/Plugins/<package>/<lib>.pm6
+  my $rd = $*CWD.add('resources');
+  my $nd = $rd.add('native');
+
+  my $md = $rd;
+  $md .= add($_) for <GStreamer Plugins>;
+
   for $subdirs.split(',') -> $sd {
     my $d = $sd.trim;
 
@@ -65,26 +74,26 @@ sub MAIN (
           last if $_ eq $sd;
         }).skip(1).reverse;
 
-        my $lpd = $*CWD.add('resources').add('plugins');
-        $lpd .= add($_) for @dirs;
-
-        my $pdir = $*SPEC.splitdir($lpd);
-        my $bn = $pdir[* - 1].IO.basename;
         if %resolver.keys {
+          my ($pack, $bn) = @dirs[* - 2, * - 1];
+
+          my $cd = $nd.add($pack).add($bn);
+          $cd.mkdir;
+
           my ($h-io, $c-io, $so-io)
-            = <h c so>.map({ $lpd.add("{$bn}.{$_}") });
+            # α can be accomplished, here!
+            = <h c so>.map({ $cd.add("{$bn}.{$_}") });
 
           # Concerned about the naked 2, but this should hold for all current
           # plugins packages.
-          my $mod-io = $*CWD.add('lib').add('Plugins');
-          my $pdir-comp = $pdir.reverse.head(2).reverse.map( *.lc.tc );
-          my $plugin-dir = $pdir-comp[ ^(* - 1) ];
-          $mod-io .= add($_) for $plugin-dir;
+          # β must be done, here!
+          my $mod-io = $md;
+          #$mod-io .= add( .tc ) for $plugin-dir;
+          $mod-io .= add($pack.tc);
+          $mod-io .= add("{$bn.tc}.pm6");
           $mod-io.dirname.IO.mkdir;
-          $mod-io .= add($pdir-comp[* - 1] ~ '.pm6');
 
           # Create and write out header file.
-          $lpd.mkdir;
           $h-io.spurt:
             %resolver.keys.sort.map({ "GType global_{$_}(void);\n\n" }).join("\n");
 
