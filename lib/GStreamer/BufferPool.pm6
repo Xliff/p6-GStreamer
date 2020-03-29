@@ -6,7 +6,7 @@ use NativeCall;
 
 use GStreamer::Raw::Subs;
 
-use GTK::Compat::Types;
+
 use GStreamer::Raw::Types;
 use GStreamer::Raw::BufferPool;
 

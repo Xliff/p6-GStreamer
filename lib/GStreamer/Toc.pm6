@@ -1,6 +1,6 @@
 use v6.c;
 
-use GTK::Compat::Types;
+
 use GStreamer::Raw::Types;
 use GStreamer::Raw::Toc;
 

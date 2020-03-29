@@ -1,7 +1,7 @@
 #!/usr/bin/env perl6
 use v6.c;
 
-use GTK::Compat::Types;
+
 use GStreamer::Raw::Types;
 
 use GDK::Threads;
