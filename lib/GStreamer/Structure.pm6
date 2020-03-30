@@ -1,13 +1,10 @@
 use v6.c;
 
-use Method::Also;
-
 use NativeCall;
-
+use Method::Also;
 
 use GStreamer::Raw::Types;
 use GStreamer::Raw::Structure;
-
 use GStreamer::Raw::Subs;
 
 use GLib::Value;
@@ -20,10 +17,11 @@ class GStreamer::Structure {
   }
 
   method GStreamer::Raw::Types::GstStructure
+    is also<GstStructure>
   { $!s }
 
   multi method new (GstStructure $structure) {
-    self.bless( :$structure );
+    $structure ?? self.bless( :$structure ) !! Nil;
   }
 
   multi method new(
@@ -54,7 +52,9 @@ class GStreamer::Structure {
     ::?CLASS.new_empty($name);
   }
   method new_empty (Str() $name) is also<new-empty> {
-    self.bless( structure => gst_structure_new_empty($name) );
+    my $structure = gst_structure_new_empty($name);
+
+    $structure ?? self.bless( :$structure ) !! Nil;
   }
 
   multi method new (
@@ -72,7 +72,9 @@ class GStreamer::Structure {
     ::?CLASS.new_from_string($desc);
   }
   method new_from_string (Str() $desc) is also<new-from-string> {
-    self.bless( structure => gst_structure_new_from_string($desc) );
+    my $structure = gst_structure_new_from_string($desc);
+
+    $structure ?? self.bless( :$structure ) !! Nil;
   }
 
   # Requires var args beyond the two Quarks.
@@ -87,14 +89,24 @@ class GStreamer::Structure {
       is also<from-string>
   { * }
 
-  multi method from_string (Str() $desc) {
+  multi method from_string (GStreamer::Structure:U: Str() $desc) {
     my $es = CArray[Str].new;
 
     $es[0] = Str;
     samewith($desc, $es);
   }
-  multi method from_string (Str() $desc, CArray[Str] $end) {
-    self.bless( structure => gst_structure_from_string($desc, $end) );
+  multi method from_string (
+    GStreamer::Structure:U:
+    Str() $desc,
+    CArray[Str] $end,
+    :$raw = False
+  ) {
+    my $s = gst_structure_from_string($desc, $end);
+
+    $s ??
+      ( $raw ?? $s !! GStreamer::Structure.new($s) )
+      !!
+      GstStructure;
   }
 
   method name is rw {
@@ -102,7 +114,7 @@ class GStreamer::Structure {
       FETCH => sub ($) {
         gst_structure_get_name($!s);
       },
-      STORE => sub ($, $name is copy) {
+      STORE => sub ($, Str() $name is copy) {
         gst_structure_set_name($!s, $name);
       }
     );
@@ -128,7 +140,7 @@ class GStreamer::Structure {
     $s ??
       ( $raw ?? $s !! GStreamer::Structure.new($s) )
       !!
-      Nil;
+      GstStructure;
   }
 
   multi method clear {
@@ -161,7 +173,7 @@ class GStreamer::Structure {
   method fixate_field_boolean (Str() $field_name, Int() $target)
     is also<fixate-field-boolean>
   {
-    my gboolean $t = $target;
+    my gboolean $t = $target.so.Int;
 
     gst_structure_fixate_field_boolean($!s, $field_name, $t);
   }
@@ -217,58 +229,101 @@ class GStreamer::Structure {
     gst_structure_free($s);
   }
 
-  method get_array (Str() $fieldname, $array is rw) is also<get-array> {
+  proto method get_array (|)
+    is also<get-array>
+  { * }
+
+  multi method get_array (Str() $fieldname) {
+    samewith($fieldname, $);
+  }
+  multi method get_array (Str() $fieldname, $array is rw)  {
     my $aa = CArray[Pointer[GValueArray]].new;
 
     $aa[0] = Pointer[GValueArray].new;
     gst_structure_get_array($!s, $fieldname, $array);
-    ($array) = ppr($aa);
+    $array = ppr($aa)[0];
   }
 
-  method get_boolean (Str() $fieldname, $value is rw) is also<get-boolean> {
+  proto method get_boolean (|)
+    is also<get-boolean>
+  { * }
+
+  multi method get_boolean (Str() $fieldname) {
+    samewith($fieldname, $);
+  }
+  multi method get_boolean (Str() $fieldname, $value is rw)  {
     my gboolean $v = 0;
 
     gst_structure_get_boolean($!s, $fieldname, $value);
     $value = $v;
   }
 
-  method get_clock_time (Str() $fieldname, $value is rw)
+  proto method get_clock_time (|)
     is also<get-clock-time>
-  {
+  { * }
+
+  multi method get_clock_time (Str() $fieldname) {
+    samewith($fieldname, $);
+  }
+  multi method get_clock_time (Str() $fieldname, $value is rw) {
     my GstClockTime $v = 0;
 
     gst_structure_get_clock_time($!s, $fieldname, $v);
     $value = $v;
   }
 
-  method get_date (Str() $fieldname, $value is rw) is also<get-date> {
+  proto method get_date (|)
+    is also<get-date>
+  { * }
+
+  multi method get_date (Str() $fieldname) {
+    samewith($fieldname, $);
+  }
+  multi method get_date (Str() $fieldname, $value is rw) {
     my $v = CArray[Pointer[GDate]].new;
 
     $v[0] = Pointer[GDate].new;
     gst_structure_get_date($!s, $fieldname, $v);
-    ($value) = ppr($v);
+    $value = ppr($v)[0];
   }
 
-  method get_date_time (Str() $fieldname, $value is rw)
+  proto method get_date_time (|)
     is also<get-date-time>
-  {
+  { * }
+
+  multi method get_date_time (Str() $fieldname) {
+    samewith($fieldname, $);
+  }
+  multi method get_date_time (Str() $fieldname, $value is rw) {
     my $v = CArray[GstDateTime];
 
     $v[0] = GstDateTime;
     gst_structure_get_date_time($!s, $fieldname, $v);
-    ($value) = ppr($v);
+    $value = ppr($v)[0];
   }
 
-  method get_double (Str() $fieldname, $value is rw) is also<get-double> {
+  proto method get_double (|)
+    is also<get-double>
+  { * }
+
+  multi method get_double (Str() $fieldname) {
+    samewith($fieldname, $);
+  }
+  multi method get_double (Str() $fieldname, $value is rw) {
     my gdouble $v = 0e0;
 
     gst_structure_get_double($!s, $fieldname, $v);
     $value = $v;
   }
 
-  method get_enum (Str() $fieldname, Int() $enumtype, $value is rw)
+  proto method get_enum (|)
     is also<get-enum>
-  {
+  { * }
+
+  multi method get_enum (Str() $fieldname, Int() $enumtype) {
+    samewith($fieldname, $enumtype, $);
+  }
+  multi method get_enum (Str() $fieldname, Int() $enumtype, $value is rw) {
     my gint $v = 0;
     my GType $et = $enumtype;
 
@@ -279,52 +334,83 @@ class GStreamer::Structure {
     GTypeEnum( gst_structure_get_field_type($!s, $fieldname) );
   }
 
-  method get_flagset (
+  proto method get_flagset (|)
+    is also<get-flagset>
+  { * }
+
+  multi method get_flagset (Str() $fieldname) {
+    samewith($fieldname, $, $);
+  }
+  multi method get_flagset (
     Str() $fieldname,
     $value_flags is rw,
     $value_mask is rw
-  )
-    is also<get-flagset>
-  {
+  ) {
     my guint ($vf, $vm) = 0 xx 2;
 
     gst_structure_get_flagset($!s, $fieldname, $vf, $vm);
     ($value_flags, $value_mask) = ($vf, $vm);
   }
 
-  method get_fraction (
+  proto method get_fraction (|)
+    is also<get-fraction>
+  { * }
+
+  multi method get_fraction (Str() $fieldname) {
+    samewith($fieldname, $, $);
+  }
+  multi method get_fraction (
     Str() $fieldname,
     $value_numerator is rw,
     $value_denominator is rw
-  )
-    is also<get-fraction>
-  {
+  ) {
     my gint ($vn, $vd) = 0 xx 2;
 
     gst_structure_get_fraction($!s, $fieldname, $vn, $vd);
     ($value_numerator, $value_denominator) = ($vn, $vd);
   }
 
-  method get_int (Str() $fieldname, $value is rw) is also<get-int> {
+  proto method get_int (|)
+    is also<get-int>
+  { * }
+
+  multi method get_int (Str() $fieldname) {
+    samewith($fieldname, $);
+  }
+  multi method get_int (Str() $fieldname, $value is rw)  {
     my gint $v = 0;
 
     gst_structure_get_int($!s, $fieldname, $value);
     $value = $v;
   }
 
-  method get_int64 (Str() $fieldname, $value is rw) is also<get-int64> {
+  proto method get_int64 (|)
+    is also<get-int64>
+  { * }
+
+  multi method get_int64 (Str() $fieldname) {
+    samewith($fieldname, $);
+  }
+  multi method get_int64 (Str() $fieldname, $value is rw) {
     my gint64 $v = 0;
 
     gst_structure_get_int64($!s, $fieldname, $v);
     $value = $v;
   }
 
-  method get_list (Str() $fieldname, $array is rw) is also<get-list> {
+  proto method get_list (|)
+    is also<get-list>
+  { * }
+
+  multi method get_list (Str() $fieldname) {
+    samewith($fieldname, $);
+  }
+  multi method get_list (Str() $fieldname, $array is rw) {
     my $a = CArray[Pointer[GValueArray]];
 
     $a[0] = Pointer[GValueArray].new;
     gst_structure_get_list($!s, $fieldname, $array);
-    ($array) = ppr($a);
+    $array = ppr($a)[0];
   }
 
   method get_name_id is also<get-name-id> {
@@ -341,14 +427,28 @@ class GStreamer::Structure {
     unstable_get_type( self.^name, &gst_structure_get_type, $n, $t );
   }
 
-  method get_uint (Str() $fieldname, $value is rw) is also<get-uint> {
+  proto method get_uint (|)
+    is also<get-uint>
+  { * }
+
+  multi method get_uint (Str() $fieldname) {
+    samewith($fieldname, $);
+  }
+  multi method get_uint (Str() $fieldname, $value is rw) {
     my guint $v = 0;
 
     gst_structure_get_uint($!s, $fieldname, $v);
     $value = $v;
   }
 
-  method get_uint64 (Str() $fieldname, $value is rw) is also<get-uint64> {
+  proto method get_uint64 (|)
+    is also<get-uint64>
+  { * }
+
+  multi method get_uint64 (Str() $fieldname) {
+    samewith($fieldname, $);
+  }
+  multi method get_uint64 (Str() $fieldname, $value is rw) {
     my guint64 $v = 0;
 
     gst_structure_get_uint64($!s, $fieldname, $value);
@@ -365,11 +465,11 @@ class GStreamer::Structure {
     $v ??
       ( $raw ?? $v !! GLib::Value.new($v) )
       !!
-      Nil;
+      GValue;
   }
 
   method has_field (Str() $fieldname) is also<has-field> {
-    gst_structure_has_field($!s, $fieldname);
+    so gst_structure_has_field($!s, $fieldname);
   }
 
   method has_field_typed (Str() $fieldname, Int() $type)
@@ -395,7 +495,7 @@ class GStreamer::Structure {
     $v ??
       ( $raw ?? $v !! GLib::Value.new($v) )
       !!
-      Nil;
+      GValue;
   }
 
   method id_has_field (Int() $field) is also<id-has-field> {
