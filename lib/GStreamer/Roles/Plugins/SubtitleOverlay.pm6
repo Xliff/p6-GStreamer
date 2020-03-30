@@ -2,15 +2,13 @@ use v6.c;
 
 use Method::Also;
 
-use NativeCall;
-
+use GLib::Raw::Enums;
 
 use GLib::Value;
 
 use GLib::Roles::Object;
 
 role GStreamer::Roles::Plugins::SubtitleOverlay {
-  also does GLib::Roles::Object;
 
   # Type: gchar
   method font-desc is rw  {
