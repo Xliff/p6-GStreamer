@@ -6,7 +6,7 @@ use Method::Also;
 use GStreamer::Raw::Types;
 use GStreamer::Raw::DateTime;
 
-use GTK::Compat::DateTime;
+use GLib::DateTime;
 
 # BOXED
 
@@ -232,7 +232,7 @@ class GStreamer::DateTime {
     my $gdt = gst_date_time_to_g_date_time($!dt);
 
     $gdt ??
-      ( $raw ?? $gdt !! GTK::Compat::DateTime.new($gdt) )
+      ( $raw ?? $gdt !! GLib::DateTime.new($gdt) )
       !!
       Nil;
   }
