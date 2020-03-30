@@ -1,8 +1,6 @@
 use v6.c;
 
-use NativeCall;
-
-
+use GStreamer::Raw::Definitions;
 
 unit package GStreamer::Plugins::Raw::Types;
 
@@ -27,7 +25,7 @@ our enum GstSyncMethodEnum is export <
   GST_SYNC_METHOD_BURST
   GST_SYNC_METHOD_BURST_KEYFRAME
   GST_SYNC_METHOD_BURST_WITH_KEYFRAME
->
+>;
 
 constant GstClientStatus is export := uint32;
 our enum GstClientStatusEnum is export (
