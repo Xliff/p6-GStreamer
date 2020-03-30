@@ -153,12 +153,14 @@ sub MAIN (
           };
           my $plugin-package =
             "GStreamer::Plugins::{ $plugin-rel.reverse.join('::') }";
-          my $lib-resource = $*CWD.add('plugins').add('lib');
+          my $lib-resource = $*CWD.add('native');
           #$lib-resource .= add($_) for $*SPEC.splitdir($so-io)[* - 3 .. * - 1];
           $lib-resource .= add($_) for $*SPEC.splitdir($so-io).tail(3);
 
           my $nc-defs  = qq:to/NC-PRE/;
             use NativeCall;
+
+            use GLib::Raw::Definitions;
 
             unit package {$plugin-package};
 
