@@ -19,11 +19,11 @@ use GStreamer::Element;
 use GStreamer::Sample;
 use GStreamer::TagList;
 
-use GTK::Roles::Properties;
+use GLib::Roles::Object;
 use GTK::Roles::Signals::Generic;
 
 role GStreamer::Roles::Plugins::Playbin {
-  also does GTK::Roles::Properties;
+  also does GLib::Roles::Object;
   also does GTK::Roles::Signals::Generic;
 
   has $!pb;

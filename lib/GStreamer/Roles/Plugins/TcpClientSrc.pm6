@@ -7,10 +7,10 @@ use NativeCall;
 
 use GLib::Values;
 
-use GTK::Roles::Properties;
+use GLib::Roles::Object;
 
 role GStreamer::Roles::Plugins::TcpClientSrc {
-  also does GTK::Roles::Properties;
+  also does GLib::Roles::Object;
 
   # Type: gchar
   method host is rw  {
