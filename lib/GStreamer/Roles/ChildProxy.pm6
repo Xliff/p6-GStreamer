@@ -4,7 +4,6 @@ use Method::Also;
 
 use NativeCall;
 
-
 use GStreamer::Raw::Types;
 use GStreamer::Raw::ChildProxy;
 
@@ -27,22 +26,12 @@ role GStreamer::Roles::ChildProxy {
     gst_child_proxy_child_removed($!cp, $child, $name);
   }
 
-  method get_child_by_index (Int() $index)
-    is also<
-      get-child-by-index
-      child_by_index
-      child-by-index
-    >
+  method get_child_by_index (Int() $index) is also<get-child-by-index>
   {
     gst_child_proxy_get_child_by_index($!cp, $index);
   }
 
-  method get_child_by_name (Str() $name)
-    is also<
-      get-child-by-name
-      child_by_name
-      child-by-name
-    >
+  method get_child_by_name (Str() $name) is also<get-child-by-name>
   {
     gst_child_proxy_get_child_by_name($!cp, $name);
   }
@@ -52,7 +41,7 @@ role GStreamer::Roles::ChildProxy {
       get-children-count
       children_count
       children-count
-      count
+      elems
     >
   {
     gst_child_proxy_get_children_count($!cp);
