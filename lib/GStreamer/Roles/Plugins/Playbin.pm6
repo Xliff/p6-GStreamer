@@ -7,7 +7,7 @@ use NativeCall;
 
 use GStreamer::Raw::Types;
 
-use GTK::Raw::ReturnedValue;
+use GLib::Raw::ReturnedValue;
 use GStreamer::Raw::Subs;
 use GStreamer::Roles::Plugins::Raw::Playbin;
 
