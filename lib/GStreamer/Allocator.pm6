@@ -6,7 +6,7 @@ use GStreamer::Raw::Allocator;
 
 use GStreamer::Object;
 
-our subset AllocatorAncestry is export of Mu
+our subset GstAllocatorAncestry is export of Mu
   where GstAllocator | GstObject;
 
 class GStreamer::Allocator is GStreamer::Object {
@@ -16,7 +16,7 @@ class GStreamer::Allocator is GStreamer::Object {
     self.setAllocator($allocator);
   }
 
-  method setAllocator (AllocatorAncestry $_) {
+  method setAllocator (GstAllocatorAncestry $_) {
     my $to-parent;
 
     $!a = do {
@@ -33,8 +33,8 @@ class GStreamer::Allocator is GStreamer::Object {
     self.setGstObject($to-parent);
   }
 
-  method new (GstAllocator $allocator) {
-    self.bless( :$allocator );
+  method new (GstAllocatorAncestry $allocator) {
+    $allocator ?? self.bless( :$allocator ) !! Nil;
   }
 
   method alloc (Int() $size, gpointer $params, :$raw = False) {
@@ -44,7 +44,7 @@ class GStreamer::Allocator is GStreamer::Object {
     $m ??
       ( $raw ?? $m !! GStreamer::Memory.new($m) )
       !!
-      Nil;
+      GstMemory;
   }
 
   method find (GStreamer::Allocator:U: Str() $name, :$raw = False) {
@@ -53,7 +53,7 @@ class GStreamer::Allocator is GStreamer::Object {
     $a ??
       ( $raw ?? $a !! GStreamer::Allocator.new($a) )
       !!
-      Nil;
+      GstAllocator;
   }
 
   method free (GstMemory() $memory) {
