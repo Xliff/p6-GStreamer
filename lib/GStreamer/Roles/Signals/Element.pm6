@@ -5,10 +5,10 @@ use NativeCall;
 
 use GStreamer::Raw::Types;
 
-use GTK::Roles::Signals::Generic;
+use GLib::Roles::Signals::Generic;
 
 role GStreamer::Roles::Signals::Element {
-  also does GTK::Roles::Signals::Generic;
+  also does GLib::Roles::Signals::Generic;
 
   has %!signals-e;
 
