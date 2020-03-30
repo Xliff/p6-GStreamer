@@ -2,7 +2,6 @@ use v6.c;
 
 use NativeCall;
 
-
 use GStreamer::Raw::Types;
 
 use GLib::Roles::Signals::Generic;
