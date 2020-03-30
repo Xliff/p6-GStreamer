@@ -5,7 +5,7 @@ use Method::Also;
 use NativeCall;
 
 
-use GLib::Values;
+use GLib::Value;
 
 use GLib::Roles::Object;
 
