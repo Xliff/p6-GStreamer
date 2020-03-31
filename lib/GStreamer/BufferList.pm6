@@ -2,7 +2,6 @@ use v6.c;
 
 use Method::Also;
 
-
 use GStreamer::Raw::Types;
 use GStreamer::Raw::BufferList;
 
@@ -42,39 +41,45 @@ class GStreamer::BufferList is GStreamer::MiniObject {
   { $!bl }
 
   multi method new (GstBufferList $buffer-list) {
-    self.bless( :$buffer-list );
+    $buffer-list ?? self.bless( :$buffer-list ) !! Nil;
   }
   multi method new {
-    self.bless( buffer-list => gst_buffer_list_new() );
+    my $buffer-list = gst_buffer_list_new();
+
+    $buffer-list ?? self.bless( :$buffer-list ) !! Nil;
   }
 
   method new_sized (Int() $size) is also<new-sized> {
     my guint $s = $size;
+    my $buffer-list = gst_buffer_list_new_sized($s);
 
-    self.bless( buffer-list => gst_buffer_list_new_sized($s) );
+    $buffer-list ?? self.bless( :$buffer-list ) !! Nil;
   }
 
   method calculate_size is also<calculate-size> {
     gst_buffer_list_calculate_size($!bl);
   }
 
-  multi method copy (:$raw = False) {
-    GStreamer::BufferList.copy($!bl, :$raw);
-  }
-  multi method copy (GstBufferList() $cpy, :$raw = False) {
-    my $c = cast(
-      GstBufferList,
-      GStreamer::MiniObject.copy( cast(GstMiniObject, $cpy) )
-    );
-
-    $c ??
-      ( $raw ?? $c !! GStreamer::BufferList.new($c) )
-      !!
-      Nil;
-  }
+  # multi method copy (:$raw = False) {
+  #   GStreamer::BufferList.copy($!bl, :$raw);
+  # }
+  # multi method copy (GstBufferList() $cpy, :$raw = False) {
+  #   my $c = cast(
+  #     GstBufferList,
+  #     GStreamer::MiniObject.copy( cast(GstMiniObject, $cpy) )
+  #   );
+  #
+  #   $c ??
+  #     ( $raw ?? $c !! GStreamer::BufferList.new($c) )
+  #     !!
+  #     GstBufferList;
+  # }
 
   proto method copy_deep (|)
-    is also<copy-deep>
+    is also<
+      copy
+      copy-deep
+    >
   { * }
 
   multi method copy_deep (:$raw = False)  {
@@ -90,7 +95,7 @@ class GStreamer::BufferList is GStreamer::MiniObject {
     $c ??
       ( $raw ?? $c !! GStreamer::BufferList.new($c) )
       !!
-      Nil;
+      GstBufferList;
   }
 
   method foreach (
@@ -107,7 +112,7 @@ class GStreamer::BufferList is GStreamer::MiniObject {
     $b ??
       ( $raw ?? $b !! GStreamer::Buffer.new($b) )
       !!
-      Nil;
+      GstBuffer;
   }
 
   method get_type is also<get-type> {
@@ -123,11 +128,12 @@ class GStreamer::BufferList is GStreamer::MiniObject {
     $b ??
       ( $raw ?? $b !! GStreamer::Buffer.new($b) )
       !!
-      Nil;
+      GstBuffer;
   }
 
   method insert (Int() $idx, GstBuffer() $buffer) {
     my guint $i = $idx;
+
     gst_buffer_list_insert($!bl, $idx, $buffer);
   }
 
