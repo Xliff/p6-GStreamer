@@ -1,13 +1,10 @@
 use v6.c;
 
+use NativeCall;
 use Method::Also;
 
-use NativeCall;
-
-use GStreamer::Raw::Subs;
-
-
 use GStreamer::Raw::Types;
+use GStreamer::Raw::Subs;
 use GStreamer::Raw::BufferPool;
 
 use GStreamer::Object;
@@ -44,7 +41,9 @@ class GStreamer::BufferPool is GStreamer::Object {
   { $!bp }
 
   method new {
-    self.bless( pool => gst_buffer_pool_new() );
+    my $pool = gst_buffer_pool_new();
+    
+    $pool ?? self.bless( :$pool ) !! Nil;
   }
 
   method acquire_buffer (
@@ -62,7 +61,7 @@ class GStreamer::BufferPool is GStreamer::Object {
       gst_buffer_pool_acquire_buffer($!bp, $ba, $pa)
     );
     ($buffer, $params) = ppr($ba, $pa);
-    ($buffer, $params, $retVal);
+    ($retVal, $buffer, $params);
   }
 
   method get_options is also<get-options> {
@@ -101,14 +100,10 @@ class GStreamer::BufferPool is GStreamer::Object {
 
 }
 
+use GLib::Roles::StaticClass;
+
 class GStreamer::BufferPoolConfig {
-
-  method new (|) {
-    warn 'GStreamer::BufferPoolConfig is a static class and needs no instantiation'
-      if $DEBUG;
-
-    GStreamer::BufferPoolConfig;
-  }
+  also does GLib::Roles::StaticClass;
 
   method add_option (GstStructure() $s, Str() $option) is also<add-option> {
     gst_buffer_pool_config_add_option($s, $option);
@@ -126,6 +121,9 @@ class GStreamer::BufferPoolConfig {
     my GstAllocationParams $p = 0;
 
     $aa = Pointer[GstAllocator].new;
+
+    die 'Could not allocate a Pointer[GstAllocator]!' unless $aa;
+
     my $rc = gst_buffer_pool_config_get_allocator($s, $aa, $p);
 
     do if $rc {
@@ -133,7 +131,7 @@ class GStreamer::BufferPoolConfig {
       $allocator = GStreamer::Allocator.new($aa) unless $raw;
       ($allocator, $params, $rc);
     } else {
-      Nil xx 3;
+      Nil;
     }
   }
 
@@ -157,6 +155,9 @@ class GStreamer::BufferPoolConfig {
     my $ca = CArray[Pointer[GstCaps]].new;
 
     $ca[0] = Pointer[GstCaps].new;
+
+    die 'Could not allocate a Pointer[GstCaps]!' unless $ca[0];
+
     my $rc = gst_buffer_pool_config_get_params($s, $ca, $sz, $mnb, $mxb);
 
     do if $rc {
@@ -164,7 +165,7 @@ class GStreamer::BufferPoolConfig {
       $caps = GStreamer.Caps.new($caps) unless $raw;
       ($caps ,$size ,$min_buffers ,$max_buffers, $rc);
     } else {
-      Nil xx 5;
+      Nil;
     }
   }
 
