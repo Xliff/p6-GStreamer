@@ -30,7 +30,7 @@ class GStreamer::Object {
   { $!gst-o }
 
   multi method new (GstObject $object) {
-    self.bless( :$object );
+    $object ?? self.bless( :$object ) !! Nil;
   }
   multi method new (|c) {
     my $dieMsg = qq:to/DIE/.chomp;
@@ -151,7 +151,7 @@ class GStreamer::Object {
       :$raw
     );
 
-    $rv[1];
+    $rv[0] ?? $rv[1] !! Nil;
   }
   multi method get_g_value_array (
     Str() $property_name,
