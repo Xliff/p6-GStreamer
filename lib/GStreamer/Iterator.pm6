@@ -2,7 +2,6 @@ use v6.c;
 
 use Method::Also;
 
-
 use GStreamer::Raw::Types;
 use GStreamer::Raw::Iterator;
 
@@ -13,69 +12,88 @@ class GStreamer::Iterator {
     $!i = $iterator;
   }
 
-  method new (
-    guint $size,
-    GType $type,
-    GMutex $lock,
-    guint32 $master_cookie,
+  multi method new (GstIterator $iterator) {
+    $iterator ?? self.bless( :$iterator ) !! Nil;
+  }
+  multi method new (
+    Int() $size,
+    Int() $type,
+    GMutex() $lock,
+    Int() $master_cookie,
     GstIteratorCopyFunction $copy,
     GstIteratorNextFunction $next,
     GstIteratorItemFunction $item,
     GstIteratorResyncFunction $resync,
     GstIteratorFreeFunction $free
   ) {
-    self.bless(
-      iterator => gst_iterator_new(
-        $size,
-        $type,
-        $lock,
-        $master_cookie,
-        $copy,
-        $next,
-        $item,
-        $resync,
-        $free
-      )
+    my guint $s = $size;
+    my GType $t = $type;
+    my guint32 $m = $master_cookie;
+    my $iterator = gst_iterator_new(
+      $s,
+      $t,
+      $lock,
+      $m,
+      $copy,
+      $next,
+      $item,
+      $resync,
+      $free
     );
+
+    $iterator ?? self.bless( :$iterator ) !! Nil;
   }
 
   method new_list (
-    GType $type,
-    GMutex $lock,
-    guint32 $master_cookie,
-    GList $list,
-    GObject $owner,
+    Int() $type,
+    GMutex() $lock,
+    Int() $master_cookie,
+    GList() $list,
+    GObject() $owner,
     GstIteratorItemFunction $item
   )
     is also<new-list>
   {
-    self.bless(
-      iterator => gst_iterator_new_list(
-        $type,
-        $lock,
-        $master_cookie,
-        $list,
-        $owner,
-        $item
-      )
+    my GType $t = $type;
+    my guint32 $m = $master_cookie;
+    my $iterator = gst_iterator_new_list(
+      $t,
+      $lock,
+      $m,
+      $list,
+      $owner,
+      $item
     );
+
+    $iterator ?? self.bless( :$iterator ) !! Nil;
   }
 
   method new_single (GValue() $object) is also<new-single> {
-    self.bless( iterator => gst_iterator_new_single($!i, $object) );
+    my $iterator = gst_iterator_new_single($!i, $object);
+
+    $iterator ?? self.bless( :$iterator ) !! Nil;
   }
 
-  method copy {
-    GStreamer::Iterator.new( iterator => gst_iterator_copy($!i) );
+  method copy (:$raw = False) {
+    my $c = gst_iterator_copy($!i);
+
+    $c ??
+      ( $raw ?? $c !! GStreamer::Iterator.new($c) )
+      !!
+      GstIterator;
   }
 
   method filter (
     GCompareFunc $func,
-    GValue() $user_data = gpointer
+    GValue() $user_data = gpointer,
+    :$raw = False
   ) {
-    GStreamer::Iterator.new(
-      iterator => gst_iterator_filter($!i, $func, $user_data)
-    );
+    my $i = gst_iterator_filter($!i, $func, $user_data);
+
+    $i ??
+      ( $raw ?? $i !! GStreamer::Iterator.new($i) )
+      !!
+      GstIterator;
   }
 
   method find_custom (
@@ -85,7 +103,7 @@ class GStreamer::Iterator {
   )
     is also<find-custom>
   {
-    gst_iterator_find_custom($!i, $func, $elem, $user_data);
+    so gst_iterator_find_custom($!i, $func, $elem, $user_data);
   }
 
   method fold (
@@ -109,6 +127,7 @@ class GStreamer::Iterator {
 
   method get_type is also<get-type> {
     state ($n, $t);
+    
     unstable_get_type( self.^name, &gst_iterator_get_type, $n, $t );
   }
 
