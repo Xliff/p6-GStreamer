@@ -2,7 +2,6 @@ use v6.c;
 
 use Method::Also;
 
-
 use GStreamer::Raw::Types;
 use GStreamer::Raw::DateTime;
 
@@ -22,7 +21,7 @@ class GStreamer::DateTime {
   { $!dt }
 
   multi method new (GstDateTime $datetime) {
-    self.bless( :$datetime );
+    $datetime ?? self.bless( :$datetime ) !! Nil;
   }
   multi method new (
     Num() $tzoffset,
@@ -37,42 +36,41 @@ class GStreamer::DateTime {
     my gint ($y, $m, $d, $h, $mn) =
       ($year, $month, $day, $hour, $minute, $seconds);
     my gdouble $s = $seconds;
+    my $datetime = gst_date_time_new($tz, $y, $m, $d, $h, $mn, $s);
 
-    self.bless( datetime => gst_date_time_new($tz, $y, $m, $d, $h, $mn, $s) );
+    $datetime ?? self.bless( :$datetime ) !! Nil;
   }
 
   method new_from_g_date_time (GDateTime() $dt) is also<new-from-g-date-time> {
-    self.bless(
-      datetime => gst_date_time_new_from_g_date_time($dt)
-    );
+    my $datetime = gst_date_time_new_from_g_date_time($dt);
+
+    $datetime ?? self.bless( :$datetime ) !! Nil;
   }
 
   method new_from_iso8601_string (Str() $datestr)
     is also<new-from-iso8601-string>
   {
-    self.bless(
-      datetime => gst_date_time_new_from_iso8601_string($datestr)
-    );
+    my $datetime = gst_date_time_new_from_iso8601_string($datestr);
+
+    $datetime ?? self.bless( :$datetime ) !! Nil;
   }
 
   method new_from_unix_epoch_local_time (Int() $local-epoch)
     is also<new-from-unix-epoch-local-time>
   {
     my gint64 $le = $local-epoch;
+    my $datetime = gst_date_time_new_from_unix_epoch_local_time($le);
 
-    self.bless(
-      datetime => gst_date_time_new_from_unix_epoch_local_time($le)
-    );
+    $datetime ?? self.bless( :$datetime ) !! Nil;
   }
 
   method new_from_unix_epoch_utc (Int() $epoch)
     is also<new-from-unix-epoch-utc>
   {
     my gint64 $e = $epoch;
+    my $datetime = gst_date_time_new_from_unix_epoch_utc($e);
 
-    self.bless(
-      datetime => gst_date_time_new_from_unix_epoch_utc($e)
-    );
+    $datetime ?? self.bless( :$datetime ) !! Nil;
   }
 
   method new_local_time (
@@ -87,34 +85,41 @@ class GStreamer::DateTime {
   {
     my gint ($y, $m, $d, $h, $mn) = ($year, $month, $day, $hour, $minute);
     my gdouble $s = $seconds;
+    my $datetime = gst_date_time_new_local_time($y, $m, $d, $h, $mn, $s);
 
-    self.bless(
-      datetime => gst_date_time_new_local_time($y, $m, $d, $h, $mn, $s)
-    );
+    $datetime ?? self.bless( :$datetime ) !! Nil;
   }
 
   method new_now_local_time is also<new-now-local-time> {
-    self.bless( datetime => gst_date_time_new_now_local_time() );
+    my $datetime = gst_date_time_new_now_local_time();
+
+    $datetime ?? self.bless( :$datetime ) !! Nil;
   }
 
   method new_now_utc is also<new-now-utc> {
-    self.bless( datetime => gst_date_time_new_now_utc() );
+    my $datetime = gst_date_time_new_now_utc();
+
+    $datetime ?? self.bless( :$datetime ) !! Nil;
   }
 
   method new_y (Int() $y) is also<new-y> {
-    self.bless( datetime =>  gst_date_time_new_y($y) );
+    my $datetime = gst_date_time_new_y($y);
+
+    $datetime ?? self.bless( :$datetime ) !! Nil;
   }
 
   method new_ym (Int() $year, Int() $month) is also<new-ym> {
     my gint ($y, $m) = ($year, $month);
+    my $datetime = gst_date_time_new_ym($y, $m);
 
-    self.bless( datetime => gst_date_time_new_ym($y, $m) );
+    $datetime ?? self.bless( :$datetime ) !! Nil;
   }
 
   method new_ymd (Int() $year, Int() $month, Int() $day) is also<new-ymd> {
     my gint ($y, $m, $d) = ($year, $month, $day);
+    my $datetime = gst_date_time_new_ymd($!dt, $y, $m, $d);
 
-    self.bless( datetime => gst_date_time_new_ymd($!dt, $y, $m, $d) );
+    $datetime ?? self.bless( :$datetime ) !! Nil;
   }
 
   method get_day
@@ -223,7 +228,7 @@ class GStreamer::DateTime {
     so gst_date_time_has_year($!dt);
   }
 
-  method ref {
+  method ref is also<upref> {
     gst_date_time_ref($!dt);
     self;
   }
@@ -234,14 +239,14 @@ class GStreamer::DateTime {
     $gdt ??
       ( $raw ?? $gdt !! GLib::DateTime.new($gdt) )
       !!
-      Nil;
+      GDateTime;
   }
 
   method to_iso8601_string is also<to-iso8601-string> {
     gst_date_time_to_iso8601_string($!dt);
   }
 
-  method unref {
+  method unref is also<downref> {
     gst_date_time_unref($!dt);
   }
 
