@@ -3,7 +3,6 @@ use v6.c;
 use Method::Also;
 use NativeCall;
 
-
 use GStreamer::Raw::Types;
 use GStreamer::Raw::Plugin;
 
@@ -41,7 +40,7 @@ class GStreamer::Plugin is GStreamer::Object {
   }
 
   method new (GstPlugin $plugin) {
-    self.bless( :$plugin );
+    $plugin ?? self.bless( :$plugin ) !! Nil;
   }
 
   method GStreamer::Raw::Types::GstPlugin
@@ -119,6 +118,7 @@ class GStreamer::Plugin is GStreamer::Object {
 
   method get_type is also<get-type> {
     state ($n, $t);
+
     unstable_get_type( self.^name, &gst_plugin_get_type, $n, $t );
   }
 
@@ -148,7 +148,7 @@ class GStreamer::Plugin is GStreamer::Object {
     $pp ??
       ( $raw ?? $pp !! GStreamer::Plugin.new($pp) )
       !!
-      Nil;
+      GstPlugin;
   }
 
   method load_by_name (Str() $name, :$raw = False) is also<load-by-name> {
@@ -157,7 +157,7 @@ class GStreamer::Plugin is GStreamer::Object {
     $p ??
       ( $raw ?? $p !! GStreamer::Plugin.new($p) )
       !!
-      Nil;
+      GstPlugin;
   }
 
   method load_file (
@@ -174,7 +174,7 @@ class GStreamer::Plugin is GStreamer::Object {
     $rc ??
       ( $raw ?? $rc !! GStreamer::Plugin.new($rc) )
       !!
-      Nil;
+      GstPlugin;
   }
 
   method register_static (
