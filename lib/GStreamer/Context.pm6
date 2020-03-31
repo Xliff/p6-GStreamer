@@ -2,7 +2,6 @@ use v6.c;
 
 use Method::Also;
 
-
 use GStreamer::Raw::Types;
 use GStreamer::Raw::Context;
 
@@ -22,11 +21,13 @@ class GStreamer::Context is GStreamer::MiniObject {
   { $!c }
 
   multi method new (GstContext $context) {
-    self.bless( :$context );
+    $context ?? self.bless( :$context ) !! Nil;
   }
   multi method new (Str() $type, Int() $persistent) {
     my gboolean $p = $persistent;
-    self.bless( context => gst_context_new($type, $p) );
+    my $context = gst_context_new($type, $p);
+
+    $context ?? self.bless( :$context ) !! Nil;
   }
 
   # method copy {
@@ -40,7 +41,10 @@ class GStreamer::Context is GStreamer::MiniObject {
   method get_structure (:$raw = False) is also<get-structure> {
     my $s = gst_context_get_structure($!c);
 
-    $raw ?? $s !! GStreamer::Structure.new($s);
+    $s ??
+      ( $raw ?? $s !! GStreamer::Structure.new($s) )
+      !!
+      GstStructure;
   }
 
   method get_type is also<get-type> {
@@ -63,7 +67,7 @@ class GStreamer::Context is GStreamer::MiniObject {
     $e ??
       ( $raw ?? $e !! GStreamer::Structure.new($e) )
       !!
-      Nil;
+      GstStructure;
   }
 
 }
