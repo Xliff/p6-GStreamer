@@ -2,14 +2,13 @@ use v6.c;
 
 use Method::Also;
 
-
 use GStreamer::Raw::Types;
 use GStreamer::Raw::DeviceProvider;
 
 use GStreamer::Object;
 use GStreamer::Bus;
 
-our subset DeviceProviderAncestry is export of Mu
+our subset GstDeviceProviderAncestry is export of Mu
   where GstDeviceProvider | GstObject;
 
 class GStreamer::DeviceProvider is GStreamer::Object {
@@ -19,7 +18,7 @@ class GStreamer::DeviceProvider is GStreamer::Object {
     self.setDeviceProvider($provider);
   }
 
-  method setDeviceProvider (DeviceProviderAncestry $_) {
+  method setDeviceProvider (GstDeviceProviderAncestry $_) {
     my $to-parent;
 
     $!dp = do {
@@ -40,7 +39,18 @@ class GStreamer::DeviceProvider is GStreamer::Object {
     is also<GstDeviceProvider>
   { $!dp }
 
-  # SIGNALS - NYI
+  method new (GstDeviceProviderAncestry $provider) {
+    $provider ?? self.bless( :$provider ) !! Nil;
+  }
+
+  # SIGNALS
+  method provider-hidden {
+    self.connect-string('provider-hidden');
+  }
+
+  method provider-unhidden {
+    self.connect-string('provider-unhidden');
+  }
 
   method can_monitor is also<can-monitor> {
     so gst_device_provider_can_monitor($!dp);
@@ -66,25 +76,23 @@ class GStreamer::DeviceProvider is GStreamer::Object {
     $b ??
       ( $raw ?? $b !! GStreamer::Bus.new($b) )
       !!
-      Nil;
+      GstBus;
   }
 
   method get_devices (
-    :raw_list(:$raw-list) = False,
+    :$glist = False,
     :$raw = False
   )
     is also<get-devices>
   {
     my $d = gst_device_provider_get_devices($!dp);
-    return $d if $raw-list;
 
-    $d = GLib::GList.new($d)
-      but GLib::Roles::ListData[GstDevice];
+    return Nil unless $d;
+    return $d if $glist;
 
-    $d ??
-      ( $raw ?? $d.Array !! $d.Array.map({ GStreamer::Device.new($_) }) )
-      !!
-      Nil;
+    $d = GLib::GList.new($d) but GLib::Roles::ListData[GstDevice];
+
+    $raw ?? $d.Array !! $d.Array.map({ GStreamer::Device.new($_) });
   }
 
   # Object is NYI
@@ -114,6 +122,26 @@ class GStreamer::DeviceProvider is GStreamer::Object {
 
   method hide_provider (Str() $name) is also<hide-provider> {
     gst_device_provider_hide_provider($!dp, $name);
+  }
+
+  multi method register (
+    Str() $name,
+    Int() $rank,
+    Int() $type
+  ) {
+    samewith(GstPlugin, $name, $rank, $type);
+  }
+  multi method register (
+    GStreamer::DeviceProvider:U:
+    GstPlugin() $plugin,
+    Str() $name,
+    Int() $rank,
+    Int() $type
+  ) {
+    my guint $r = $rank;
+    my GType $t = $type;
+
+    so gst_device_provider_register($plugin, $name, $r, $t);
   }
 
   method start {

@@ -2,7 +2,6 @@ use v6.c;
 
 use NativeCall;
 
-
 use GStreamer::Raw::Types;
 
 unit package GStreamer::Raw::DeviceProvider;
@@ -120,6 +119,17 @@ sub gst_device_provider_unhide_provider (
   GstDeviceProvider $provider,
   Str $name
 )
+  is native(gstreamer)
+  is export
+{ * }
+
+sub gst_device_provider_register (
+  GstPlugin $plugin,
+  Str $name,
+  guint $rank,
+  GType $type
+)
+  returns uint32
   is native(gstreamer)
   is export
 { * }
