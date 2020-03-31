@@ -2,7 +2,6 @@ use v6.c;
 
 use Method::Also;
 
-
 use GStreamer::Raw::Types;
 use GStreamer::Raw::PluginFeature;
 
@@ -46,7 +45,13 @@ class GStreamer::PluginFeature is GStreamer::Object {
   { $!pf }
 
   method new (GstPluginFeature $plugin-feature) {
-    self.bless( :$plugin-feature );
+    $plugin-feature ?? self.bless( :$plugin-feature ) !! Nil;
+  }
+
+  method load {
+    my $plugin-feature = gst_plugin_feature_load($!pf);
+    
+    $plugin-feature ?? self.bless( :$plugin-feature ) !! Nil;
   }
 
   method rank is rw {
@@ -82,7 +87,7 @@ class GStreamer::PluginFeature is GStreamer::Object {
     $p ??
       ( $raw ?? $p !! GStreamer::Plugin.new($p) )
       !!
-      Nil;
+      GstPlugin;
   }
 
   method get_plugin_name
@@ -97,6 +102,7 @@ class GStreamer::PluginFeature is GStreamer::Object {
 
   method get_type is also<get-type> {
     state ($n, $t);
+
     unstable_get_type( self.^name, &gst_plugin_feature_get_type, $n, $t );
   }
 
@@ -115,7 +121,7 @@ class GStreamer::PluginFeature is GStreamer::Object {
     $l ??
       ( $raw ?? $l !! GLib::GList.new($list) )
       !!
-      Nil;
+      GList;
   }
 
   method list_debug (
@@ -135,10 +141,6 @@ class GStreamer::PluginFeature is GStreamer::Object {
     GList() $list
   ) {
     gst_plugin_feature_list_free($list);
-  }
-
-  method load {
-    self.bless( plugin-feature => gst_plugin_feature_load($!pf) );
   }
 
   proto method rank_compare_func (|)
