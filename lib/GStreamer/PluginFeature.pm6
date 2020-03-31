@@ -10,7 +10,7 @@ use GLib::GList;
 use GStreamer::Object;
 #use GStreamer::Plugin;
 
-our subset PluginFeatureAncestry is export of Mu
+our subset GstPluginFeatureAncestry is export of Mu
   where GstPluginFeature | GstObject;
 
 class GStreamer::PluginFeature is GStreamer::Object {
@@ -20,7 +20,7 @@ class GStreamer::PluginFeature is GStreamer::Object {
     self.setPluginFeature($plugin-feature) if $plugin-feature;
   }
 
-  method setPluginFeature (PluginFeatureAncestry $_) {
+  method setPluginFeature (GstPluginFeatureAncestry $_) {
     my $to-parent;
 
     $!pf = do {
@@ -44,13 +44,13 @@ class GStreamer::PluginFeature is GStreamer::Object {
     >
   { $!pf }
 
-  method new (GstPluginFeature $plugin-feature) {
+  method new (GstPluginFeatureAncestry $plugin-feature) {
     $plugin-feature ?? self.bless( :$plugin-feature ) !! Nil;
   }
 
   method load {
     my $plugin-feature = gst_plugin_feature_load($!pf);
-    
+
     $plugin-feature ?? self.bless( :$plugin-feature ) !! Nil;
   }
 
