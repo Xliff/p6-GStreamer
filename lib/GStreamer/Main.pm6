@@ -3,17 +3,13 @@ use v6.c;
 use Method::Also;
 use NativeCall;
 
-
+use GStreamer::Raw::Types;
 use GStreamer::Raw::Main;
 
+use GLib::Roles::StaticClass;
+
 class GStreamer::Main {
-
-  method new (|) {
-    warn 'GStreamer::Main is a static class and does not need instantiation'
-      if $DEBUG;
-
-    GStreamer::Main;
-  }
+  also does GLib::Roles::StaticClass;
 
   multi method init {
     my ($c, $v) = (0, CArray[Str].new);
