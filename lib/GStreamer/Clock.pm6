@@ -2,23 +2,26 @@ use v6.c;
 
 use Method::Also;
 
-
 use GStreamer::Raw::Types;
 use GStreamer::Raw::Clock;
 
 use GStreamer::Object;
 
-our subset ClockAncestry is export of Mu
+use GLib::Roles::Signals::Generic;
+
+our subset GstClockAncestry is export of Mu
   where GstClock | GstObject;
 
 class GStreamer::Clock is GStreamer::Object {
+  also does GLib::Roles::Signals::Generic;
+
   has GstClock $!c;
 
   submethod BUILD (:$clock) {
     self.setClock($clock) if $clock.defined;
   }
 
-  method setClock(ClockAncestry $clock) {
+  method setClock(GstClockAncestry $clock) {
     my $to-parent;
     $!c = do {
       when GstClock {
@@ -38,6 +41,51 @@ class GStreamer::Clock is GStreamer::Object {
     is also<GstClock>
   { $!c }
 
+  method new (GstClockAncestry $clock) {
+    $clock ?? self.bless(:$clock) !! Nil;
+  }
+
+  # Signature: GstClock, gboolean, gpointer
+  method synced {
+    self.connect-uint('synced');
+  }
+
+  # Type: gint
+  method window-size is rw  {
+    my $gv;
+    Proxy.new(
+      FETCH => sub ($) {
+        $gv = GLib::Value.new(
+          self.prop_get('window-size', $gv)
+        );
+        $gv.int;
+      },
+      STORE => -> $, Int() $val is copy {
+        $gv = GLib::Value.new( G_TYPE_INT );
+        $gv.int = $val;
+        self.prop_set('window-size', $gv);
+      }
+    );
+  }
+
+  # Type: gint
+  method window-threshold is rw  {
+    my $gv;
+    Proxy.new(
+      FETCH => sub ($) {
+        $gv = GLib::Value.new(
+          self.prop_get('window-threshold', $gv)
+        );
+        $gv.int;
+      },
+      STORE => -> $, Int() $val is copy {
+        $gv = GLib::Value.new( G_TYPE_INT );
+        $gv.int = $val;
+        self.prop_set('window-threshold', $gv);
+      }
+    );
+  }
+
   method master (:$raw = False) is rw {
     Proxy.new(
       FETCH => sub ($) {
@@ -46,7 +94,7 @@ class GStreamer::Clock is GStreamer::Object {
         $c ??
           ( $raw ?? $c !! GStreamer::Clock.new($c) )
           !!
-          Nil;
+          GstClock;
       },
       STORE => sub ($, GstClock() $master is copy) {
         gst_clock_set_master($!c, $master);
@@ -61,6 +109,7 @@ class GStreamer::Clock is GStreamer::Object {
       },
       STORE => sub ($, Int() $resolution is copy) {
         my uint64 $r = $resolution;
+
         gst_clock_set_resolution($!c, $r);
       }
     );
@@ -73,6 +122,7 @@ class GStreamer::Clock is GStreamer::Object {
       },
       STORE => sub ($, Int() $timeout is copy) {
         my uint64 $t = $timeout;
+
         gst_clock_set_timeout($!c, $t);
       }
     );
@@ -85,9 +135,10 @@ class GStreamer::Clock is GStreamer::Object {
   multi method add_observation(
     Int() $slave,
     Int() $master,
-    :$all = False
   ) {
-    samewith($slave, $master, $, :$all);
+    my $rv = samewith($slave, $master, $, :all);
+
+    $rv[0] ?? $rv[1] !! Nil;
   }
   multi method add_observation (
     Int() $slave,
@@ -98,31 +149,48 @@ class GStreamer::Clock is GStreamer::Object {
     my uint64 ($s, $m) = ($slave, $master);
     my gdouble $rs = 0e0;
 
-    my $rc = so gst_clock_add_observation($!c, $s, $m, $rs);
+    my $rv = so gst_clock_add_observation($!c, $s, $m, $rs);
     $r_squared = $rs;
-    $all.not ?? $r_squared !! ($r_squared, $rc);
+    $all.not ?? $rv !! ($rv, $r_squared);
   }
 
-  method add_observation_unapplied (
+  proto method add_observation_unapplied (|)
+    is also<add-observation-unapplied>
+  { * }
+
+  multi method add_observation_unapplied (
+    Int() $slave,
+    Int() $master
+  ) {
+    my $rv = callwith($slave, $master, $, $, $, $, $, :all);
+
+    $rv[0] ?? $rv.skip(1) !! Nil;
+  }
+  multi method add_observation_unapplied (
     Int() $slave,
     Int() $master,
-    Num() $r_squared,
-    Int() $internal,
-    Int() $external,
-    Int() $rate_num,
-    Int() $rate_denom
+    $r_squared  is rw,
+    $internal   is rw,
+    $external   is rw,
+    $rate_num   is rw,
+    $rate_denom is rw,
+    :$all = False
   )
-    is also<add-observation-unapplied>
   {
-    my ($s, $m, $i, $e, $rn, $rd) =
-      ($slave, $master, $internal, $external, $rate_num, $rate_denom);
-    my gdouble $rs = $r_squared;
+    my GstClockTime ($s, $m) = ($slave, $master);
+    my GstClockTime ($i, $e, $rn, $rd) = 0 xx 4;
+    my gdouble $rs = 0e0;
 
-    gst_clock_add_observation_unapplied($!c, $s, $m, $rs, $i, $e, $rn, $rd);
+    my &aou = &gst_clock_add_observation_unapplied;
+    my $rv = &aou($!c, $s, $m, $rs, $i, $e, $rn, $rd);
+
+    ($internal, $external, $rate_num, $rate_denom) = ($i, $e, $rn, $rd);
+    $all.not ?? $rv !! ($rv, $internal, $external, $rate_num, $rate_denom);
   }
 
   method adjust_unlocked (Int() $internal) is also<adjust-unlocked> {
     my uint64 $i = $internal;
+
     gst_clock_adjust_unlocked($!c, $i);
   }
 
@@ -146,9 +214,7 @@ class GStreamer::Clock is GStreamer::Object {
   { * }
 
   multi method get_calibration is also<calibration> {
-    my ($i, $e, $rn, $rd);
-
-    samewith($i, $e, $rn, $rd)
+    samewith($, $, $, $)
   }
   multi method get_calibration (
     $internal   is rw,
@@ -215,7 +281,7 @@ class GStreamer::Clock is GStreamer::Object {
   #   gst_clock_id_uses_clock($!c, $clock);
   # }
   #
-  # method id_wait (GstClockTimeDiff $jitter) {
+  # method id_wait ($jitter is rw) {
   #   gst_clock_id_wait($!c, $jitter);
   # }
   #
@@ -243,11 +309,11 @@ class GStreamer::Clock is GStreamer::Object {
   #   gst_clock_periodic_id_reinit($!c, $id, $start_time, $interval);
   # }
 
-  method set_calibration (
-    Int() $internal    is rw,
-    Int() $external    is rw,
-    Int() $rate_num    is rw,
-    Int() $rate_denom  is rw
+  multi method set_calibration (
+    Int() $internal,
+    Int() $external,
+    Int() $rate_num,
+    Int() $rate_denom
   )
     is also<set-calibration>
   {
