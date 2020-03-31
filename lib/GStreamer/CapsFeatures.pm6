@@ -2,7 +2,6 @@ use v6.c;
 
 use Method::Also;
 
-
 use GStreamer::Raw::Types;
 use GStreamer::Raw::CapsFeatures;
 
@@ -14,14 +13,15 @@ class GStreamer::CapsFeatures {
   }
 
   method GStreamer::Raw::Types::GstCapsFeatures
+    is also<GstCapsFeatures>
   { $!cf }
 
   multi method new (GstCapsFeatures $features) {
-    self.bless( :$features);
+    $features ?? self.bless( :$features ) !! Nil;
   }
 
   multi method new (*@args) {
-    my $o = ::?CLASS.new_empty;
+    my $o = self.new_empty;
 
     for @args {
       when GQuark { $o.add_id($_) }
@@ -34,24 +34,30 @@ class GStreamer::CapsFeatures {
   #GST_API GstCapsFeatures * gst_caps_features_new_id (GQuark feature1, ...);'
 
   multi method new (:$any is required) {
-    ::?CLASS.new_any;
+    self.new_any;
   }
   method new_any is also<new-any> {
-    self.bless( features => gst_caps_features_new_any() );
+    my $features = gst_caps_features_new_any();
+
+    $features ?? self.bless( :$features ) !! Nil;
   }
 
   multi method new (:$empty is required) {
-    ::?CLASS.new_empty;
+    self.new_empty;
   }
   method new_empty is also<new-empty> {
-    self.bless( features => gst_caps_features_new_empty() );
+    my $features = gst_caps_features_new_empty();
+
+    $features ?? self.bless( :$features ) !! Nil;
   }
 
   multi method new (Str() $desc, :from-string(:$from_string) is required) {
-    ::?CLASS.new_from_string($desc);
+    self.new_from_string($desc);
   }
   method new_from_string (Str() $desc) is also<new-from-string> {
-    self.bless( features => gst_caps_features_from_string($desc) );
+    my $features = gst_caps_features_from_string($desc);
+
+    $features ?? self.bless( :$features ) !! Nil;
   }
 
   method add (Str() $feature) {
@@ -70,8 +76,13 @@ class GStreamer::CapsFeatures {
     so gst_caps_features_contains_id($!cf, $feature);
   }
 
-  method copy {
-    ::?CLASS.new( gst_caps_features_copy($!cf) );
+  method copy (:$raw = False) {
+    my $c = gst_caps_features_copy($!cf);
+
+    $c ??
+      ( $raw ?? $c !! GStreamer::CapsFeatures.new($c) )
+      !!
+      GstCapsFeatures;
   }
 
   method free {
