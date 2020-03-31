@@ -2,7 +2,6 @@ use v6.c;
 
 use Method::Also;
 
-
 use GStreamer::Raw::Types;
 use GStreamer::Raw::Bus;
 
@@ -41,10 +40,12 @@ class GStreamer::Bus is GStreamer::Object {
   { $!b }
 
   multi method new (GstBus $bus) {
-    self.bless( :$bus );
+    $bus ?? self.bless( :$bus ) !! Nil;
   }
   multi method new {
-    self.bless( bus => gst_bus_new() );
+    my $bus = gst_bus_new();
+
+    $bus ?? self.bless( :$bus ) !! Nil;
   }
 
   method add_signal_watch is also<add-signal-watch> {
@@ -92,7 +93,7 @@ class GStreamer::Bus is GStreamer::Object {
     $s ??
       ( $raw ?? $s !! GLib::Source.new($s) )
       !!
-      Nil;
+      GSource;
   }
 
   method disable_sync_message_emission is also<disable-sync-message-emission> {
@@ -135,7 +136,7 @@ class GStreamer::Bus is GStreamer::Object {
     $m ??
       ( $raw ?? $m !! $msg-late-bound.new($m) )
       !!
-      Nil;
+      GstMessage;
   }
 
   method poll (
@@ -152,7 +153,7 @@ class GStreamer::Bus is GStreamer::Object {
     $m ??
       ( $raw ?? $m !! $msg-late-bound.new($m) )
       !!
-      Nil;
+      GstMessage;
   }
 
   method pop (:$raw = False) {
@@ -165,7 +166,7 @@ class GStreamer::Bus is GStreamer::Object {
     $m ??
       ( $raw ?? $m !! $msg-late-bound.new($m) )
       !!
-      Nil;
+      GstMessage;
   }
 
   method pop_filtered (
@@ -184,7 +185,7 @@ class GStreamer::Bus is GStreamer::Object {
     $m ??
       ( $raw ?? $m !! $msg-late-bound.new($m) )
       !!
-      Nil;
+      GstMessage;
   }
 
   method post (GstMessage() $message) {
@@ -238,7 +239,7 @@ class GStreamer::Bus is GStreamer::Object {
     $m ??
       ( $raw ?? $m !! $msg-late-bound.new($m) )
       !!
-      Nil;
+      GstMessage;
   }
 
   method timed_pop_filtered (
@@ -259,7 +260,7 @@ class GStreamer::Bus is GStreamer::Object {
     $m ??
       ( $raw ?? $m !! $msg-late-bound.new($m) )
       !!
-      Nil;
+      GstMessage;
   }
 
 }
