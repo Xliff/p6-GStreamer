@@ -2,14 +2,13 @@ use v6.c;
 
 use Method::Also;
 
-
 use GStreamer::Raw::Types;
 use GStreamer::Raw::Caps;
 
 use GStreamer::MiniObject;
 use GStreamer::Structure;
 
-our subset CapsAncestry is export of Mu
+our subset GstCapsAncestry is export of Mu
   where GstCaps | GstMiniObject;
 
 class GStreamer::Caps is GStreamer::MiniObject {
@@ -19,7 +18,7 @@ class GStreamer::Caps is GStreamer::MiniObject {
     self.setCaps($caps);
   }
 
-  method setCaps (CapsAncestry $_) {
+  method setCaps (GstCapsAncestry $_) {
     my $to-parent;
 
     $!c = do {
@@ -40,42 +39,48 @@ class GStreamer::Caps is GStreamer::MiniObject {
     is also<GstCaps>
   { $!c }
 
-  multi method new (GstCaps $caps) {
-    self.bless( :$caps );
+  multi method new (GstCapsAncestry $caps) {
+    $caps ?? self.bless( :$caps ) !! Nil;
   }
 
   multi method new (:$any is required) {
-    ::?CLASS.new_any;
+    self.new_any;
   }
   method new_any is also<new-any> {
-    self.bless( caps => gst_caps_new_any() );
+    my $caps = gst_caps_new_any();
+
+    $caps ?? self.bless( :$caps ) !! Nil;
   }
 
   multi method new (:$empty is required) {
-    ::?CLASS.new_empty;
+    self.new_empty;
   }
   method new_empty is also<new-empty> {
-    self.bless( caps => gst_caps_new_empty() );
+    my $caps = gst_caps_new_empty();
+
+    $caps ?? self.bless( :$caps ) !! Nil;
   }
 
   multi method new (
     $media-type is copy,
     :empty-simple($empty_simple) is required
   ) {
-    ::?CLASS.new_empty_simple($media-type);
+    self.new_empty_simple($media-type);
   }
   method new_empty_simple (Str() $media-type) is also<new-empty-simple> {
-    self.bless( caps => gst_caps_new_empty_simple($media-type) )
+    my $caps = gst_caps_new_empty_simple($media-type);
+
+    $caps ?? self.bless( :$caps ) !! Nil;
   }
 
   multi method new (
     *@structs,
     :$full is required
   ) {
-    ::?CLASS.new_full( |@structs );
+    self.new_full( |@structs );
   }
   method new_full (*@structs) is also<new-full> {
-    my $o = ::?CLASS.new_empty;
+    my $o = self.new_empty;
 
     die '@structs must only contain GStreamer::Structure-compatible elements.'
       unless @structs.all ~~ (GStreamer::Structure, GstStructure).any;
@@ -89,17 +94,17 @@ class GStreamer::Caps is GStreamer::MiniObject {
     :$simple is required,
     *%pairs,
   ) {
-    ::?CLASS.new_simple($media-type, |%pairs);
+    self.new_simple($media-type, |%pairs);
   }
   method new_simple (Str() $media-type, *%pairs) is also<new-simple> {
     my $s = GStreamer::Structure.new( |%pairs );
-    my $o = ::?CLASS.new_empty_simple($media-type);
+    my $o = self.new_empty_simple($media-type);
 
     $o.append_structure($s);
   }
 
   multi method new ($desc, :from-string($from_string) is required) {
-    ::?CLASS.new_from_string($desc);
+    self.new_from_string($desc);
   }
   method new_from_string (Str() $desc)
     is also<
@@ -108,7 +113,9 @@ class GStreamer::Caps is GStreamer::MiniObject {
       from-string
     >
   {
-    self.bless( caps => gst_caps_from_string($desc) );
+    my $caps = gst_caps_from_string($desc);
+
+    $caps ?? self.bless( :$caps ) !! Nil;
   }
 
   method append (GstCaps() $caps2) {
@@ -134,13 +141,26 @@ class GStreamer::Caps is GStreamer::MiniObject {
     gst_caps_can_intersect($!c, $caps2);
   }
 
-  method copy {
-    ::?CLASS.new( gst_caps_copy($!c) );
+  multi method copy {
+    GStreamer::Caps.copy($!c);
+  }
+  multi method copy (GStreamer::Caps:U: GstCaps $cpy, :$raw = False) {
+    my $c = gst_caps_copy($cpy);
+
+    $c ??
+      ( $raw ?? $c !! GStreamer::Caps.new($c) )
+      !!
+      GstCaps;
   }
 
-  method copy_nth (Int() $nth) is also<copy-nth> {
+  method copy_nth (Int() $nth, :$raw = False) is also<copy-nth> {
     my guint $n = $nth;
-    ::?CLASS.new( gst_caps_copy_nth($!c, $n) );
+    my $caps = gst_caps_copy_nth($!c, $n);
+
+    $caps ??
+      ( $raw ?? $caps !! GStreamer::Caps.new($caps) )
+      !!
+      GstCaps;
   }
 
   method filter_and_map_in_place (
@@ -152,8 +172,13 @@ class GStreamer::Caps is GStreamer::MiniObject {
     gst_caps_filter_and_map_in_place($!c, $func, $user_data);
   }
 
-  method fixate (GstCaps() $caps) {
-    ::?CLASS.new( gst_caps_fixate($caps) );
+  method fixate (GstCaps() $caps, :$raw = False) {
+    my $c = gst_caps_fixate($caps);
+
+    $c ??
+      ( $raw ?? $c !! GStreamer::Caps.new($c) )
+      !!
+      GstCaps;
   }
 
   method foreach (
@@ -180,7 +205,7 @@ class GStreamer::Caps is GStreamer::MiniObject {
     $s ??
       ( $raw ?? $s !! GStreamer::Structure.new($s) )
       !!
-      Nil;
+      GstStructure;
   }
 
   method get_type is also<get-type> {
@@ -279,8 +304,13 @@ class GStreamer::Caps is GStreamer::MiniObject {
     gst_caps_merge_structure_full($!c, $structure, $features);
   }
 
-  method normalize {
-    ::?CLASS.new( gst_caps_normalize($!c) );
+  method normalize (:$raw = False) {
+    my $n = gst_caps_normalize($!c);
+
+    $n ??
+      ( $raw ?? $n !! Gstreamer::Caps.new($n) )
+      !!
+      GstCaps;
   }
 
   method remove_structure (Int() $idx) is also<remove-structure> {
@@ -310,8 +340,13 @@ class GStreamer::Caps is GStreamer::MiniObject {
     gst_caps_set_value($!c, $field, $value);
   }
 
-  method simplify {
-    ::?CLASS.new( gst_caps_simplify($!c) );
+  method simplify (:$raw = False) {
+    my $s = gst_caps_simplify($!c);
+
+    $s ??
+      ( $raw ?? $s !! GStreamer::Caps.new($s) )
+      !!
+      GstCaps;
   }
 
   method steal_structure (Int() $index) is also<steal-structure> {
@@ -320,8 +355,13 @@ class GStreamer::Caps is GStreamer::MiniObject {
     gst_caps_steal_structure($!c, $i);
   }
 
-  method subtract (GstCaps() $subtrahend) {
-    ::?CLASS.new( gst_caps_subtract($!c, $subtrahend) );
+  method subtract (GstCaps() $subtrahend, :$raw = False) {
+    my $sl = gst_caps_subtract($!c, $subtrahend);
+
+    $sl ??
+      ( $raw ?? $sl !! GStreamer::Caps.new($sl) )
+      !!
+      GstCaps;
   }
 
   method to_string
@@ -333,8 +373,13 @@ class GStreamer::Caps is GStreamer::MiniObject {
     gst_caps_to_string($!c);
   }
 
-  method truncate {
-    ::?CLASS.new( gst_caps_truncate($!c) );
+  method truncate (:$raw = False) {
+    my $t = gst_caps_truncate($!c);
+
+    $t ??
+      ( $raw ?? $t !! GStreamer::Caps.new($t) )
+      !!
+      GstCaps;
   }
 
 }
@@ -351,7 +396,7 @@ class GStreamer::StaticCaps {
   { $!sc }
 
   method new (GstStaticCaps $static-caps) {
-    self.bless( :$static-caps );
+    $static-caps ?? self.bless( :$static-caps ) !! Nil;
   }
 
   method cleanup {
@@ -364,7 +409,7 @@ class GStreamer::StaticCaps {
     $c ??
       ( $raw ?? $c !! GStreamer::Caps.new($c) )
       !!
-      Nil
+      GstCaps;
   }
 
   method get_type {
