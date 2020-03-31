@@ -1,5 +1,6 @@
 use v6.c;
 
+use Method::Also;
 
 use GStreamer::Raw::Types;
 use GStreamer::Raw::Buffer;
@@ -9,7 +10,7 @@ use GStreamer::MiniObject;
 #use GStreamer::Memory;
 #use GStreamer::Meta;
 
-our subset BufferAncestry is export of Mu
+our subset GstBufferAncestry is export of Mu
   where GstBuffer | GstMiniObject;
 
 class GStreamer::Buffer is GStreamer::MiniObject {
@@ -19,7 +20,7 @@ class GStreamer::Buffer is GStreamer::MiniObject {
     self.setBuffer($buffer);
   }
 
-  method setBuffer (BufferAncestry $_) {
+  method setBuffer (GstBufferAncestry $_) {
     my $to-parent;
 
     $!b = do {
@@ -37,13 +38,16 @@ class GStreamer::Buffer is GStreamer::MiniObject {
   }
 
   method GStreamer::Raw::Types::GstBuffer
+    is also<GstBuffer>
   { $!b }
 
-  multi method new (GstBuffer $buffer) {
-    self.bless( :$buffer );
+  multi method new (GstBufferAncestry $buffer) {
+    $buffer ?? self.bless( :$buffer ) !! Nil;
   }
   multi method new {
-    self.bless( buffer => gst_buffer_new() );
+    my $buffer = gst_buffer_new();
+
+    $buffer ?? self.bless( :$buffer ) !! Nil;
   }
 
   multi method new (
@@ -58,10 +62,13 @@ class GStreamer::Buffer is GStreamer::MiniObject {
     GstAllocator() $allocator,
     Int() $size,
     GstAllocationParams() $params
-  ) {
+  )
+    is also<new-allocate>
+  {
     my gsize $s = $size;
+    my $buffer = gst_buffer_new_allocate($allocator, $s, $params);
 
-    self.bless( buffer => gst_buffer_new_allocate($allocator, $s, $params) );
+    $buffer ?? self.bless( :$buffer ) !! Nil;
   }
 
   multi method new (
@@ -71,10 +78,11 @@ class GStreamer::Buffer is GStreamer::MiniObject {
   ) {
     GStreamer::Buffer.new_wrapped($data, $size);
   }
-  method new_wrapped (gpointer $data, Int() $size) {
+  method new_wrapped (gpointer $data, Int() $size) is also<new-wrapped> {
     my gsize $s = $size;
+    my $buffer = gst_buffer_new_wrapped($data, $size);
 
-    self.bless( buffer => gst_buffer_new_wrapped($data, $size) );
+    $buffer ?? self.bless( :$buffer ) !! Nil;
   }
 
   multi method new (
@@ -83,7 +91,7 @@ class GStreamer::Buffer is GStreamer::MiniObject {
   ) {
     GStreamer::Buffer.new_wrapped_bytes($bytes);
   }
-  method new_wrapped_bytes (GBytes() $bytes) {
+  method new_wrapped_bytes (GBytes() $bytes) is also<new-wrapped-bytes> {
     gst_buffer_new_wrapped_bytes($bytes);
   }
 
@@ -106,15 +114,29 @@ class GStreamer::Buffer is GStreamer::MiniObject {
     );
   }
   method new_wrapped_full (
+    Int() $flags,
     gpointer $data,
     Int() $maxsize,
     Int() $offset,
     Int() $size,
     gpointer $user_data    = gpointer,
     GDestroyNotify $notify = gpointer
-  ) {
+  )
+    is also<new-wrapped-full>
+  {
+    my GstMemoryFlags $f = $flags;
     my gsize ($m, $o, $s) = 0 xx 3;
-    gst_buffer_new_wrapped_full($!b, $data, $m, $o, $s, $user_data, $notify);
+    my $buffer = gst_buffer_new_wrapped_full(
+      $f,
+      $data,
+      $m,
+      $o,
+      $s,
+      $user_data,
+      $notify
+    );
+
+    $buffer ?? self.bless( :$buffer ) !! Nil;
   }
 
   method flags is rw {
@@ -141,11 +163,13 @@ class GStreamer::Buffer is GStreamer::MiniObject {
     );
   }
 
-  method add_meta (GstMetaInfo $info, gpointer $params) {
+  method add_meta (GstMetaInfo $info, gpointer $params) is also<add-meta> {
     gst_buffer_add_meta($!b, $info, $params);
   }
 
-  method add_parent_buffer_meta (GstBuffer() $ref) {
+  method add_parent_buffer_meta (GstBuffer() $ref)
+    is also<add-parent-buffer-meta>
+  {
     gst_buffer_add_parent_buffer_meta($!b, $ref);
   }
 
@@ -153,7 +177,9 @@ class GStreamer::Buffer is GStreamer::MiniObject {
     GstCaps() $reference,
     Int() $timestamp,
     Int() $duration
-  ) {
+  )
+    is also<add-reference-timestamp-meta>
+  {
     my GstClockTime ($t, $d) = ($timestamp, $duration);
 
     gst_buffer_add_reference_timestamp_meta($!b, $reference, $t, $d);
@@ -169,11 +195,12 @@ class GStreamer::Buffer is GStreamer::MiniObject {
     gst_buffer_append($buf1, $buf2);
   }
 
-  method append_memory (GstMemory() $mem) {
+  method append_memory (GstMemory() $mem) is also<append-memory> {
     gst_buffer_append_memory($!b, $mem);
   }
 
   proto method append_region (|)
+      is also<append-region>
   { * }
 
   multi method append_region (GstBuffer() $buf2, Int() $offset, Int() $size) {
@@ -186,28 +213,32 @@ class GStreamer::Buffer is GStreamer::MiniObject {
     Int() $size
   ) {
     my gssize ($o, $s) = ($offset, $size);
+
     gst_buffer_append_region($!b, $buf2, $o, $s);
   }
 
-  multi method copy (:$raw = False) {
-    GStreamer::Buffer.copy($!b, :$raw);
-  }
-  multi method copy (GStreamer::Buffer:U: GstBuffer() $cpy, :$raw) {
-    my $c = cast(
-      GstBuffer,
-      GStreamer::MiniObject.copy( cast(GstMiniObject, $cpy) )
-    );
-
-    $c ??
-      ( $raw ?? $c !! GStreamer::Buffer.new($c) )
-      !!
-      Nil;
-  }
-
+  # Does not exist in library!
+  # multi method copy (:$raw = False) {
+  #   GStreamer::Buffer.copy($!b, :$raw);
+  # }
+  # multi method copy (GStreamer::Buffer:U: GstBuffer() $cpy, :$raw = False) {
+  #   my $c = gst_buffer_copy($cpy);
+  #
+  #   $c ??
+  #     ( $raw ?? $c !! GStreamer::Buffer.new($c) )
+  #     !!
+  #     GstBuffer;
+  # }
 
   proto method copy_deep (|)
+      is also<
+        copy-deep
+        copy
+      >
   { * }
 
+  # cw: ALL copy constructors should probably follow this behavior!
+  # - 2020-3-30
   multi method copy_deep (:$raw = False) {
     GStreamer::Buffer.copy_deep($!b, :$raw);
   }
@@ -217,7 +248,7 @@ class GStreamer::Buffer is GStreamer::MiniObject {
     $cd ??
       ( $raw ?? $cd !! GStreamer::Buffer.new($cd) )
       !!
-      Nil;
+      GstBuffer;
   }
 
   method copy_into (
@@ -225,7 +256,9 @@ class GStreamer::Buffer is GStreamer::MiniObject {
     Int() $flags,
     Int() $offset,
     Int() $size
-  ) {
+  )
+    is also<copy-into>
+  {
     my GstBufferCopyFlags $f = $flags;
     my gsize ($o, $s) = ($offset, $size);
 
@@ -233,6 +266,7 @@ class GStreamer::Buffer is GStreamer::MiniObject {
   }
 
   proto method copy_region (|)
+      is also<copy-region>
   { * }
 
   multi method copy_region (
@@ -257,7 +291,7 @@ class GStreamer::Buffer is GStreamer::MiniObject {
     $b ??
       ( $raw ?? $b !! GStreamer::Buffer.new($b) )
       !!
-      Nil;
+      GstBuffer;
   }
 
   method extract (Int() $offset, gpointer $dest, Int() $size) {
@@ -271,7 +305,9 @@ class GStreamer::Buffer is GStreamer::MiniObject {
     Int() $size,
     gpointer $dest,
     Int() $dest_size
-  ) {
+  )
+    is also<extract-dup>
+  {
     my gsize ($o, $s, $d) = ($offset, $size, $dest_size);
 
     gst_buffer_extract_dup($!b, $o, $s, $dest, $d);
@@ -284,90 +320,101 @@ class GStreamer::Buffer is GStreamer::MiniObject {
   }
 
   proto method find_memory (|)
+      is also<find-memory>
   { * }
 
   multi method find_memory (
     Int() $offset,
     Int() $size,
   ) {
-    samewith($offset, $size, $, $, $);
+    my $rv = callwith($offset, $size, $, $, $, :all);
+
+    $rv[0] ?? $rv.skip(1) !! Nil;
   }
   multi method find_memory (
     Int() $offset,
     Int() $size,
     Int() $idx,
     $length is rw,
-    $skip   is rw
+    $skip   is rw,
+    :$all = False
   ) {
     my guint ($i, $l) = 0 xx 2;
     my gsize $s = 0;
 
-    my $rc = gst_buffer_find_memory($!b, $offset, $size, $i, $l, $s);
+    my $rv = gst_buffer_find_memory($!b, $offset, $size, $i, $l, $s);
     ($idx, $length, $skip) = ($i, $l, $s);
-    ($idx, $length, $skip, $rc)
+    $all.not ?? $rv !! ($rv, $idx, $length, $skip);
   }
 
   method foreach_meta (
     GstBufferForeachMetaFunc $func,
     gpointer $user_data = gpointer
-  ) {
+  )
+    is also<foreach-meta>
+  {
     gst_buffer_foreach_meta($!b, $func, $user_data);
   }
 
-  method get_all_memory ($raw = False) {
+  method get_all_memory ($raw = False) is also<get-all-memory> {
     my $m = gst_buffer_get_all_memory($!b);
 
     $m ??
       ( $raw ?? $m !! GStreamer::Memory.new($m) )
       !!
-      Nil;
+      GstMemory;
   }
 
-  method get_max_memory ( GStreamer::Buffer:U: ) {
+  method get_max_memory ( GStreamer::Buffer:U: ) is also<get-max-memory> {
     GstBufferFlagsEnum( gst_buffer_get_max_memory() );
   }
 
-  method get_memory (Int() $idx, :$raw = False) {
+  method get_memory (Int() $idx, :$raw = False) is also<get-memory> {
     my guint $i = $idx;
     my $m = gst_buffer_get_memory($!b, $i);
 
     $m ??
       ( $raw ?? $m !! GStreamer::Memory.new($m) )
       !!
-      Nil;
+      GstMemory;
   }
 
-  method get_memory_range (Int() $idx, Int() $length, :$raw = False) {
+  method get_memory_range (Int() $idx, Int() $length, :$raw = False)
+    is also<get-memory-range>
+  {
     my guint ($i, $l) = ($idx, $length);
     my $m = gst_buffer_get_memory_range($!b, $idx, $length);
 
     $m ??
       ( $raw ?? $m !! GStreamer::Memory.new($m) )
       !!
-      Nil;
+      GstMemory;
   }
 
-  method get_meta (Int() $api) {
+  method get_meta (Int() $api) is also<get-meta> {
     my GType $a = $api;
 
     gst_buffer_get_meta($!b, $a);
   }
 
-  method get_n_meta (GType $api) {
+  method get_n_meta (GType $api) is also<get-n-meta> {
     my GType $a = $api;
 
     gst_buffer_get_n_meta($!b, $a);
   }
 
-  method get_reference_timestamp_meta (GstCaps() $reference) {
+  method get_reference_timestamp_meta (GstCaps() $reference)
+    is also<get-reference-timestamp-meta>
+  {
     gst_buffer_get_reference_timestamp_meta($!b, $reference);
   }
 
   proto method get_sizes (|)
+      is also<get-sizes>
   { * }
 
-  multi method get_sizes (:$all = False) {
-    samewith($, $, :$all);
+  multi method get_sizes {
+    samewith($, $, :all);
   }
   multi method get_sizes ($offset is rw, $maxsize is rw, :$all = False) {
     my gsize ($o, $m)  = 0 xx 2;
@@ -378,14 +425,16 @@ class GStreamer::Buffer is GStreamer::MiniObject {
   }
 
   proto method get_sizes_range (|)
+      is also<get-sizes-range>
   { * }
 
   multi method get_sizes_range (
     Int() $idx,
     Int() $length,
-    :$all = False
   ) {
-    samewith($idx, $length, $, $, :$all);
+    my $rv = callwith($idx, $length, $, $, :all);
+
+    $rv[0] ?? $rv.skip(1) !! Nil;
   }
   multi method get_sizes_range (
     guint $idx,
@@ -397,13 +446,13 @@ class GStreamer::Buffer is GStreamer::MiniObject {
     my guint $i = $idx;
     my gint $l = $length;
     my gsize ($o, $m) = 0 xx 2;
-    my $rc = gst_buffer_get_sizes_range($!b, $i, $l, $o, $m);
+    my $rv = gst_buffer_get_sizes_range($!b, $i, $l, $o, $m);
 
     ($offset, $maxsize) = ($o, $m);
-    $all.not ?? $rc !! ($rc, $offset, $maxsize);
+    $all.not ?? $rv !! ($rv, $offset, $maxsize);
   }
 
-  method get_type {
+  method get_type is also<get-type> {
     state ($n, $t);
 
     unstable_get_type( self.^name, &gst_buffer_get_type, $n, $t );
@@ -426,50 +475,54 @@ class GStreamer::Buffer is GStreamer::MiniObject {
   #   gst_reference_timestamp_meta_get_info($!b);
   # }
 
-  method has_flags (Int() $flags) {
+  method has_flags (Int() $flags) is also<has-flags> {
     my GstBufferFlags $f = $flags;
 
     so gst_buffer_has_flags($!b, $f);
   }
 
-  method insert_memory (Int() $idx, GstMemory() $mem) {
+  method insert_memory (Int() $idx, GstMemory() $mem) is also<insert-memory> {
     my gint $i = $idx;
 
     gst_buffer_insert_memory($!b, $i, $mem);
   }
 
-  method is_all_memory_writable {
+  method is_all_memory_writable is also<is-all-memory-writable> {
     so gst_buffer_is_all_memory_writable($!b);
   }
 
-  method is_memory_range_writable (Int() $idx, Int() $length) {
+  method is_memory_range_writable (Int() $idx, Int() $length)
+    is also<is-memory-range-writable>
+  {
     my guint $i = $idx;
     my gint $l = $length;
 
     so gst_buffer_is_memory_range_writable($!b, $i, $l);
   }
 
-  method iterate_meta (gpointer $state, :$raw = False;) {
+  method iterate_meta (gpointer $state, :$raw = False;) is also<iterate-meta> {
     my $m = gst_buffer_iterate_meta($!b, $state);
 
     $m ??
       ( $raw ?? $m !! GStreamer::Meta.new($m) )
       !!
-      Nil;
+      GstMeta;
   }
 
   method iterate_meta_filtered (
     gpointer $state,
     Int() $meta_api_type,
     :$raw = False
-  ) {
+  )
+    is also<iterate-meta-filtered>
+  {
     my GType $m = $meta_api_type;
     my $meta = gst_buffer_iterate_meta_filtered($!b, $state, $m);
 
     $meta ??
       ( $raw ?? $meta !! GStreamer::Meta.new($meta) )
       !!
-      Nil;
+      GstMeta;
   }
 
   method map (GstMapInfo() $info, Int() $flags) {
@@ -483,7 +536,9 @@ class GStreamer::Buffer is GStreamer::MiniObject {
     Int() $length,
     GstMapInfo() $info,
     Int() $flags
-  ) {
+  )
+    is also<map-range>
+  {
     my GstMapFlags $f = $flags;
     my guint $i = $idx;
     my gint $l = $length;
@@ -508,56 +563,62 @@ class GStreamer::Buffer is GStreamer::MiniObject {
     gst_buffer_memset($!b, $o, $v, $s);
   }
 
-  method n_memory {
+  method n_memory is also<n-memory> {
     gst_buffer_n_memory($!b);
   }
 
-  method peek_memory (Int() $idx, :$raw = False) {
+  method peek_memory (Int() $idx, :$raw = False) is also<peek-memory> {
     my guint $i = $idx;
     my $m = gst_buffer_peek_memory($!b, $i);
 
     $m ??
       ( $raw ?? $m !! GStreamer::Memory.new($m) )
       !!
-      Nil;
+      GstMemory;
   }
 
-  method prepend_memory (GstMemory() $mem) {
+  method prepend_memory (GstMemory() $mem) is also<prepend-memory> {
     gst_buffer_prepend_memory($!b, $mem);
   }
 
-  method remove_all_memory {
+  method remove_all_memory is also<remove-all-memory> {
     gst_buffer_remove_all_memory($!b);
   }
 
-  method remove_memory (Int() $idx) {
+  method remove_memory (Int() $idx) is also<remove-memory> {
     my guint $i = $idx;
 
     gst_buffer_remove_memory($!b, $i);
   }
 
-  method remove_memory_range (Int() $idx, Int() $length) {
+  method remove_memory_range (Int() $idx, Int() $length)
+    is also<remove-memory-range>
+  {
     my guint $i = $idx;
     my gint $l = $length;
 
     gst_buffer_remove_memory_range($!b, $i, $l);
   }
 
-  method remove_meta (GstMeta() $meta) {
+  method remove_meta (GstMeta() $meta) is also<remove-meta> {
     so gst_buffer_remove_meta($!b, $meta);
   }
 
-  method replace_all_memory (GstMemory() $mem) {
+  method replace_all_memory (GstMemory() $mem) is also<replace-all-memory> {
     gst_buffer_replace_all_memory($!b, $mem);
   }
 
-  method replace_memory (Int() $idx, GstMemory() $mem) {
+  method replace_memory (Int() $idx, GstMemory() $mem)
+    is also<replace-memory>
+  {
     my guint $i = $idx;
 
     gst_buffer_replace_memory($!b, $idx, $mem);
   }
 
-  method replace_memory_range (Int() $idx, Int() $length, GstMemory() $mem) {
+  method replace_memory_range (Int() $idx, Int() $length, GstMemory() $mem)
+    is also<replace-memory-range>
+  {
     my guint $i = $idx;
     my gint $l = $length;
 
@@ -575,7 +636,9 @@ class GStreamer::Buffer is GStreamer::MiniObject {
     Int() $length,
     Int() $offset,
     Int() $size
-  ) {
+  )
+    is also<resize-range>
+  {
     my guint $i = $idx;
     my gint $l = $length;
     my gssize ($o, $s) = ($offset, $size);
@@ -587,7 +650,7 @@ class GStreamer::Buffer is GStreamer::MiniObject {
     gst_buffer_unmap($!b, $info);
   }
 
-  method unset_flags (GstBufferFlags $flags) {
+  method unset_flags (GstBufferFlags $flags) is also<unset-flags> {
     my GstBufferFlags $f = $flags;
 
     gst_buffer_unset_flags($!b, $f);
