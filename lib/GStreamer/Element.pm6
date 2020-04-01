@@ -2,19 +2,21 @@ use v6.c;
 
 use Method::Also;
 
-
 use GStreamer::Raw::Types;
 use GStreamer::Raw::Element;
 use GStreamer::Raw::Utils;
 
-use GStreamer::Object;
 use GStreamer::Bus;
+use GStreamer::Clock;
+use GStreamer::Context;
 use GStreamer::Iterator;
+use GStreamer::Object;
 use GStreamer::Pad;
+use GStreamer::PadTemplate;
 
 use GStreamer::Roles::Signals::Element;
 
-our subset ElementAncestry is export of Mu
+our subset GstElementAncestry is export of Mu
   where GstElement | GstObject;
 
 class GStreamer::Element is GStreamer::Object {
@@ -26,7 +28,7 @@ class GStreamer::Element is GStreamer::Object {
     self.setElement($element) if $element.defined;
   }
 
-  method setElement(ElementAncestry $_) {
+  method setElement(GstElementAncestry $_) {
     my $to-parent;
 
     $!e = do  {
@@ -47,8 +49,8 @@ class GStreamer::Element is GStreamer::Object {
     is also<GstElement>
   { $!e }
 
-  method new (GstElement $element) {
-    self.bless( :$element );
+  method new (GstElementAncestry $element) {
+    $element ?? self.bless( :$element ) !! Nil;
   }
 
   # Is originally:
@@ -174,7 +176,7 @@ class GStreamer::Element is GStreamer::Object {
     $b ??
       ( $raw ?? $b !! GStreamer::Bus.new($b) )
       !!
-      Nil;
+      GstBus;
   }
 
   method get_clock (:$raw = False)
@@ -183,31 +185,49 @@ class GStreamer::Element is GStreamer::Object {
       clock
     >
   {
-    gst_element_get_clock($!e);
-    # ADD OBJECT CREATION
+    my $c = gst_element_get_clock($!e);
+
+    $c ??
+      ( $raw ?? $c !! GStreamer::Clock.new($c) )
+      !!
+      GstClock;
   }
 
-  method get_context (Str $context_type) is also<get-context>
+  method get_context (Str() $context_type, :$raw = False)
+    is also<get-context>
   {
-    gst_element_get_context($!e, $context_type);
-    # ADD OBJECT CREATION
+    my $c = gst_element_get_context($!e, $context_type);
+
+    $c ??
+      ( $raw ?? $c !! GStreamer::Context.new($c) )
+      !!
+      GstContext;
   }
 
-  method get_context_unlocked (Str $context_type)
+  method get_context_unlocked (Str() $context_type, :$raw = False)
     is also<get-context-unlocked>
   {
-    gst_element_get_context_unlocked($!e, $context_type);
-    # ADD OBJECT CREATION
+    my $c = gst_element_get_context_unlocked($!e, $context_type);
+
+    $c ??
+      ( $raw ?? $c !! GStreamer::Context.new($c) )
+      !!
+      GstContext;
   }
 
-  method get_contexts (:$raw = False)
+  method get_contexts (:$glist = False, :$raw = False)
     is also<
       get-contexts
       contexts
     >
   {
-    gst_element_get_contexts($!e);
-    # ADD OBJECT CREATION
+    my $cl = gst_element_get_contexts($!e);
+
+    return Nil unless $cl;
+    return $cl if $glist;
+
+    $cl = GLib::GList.new($cl) but GLib::Roles::ListData[GstContext];
+    $raw ?? $cl.Array !! $cl.Array.map({ GStreamer::Context.new($_) });
   }
 
   method get_factory (:$raw = False)
@@ -221,27 +241,34 @@ class GStreamer::Element is GStreamer::Object {
     $f ??
       ( $raw ?? $f !! ::('GST::ElementFactory').new($f) )
       !!
-      Nil;
+      GstElementFactory;
   }
 
   method get_metadata (Str() $key) is also<get-metadata> {
     gst_element_get_metadata($!e, $key);
   }
 
-  method get_pad_template (Str() $name) is also<get-pad-template> {
-    gst_element_get_pad_template($!e, $name);
-    # ADD OBJECT CREATION
+  method get_pad_template (Str() $name, :$raw = False)
+    is also<get-pad-template>
+  {
+    my $p = gst_element_get_pad_template($!e, $name);
+
+    $p ??
+      ( $raw ?? $p !! GStreamer::PadTemplate.new($p) )
+      !!
+      GstPadTemplate;
   }
 
-  method get_pad_template_list (:$raw = False)
+  method get_pad_template_list (:$glist = False, :$raw = False)
     is also<get-pad-template-list>
   {
-    my $tl = gst_element_get_pad_template_list($!e)
-      but
-      GLib::Roles::ListData[GstPadTemplate];
+    my $tl = gst_element_get_pad_template_list($!e);
 
-    # ADD OBJECT CREATION
-    $tl;
+    return Nil unless $tl;
+    return $tl if $glist;
+
+    $tl = GLib::GList.new($tl) but GLib::Roles::ListData[GstPadTemplate];
+    $raw ?? $tl.Array !! $tl.Array.map({ GStreamer::PadTemplate.new($_) });
   }
 
   method get_request_pad (Str() $name, :$raw = False)
@@ -252,7 +279,7 @@ class GStreamer::Element is GStreamer::Object {
     $p ??
       ( $raw ?? $p !! GStreamer::Pad.new($p) )
       !!
-      Nil;
+      GstPad;
   }
 
   method get_start_time
@@ -265,6 +292,7 @@ class GStreamer::Element is GStreamer::Object {
     gst_element_get_start_time($!e);
   }
 
+  # cw: Check for rw prams. You know they are.
   method get_state (
     Int() $state,    # GstState $state,
     Int() $pending,  # GstState $pending,
@@ -281,11 +309,12 @@ class GStreamer::Element is GStreamer::Object {
     $sp ??
       ( $raw ?? $sp !! GStreamer::Pad.new($sp) )
       !!
-      Nil;
+      GstPad;
   }
 
   method get_type is also<get-type> {
     state ($n, $t);
+
     unstable_get_type( self.^name, &gst_element_get_type, $n, $t );
   }
 
@@ -299,7 +328,7 @@ class GStreamer::Element is GStreamer::Object {
     $p ??
       ( $raw ?? $p !! GStreamer::Iterator.new($p) )
       !!
-      Nil;
+      GstIterator;
   }
 
   method iterate_sink_pads (:$raw = False ) is also<iterate-sink-pads> {
@@ -308,7 +337,7 @@ class GStreamer::Element is GStreamer::Object {
     $sp ??
       ( $raw ?? $sp !! GStreamer::Iterator.new($sp) )
       !!
-      Nil;
+      GstIterator;
   }
 
   method iterate_src_pads (:$raw = False) is also<iterate-src-pads> {
@@ -317,7 +346,7 @@ class GStreamer::Element is GStreamer::Object {
     $sp ??
       ( $raw ?? $sp !! GStreamer::Iterator.new($sp) )
       !!
-      Nil;
+      GstIterator;
   }
 
   method lost_state is also<lost-state> {
@@ -381,15 +410,20 @@ class GStreamer::Element is GStreamer::Object {
   }
 
   method post_message (GstMessage() $message) is also<post-message> {
-    gst_element_post_message($!e, $message);
+    so gst_element_post_message($!e, $message);
   }
 
-  method provide_clock is also<provide-clock> {
-    gst_element_provide_clock($!e);
+  method provide_clock (:$raw = False) is also<provide-clock> {
+    my $c = gst_element_provide_clock($!e);
+
+    $c ??
+      ( $raw ?? $c !! GStreamer::Clock.new($c) )
+      !!
+      GstClock;
   }
 
   method query (GstQuery() $query) {
-    gst_element_query($!e, $query);
+    so gst_element_query($!e, $query);
   }
 
   method release_request_pad (GstPad() $pad) is also<release-request-pad> {
@@ -397,7 +431,7 @@ class GStreamer::Element is GStreamer::Object {
   }
 
   method remove_pad (GstPad() $pad) is also<remove-pad> {
-    gst_element_remove_pad($!e, $pad);
+    so gst_element_remove_pad($!e, $pad);
   }
 
   method remove_property_notify_watch (
@@ -411,11 +445,17 @@ class GStreamer::Element is GStreamer::Object {
   method request_pad (
     GstPadTemplate() $templ,
     Str() $name,
-    GstCaps() $caps
+    GstCaps() $caps,
+    :$raw = False
   )
     is also<request-pad>
   {
-    gst_element_request_pad($!e, $templ, $name, $caps);
+    my $p = gst_element_request_pad($!e, $templ, $name, $caps);
+
+    $p ??
+      ( $raw ?? $p !! GStreamer::Pad.new($p) )
+      !!
+      GstPad;
   }
 
   method seek (
@@ -427,7 +467,7 @@ class GStreamer::Element is GStreamer::Object {
     Int() $stop_type,  # GstSeekType $stop_type,
     Int() $stop        # uint64
   ) {
-    gst_element_seek(
+    so gst_element_seek(
       $!e,
       $rate,
       $format,
@@ -440,7 +480,7 @@ class GStreamer::Element is GStreamer::Object {
   }
 
   method send_event (GstEvent() $event) is also<send-event> {
-    gst_element_send_event($!e, $event);
+    so gst_element_send_event($!e, $event);
   }
 
   method set_base_time (
@@ -456,7 +496,7 @@ class GStreamer::Element is GStreamer::Object {
   }
 
   method set_clock (GstClock() $clock) is also<set-clock> {
-    gst_element_set_clock($!e, $clock);
+    so gst_element_set_clock($!e, $clock);
   }
 
   method set_context (GstContext() $context) is also<set-context> {
@@ -464,7 +504,7 @@ class GStreamer::Element is GStreamer::Object {
   }
 
   method set_locked_state (Int() $locked_state) is also<set-locked-state> {
-    gst_element_set_locked_state($!e, $locked_state);
+    so gst_element_set_locked_state($!e, $locked_state);
   }
 
   method set_start_time (
@@ -484,7 +524,7 @@ class GStreamer::Element is GStreamer::Object {
   }
 
   method sync_state_with_parent is also<sync-state-with-parent> {
-    gst_element_sync_state_with_parent($!e);
+    so gst_element_sync_state_with_parent($!e);
   }
 
   # From gstutils.h
@@ -493,53 +533,68 @@ class GStreamer::Element is GStreamer::Object {
     gst_element_create_all_pads($!e);
   }
 
-  method get_compatible_pad (GstPad $pad, GstCaps $caps)
+  method get_compatible_pad (GstPad() $pad, GstCaps() $caps, :$raw = False)
     is also<get-compatible-pad>
   {
-    gst_element_get_compatible_pad($!e, $pad, $caps);
+    my $p = gst_element_get_compatible_pad($!e, $pad, $caps);
+
+    $p ??
+      ( $raw ?? $p !! GStreamer::Pad.new($p) )
+      !!
+      GstPad;
   }
 
-  method get_compatible_pad_template (GstPadTemplate $compattempl)
+  method get_compatible_pad_template (GstPadTemplate() $template, :$raw = False)
     is also<get-compatible-pad-template>
   {
-    gst_element_get_compatible_pad_template($!e, $compattempl);
+    my $pt = gst_element_get_compatible_pad_template($!e, $template);
+
+    $pt ??
+      ( $raw ?? $pt !! GStreamer::PadTemplate.new($pt) )
+      !!
+      GstPadTemplate;
   }
 
   method link (GstElement() $dest) {
-    gst_element_link($!e, $dest);
+    so gst_element_link($!e, $dest);
   }
 
   method link_many (*@e) is also<link-many> {
     my $dieMsg = qq:to/DIE/.&nocr;
-      Items passed to GStreamer::Element.link_many must be GStreamer::Element
-      compatible!
+      Items passed to GStreamer::Element.link_many must be {''
+      }GStreamer::Element compatible!
       DIE
 
     die $dieMsg unless @e.all ~~ (GStreamer::Element, GstElement).any;
-    self.link($_) for @e;
+
+    my $aok = True;
+    for @e {
+      $aok = False unless self.link($_);
+    }
+    $aok;
   }
 
-  method link_filtered (GstElement $dest, GstCaps $filter)
+  method link_filtered (GstElement() $dest, GstCaps() $filter)
     is also<link-filtered>
   {
-    gst_element_link_filtered($!e, $dest, $filter);
+    so gst_element_link_filtered($!e, $dest, $filter);
   }
 
-  method link_pads (Str $srcpadname, GstElement $dest, Str $destpadname)
+  method link_pads (Str() $srcpadname, GstElement() $dest, Str() $destpadname)
     is also<link-pads>
   {
-    gst_element_link_pads($!e, $srcpadname, $dest, $destpadname);
+    so gst_element_link_pads($!e, $srcpadname, $dest, $destpadname);
   }
 
   method link_pads_filtered (
-    Str $srcpadname,
-    GstElement $dest,
-    Str $destpadname,
-    GstCaps $filter
+    Str() $srcpadname,
+    GstElement() $dest,
+    Str() $destpadname,
+    GstCaps() $filter
   )
     is also<link-pads-filtered>
   {
-    gst_element_link_pads_filtered(
+    so gst_element_link_pads_filtered(
       $!e,
       $srcpadname,
       $dest,
@@ -549,14 +604,16 @@ class GStreamer::Element is GStreamer::Object {
   }
 
   method link_pads_full (
-    Str $srcpadname,
-    GstElement $dest,
-    Str $destpadname,
-    GstPadLinkCheck $flags
+    Str() $srcpadname,
+    GstElement() $dest,
+    Str() $destpadname,
+    Int() $flags
   )
     is also<link-pads-full>
   {
-    gst_element_link_pads_full($!e, $srcpadname, $dest, $destpadname, $flags);
+    my GstPadLinkCheck $f = $flags;
+
+    gst_element_link_pads_full($!e, $srcpadname, $dest, $destpadname, $f);
   }
 
   proto method query_convert (|)
@@ -566,10 +623,11 @@ class GStreamer::Element is GStreamer::Object {
   multi method query_convert (
     Int() $src_format,
     Int() $src_val,
-    Int() $dest_format,
-    :$all = False
+    Int() $dest_format
   ) {
-    samewith($src_format, $src_val, $dest_format, $, :$all);
+    my $rv = callwith($src_format, $src_val, $dest_format, $, :all);
+
+    $rv[0] ?? $rv[1] !! Nil;
   }
   multi method query_convert (
     GstFormat $src_format,
@@ -580,7 +638,7 @@ class GStreamer::Element is GStreamer::Object {
   ) {
     my GstFormat ($sf, $df) = ($src_format, $dest_format);
     my gint64 $dv = 0;
-    my $rc = so gst_element_query_convert(
+    my $rv = so gst_element_query_convert(
       $!e,
       $src_format,
       $src_val,
@@ -588,23 +646,21 @@ class GStreamer::Element is GStreamer::Object {
       $dv
     );
 
-    $dest_val = $rc ?? $dv !! Nil;
-    $all.not ?? $dest_val !! ($dest_val, $rc);
+    $all.not ?? $rv !! ($rv, $dest_val);
   }
-
 
   proto method query_duration (|)
     is also<query-duration>
   { * }
 
-  multi method query_duration (Int() $format, :$all = False) {
-    samewith($format, $, :$all);
+  multi method query_duration (Int() $format) {
+    samewith($format, $, :all);
   }
   multi method query_duration (Int() $format, $duration is rw, :$all = False) {
     my guint64 $d = 0;
-    my $rc = so gst_element_query_duration($!e, $format, $d);
-    $duration = $rc ?? $d !! Nil;
-    $all.not ?? $duration !! ($duration, $rc);
+    my $rv = so gst_element_query_duration($!e, $format, $d);
+
+    $all.not ?? $rv !! ($rv, $duration);
   }
 
 
@@ -612,17 +668,16 @@ class GStreamer::Element is GStreamer::Object {
     is also<query-position>
   { * }
 
-  multi method query_position (Int() $format, :$all = False) {
-    samewith($format, $, :$all)
+  multi method query_position (Int() $format) {
+    my $rv = callwith($format, $, :all)
   }
 
   multi method query_position (Int() $format, $cur is rw, :$all = False) {
     my GstFormat $f = $format;
     my guint64 $c = 0;
-    my $rc = so gst_element_query_position($!e, $f, $c);
+    my $rv = so gst_element_query_position($!e, $f, $c);
 
-    $cur = $rc ?? $c !! Nil;
-    $all.not ?? $cur !! ($cur, $rc);
+    $all.not ?? $rv !! ($rv, $cur);
   }
 
   method seek_simple (
@@ -636,7 +691,7 @@ class GStreamer::Element is GStreamer::Object {
     my GstSeekFlags $sf = $seek_flags;
     my gint64 $sp = $seek_pos;
 
-    gst_element_seek_simple($!e, $f, $sf, $sp);
+    so gst_element_seek_simple($!e, $f, $sf, $sp);
   }
 
   method state_change_return_get_name (
