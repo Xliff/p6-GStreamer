@@ -2,7 +2,6 @@ use v6.c;
 
 use NativeCall;
 
-
 use GStreamer::Raw::Types;
 
 unit package GStreamer::Raw::Event;
@@ -209,7 +208,7 @@ sub gst_event_parse_buffer_size (
   is export
 { * }
 
-sub gst_event_parse_caps (GstEvent $event, GstCaps $caps is rw)
+sub gst_event_parse_caps (GstEvent $event, CArray[GstCaps] $caps)
   is native(gstreamer)
   is export
 { * }
@@ -282,7 +281,10 @@ sub gst_event_parse_seek_trickmode_interval (
   is export
 { * }
 
-sub gst_event_parse_segment (GstEvent $event, GstSegment $segment is rw)
+sub gst_event_parse_segment (
+  GstEvent $event,
+  CArray[Pointer[GstSegment]] $segment
+)
   is native(gstreamer)
   is export
 { * }
@@ -326,7 +328,7 @@ sub gst_event_parse_step (
 
 sub gst_event_parse_stream (
   GstEvent $event,
-  CArray[Pointer[GstStream]] $stream
+  CArray[GstStream] $stream
 )
   is native(gstreamer)
   is export
@@ -334,7 +336,7 @@ sub gst_event_parse_stream (
 
 sub gst_event_parse_stream_collection (
   GstEvent $event,
-  CArray[Pointer[GstStreamCollection]] $collection
+  CArray[GstStreamCollection] $collection
 )
   is native(gstreamer)
   is export
@@ -342,7 +344,7 @@ sub gst_event_parse_stream_collection (
 
 sub gst_event_parse_stream_flags (
   GstEvent $event,
-  CArray[GstStreamFlags] $flags
+  GstStreamFlags $flags is rw
 )
   is native(gstreamer)
   is export
