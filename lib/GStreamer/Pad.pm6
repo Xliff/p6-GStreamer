@@ -2,7 +2,6 @@ use v6.c;
 
 use Method::Also;
 
-
 use GStreamer::Raw::Types;
 use GStreamer::Raw::Pad;
 use GStreamer::Raw::Utils;
@@ -43,12 +42,13 @@ class GStreamer::Pad is GStreamer::Object {
   { $!p }
 
   multi method new (GstPad $pad) {
-    self.bless( :$pad );
+    $pad ?? self.bless( :$pad ) !! Nil
   }
   multi method new (Str() $name, Int() $direction) {
     my GstPadDirection $d = $direction;
+    my $pad = gst_pad_new($name, $d);
 
-    self.bless( pad => gst_pad_new($name, $d) );
+    $pad ?? self.bless( :$pad ) !! Nil
   }
 
   method new_from_static_template (
@@ -57,13 +57,17 @@ class GStreamer::Pad is GStreamer::Object {
   )
     is also<new-from-static-template>
   {
-    self.bless( pad => gst_pad_new_from_static_template($splate, $name) );
+    my $pad = gst_pad_new_from_static_template($splate, $name);
+
+    $pad ?? self.bless( :$pad ) !! Nil
   }
 
   method new_from_template (GstPadTemplate() $plate, Str() $name)
     is also<new-from-template>
   {
-    self.bless( pad => gst_pad_new_from_template($plate, $name) );
+    my $pad = gst_pad_new_from_template($plate, $name);
+
+    $pad ?? self.bless( :$pad ) !! Nil
   }
 
   method element_private is rw is also<element-private> {
@@ -168,7 +172,7 @@ class GStreamer::Pad is GStreamer::Object {
     $c ??
       ( $raw ?? $c !! GStreamer::Caps.new($c) )
       !!
-      Nil;
+      GstCaps;
   }
 
   method get_current_caps (:$raw = False)
@@ -183,7 +187,7 @@ class GStreamer::Pad is GStreamer::Object {
     $c ??
       ( $raw ?? $c !! GStreamer::Caps.new($c) )
       !!
-      Nil;
+      GstCaps;
   }
 
   method get_direction
@@ -217,7 +221,7 @@ class GStreamer::Pad is GStreamer::Object {
     $pt ??
       ( $raw ?? $pt !! ::('GStreamer::PadTemplate').new($pt) )
       !!
-      Nil;
+      GstPadTemplate;
   }
 
   method get_pad_template_caps (:$raw = False)
@@ -232,7 +236,7 @@ class GStreamer::Pad is GStreamer::Object {
     $c ??
       ( $raw ?? $c !! GStreamer::Caps.new($c) )
       !!
-      Nil;
+      GstCaps;
   }
 
   method get_parent (:$raw = False)
@@ -246,7 +250,7 @@ class GStreamer::Pad is GStreamer::Object {
     $pe ??
       ( $raw ?? $pe !! ::('GStreamer::Element').new($pe) )
       !!
-      Nil;
+      GstElement;
   }
 
   method get_peer (:$raw = False)
@@ -260,7 +264,7 @@ class GStreamer::Pad is GStreamer::Object {
     $p ??
       ( $raw ?? $p !! GStreamer::Pad.new($p) )
       !!
-      Nil;
+      GstPad;
   }
 
   method get_range (
@@ -342,7 +346,7 @@ class GStreamer::Pad is GStreamer::Object {
     $i ??
       ( $raw ?? $i !! GStreamer::Iterator.new($i) )
       !!
-      Nil;
+      GstIterator;
   }
 
   method iterate_internal_links_default (GstObject() $parent, :$raw = False)
@@ -353,7 +357,7 @@ class GStreamer::Pad is GStreamer::Object {
     $i ??
       ( $raw ?? $i !! GStreamer::Iterator.new($i) )
       !!
-      Nil;
+      GstIterator;
   }
 
   method link (GstPad() $sinkpad) {
@@ -450,11 +454,11 @@ class GStreamer::Pad is GStreamer::Object {
     my guint64 $o = $offset;
     my guint $s = $size;
 
-    GstFlowReturn( gst_pad_pull_range($!p, $o, $s, $buffer) );
+    GstFlowReturnEnum( gst_pad_pull_range($!p, $o, $s, $buffer) );
   }
 
   method push (GstBuffer() $buffer) {
-    GstFlowReturn( gst_pad_push($!p, $buffer) );
+    GstFlowReturnEnum( gst_pad_push($!p, $buffer) );
   }
 
   method push_event (GstEvent() $event) is also<push-event> {
@@ -462,7 +466,7 @@ class GStreamer::Pad is GStreamer::Object {
   }
 
   method push_list (GstBufferList() $list) is also<push-list> {
-    GstFlowReturn( gst_pad_push_list($!p, $list) );
+    GstFlowReturnEnum( gst_pad_push_list($!p, $list) );
   }
 
   method query (GstQuery() $query) {
@@ -488,7 +492,7 @@ class GStreamer::Pad is GStreamer::Object {
     $c ??
       ( $raw ?? $c !! GStreamer::Caps.new($c) )
       !!
-      Nil;
+      GstCaps;
   }
 
   method remove_probe (
@@ -535,7 +539,7 @@ class GStreamer::Pad is GStreamer::Object {
   )
     is also<set-active>
   {
-    my gboolean $a = $active;
+    my gboolean $a = $active.so.Int;
 
     so gst_pad_set_active($!p, $active);
   }
@@ -659,7 +663,7 @@ class GStreamer::Pad is GStreamer::Object {
   }
 
   method store_sticky_event (GstEvent() $event) is also<store-sticky-event> {
-    GstFlowReturn( gst_pad_store_sticky_event($!p, $event) );
+    GstFlowReturnEnum( gst_pad_store_sticky_event($!p, $event) );
   }
 
   method unlink (GstPad() $sinkpad) {
@@ -676,9 +680,9 @@ class GStreamer::Pad is GStreamer::Object {
     Int() $src_format,
     Int() $src_val,
     Int() $dest_format,
-    :$all = False
   ) {
-    samewith($src_format, $src_val, $dest_format, $, :$all);
+    my $rv =  callwith($src_format, $src_val, $dest_format, $, :all);
+    $rv[0] ?? $rv[1] !! Nil;
   }
   multi method query_convert (
     Int() $src_format,
@@ -690,17 +694,18 @@ class GStreamer::Pad is GStreamer::Object {
     my GstFormat ($sf, $df) = ($src_format, $dest_format);
     my gint64 ($sv, $dv) = ($src_val, 0);
 
-    my $rc = gst_pad_query_convert($!p, $sf, $sv, $df, $dv);
-    $dest_val = $rc ?? $dv !! Nil;
-    $all.not ?? $dest_val !! ($dest_val, $rc);
+    my $rv = gst_pad_query_convert($!p, $sf, $sv, $df, $dv);
+    $dest_val = $rv ?? $dv !! Nil;
+    $all.not ?? $dest_val !! ($rv, $dest_val);
   }
 
   proto method query_duration (|)
     is also<query-duration>
   { * }
 
-  multi method query_duration (Int() $format, :$all = False) {
-    samewith($format, $, :$all);
+  multi method query_duration (Int() $format) {
+    my $rv = callwith($format, $, :all);
+    $rv[0] ?? $rv[1] !! Nil;
   }
   multi method query_duration (
     Int() $format,
@@ -709,18 +714,20 @@ class GStreamer::Pad is GStreamer::Object {
   ) {
     my GstFormat $f = $format;
     my guint64 $d = 0;
-    my $rc = gst_pad_query_duration($!p, $f, $d);
+    my $rv = gst_pad_query_duration($!p, $f, $d);
 
-    $duration = $rc ?? $d !! Nil;
-    $all.not ?? $duration !! ($duration, $rc);
+    $duration = $rv  ?? $d !! Nil;
+    $all.not ?? $duration !! ($rv, $duration);
   }
 
   proto method query_position (|)
     is also<query-position>
   { * }
 
-  multi method query_position (Int() $format, :$all = False) {
-    samewith($format, $, :$all);
+  multi method query_position (Int() $format) {
+    my $rv = callwith($format, $, :all);
+
+    $rv[0] ?? $rv[1] !! Nil;
   }
   multi method query_position (
     Int() $format,
@@ -729,10 +736,10 @@ class GStreamer::Pad is GStreamer::Object {
   ) {
     my GstFormat $f = $format;
     my gint64 $c = 0;
-    my $rc = gst_pad_query_position ($!p, $f, $c);
+    my $rv = gst_pad_query_position ($!p, $f, $c);
 
-    $position = $rc ?? $c !! Nil;
-    $all.not ?? $position !! ($position, $rc);
+    $position = $rv ?? $c !! Nil;
+    $all.not ?? $position !! ($rv, $position);
   }
 
 }
