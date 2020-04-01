@@ -8,6 +8,8 @@ use GStreamer::Raw::Types;
 use GStreamer::Raw::Query;
 use GStreamer::Raw::Subs;
 
+use GStreamer::Caps;
+use GStreamer::Context;
 use GStreamer::MiniObject;
 use GStreamer::Allocator;
 use GStreamer::Structure;
