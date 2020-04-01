@@ -1,15 +1,16 @@
 use v6.c;
 
+use Method::Also;
 
 use GStreamer::Raw::Types;
 use GStreamer::Raw::Stream;
 
 use GStreamer::Object;
 
-#use GStreamer::Caps;
+use GStreamer::Caps;
 use GStreamer::TagList;
 
-our subset StreamAncestry is export of Mu
+our subset GstStreamAncestry is export of Mu
   where GstStream | GstObject;
 
 class GStreamer::Stream is GStreamer::Object {
@@ -19,7 +20,7 @@ class GStreamer::Stream is GStreamer::Object {
     self.setStream($stream) if $stream.defined;
   }
 
-  method setStream(StreamAncestry $_) {
+  method setStream(GstStreamAncestry $_) {
     my $to-parent;
 
     $!s = do {
@@ -37,10 +38,11 @@ class GStreamer::Stream is GStreamer::Object {
   }
 
   method GStreamer::Raw::Types::GstStream
+    is also<GstStream>
   { $!s }
 
-  multi method new (GstStream $stream) {
-    self.bless( :$stream );
+  multi method new (GstStreamAncestry $stream) {
+    $stream ?? self.bless( :$stream ) !! Nil;
   }
   multi method new (
     Str() $stream_id,
@@ -50,8 +52,9 @@ class GStreamer::Stream is GStreamer::Object {
   ) {
     my GstStreamType $t = $type;
     my GstStreamFlags $f = $flags;
-
-    self.bless( stream => gst_stream_new($stream_id, $caps, $t, $f) );
+    my $stream = gst_stream_new($stream_id, $caps, $t, $f);
+    
+    $stream ?? self.bless( :$stream ) !! Nil;
   }
 
   method caps (:$raw = False) is rw {
@@ -70,7 +73,7 @@ class GStreamer::Stream is GStreamer::Object {
     );
   }
 
-  method stream_flags is rw {
+  method stream_flags is rw is also<stream-flags> {
     Proxy.new(
       FETCH => sub ($) {
         GstStreamFlagsEnum( gst_stream_get_stream_flags($!s) );
@@ -83,7 +86,7 @@ class GStreamer::Stream is GStreamer::Object {
     );
   }
 
-  method stream_type is rw {
+  method stream_type is rw is also<stream-type> {
     Proxy.new(
       FETCH => sub ($) {
         GstStreamTypeEnum( gst_stream_get_stream_type($!s) );
@@ -112,11 +115,11 @@ class GStreamer::Stream is GStreamer::Object {
     );
   }
 
-  method get_stream_id {
+  method get_stream_id is also<get-stream-id> {
     gst_stream_get_stream_id($!s);
   }
 
-  method get_type {
+  method get_type is also<get-type> {
     state ($n, $t);
 
     unstable_get_type( self.^name, &gst_stream_get_type, $n, $t );
@@ -125,7 +128,7 @@ class GStreamer::Stream is GStreamer::Object {
   method type_get_name (
     GStreamer::Stream:U:
     Int() $type
-  ) {
+  ) is also<type-get-name> {
     my GstStreamType $t = $type;
 
     gst_stream_type_get_name($t);
