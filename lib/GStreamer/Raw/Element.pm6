@@ -461,3 +461,10 @@ sub gst_element_sync_state_with_parent (GstElement $element)
   is native(gstreamer)
   is export
 { * }
+
+# From gsturi.h
+sub gst_element_make_from_uri (GstURIType $type, Str $uri, Str $elementname, CArray[Pointer[GError]] $error)
+  returns GstElement
+  is native(gstreamer)
+  is export
+{ * }

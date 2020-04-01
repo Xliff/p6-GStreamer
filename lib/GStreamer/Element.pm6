@@ -22,7 +22,7 @@ our subset GstElementAncestry is export of Mu
 class GStreamer::Element is GStreamer::Object {
   also does GStreamer::Roles::Signals::Element;
 
-  has GstElement $!e;
+  has GstElement $!e is implementor;
 
   submethod BUILD (:$element) {
     self.setElement($element) if $element.defined;
@@ -351,6 +351,24 @@ class GStreamer::Element is GStreamer::Object {
 
   method lost_state is also<lost-state> {
     gst_element_lost_state($!e);
+  }
+
+  method make_from_uri (GStreamer::Element:U:) (
+    Str() $uri,
+    Str() $elementname,
+    CArray[Pointer[GError]] $error = gerror,
+    :$raw = False
+  )
+    is also<gst-element-make-from-uri>
+  {
+    clear_error;
+    my $e = gst_element_make_from_uri($!u, $uri, $elementname, $error);
+    set_error($error);
+
+    $e ??
+      ( $raw ?? $e !! GStreamer::Element.new($e) )
+      !!
+      GstElement;
   }
 
   method message_full (
