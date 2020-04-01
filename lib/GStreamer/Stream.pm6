@@ -53,7 +53,7 @@ class GStreamer::Stream is GStreamer::Object {
     my GstStreamType $t = $type;
     my GstStreamFlags $f = $flags;
     my $stream = gst_stream_new($stream_id, $caps, $t, $f);
-    
+
     $stream ?? self.bless( :$stream ) !! Nil;
   }
 
@@ -65,7 +65,7 @@ class GStreamer::Stream is GStreamer::Object {
         $c ??
           ( $raw ?? $c !! GStreamer::Caps.new($c) )
           !!
-          Nil;
+          GstCaps;
       },
       STORE => sub ($, GstCaps() $caps is copy) {
         gst_stream_set_caps($!s, $caps);
@@ -107,7 +107,7 @@ class GStreamer::Stream is GStreamer::Object {
         $t ??
           ( $raw ?? $t !! GStreamer::TagList.new($t) )
           !!
-          Nil;
+          GstTagList;
       },
       STORE => sub ($, GstTagList() $tags is copy) {
         gst_stream_set_tags($!s, $tags);
