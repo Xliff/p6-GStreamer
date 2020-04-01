@@ -6,7 +6,20 @@ use NativeCall;
 use GStreamer::Raw::Types;
 use GStreamer::Raw::Event;
 
+use GLib::GList;
+use GStreamer::Buffer;
+use GStreamer::Caps;
+use GStreamer::Message;
 use GStreamer::MiniObject;
+use GStreamer::Segment;
+use GStreamer::Stream;
+use GStreamer::StreamCollection;
+use GStreamer::Structure;
+use GStreamer::TagList;
+use GStreamer::Toc;
+
+use GLib::Roles::ListData;
+
 
 our subset GstEventAncestry is export of Mu
   where GstEvent | GstMiniObject;
@@ -814,7 +827,7 @@ class GStreamer::Event is GStreamer::MiniObject {
     gst_event_parse_stream_collection($!e, $col);
 
     $collection = $col[0] ??
-      ( $raw ?? $col[0] !! GStreamer::StreamCollection,.new( $col[0] ) )
+      ( $raw ?? $col[0] !! GStreamer::StreamCollection.new( $col[0] ) )
       !!
       GstStreamCollection;
   }
