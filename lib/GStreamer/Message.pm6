@@ -1484,21 +1484,17 @@ class GStreamer::Message is GStreamer::MiniObject {
   { * }
 
   multi method parse_state_changed {
-    my $rv = callwith($, $, $, :all);
-
-    $rv[0] ?? $rv.skip(1) !! Nil;
+    samewith($, $, $, :all);
   }
   multi method parse_state_changed (
     $oldstate is rw,
     $newstate is rw,
     $pending  is rw,
-    :$all = False
   ) {
     my GstState ($o, $n, $p) = 0 xx 3;
 
-    my $rv = gst_message_parse_state_changed($!m, $o, $n, $p);
+    gst_message_parse_state_changed($!m, $o, $n, $p);
     ($oldstate, $newstate, $pending) = ppr($o, $n, $p);
-    $all.not ?? $rv !! ($rv, $oldstate, $newstate, $pending);
   }
 
   proto method parse_step_done (|)
