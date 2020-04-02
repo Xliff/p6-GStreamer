@@ -41,7 +41,7 @@ class GStreamer::Query is GStreamer::MiniObject {
     self.setMiniObject($to-parent);
   }
 
-  method GStreamer::Raw::Types::GstQuery
+  method GStreamer::Raw::Structs::GstQuery
     is also<GstQuery>
   { $!q }
 
