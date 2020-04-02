@@ -91,7 +91,7 @@ class GStreamer::DeviceMonitor is GStreamer::Object {
     return $dl if $glist;
 
     $dl = GLib::GList.new($dl) but GLib::Roles::ListData[GstDevice];
-    $raw ?? $d.Array !! $d.Array.map({ GStreamer::Device.new($_) });
+    $raw ?? $dl.Array !! $dl.Array.map({ GStreamer::Device.new($_) });
   }
 
   method get_providers
