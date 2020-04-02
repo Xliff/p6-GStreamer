@@ -6,13 +6,15 @@ use GStreamer::Raw::Definitions;
 
 unit package GStreamer::Raw::Subs;
 
+subset PassThru of Mu where Str | CArray;
+
 sub ppr(*@a) is export {
   @a.map({
     if $_ ~~ CArray {
-      if .[0].defined { if   .[0] ~~ Str { .[0] }
-                        else             { +.[0] != 0 ?? .[0].deref !! Nil }
-      }
-      else { Nil }
+      if .[0].defined { if   .[0] ~~ PassThru { .[0] }
+                        else                  { +.[0] != 0 ?? .[0].deref
+                                                           !! Nil          } }
+      else            { Nil }
     }
     else { $_ }
   });
