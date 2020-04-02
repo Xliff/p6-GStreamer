@@ -46,7 +46,7 @@ class GStreamer::Element is GStreamer::Object {
     self.setGstObject($to-parent);
   }
 
-  method GStreamer::Raw::Types::GstElement
+  method GStreamer::Raw::Structs::GstElement
     is also<GstElement>
   { $!e }
 
