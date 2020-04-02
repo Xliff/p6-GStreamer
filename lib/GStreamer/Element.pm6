@@ -1,5 +1,6 @@
 use v6.c;
 
+use NativeCall;
 use Method::Also;
 
 use GStreamer::Raw::Types;
@@ -353,7 +354,9 @@ class GStreamer::Element is GStreamer::Object {
     gst_element_lost_state($!e);
   }
 
-  method make_from_uri (GStreamer::Element:U:) (
+  method make_from_uri (
+    GStreamer::Element:U:
+    Int() $type,
     Str() $uri,
     Str() $elementname,
     CArray[Pointer[GError]] $error = gerror,
@@ -361,8 +364,10 @@ class GStreamer::Element is GStreamer::Object {
   )
     is also<gst-element-make-from-uri>
   {
+    my GstURIType $t = $type;
+
     clear_error;
-    my $e = gst_element_make_from_uri($!u, $uri, $elementname, $error);
+    my $e = gst_element_make_from_uri($type, $uri, $elementname, $error);
     set_error($error);
 
     $e ??
