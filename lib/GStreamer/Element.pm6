@@ -648,7 +648,7 @@ class GStreamer::Element is GStreamer::Object {
     Int() $src_val,
     Int() $dest_format
   ) {
-    my $rv = callwith($src_format, $src_val, $dest_format, $, :all);
+    my $rv = samewith($src_format, $src_val, $dest_format, $, :all);
 
     $rv[0] ?? $rv[1] !! Nil;
   }
@@ -677,12 +677,15 @@ class GStreamer::Element is GStreamer::Object {
   { * }
 
   multi method query_duration (Int() $format) {
-    samewith($format, $, :all);
+    my $rv = samewith($format, $, :all);
+
+    $rv[0] ?? $rv[1] !! Nil;
   }
   multi method query_duration (Int() $format, $duration is rw, :$all = False) {
     my guint64 $d = 0;
     my $rv = so gst_element_query_duration($!e, $format, $d);
 
+    $duration = $d;
     $all.not ?? $rv !! ($rv, $duration);
   }
 
@@ -692,14 +695,16 @@ class GStreamer::Element is GStreamer::Object {
   { * }
 
   multi method query_position (Int() $format) {
-    my $rv = callwith($format, $, :all)
-  }
+    my $rv = samewith($format, $, :all);
 
+    $rv[0] ?? $rv[1] !! Nil;
+  }
   multi method query_position (Int() $format, $cur is rw, :$all = False) {
     my GstFormat $f = $format;
     my guint64 $c = 0;
     my $rv = so gst_element_query_position($!e, $f, $c);
 
+    $cur = $c;
     $all.not ?? $rv !! ($rv, $cur);
   }
 
