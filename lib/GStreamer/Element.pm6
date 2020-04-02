@@ -669,6 +669,7 @@ class GStreamer::Element is GStreamer::Object {
       $dv
     );
 
+    $dest_val = $dv;
     $all.not ?? $rv !! ($rv, $dest_val);
   }
 
