@@ -4,7 +4,6 @@ use Method::Also;
 
 use NativeCall;
 
-
 use GStreamer::Raw::Types;
 use GStreamer::Raw::Message;
 
@@ -32,7 +31,7 @@ class GStreamer::Message is GStreamer::MiniObject {
   }
 
   multi method new (GstMessage $message) {
-    self.bless( :$message ) if $message.defined;
+    $message ?? self.bless( :$message ) !! Nil;
   }
   multi method new (
     GstObject() $src,
@@ -44,7 +43,9 @@ class GStreamer::Message is GStreamer::MiniObject {
   method new_application (GstObject() $src, GstStructure() $structure)
     is also<new-application>
   {
-    self.bless( message => gst_message_new_application($src, $structure) );
+    my $message = gst_message_new_application($src, $structure);
+
+    $message ?? self.bless( :$message ) !! Nil;
   }
 
   multi method new (
@@ -60,7 +61,9 @@ class GStreamer::Message is GStreamer::MiniObject {
   )
     is also<new-async-done>
   {
-    self.bless( message => gst_message_new_async_done($src, $running_time) );
+    my $message = gst_message_new_async_done($src, $running_time);
+
+    $message ?? self.bless( :$message ) !! Nil;
   }
 
   multi method new (
@@ -70,7 +73,9 @@ class GStreamer::Message is GStreamer::MiniObject {
     GStreamer::Message.new_async_start($src);
   }
   method new_async_start (GstObject() $src) is also<new-async-start> {
-    self.bless( message => gst_message_new_async_start($src) );
+    my $message = gst_message_new_async_start($src);
+
+    $message ?? self.bless( :$message ) !! Nil;
   }
 
   multi method new (
@@ -86,7 +91,9 @@ class GStreamer::Message is GStreamer::MiniObject {
   )
     is also<new-buffering>
   {
-    self.bless( message => gst_message_new_buffering($src, $percent) );
+    my $message = gst_message_new_buffering($src, $percent);
+
+    $message ?? self.bless( :$message ) !! Nil;
   }
 
   multi method new (
@@ -99,7 +106,9 @@ class GStreamer::Message is GStreamer::MiniObject {
   method new_clock_lost (GstObject() $src, GstClock() $clock)
     is also<new-clock-lost>
   {
-    self.bless( message => gst_message_new_clock_lost($src, $clock) );
+    my $message = gst_message_new_clock_lost($src, $clock);
+
+    $message ?? self.bless( :$message ) !! Nil;
   }
 
   multi method new (
@@ -117,9 +126,9 @@ class GStreamer::Message is GStreamer::MiniObject {
   )
     is also<new-clock-provide>
   {
-    self.bless(
-      message => gst_message_new_clock_provide($src, $clock, $ready.so.Int)
-    );
+    my $message = gst_message_new_clock_provide($src, $clock, $ready.so.Int);
+
+    $message ?? self.bless( :$message ) !! Nil;
   }
 
   multi method new (
@@ -137,7 +146,9 @@ class GStreamer::Message is GStreamer::MiniObject {
   )
     is also<new-custom>
   {
-    self.bless( message => gst_message_new_custom($type, $src, $structure) );
+    my $message = gst_message_new_custom($type, $src, $structure);
+
+    $message ?? self.bless( :$message ) !! Nil;
   }
 
   multi method new (
@@ -150,7 +161,9 @@ class GStreamer::Message is GStreamer::MiniObject {
   method new_device_added (GstObject() $src, GstDevice() $device)
     is also<new-device-added>
   {
-    self.bless( message => gst_message_new_device_added($src, $device) );
+    my $message = gst_message_new_device_added($src, $device);
+
+    $message ?? self.bless( :$message ) !! Nil;
   }
 
   multi method new (
@@ -168,9 +181,13 @@ class GStreamer::Message is GStreamer::MiniObject {
   )
     is also<new-device-changed>
   {
-    self.bless(
-      message => gst_message_new_device_changed($src, $device, $changed_device)
+    my $message = gst_message_new_device_changed(
+      $src,
+      $device,
+      $changed_device
     );
+
+    $message ?? self.bless( :$message ) !! Nil;
   }
 
   multi method new (
@@ -183,7 +200,9 @@ class GStreamer::Message is GStreamer::MiniObject {
   method new_device_removed (GstObject() $src, GstDevice() $device)
     is also<new-device-removed>
   {
-    self.bless( message => gst_message_new_device_removed($src, $device) );
+    my $message = gst_message_new_device_removed($src, $device);
+
+    $message ?? self.bless( :$message ) !! Nil;
   }
 
   multi method new (
@@ -195,7 +214,9 @@ class GStreamer::Message is GStreamer::MiniObject {
   method new_duration_changed (GstObject() $src)
     is also<new-duration-changed>
   {
-    self.bless( message => gst_message_new_duration_changed($src) );
+    my $message = gst_message_new_duration_changed($src);
+
+    $message ?? self.bless( :$message ) !! Nil;
   }
 
   multi method new (
@@ -208,7 +229,9 @@ class GStreamer::Message is GStreamer::MiniObject {
   method new_element (GstObject() $src, GstStructure() $structure)
     is also<new-element>
   {
-    self.bless( message => gst_message_new_element($src, $structure) );
+    my $message = gst_message_new_element($src, $structure);
+
+    $message ?? self.bless( :$message ) !! Nil;
   }
 
   multi method new (
@@ -218,7 +241,9 @@ class GStreamer::Message is GStreamer::MiniObject {
     GStreamer::Message.new_eos($src);
   }
   method new_eos (GstObject() $src) is also<new-eos> {
-    self.bless( message => gst_message_new_eos($src) );
+    my $message = gst_message_new_eos($src);
+
+    $message ?? self.bless( :$message ) !! Nil;
   }
 
   multi method new (
@@ -236,7 +261,9 @@ class GStreamer::Message is GStreamer::MiniObject {
   )
     is also<new-error>
   {
-    self.bless( message => gst_message_new_error($src, $error, $debug) );
+    my $message = gst_message_new_error($src, $error, $debug);
+
+    $message ?? self.bless( :$message ) !! Nil;
   }
 
   multi method new (
@@ -256,14 +283,14 @@ class GStreamer::Message is GStreamer::MiniObject {
   )
     is also<new-error-with-details>
   {
-    self.bless(
-      message => gst_message_new_error_with_details(
-        $src,
-        $error,
-        $debug,
-        $details
-      )
+    my $message = gst_message_new_error_with_details(
+      $src,
+      $error,
+      $debug,
+      $details
     );
+
+    $message ?? self.bless( :$message ) !! Nil;
   }
 
   multi method new (
@@ -276,7 +303,9 @@ class GStreamer::Message is GStreamer::MiniObject {
   method new_have_context (GstObject() $src, GstContext() $context)
     is also<new-have-context>
   {
-    self.bless( message => gst_message_new_have_context($src, $context) );
+    my $message = gst_message_new_have_context($src, $context);
+
+    $message ?? self.bless( :$message ) !! Nil;
   }
 
   multi method new (
@@ -290,7 +319,9 @@ class GStreamer::Message is GStreamer::MiniObject {
   method new_info (GstObject() $src, GError $error, Str() $debug)
     is also<new-info>
   {
-    self.bless( message => gst_message_new_info($src, $error, $debug) );
+    my $message = gst_message_new_info($src, $error, $debug);
+
+    $message ?? self.bless( :$message ) !! Nil;
   }
 
   multi method new (
@@ -310,14 +341,14 @@ class GStreamer::Message is GStreamer::MiniObject {
   )
     is also<new-info-with-details>
   {
-    self.bless(
-      message => gst_message_new_info_with_details(
-        $src,
-        $error,
-        $debug,
-        $details
-      )
+    my $message = gst_message_new_info_with_details(
+      $src,
+      $error,
+      $debug,
+      $details
     );
+
+    $message ?? self.bless( :$message ) !! Nil;
   }
 
   multi method new (
@@ -327,7 +358,9 @@ class GStreamer::Message is GStreamer::MiniObject {
     GStreamer::Message.new_latency($src);
   }
   method new_latency (GstObject() $src) is also<new-latency> {
-    self.bless( message => gst_message_new_latency($src) );
+    my $message = gst_message_new_latency($src);
+
+    $message ?? self.bless( :$message ) !! Nil;
   }
 
   multi method new (
@@ -340,7 +373,9 @@ class GStreamer::Message is GStreamer::MiniObject {
   method new_need_context (GstObject() $src, Str() $context_type)
     is also<new-need-context>
   {
-    self.bless( message => gst_message_new_need_context($src, $context_type) );
+    my $message = gst_message_new_need_context($src, $context_type);
+
+    $message ?? self.bless( :$message ) !! Nil;
   }
 
   multi method new (
@@ -353,7 +388,9 @@ class GStreamer::Message is GStreamer::MiniObject {
   method new_new_clock (GstObject() $src, GstClock() $clock)
     is also<new-new-clock>
   {
-    self.bless( message => gst_message_new_new_clock($src, $clock) );
+    my $message = gst_message_new_new_clock($src, $clock);
+
+    $message ?? self.bless( :$message ) !! Nil;
   }
 
   multi method new (
@@ -373,9 +410,9 @@ class GStreamer::Message is GStreamer::MiniObject {
   )
     is also<new-progress>
   {
-    self.bless(
-      message => gst_message_new_progress($src, $type, $code, $text)
-    );
+    my $message = gst_message_new_progress($src, $type, $code, $text);
+
+    $message ?? self.bless( :$message ) !! Nil;
   }
 
   multi method new (
@@ -393,9 +430,9 @@ class GStreamer::Message is GStreamer::MiniObject {
   )
     is also<new-property-notify>
   {
-    self.bless(
-      message => gst_message_new_property_notify($src, $property_name, $val)
-    );
+    my $message = gst_message_new_property_notify($src, $property_name, $val);
+
+    $message ?? self.bless( :$message ) !! Nil;
   }
 
   multi method new (
@@ -426,16 +463,16 @@ class GStreamer::Message is GStreamer::MiniObject {
   )
     is also<new-qos>
   {
-    self.bless(
-      message => gst_message_new_qos(
-        $src,
-        $live,
-        $running_time,
-        $stream_time,
-        $timestamp,
-        $duration
-      )
+    my $message = gst_message_new_qos(
+      $src,
+      $live,
+      $running_time,
+      $stream_time,
+      $timestamp,
+      $duration
     );
+
+    $message ?? self.bless( :$message ) !! Nil;
   }
 
   multi method new (
@@ -460,14 +497,14 @@ class GStreamer::Message is GStreamer::MiniObject {
   )
     is also<new-redirect>
   {
-    self.bless(
-      message => gst_message_new_redirect(
-        $src,
-        $location,
-        $tag_list,
-        $entry_struct
-      )
+    my $message = gst_message_new_redirect(
+      $src,
+      $location,
+      $tag_list,
+      $entry_struct
     );
+
+    $message ?? self.bless( :$message ) !! Nil;
   }
 
   multi method new (
@@ -480,7 +517,9 @@ class GStreamer::Message is GStreamer::MiniObject {
   method new_request_state (GstObject() $src, GstState() $state)
     is also<new-request-state>
   {
-    self.bless( message => gst_message_new_request_state($src, $state) );
+    my $message = gst_message_new_request_state($src, $state);
+
+    $message ?? self.bless( :$message ) !! Nil;
   }
 
   multi method new (
@@ -496,7 +535,9 @@ class GStreamer::Message is GStreamer::MiniObject {
   )
     is also<new-reset-time>
   {
-    self.bless( message => gst_message_new_reset_time($src, $running_time) );
+    my $message = gst_message_new_reset_time($src, $running_time);
+
+    $message ?? self.bless( :$message ) !! Nil;
   }
 
   multi method new (
@@ -514,9 +555,9 @@ class GStreamer::Message is GStreamer::MiniObject {
   )
     is also<new-segment-done>
   {
-    self.bless(
-      message => gst_message_new_segment_done($src, $format, $position)
-    );
+    my $message = gst_message_new_segment_done($src, $format, $position);
+
+    $message ?? self.bless( :$message ) !! Nil;
   }
 
   multi method new (
@@ -534,9 +575,9 @@ class GStreamer::Message is GStreamer::MiniObject {
   )
     is also<new-segment-start>
   {
-    self.bless(
-      message => gst_message_new_segment_start($src, $format, $position)
-    );
+    my $message = gst_message_new_segment_start($src, $format, $position);
+
+    $message ?? self.bless( :$message ) !! Nil;
   }
 
   multi method new (
@@ -561,14 +602,14 @@ class GStreamer::Message is GStreamer::MiniObject {
   )
     is also<new-state-changed>
   {
-    self.bless(
-      message => gst_message_new_state_changed(
-        $src,
-        $oldstate,
-        $newstate,
-        $pending
-      )
+    my $message = gst_message_new_state_changed(
+      $src,
+      $oldstate,
+      $newstate,
+      $pending
     );
+
+    $message ?? self.bless( :$message ) !! Nil;
   }
 
   multi method new (
@@ -580,7 +621,9 @@ class GStreamer::Message is GStreamer::MiniObject {
   method new_state_dirty (GstObject() $src)
     is also<new-state-dirty>
   {
-    self.bless( message => gst_message_new_state_dirty($src) );
+    my $message = gst_message_new_state_dirty($src);
+
+    $message ?? self.bless( :$message ) !! Nil;
   }
 
   multi method new (
@@ -617,18 +660,18 @@ class GStreamer::Message is GStreamer::MiniObject {
   )
     is also<new-step-done>
   {
-    self.bless(
-      message => gst_message_new_step_done(
-        $src,
-        $format,
-        $amount,
-        $rate,
-        $flush,
-        $intermediate,
-        $duration,
-        $eos
-      )
+    my $message = gst_message_new_step_done(
+      $src,
+      $format,
+      $amount,
+      $rate,
+      $flush,
+      $intermediate,
+      $duration,
+      $eos
     );
+
+    $message ?? self.bless( :$message ) !! Nil;
   }
 
   multi method new (
@@ -662,17 +705,17 @@ class GStreamer::Message is GStreamer::MiniObject {
   )
     is also<new-step-start>
   {
-    self.bless(
-      message => gst_message_new_step_start(
-        $src,
-        $active,
-        $format,
-        $amount,
-        $rate,
-        $flush,
-        $intermediate
-      )
+    my $message = gst_message_new_step_start(
+      $src,
+      $active,
+      $format,
+      $amount,
+      $rate,
+      $flush,
+      $intermediate
     );
+
+    $message ?? self.bless( :$message ) !! Nil;
   }
 
   multi method new (
@@ -688,9 +731,9 @@ class GStreamer::Message is GStreamer::MiniObject {
   )
     is also<new-stream-collection>
   {
-    self.bless(
-      message => gst_message_new_stream_collection($src, $collection)
-    );
+    my $message = gst_message_new_stream_collection($src, $collection);
+
+    $message ?? self.bless( :$message ) !! Nil;
   }
 
   multi method new (
@@ -700,7 +743,9 @@ class GStreamer::Message is GStreamer::MiniObject {
     GStreamer::Message.new_stream_start($src);
   }
   method new_stream_start (GstObject() $src) is also<new-stream-start> {
-    self.bless( message => gst_message_new_stream_start($src) );
+    my $message = gst_message_new_stream_start($src);
+
+    $message ?? self.bless( :$message ) !! Nil;
   }
 
   multi method new (
@@ -718,9 +763,9 @@ class GStreamer::Message is GStreamer::MiniObject {
   )
     is also<new-stream-status>
   {
-    self.bless(
-      message => gst_message_new_stream_status($src, $type, $owner)
-    );
+    my $message = gst_message_new_stream_status($src, $type, $owner);
+
+    $message ?? self.bless( :$message ) !! Nil;
   }
 
   multi method new (
@@ -736,9 +781,9 @@ class GStreamer::Message is GStreamer::MiniObject {
   )
     is also<new-streams-selected>
   {
-    self.bless(
-      message => gst_message_new_streams_selected($src, $collection)
-    );
+    my $message = gst_message_new_streams_selected($src, $collection);
+
+    $message ?? self.bless( :$message ) !! Nil;
   }
 
   multi method new (
@@ -758,9 +803,9 @@ class GStreamer::Message is GStreamer::MiniObject {
   )
     is also<new-structure-change>
   {
-    self.bless(
-      message => gst_message_new_structure_change($src, $type, $owner, $busy)
-    );
+    my $message = gst_message_new_structure_change($src, $type, $owner, $busy);
+
+    $message ?? self.bless( :$message ) !! Nil;
   }
 
   multi method new (
@@ -771,7 +816,9 @@ class GStreamer::Message is GStreamer::MiniObject {
     GStreamer::Message.new_tag($src, $tag_list);
   }
   method new_tag (GstObject() $src, GstTagList() $tag_list) is also<new-tag> {
-    self.bless( message => gst_message_new_tag($src, $tag_list) );
+    my $message = gst_message_new_tag($src, $tag_list);
+
+    $message ?? self.bless( :$message ) !! Nil;
   }
 
   multi method new (
@@ -789,7 +836,9 @@ class GStreamer::Message is GStreamer::MiniObject {
   )
     is also<new-toc>
   {
-    self.bless( message => gst_message_new_toc($src, $toc, $updated) );
+    my $message = gst_message_new_toc($src, $toc, $updated);
+
+    $message ?? self.bless( :$message ) !! Nil;
   }
 
   multi method new (
@@ -803,7 +852,9 @@ class GStreamer::Message is GStreamer::MiniObject {
   method new_warning (GstObject() $src, GError $error, Str() $debug)
     is also<new-warning>
   {
-    self.bless( message => gst_message_new_warning($src, $error, $debug) );
+    my $message = gst_message_new_warning($src, $error, $debug);
+
+    $message ?? self.bless( :$message ) !! Nil;
   }
 
   multi method new (
@@ -828,14 +879,14 @@ class GStreamer::Message is GStreamer::MiniObject {
   )
     is also<new-warning-with-details>
   {
-    self.bless(
-      message => gst_message_new_warning_with_details(
-        $src,
-        $error,
-        $debug,
-        $details
-      )
+    my $message = gst_message_new_warning_with_details(
+      $src,
+      $error,
+      $debug,
+      $details
     );
+
+    $message ?? self.bless( :$message ) !! Nil;
   }
 
   method seqnum is rw {
@@ -859,7 +910,7 @@ class GStreamer::Message is GStreamer::MiniObject {
         $v ??
           ( $raw ?? $v !! GLib::Value.new($v) )
           !!
-          Nil;
+          GValue;
       },
       STORE => sub ($, GValue() $object is copy) {
         gst_message_set_stream_status_object($!m, $object);
@@ -871,7 +922,7 @@ class GStreamer::Message is GStreamer::MiniObject {
     $!m.src ??
       ( $raw ?? $!m.src !! GStreamer::Object.new($!m.src) )
       !!
-      Nil;
+      GstObject;
   }
 
   method add_redirect_entry (
@@ -889,8 +940,12 @@ class GStreamer::Message is GStreamer::MiniObject {
   }
 
   method get_structure (:$raw = False) is also<get-structure> {
-    gst_message_get_structure($!m);
-    # ADD OBJECT CREATION CODE
+    my $s = gst_message_get_structure($!m);
+
+    $s ??
+      ( $raw ?? $s !! GStreamer::Structure.new($s) )
+      !!
+      GstStructure;
   }
 
   method get_type is also<get-type> {
@@ -926,6 +981,7 @@ class GStreamer::Message is GStreamer::MiniObject {
   }
   multi method parse_buffering ($percent is rw) {
     my gint $p = 0;
+
     gst_message_parse_buffering($!m, $p);
     $percent = $p;
   }
@@ -997,15 +1053,17 @@ class GStreamer::Message is GStreamer::MiniObject {
     is also<parse-context-type>
   { * }
 
-  multi method parse_context_type (:$all = False) {
-    samewith($, :$all);
+  multi method parse_context_type {
+    my $rv = callwith($, :all);
+
+    $rv[0] ?? $rv[1] !! Nil;
   }
   multi method parse_context_type ($context_type is rw, :$all = False) {
     my $ct = CArray[Str].new;
 
-    my $rc = gst_message_parse_context_type($!m, $ct);
-    $context_type = $rc ?? ppr($ct) !! Nil;
-    $all.not ?? $context_type !! ($context_type, $rc);
+    my $rv = gst_message_parse_context_type($!m, $ct);
+    $context_type = ppr($ct);
+    $all.not ?? $rv !! ($rv, $context_type);
   }
 
   proto method parse_device_added (|)
@@ -1017,7 +1075,6 @@ class GStreamer::Message is GStreamer::MiniObject {
   }
   multi method parse_device_added (
     $device is rw,
-    :$all = False,
     :$raw = False
   ) {
     my $d = CArray[Pointer[GstDevice]].new;
@@ -1099,7 +1156,6 @@ class GStreamer::Message is GStreamer::MiniObject {
   }
   multi method parse_error_details (
     $structure is rw,
-    :$all = False,
     :$raw = False
   ) {
     my $s = CArray[Pointer[GstStructure]].new;
@@ -1108,22 +1164,23 @@ class GStreamer::Message is GStreamer::MiniObject {
     gst_message_parse_error_details($!m, $s);
     ($structure) = ppr( $s );
     $structure = GStreamer::Structure.new($structure) unless $raw;
-    $all.not ?? $structure !! ($structure, $all);
   }
 
   proto method parse_group_id (|)
     is also<parse-group-id>
   { * }
 
-  multi method parse_group_id (:$all = False) {
-    samewith($, :$all);
+  multi method parse_group_id {
+    my $rv = callwith($, :all);
+
+    $rv[0] ?? $rv[1] !! Nil;
   }
   multi method parse_group_id ($group_id is rw, :$all = False) {
     my $g = 0;
 
-    my $rc = gst_message_parse_group_id($!m, $g);
-    $group_id = $rc ?? $g !! Nil;
-    $all.not ?? $group_id !! ($group_id, $rc);
+    my $rv = gst_message_parse_group_id($!m, $g);
+    $group_id = $g;
+    $all.not ?? $rv !! ($rv, $group_id);
   }
 
   proto method parse_have_context (|)
@@ -1168,8 +1225,10 @@ class GStreamer::Message is GStreamer::MiniObject {
     is also<parse-info-details>
   { * }
 
-  multi method parse_info_details (:$all = False, :$raw = False) {
-    samewith($);
+  multi method parse_info_details (:$raw = False) {
+    my $rv = callwith($, :all);
+
+    $rv[0] ?? $rv[1] !! Nil;
   }
   multi method parse_info_details (
     $structure is rw,
@@ -1179,14 +1238,13 @@ class GStreamer::Message is GStreamer::MiniObject {
     my $s = CArray[Pointer[GstStructure]].new;
 
     $s[0] = Pointer[GstStructure].new;
-    my $rc = gst_message_parse_info_details($!m, $s);
-    if $rc {
-      ($structure) = ppr( $s );
-      $structure = GStreamer::Structure.new($structure) unless $raw;
-    } else {
-      $structure = Nil;
-    }
-    $all.not ?? $structure !! ($structure, $rc);
+    my $rv = gst_message_parse_info_details($!m, $s);
+
+    ($structure) = ppr( $s );
+    $structure = GStreamer::Structure.new($structure)
+      unless $raw || $structure.not;
+
+    $all.not ?? $rv !! ($rv, $structure);
   }
 
   proto method parse_new_clock (|)
@@ -1211,15 +1269,22 @@ class GStreamer::Message is GStreamer::MiniObject {
   { * }
 
   multi method parse_progress {
-    samewith($, $, $);
+    my $rv = callwith($, $, $, :all);
+
+    $rv[0] ?? $rv[1] !! Nil;
   }
-  multi method parse_progress ($type is rw, Str $code is rw, Str $text is rw) {
+  multi method parse_progress (
+    $type is rw,
+    $code is rw,
+    $text is rw,
+    :$all = False
+  ) {
     my GstProgressType $ty = 0;
     my ($c, $t) = CArray[Str].new xx 2;
 
-    my $rc = gst_message_parse_progress($!m, $ty, $c, $t);
+    my $rv = gst_message_parse_progress($!m, $ty, $c, $t);
     ($type, $code, $text) = ppr($ty, $c, $t);
-    ($type, $code, $text)
+    $all.not ?? $rv !! ($rv, $type, $code, $text);
   }
 
   proto method parse_property_notify (|)
@@ -1254,23 +1319,26 @@ class GStreamer::Message is GStreamer::MiniObject {
   { * }
 
   multi method parse_qos {
-    my ($l, $r, $s, $t, $d);
-    samewith($l, $r, $s, $t, $d);
+    my $rv = callwith($, $, $, $, $, :all);
+
+    $rv ?? $rv.skip(1) !! Nil;
   }
   multi method parse_qos (
     $live         is rw,
     $running_time is rw,
     $stream_time  is rw,
     $timestamp    is rw,
-    $duration     is rw
+    $duration     is rw,
+    :$all = False
   ) {
     my gboolean $l = 0;
     my guint64 ($r, $s, $t, $d) = 4 xx 0;
 
-    my $rc = gst_message_parse_qos($!m, $l, $r, $s, $t, $d);
+    my $rv = gst_message_parse_qos($!m, $l, $r, $s, $t, $d);
     ($live, $running_time, $stream_time, $timestamp, $duration)
       = ($l, $r, $s, $t, $d);
-    ($live, $running_time, $stream_time, $timestamp, $duration)
+    $all.not ?? $rv
+             !! ($rv, $live, $running_time, $stream_time, $timestamp, $duration)
   }
 
   proto method parse_qos_stats (|)
@@ -1278,19 +1346,22 @@ class GStreamer::Message is GStreamer::MiniObject {
   { * }
 
   multi method parse_qos_stats {
-    my ($f, $p, $d);
-    samewith($f, $p, $d);
+    my $rv = callwith($, $, $, :all);
+
+    $rv[0] ?? $rv.skip(1) !! Nil;
   }
   multi method parse_qos_stats (
     $format    is rw,
     $processed is rw,
-    $dropped   is rw
+    $dropped   is rw,
+    :$all = False
   ) {
     my GstFormat $f = 0;
     my guint64 ($p, $d) = 0;
 
-    my $rc = gst_message_parse_qos_stats($!m, $f, $p, $d);
+    my $rv = gst_message_parse_qos_stats($!m, $f, $p, $d);
     ($format, $processed, $dropped) = ($f, $p, $d);
+    $all.not ?? $rv !! ($rv, $format, $processed, $dropped)
   }
 
   proto method parse_qos_values (|)
@@ -1298,8 +1369,7 @@ class GStreamer::Message is GStreamer::MiniObject {
   { * }
 
   multi method parse_qos_values {
-    my ($j, $p ,$q);
-    samewith($j, $p ,$q);
+    samewith($, $, $);
   }
   multi method parse_qos_values (
     $jitter     is rw,
@@ -1319,8 +1389,7 @@ class GStreamer::Message is GStreamer::MiniObject {
   { * }
 
   multi method parse_redirect_entry (:$raw = False) {
-    my ($ei, $l, $tl, $es);
-    samewith($ei, $l, $tl, $es, :$raw);
+    samewith($, $, $, $, :$raw);
   }
   multi method parse_redirect_entry (
     $entry_index  is rw,
@@ -1393,14 +1462,21 @@ class GStreamer::Message is GStreamer::MiniObject {
   { * }
 
   multi method parse_segment_start {
-    samewith($, $);
+    my $rv = callwith($, $, :all);
+
+    $rv[0] ?? $rv.skip(1) !! Nil;
   }
-  multi method parse_segment_start ($format is rw, $position is rw) {
+  multi method parse_segment_start (
+    $format is rw,
+    $position is rw,
+    :$all = False
+  ) {
     my GstFormat $f = 0;
     my gint64 $p = 0;
 
-    my $rc = gst_message_parse_segment_start($!m, $format, $position);
+    my $rv = gst_message_parse_segment_start($!m, $format, $position);
     ($format, $position) = ($f, $p);
+    $all.not ?? $rv !! ($rv, $format, $position);
   }
 
   proto method parse_state_changed (|)
@@ -1408,17 +1484,21 @@ class GStreamer::Message is GStreamer::MiniObject {
   { * }
 
   multi method parse_state_changed {
-    samewith($, $, $);
+    my $rv = callwith($, $, $, :all);
+
+    $rv[0] ?? $rv.skip(1) !! Nil;
   }
   multi method parse_state_changed (
     $oldstate is rw,
     $newstate is rw,
-    $pending  is rw
+    $pending  is rw,
+    :$all = False
   ) {
     my GstState ($o, $n, $p) = 0 xx 3;
 
-    my $rc = gst_message_parse_state_changed($!m, $o, $n, $p);
+    my $rv = gst_message_parse_state_changed($!m, $o, $n, $p);
     ($oldstate, $newstate, $pending) = ppr($o, $n, $p);
+    $all.not ?? $rv !! ($rv, $oldstate, $newstate, $pending);
   }
 
   proto method parse_step_done (|)
@@ -1490,7 +1570,8 @@ class GStreamer::Message is GStreamer::MiniObject {
     gst_message_parse_stream_collection($!m, $collection);
 
     ($collection) = ppr($c);
-    $collection = GStreamer::StreamCollection.new($collection) unless $raw;
+    $collection = GStreamer::StreamCollection.new($collection)
+      unless $raw || $collection.not;
     $collection;
   }
 
@@ -1508,7 +1589,8 @@ class GStreamer::Message is GStreamer::MiniObject {
     $o[0] = Pointer[GstElement].new;
     gst_message_parse_stream_status($!m, $t, $o);
     ($type, $owner) = ppr($t, $o);
-    $owner = GStreamer::Element.new($owner) unless $raw;
+    $owner //= GstElement;
+    $owner = GStreamer::Element.new($owner) unless $raw || $owner.not;
     ($type, $owner)
   }
 
@@ -1528,8 +1610,10 @@ class GStreamer::Message is GStreamer::MiniObject {
     $c[0] = Pointer[GstStreamCollection].new;
     gst_message_parse_streams_selected($!m, $c);
     ($collection) = ppr($c);
-    $collection = GStreamer::StreamCollection.new($collection) unless $raw;
-    $collection
+    $collection //= GstStreamCollection;
+    $collection = GStreamer::StreamCollection.new($collection)
+      unless $raw || $collection.not;
+    $collection;
   }
 
   proto method parse_structure_change (|)
@@ -1551,7 +1635,8 @@ class GStreamer::Message is GStreamer::MiniObject {
     $o[0] = Pointer[GstElement].new;
     gst_message_parse_structure_change($!m, $t, $o, $b);
     ($type, $owner, $busy) = ppr($t, $o, $b);
-    $owner = GStreamer::Element.new($owner) unless $raw;
+    $owner //= GstElement;
+    $owner = GStreamer::Element.new($owner) unless $raw || $owner.not;
     ($type, $owner, $busy);
   }
 
@@ -1567,8 +1652,10 @@ class GStreamer::Message is GStreamer::MiniObject {
 
     $t[0] = Pointer[GstTagList].new;
     gst_message_parse_tag($!m, $t);
-    ($tag_list) = ppr( $t );
-    $tag_list = GStreamer::TagList.new($tag_list) unless $raw;
+    ($tag_list) = ppr( $t ) // GstTagList;
+    $tag_list = GStreamer::TagList.new($tag_list)
+      unless $raw || $tag_list.not;
+    $tag_list;
   }
 
   proto method parse_toc (|)
@@ -1585,7 +1672,8 @@ class GStreamer::Message is GStreamer::MiniObject {
     $t[0] = Pointer[GstToc].new;
     gst_message_parse_toc($!m, $toc, $updated);
     ($toc, $updated) = ppr($t, $u);
-    $toc = GStreamer::Toc.new($toc) unless $raw;
+    $toc //= GstToc;
+    $toc = GStreamer::Toc.new($toc) unless $raw || $toc.not;
     ($toc, $updated);
   }
 
@@ -1620,8 +1708,9 @@ class GStreamer::Message is GStreamer::MiniObject {
 
     $s[0] = Pointer[GstStructure].new;
     gst_message_parse_warning_details($!m, $s);
-    ($structure) = ppr($s);
-    $structure = GStreamer::Structure.new($structure) unless $raw;
+    ($structure) = ppr($s) // GstStructure;
+    $structure = GStreamer::Structure.new($structure)
+      unless $raw || $structure.not;
     $structure;
   }
 
@@ -1711,8 +1800,12 @@ class GStreamer::Message is GStreamer::MiniObject {
   method writable_structure (:$raw = False)
     is also<writable-structure>
   {
-    gst_message_writable_structure($!m);
-    # ADD OBJECT CREATION CODE
+    my $s = gst_message_writable_structure($!m);
+
+    $s ??
+      ( $raw ?? $s !! GStreamer::Structure.new($s) )
+      !!
+      GstStructure;
   }
 
   # Save for when GstMessage is converted to CStruct
