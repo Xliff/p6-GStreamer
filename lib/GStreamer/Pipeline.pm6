@@ -2,15 +2,15 @@ use v6.c;
 
 use Method::Also;
 
-
 use GStreamer::Raw::Types;
 use GStreamer::Raw::Pipeline;
 
 use GStreamer::Bin;
 use GStreamer::Bus;
+use GStreamer::Clock;
 
-our subset PipelineAncestry is export of Mu
-  where GstPipeline | BinAncestry;
+our subset GstPipelineAncestry is export of Mu
+  where GstPipeline | GstBinAncestry;
 
 class GStreamer::Pipeline is GStreamer::Bin {
   has GstPipeline $!p;
@@ -19,7 +19,7 @@ class GStreamer::Pipeline is GStreamer::Bin {
     self.setPipeline($pipeline);
   }
 
-  method setPipeline (PipelineAncestry $_) {
+  method setPipeline (GstPipelineAncestry $_) {
     my $to-parent;
 
     $!p = do {
@@ -41,11 +41,12 @@ class GStreamer::Pipeline is GStreamer::Bin {
   { $!p }
 
   multi method new (GstPipeline $pipeline) {
-    self.bless( :$pipeline );
+    $pipeline ?? self.bless( :$pipeline ) !! Nil;
   }
   multi method new (Str() $name) {
     my $pipeline = gst_pipeline_new($name);
-    self.bless( :$pipeline );
+
+    $pipeline ?? self.bless( :$pipeline ) !! Nil;
   }
 
   method auto_flush_bus is rw is also<auto-flush-bus> {
@@ -53,8 +54,10 @@ class GStreamer::Pipeline is GStreamer::Bin {
       FETCH => sub ($) {
         so gst_pipeline_get_auto_flush_bus($!p);
       },
-      STORE => sub ($, $auto_flush is copy) {
-        gst_pipeline_set_auto_flush_bus($!p, $auto_flush);
+      STORE => sub ($, Int() $auto_flush is copy) {
+        my gboolean $a = $auto_flush.so.Int;
+
+        gst_pipeline_set_auto_flush_bus($!p, $a);
       }
     );
   }
@@ -62,8 +65,12 @@ class GStreamer::Pipeline is GStreamer::Bin {
   method clock (:$raw = False) is rw {
     Proxy.new(
       FETCH => sub ($) {
-        gst_pipeline_get_clock($!p);
-        # OBJECT CREATION HERE
+        my $c = gst_pipeline_get_clock($!p);
+
+        $c ??
+          ( $raw ?? $c !! GStreamer::Clock.new($c) )
+          !!
+          GstClock;
       },
       STORE => sub ($, GstClock() $clock is copy) {
         gst_pipeline_set_clock($!p, $clock);
@@ -76,8 +83,10 @@ class GStreamer::Pipeline is GStreamer::Bin {
       FETCH => sub ($) {
         gst_pipeline_get_delay($!p);
       },
-      STORE => sub ($, $delay is copy) {
-        gst_pipeline_set_delay($!p, $delay);
+      STORE => sub ($, Int() $delay is copy) {
+        my GstClockTime $d = $delay;
+
+        gst_pipeline_set_delay($!p, $d);
       }
     );
   }
@@ -87,7 +96,9 @@ class GStreamer::Pipeline is GStreamer::Bin {
       FETCH => sub ($) {
         gst_pipeline_get_latency($!p);
       },
-      STORE => sub ($, $latency is copy) {
+      STORE => sub ($, Int() $latency is copy) {
+        my GstClockTime $l = $latency;
+
         gst_pipeline_set_latency($!p, $latency);
       }
     );
@@ -108,7 +119,7 @@ class GStreamer::Pipeline is GStreamer::Bin {
     $b ??
       ( $raw ?? $b !! GStreamer::Bus.new($b) )
       !!
-      Nil;
+      GstBus;
   }
 
   method get_pipeline_clock (:$raw = False)
@@ -118,8 +129,12 @@ class GStreamer::Pipeline is GStreamer::Bin {
       pipeline-clock
     >
   {
-    # OBJECT CREATION HERE
-    gst_pipeline_get_pipeline_clock($!p);
+    my $c = gst_pipeline_get_pipeline_clock($!p);
+
+    $c ??
+      ( $raw ?? $c !! GStreamer::Clock.new($c) )
+      !!
+      GstClock;
   }
 
   method get_type is also<get-type> {
