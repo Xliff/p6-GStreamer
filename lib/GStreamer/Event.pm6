@@ -48,9 +48,13 @@ class GStreamer::Event is GStreamer::MiniObject {
     self.setMiniObject($to-parent);
   }
 
-  method GStreamer::Raw::Types::GstEvent
+  method GStreamer::Raw::Definitions::GstEvent
     is also<GstEvent>
   { $!e }
+
+  # Prevent attempts to use superclass constructors.
+  proto method new (|)
+  { * }
 
   multi method new (GstEventAncestry $event) {
     $event ?? self.bless(:$event) !! Nil;
