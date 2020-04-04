@@ -1,5 +1,9 @@
 #!/usr/bin/env perl6
 
+use lib 'tools';
+
+use BuildCases;
+
 my $metafile = "META6.json".IO;
 
 # Need test for DIRECT subdirs.
@@ -22,8 +26,8 @@ sub MAIN (
   say "»»»» Working in $directory";
 
   my (@so-files, @pm-files);
-  my $gobj-cflags  = qqx{pkg-config gobject-2.0 --cflags};
-  my $gobj-ldflags = qqx{pkg-config gobject-2.0 --libs};
+  my $cflags  = qqx{pkg-config gobject-2.0 --cflags};
+  my $ldflags = qqx{pkg-config gobject-2.0 --libs};
   my $dir = $directory.IO;
 
   # GREEK ORDERING FOR CLARITY!
@@ -113,6 +117,31 @@ sub MAIN (
           }
           $c-io.spurt: $c-defs;
 
+          #say "»»» $pack / $bn".lc;
+
+          for (%build-cases{"{ $pack }/{ $bn }".lc} // '').split(',') {
+            next unless .chars;
+
+            if .contains(':') {
+              my @d = .split(':');
+              given @d[0] {
+                when 'cf' { $cflags  ~= " {@d[1]}" }
+                when 'lf' { $ldflags ~= " {@d[1]}" }
+                when 'pc' {
+                  my $pc = @d[1];
+                  $cflags  ~= ' ' ~ qqx{pkg-config $pc --cflags};
+                  $ldflags ~= ' ' ~ qqx{pkg-config $pc --libs};
+                }
+                default {
+                  die "Do not know how to handle the {@d[0]} case flag!";
+                }
+              }
+            } else {
+              $cflags  ~= ' ' ~ qqx{pkg-config $_ --cflags};
+              $ldflags ~= ' ' ~ qqx{pkg-config $_ --libs};
+            }
+          }
+
           # Compile C file into shared lib
           my @gcc = «
             gcc
@@ -124,9 +153,9 @@ sub MAIN (
             "-I{$h-io.dirname}"
             -Wno-implicit-function-declaration
           »;
-          @gcc.append( $gobj-cflags.split(/\s+/) );
+          @gcc.append( $cflags.split(/\s+/) );
           @gcc.append(@o-io);
-          @gcc.append( $gobj-ldflags.split(/\s+/) );
+          @gcc.append( $ldflags.split(/\s+/) );
           @gcc .= grep( *.chars );
 
           #@gcc.join(' ').say;
