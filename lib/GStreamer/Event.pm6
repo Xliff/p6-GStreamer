@@ -655,8 +655,7 @@ class GStreamer::Event is GStreamer::MiniObject {
     $start      is rw,
     $stop_type  is rw,
     $stop       is rw
-  )
-  {
+  ) {
     my gdouble $r = 0e0;
     my GstFormat $f = 0;
     my GstSeekFlags $fl = 0;
@@ -667,7 +666,7 @@ class GStreamer::Event is GStreamer::MiniObject {
     ($rate, $format, $flags, $start_type, $start, $stop_type, $stop) = (
       $r,
       GstFormatEnum($f),
-      GstSeekFlagsEnum($fl),
+      $fl,
       GstSeekTypeEnum($stt),
       $st,
       GstSeekTypeEnum($spt),
