@@ -48,9 +48,9 @@ sub send-seek-event {
 sub handle-keyboard {
   CATCH { default { .message.say } }
 
-  my ($in) = %data<stdin>.read_line;
+  my ($rs, $in) = %data<stdin>.read_line;
 
-  return unless $in.defined;
+  return unless $rs == G_IO_STATUS_NORMAL;
 
   given $in.substr(0, 1) {
     when 'p' | 'P' {
