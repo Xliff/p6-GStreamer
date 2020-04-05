@@ -10,7 +10,7 @@ use GStreamer::Caps;
 use GStreamer::Object;
 use GStreamer::Iterator;
 
-our subset PadAncestry is export of Mu
+our subset GstPadAncestry is export of Mu
   where GstPad | GstObject;
 
 class GStreamer::Pad is GStreamer::Object {
@@ -20,7 +20,7 @@ class GStreamer::Pad is GStreamer::Object {
     self.setPad($pad);
   }
 
-  method setPad (PadAncestry $_) {
+  method setPad (GstPadAncestry $_) {
     my $to-parent;
 
     $!p = do {
