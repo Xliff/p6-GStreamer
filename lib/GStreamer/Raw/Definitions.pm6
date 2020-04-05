@@ -85,6 +85,7 @@ class GstDeviceProviderFactory  is repr('CPointer') does GLib::Roles::Pointers i
 #class GstElement                is repr('CPointer') does GLib::Roles::Pointers is export { }
 class GstElementFactory         is repr('CPointer') does GLib::Roles::Pointers is export { }
 class GstEvent                  is repr('CPointer') does GLib::Roles::Pointers is export { }
+class GstGhostPad               is repr('CPointer') does GLib::Roles::Pointers is export { }
 class GstIterator               is repr('CPointer') does GLib::Roles::Pointers is export { }
 #class GstMessage                is repr('CPointer') does GLib::Roles::Pointers is export { }
 #class GstObject                 is repr('CPointer') does GLib::Roles::Pointers is export { }
@@ -96,6 +97,7 @@ class GstPipeline               is repr('CPointer') does GLib::Roles::Pointers i
 class GstPlugin                 is repr('CPointer') does GLib::Roles::Pointers is export { }
 class GstPluginFeature          is repr('CPointer') does GLib::Roles::Pointers is export { }
 class GstProbeInfo              is repr('CPointer') does GLib::Roles::Pointers is export { }
+class GstProxyPad               is repr('CPointer') does GLib::Roles::Pointers is export { }
 #class GstQuery                  is repr('CPointer') does GLib::Roles::Pointers is export { }
 class GstSample                 is repr('CPointer') does GLib::Roles::Pointers is export { }
 #class GstStaticCaps             is repr('CPointer') does GLib::Roles::Pointers is export { }
