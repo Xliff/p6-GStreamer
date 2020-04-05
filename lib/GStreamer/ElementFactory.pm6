@@ -5,6 +5,7 @@ use Method::Also;
 use GStreamer::Raw::Types;
 use GStreamer::Raw::ElementFactory;
 
+use GLib::GList;
 use GStreamer::Element;
 use GStreamer::PluginFeature;
 use GStreamer::PadTemplate;
@@ -34,7 +35,7 @@ class GStreamer::ElementFactory is GStreamer::PluginFeature {
         $to-parent = $_;
         cast(GstElementFactory, $_);
       }
-    };
+    }
     self.setPluginFeature($to-parent);
   }
 
@@ -157,7 +158,7 @@ class GStreamer::ElementFactory is GStreamer::PluginFeature {
     return Nil unless $ptl;
     return $ptl if $glist;
 
-    $ptl = $ptl but GLib::Roles::ListData[GstStaticPadTemplate];
+    $ptl = GLib::GList.new($ptl) but GLib::Roles::ListData[GstStaticPadTemplate];
 
     $raw ?? $ptl.Array
          !! $ptl.Array.map({ GStreamer::StaticPadTemplate.new($_) });
