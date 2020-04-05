@@ -117,8 +117,7 @@ sub g-signal-emit-get-tags (
   Pointer $instance,
   Str $detailed_signal,
   guint $index,
-  CArray[Pointer[GstTagList]] $taglist,
-  guint64
+  CArray[Pointer[GstTagList]] $taglist
 )
   is export
   is native(gobject)

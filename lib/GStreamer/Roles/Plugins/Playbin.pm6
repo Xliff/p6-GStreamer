@@ -10,7 +10,7 @@ use GLib::Raw::ReturnedValue;
 use GStreamer::Raw::Subs;
 use GStreamer::Roles::Plugins::Raw::Playbin;
 
-use GStreamer::Plugins::Gst::Playback;
+#use GStreamer::Plugins::Gst::Playback;
 
 use GLib::Value;
 use GStreamer::Buffer;
@@ -38,6 +38,7 @@ role GStreamer::Roles::Plugins::Playbin {
 
   method !flags-get-type {
     state ($n, $t);
+
     unstable_get_type( self.^name, &gst_play_flags_get_type, $n, $t );
   }
 
@@ -90,8 +91,8 @@ role GStreamer::Roles::Plugins::Playbin {
     Proxy.new(
       FETCH => -> $ {
         warn 'subtitle-font-desc does not allow reading' if $DEBUG;
-        '';
 
+        '';
       },
       STORE => -> $, Str() $val is copy {
         $gv.string = $val;
@@ -283,11 +284,12 @@ role GStreamer::Roles::Plugins::Playbin {
   # Type: GstPlayFlags
   method flags is rw  {
     my GLib::Value $gv .= new(
-      do {
-        state ($n, $t);
-
-        unstable_get_type( self.^name, &global_gst_play_flags_get_type, $n, $t )
-      }
+      # do {
+      #   state ($n, $t);
+      #
+      #   unstable_get_type( self.^name, &global_gst_play_flags_get_type, $n, $t )
+      # }
+      G_TYPE_UINT64
     );
     #my GLib::Value $gv .= new( G_TYPE_INT );
     Proxy.new(
@@ -295,7 +297,7 @@ role GStreamer::Roles::Plugins::Playbin {
         $gv = GLib::Value.new(
           self.prop_get('flags', $gv)
         );
-        GstPlayFlagsEnum( $gv.flags );
+        GstPlayFlagsEnum( $gv.uint64 );
       },
       STORE => -> $, Int() $val is copy {
         $gv.uint = $val;
@@ -719,9 +721,10 @@ role GStreamer::Roles::Plugins::Playbin {
 
   multi method emit-get-tags (
     Str() $name,
-    Int() $i
+    Int() $i,
+    :$raw = False
   ) {
-    samewith($name, $i, $);
+    samewith($name, $i, $, :$raw);
   }
   multi method emit-get-tags (
     Str() $name,
@@ -729,12 +732,14 @@ role GStreamer::Roles::Plugins::Playbin {
     $taglist is rw,
     :$raw = False
   ) {
+    my gint $ii = $i;
     my $tl = CArray[Pointer[GstTagList]].new;
+    $tl[0] = Pointer[GstTagList];
 
-    $tl[0] = Pointer[GstTagList].new;
-    g-signal-emit-get-tags($!pb, $name, $i, $tl, G_TYPE_NONE);
+    g-signal-emit-get-tags($!pb, $name, $ii, $tl);
 
-    ($taglist) = ppr($tl);
+    $taglist = ppr($tl);
+
     $taglist ??
       ( $raw ?? $taglist !! GStreamer::TagList.new($taglist) )
       !!
