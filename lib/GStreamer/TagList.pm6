@@ -174,7 +174,7 @@ class GStreamer::TagList is GStreamer::MiniObject {
   { * }
 
   multi method get_boolean (Str() $tag) {
-    my $rv = callwith($tag, $, :all);
+    my $rv = samewith($tag, $, :all);
 
     $rv[0] ?? $rv[1] !! Nil;
   }
@@ -191,7 +191,7 @@ class GStreamer::TagList is GStreamer::MiniObject {
   { * }
 
   multi method get_boolean_index (Str() $tag) {
-    my $rv = callwith($tag, $, $, :all);
+    my $rv = samewith($tag, $, $, :all);
 
     $rv[0] ?? $rv.skip(1) !! Nil;
   }
@@ -214,7 +214,7 @@ class GStreamer::TagList is GStreamer::MiniObject {
   { * }
 
   multi method get_date (Str() $tag) {
-    my $rv = callwith($tag, $, :all);
+    my $rv = samewith($tag, $, :all);
 
     $rv[0] ?? $rv[1] !! Nil;
   }
@@ -233,7 +233,7 @@ class GStreamer::TagList is GStreamer::MiniObject {
   { * }
 
   multi method get_date_index (Str() $tag, Int() $index) {
-    my $rv = callwith($tag, $index, $, :all);
+    my $rv = samewith($tag, $index, $, :all);
 
     $rv[0] ?? $rv[1] !! Nil;
   }
@@ -257,7 +257,7 @@ class GStreamer::TagList is GStreamer::MiniObject {
   { * }
 
   multi method get_date_time (Str() $tag, :$all = False) {
-    my $rv = callwith($tag, $, :all);
+    my $rv = samewith($tag, $, :all);
 
     $rv[0] ?? $rv[1] !! Nil;
   }
@@ -276,7 +276,7 @@ class GStreamer::TagList is GStreamer::MiniObject {
   { * }
 
   multi method get_date_time_index (Str() $tag, Int() $index) {
-    my $rv = callwith($tag, $index, $, :all);
+    my $rv = samewith($tag, $index, $, :all);
 
     $rv[0] ?? $rv[1] !! Nil;
   }
@@ -300,7 +300,7 @@ class GStreamer::TagList is GStreamer::MiniObject {
   { * }
 
   multi method get_double (Str() $tag) {
-    my $rv = callwith($tag, $, :all);
+    my $rv = samewith($tag, $, :all);
   }
   multi method get_double (Str() $tag, $value is rw, :$all = False) {
     my gdouble $v = 0e0;
@@ -315,7 +315,7 @@ class GStreamer::TagList is GStreamer::MiniObject {
   { * }
 
   multi method get_double_index (Str() $tag, Int() $index) {
-    my $rv = callwith($tag, $index, $, :all);
+    my $rv = samewith($tag, $index, $, :all);
 
     $rv[0] ?? $rv[1] !! Nil;
   }
@@ -338,7 +338,7 @@ class GStreamer::TagList is GStreamer::MiniObject {
   { * }
 
   multi method get_float (Str() $tag) {
-    my $rv = callwith($tag, $, :all);
+    my $rv = samewith($tag, $, :all);
 
     $rv[0] ?? $rv[1] !! Nil;
   }
@@ -355,7 +355,7 @@ class GStreamer::TagList is GStreamer::MiniObject {
   { * }
 
   multi method get_float_index (Str() $tag) {
-    my $rv = callwith($tag, $, $, :all);
+    my $rv = samewith($tag, $, $, :all);
 
     $rv[0] ?? $rv.skip(1) !! Nil;
   }
@@ -378,7 +378,7 @@ class GStreamer::TagList is GStreamer::MiniObject {
   { * }
 
   multi method get_int (Str() $tag) {
-    my $rv = callwith($tag, $, :all);
+    my $rv = samewith($tag, $, :all);
 
     $rv[0] ?? $rv[1] !! Nil;
   }
@@ -395,7 +395,7 @@ class GStreamer::TagList is GStreamer::MiniObject {
   { * }
 
   multi method get_int64 (Str() $tag)  {
-    my $rv = callwith($tag, $, :all);
+    my $rv = samewith($tag, $, :all);
 
     $rv[0] ?? $rv[1] !! Nil;
   }
@@ -412,7 +412,7 @@ class GStreamer::TagList is GStreamer::MiniObject {
   { * }
 
   multi method get_int64_index (Str() $tag) {
-    my $rv = callwith($tag, $, $, :all);
+    my $rv = samewith($tag, $, $, :all);
 
     $rv[0] ?? $rv.skip(1) !! Nil;
   }
@@ -435,7 +435,7 @@ class GStreamer::TagList is GStreamer::MiniObject {
   { * }
 
   multi method get_int_index (Str() $tag) {
-    my $rv = callwith($tag, $, $, :all);
+    my $rv = samewith($tag, $, $, :all);
 
     $rv[0] ?? $rv.skip(1) !! Nil;
   }
@@ -458,7 +458,7 @@ class GStreamer::TagList is GStreamer::MiniObject {
   { * }
 
   multi method get_pointer (Str() $tag) {
-    my $rv = callwith($tag, $, :all);
+    my $rv = samewith($tag, $, :all);
 
     $rv[0] ?? $rv[1] !! Nil;
   }
@@ -475,7 +475,7 @@ class GStreamer::TagList is GStreamer::MiniObject {
   { * }
 
   multi method get_pointer_index (Str() $tag) {
-    my $rv = callwith($tag, $, $, :all);
+    my $rv = samewith($tag, $, $, :all);
 
     $rv[0] ?? $rv.skip(1) !! Nil;
   }
@@ -498,7 +498,7 @@ class GStreamer::TagList is GStreamer::MiniObject {
   { * }
 
   multi method get_sample (Str() $tag, :$all = False, :$raw = False) {
-    my $rv = callwith($tag, $, :all);
+    my $rv = samewith($tag, $, :all);
 
     $rv[0] ?? $rv[1] !! Nil;
   }
@@ -522,7 +522,7 @@ class GStreamer::TagList is GStreamer::MiniObject {
   { * }
 
   multi method get_sample_index (Str() $tag, :$raw = False) {
-    my $rv = callwith($tag, $, $, :all);
+    my $rv = samewith($tag, $, $, :all);
 
     $rv[0] ?? $rv.skip(1) !! Nil;
   }
@@ -548,15 +548,20 @@ class GStreamer::TagList is GStreamer::MiniObject {
   { * }
 
   multi method get_string (Str() $tag) {
-    my $rv = callwith($tag, $, :all);
+    my $rv = samewith($tag, $, :all);
 
     $rv[0] ?? $rv[1] !! Nil;
   }
-  multi method get_string (Str() $tag, $value is rw, :$all = False) {
+  multi method get_string (
+    Str() $tag,
+    $value is rw,
+    :$all = False,
+  ) {
     my $sa = CArray[Str].new;
     $sa[0] = Str;
 
     my $rv = gst_tag_list_get_string($!tl, $tag, $sa);
+
     ($value) = ppr($sa);
     $all.not ?? $rv !! ($rv, $value);
   }
@@ -566,7 +571,7 @@ class GStreamer::TagList is GStreamer::MiniObject {
   { * }
 
   multi method get_string_index (Str() $tag) {
-    my $rv = callwith($tag, $, $, :all);
+    my $rv = samewith($tag, $, $, :all);
 
     $rv[0] ?? $rv.skip(1) !! Nil;
   }
@@ -600,7 +605,7 @@ class GStreamer::TagList is GStreamer::MiniObject {
   { * }
 
   multi method get_uint (Str() $tag, :$all = False) {
-    my $rv = callwith($tag, $, :all);
+    my $rv = samewith($tag, $, :all);
 
     $rv[0] ?? $rv[1] !! Nil;
   }
@@ -617,7 +622,7 @@ class GStreamer::TagList is GStreamer::MiniObject {
   { * }
 
   multi method get_uint64 (Str() $tag) {
-    my $rv = callwith($tag, $, :all);
+    my $rv = samewith($tag, $, :all);
 
     $rv[0] ?? $rv[1] !! Nil;
   }
@@ -634,7 +639,7 @@ class GStreamer::TagList is GStreamer::MiniObject {
   { * }
 
   multi method get_uint64_index (Str() $tag) {
-    my $rv = callwith($tag, $, $, :all);
+    my $rv = samewith($tag, $, $, :all);
 
     $rv[0] ?? $rv.skip(1) !! Nil;
   }
@@ -657,7 +662,7 @@ class GStreamer::TagList is GStreamer::MiniObject {
   { * }
 
   multi method get_uint_index (Str() $tag) {
-    my $rv = callwith($tag, $, $, :all);
+    my $rv = samewith($tag, $, $, :all);
 
     $rv[0] ?? $rv.skip(1) !! Nil;
   }
@@ -763,7 +768,7 @@ class GStreamer::TagList is GStreamer::MiniObject {
   { * }
 
   multi method peek_string_index (Str() $tag, Int() $index) {
-    my $rv = callwith($tag, $index, $, :all);
+    my $rv = samewith($tag, $index, $, :all);
 
     $rv[0] ?? $rv[1] !! Nil;
   }

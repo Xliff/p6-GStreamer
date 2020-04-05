@@ -41,7 +41,11 @@ sub gst_tag_list_foreach (
   is export
 { * }
 
-sub gst_tag_list_get_boolean (GstTagList $list, Str $tag, gboolean $value)
+sub gst_tag_list_get_boolean (
+  GstTagList $list,
+  Str $tag, gboolean
+  $value is rw
+)
   returns uint32
   is native(gstreamer)
   is export
@@ -51,7 +55,7 @@ sub gst_tag_list_get_boolean_index (
   GstTagList $list,
   Str $tag,
   guint $index,
-  gboolean $value
+  gboolean $value is rw
 )
   returns uint32
   is native(gstreamer)
@@ -100,7 +104,7 @@ sub gst_tag_list_get_date_time_index (
   is export
 { * }
 
-sub gst_tag_list_get_double (GstTagList $list, Str $tag, gdouble $value)
+sub gst_tag_list_get_double (GstTagList $list, Str $tag, gdouble $value is rw)
   returns uint32
   is native(gstreamer)
   is export
@@ -110,14 +114,14 @@ sub gst_tag_list_get_double_index (
   GstTagList $list,
   Str $tag,
   guint $index,
-  gdouble $value
+  gdouble $value is rw
 )
   returns uint32
   is native(gstreamer)
   is export
 { * }
 
-sub gst_tag_list_get_float (GstTagList $list, Str $tag, gfloat $value)
+sub gst_tag_list_get_float (GstTagList $list, Str $tag, gfloat $value is rw)
   returns uint32
   is native(gstreamer)
   is export
@@ -127,20 +131,20 @@ sub gst_tag_list_get_float_index (
   GstTagList $list,
   Str $tag,
   guint $index,
-  gfloat $value
+  gfloat $value is rw
 )
   returns uint32
   is native(gstreamer)
   is export
 { * }
 
-sub gst_tag_list_get_int (GstTagList $list, Str $tag, gint $value)
+sub gst_tag_list_get_int (GstTagList $list, Str $tag, gint $value is rw)
   returns uint32
   is native(gstreamer)
   is export
 { * }
 
-sub gst_tag_list_get_int64 (GstTagList $list, Str $tag, gint64 $value)
+sub gst_tag_list_get_int64 (GstTagList $list, Str $tag, gint64 $value is rw)
   returns uint32
   is native(gstreamer)
   is export
@@ -150,7 +154,7 @@ sub gst_tag_list_get_int64_index (
   GstTagList $list,
   Str $tag,
   guint $index,
-  gint64 $value
+  gint64 $value is rw
 )
   returns uint32
   is native(gstreamer)
@@ -161,7 +165,7 @@ sub gst_tag_list_get_int_index (
   GstTagList $list,
   Str $tag,
   guint $index,
-  gint $value
+  gint $value is rw
 )
   returns uint32
   is native(gstreamer)
@@ -241,13 +245,13 @@ sub gst_tag_list_get_type ()
   is export
 { * }
 
-sub gst_tag_list_get_uint (GstTagList $list, Str $tag, guint $value)
+sub gst_tag_list_get_uint (GstTagList $list, Str $tag, guint $value is rw)
   returns uint32
   is native(gstreamer)
   is export
 { * }
 
-sub gst_tag_list_get_uint64 (GstTagList $list, Str $tag, guint64 $value)
+sub gst_tag_list_get_uint64 (GstTagList $list, Str $tag, guint64 $value is rw)
   returns uint32
   is native(gstreamer)
   is export
@@ -257,7 +261,7 @@ sub gst_tag_list_get_uint64_index (
   GstTagList $list,
   Str $tag,
   guint $index,
-  guint64 $value
+  guint64 $value is rw
 )
   returns uint32
   is native(gstreamer)
@@ -268,7 +272,7 @@ sub gst_tag_list_get_uint_index (
   GstTagList $list,
   Str $tag,
   guint $index,
-  guint $value
+  guint $value is rw
 )
   returns uint32
   is native(gstreamer)
