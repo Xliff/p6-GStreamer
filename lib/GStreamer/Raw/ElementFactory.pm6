@@ -147,3 +147,9 @@ sub gst_element_factory_can_sink_any_caps (
   is native(gstreamer)
   is export
 { * }
+
+sub gst_element_factory_get_klass (GstElementFactory $factory)
+  returns Str
+  is native(gstreamer)
+  is export
+{ * }

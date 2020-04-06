@@ -39,15 +39,15 @@ class GStreamer::ElementFactory is GStreamer::PluginFeature {
     self.setPluginFeature($to-parent);
   }
 
-  method GStreamer::Raw::Types::GstElementFactory
+  method GStreamer::Raw::Definitions::GstElementFactory
     is also<GstElementFactory>
   { $!ef }
 
-  method new (GstElementFactory $factory) {
+  method new (GstElementFactoryAncestry $factory) {
     $factory ?? self.bless( :$factory ) !! Nil;
   }
 
-  method create (Str() $name, :$raw = False) {
+  method create (Str() $name = Str, :$raw = False) {
     my $e = gst_element_factory_create($!ef, $name);
 
     $e ??
@@ -113,6 +113,10 @@ class GStreamer::ElementFactory is GStreamer::PluginFeature {
     self.get_metadata(GST_ELEMENT_METADATA_DESCRIPTION);
   }
 
+  multi method get_klass is also<get-klass> {
+    self.get_metadata(GST_ELEMENT_METADATA_KLASS);
+  }
+
   method get_longname
     is also<
       get-longname
@@ -122,7 +126,7 @@ class GStreamer::ElementFactory is GStreamer::PluginFeature {
     self.get_metadata(GST_ELEMENT_METADATA_LONGNAME);
   }
 
-  method get_metadata (Str() $key) is also<get-metadata> {
+  multi method get_metadata (Str() $key) is also<get-metadata> {
     gst_element_factory_get_metadata($!ef, $key);
   }
 
