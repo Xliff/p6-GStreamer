@@ -1,3 +1,4 @@
+#include <stdio.h>
 #include <gst/gst.h>
 
 /* playbin flags */
@@ -12,7 +13,9 @@ static gboolean filter_vis_features (GstPluginFeature *feature, gpointer data) {
   if (!GST_IS_ELEMENT_FACTORY (feature))
     return FALSE;
   factory = GST_ELEMENT_FACTORY (feature);
-  if (!g_strrstr (gst_element_factory_get_klass (factory), "Visualization"))
+  char *k = gst_element_factory_get_klass(factory);
+  printf("Klass = %s\n", k);
+  if (!g_strrstr (k, "Visualization"))
     return FALSE;
 
   return TRUE;
