@@ -1,6 +1,5 @@
 use v6.c;
 
-
 use GStreamer::Raw::Types;
 
 use GLib::MainLoop;
@@ -21,7 +20,7 @@ sub MAIN (
   my $loop     = GLib::MainLoop.new;
   my $pipeline = GStreamer::Pipeline.new('audio-player');
 
-  %e{$_[0]} = GStreamer::ElementFactory.make($_[1], $_[2])
+  %e{ .[0] } = GStreamer::ElementFactory.make( .[1], .[2] )
     for  <source  filesrc       file-source>,
          <demuxer oggdemux      ogg-demuxer>,
          <decoder vorbisdec     vorbis-decoder>,
@@ -31,7 +30,6 @@ sub MAIN (
   die 'One element could not be created. Exiting!'
     if %e.values.grep( *.defined.not );
 
-  # Will need to check this and add it to GStreamer::Object
   %e<source>.prop_set( 'location', gv_str($filename) );
 
   my $bus = $pipeline.bus;
@@ -67,18 +65,18 @@ sub MAIN (
   # Therefore we connect a callback function which will be executed
   # when the "pad-added" is emitted.
 
-  # %e<demuxer>.pad-added.tap(-> *@a {
-  #   CATCH { default { .message.say } }
-  #
-  #   say 'PA';
-  #   my $p = GStreamer::Pad.new( @a[1] );
-  #   my $sinkpad = %e<decoder>.get-static-pad('sink');
-  #
-  #   $p.link($sinkpad);
-  #   $sinkpad.unref;
-  #
-  #   say 'Dynamic pad created, linking demuxer/decoder'
-  # });
+  %e<demuxer>.pad-added.tap(-> *@a {
+    CATCH { default { .message.say } }
+
+    say 'PA';
+    my $p = GStreamer::Pad.new( @a[1] );
+    my $sinkpad = %e<decoder>.get-static-pad('sink');
+
+    $p.link($sinkpad);
+    $sinkpad.unref;
+
+    say 'Dynamic pad created, linking demuxer/decoder'
+  });
 
   say "Now playing: { $filename }";
   $pipeline.set_state(GST_STATE_PLAYING);
