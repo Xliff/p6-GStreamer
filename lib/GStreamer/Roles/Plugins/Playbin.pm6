@@ -125,7 +125,8 @@ role GStreamer::Roles::Plugins::Playbin {
 
   # Type: GstElement
   method vis-plugin (:$raw = False) is rw  is also<vis_plugin> {
-    my GLib::Value $gv .= new( G_TYPE_OBJECT );
+    my subset GstElementOrObject of Mu where GStreamer::Element | GstElement;
+    my GLib::Value $gv .= new( GStreamer::Element.get-type );
     Proxy.new(
       FETCH => -> $ {
         $gv = GLib::Value.new(
@@ -138,7 +139,8 @@ role GStreamer::Roles::Plugins::Playbin {
           !!
           GstElement;
       },
-      STORE => -> $, GstElement() $val is copy {
+      STORE => -> $, GstElementOrObject $val is copy {
+        $val .= GObject if $val ~~ GStreamer::Element;
         $gv.object = $val;
         self.prop_set('vis-plugin', $gv);
       }
@@ -283,26 +285,31 @@ role GStreamer::Roles::Plugins::Playbin {
 
   # Type: GstPlayFlags
   method flags is rw  {
-    my GLib::Value $gv .= new(
-      # do {
-      #   state ($n, $t);
-      #
-      #   unstable_get_type( self.^name, &global_gst_play_flags_get_type, $n, $t )
-      # }
-      G_TYPE_UINT64
-    );
+    # say 'flags';
+    # my GLib::Value $gv .= new(
+    #   do {
+    #     state ($n, $t);
+    #
+    #     unstable_get_type( self.^name, &global_gst_play_flags_get_type, $n, $t )
+    #   }
+    #   G_TYPE_UINT64
+    # );
     #my GLib::Value $gv .= new( G_TYPE_INT );
+    my $la = CArray[guint].new;
     Proxy.new(
       FETCH => -> $ {
-        $gv = GLib::Value.new(
-          self.prop_get('flags', $gv)
-        );
-        GstPlayFlagsEnum( $gv.uint64 );
+        # $gv = GLib::Value.new(
+        #   self.prop_get('flags', $gv)
+        # );
+        $la[0] = 0;
+        gst_object_get_uint($!pb.p, 'flags', $la, Str);
+        $la[0];
       },
       STORE => -> $, Int() $val is copy {
-        $gv.uint = $val;
-
-        self.prop_set('flags', $gv);
+        # $gv.uint = $val;
+        # self.prop_set('flags', $gv);
+        my guint $v = $val;
+        gst_object_set_uint($!pb.p, 'flags', $v, Str);
       }
     );
   }
@@ -878,3 +885,57 @@ role GStreamer::Roles::Plugins::Playbin {
   }
 
 }
+
+sub gst_object_set_uint (
+  Pointer $element,
+  Str $name,
+  guint $value,
+  Str
+)
+  is native(gobject)
+  is symbol('g_object_set')
+{ * }
+
+sub gst_object_get_uint (
+  Pointer $element,
+  Str $name,
+  CArray[guint] $value,
+  Str
+)
+  is native(gobject)
+  is symbol('g_object_get')
+{ * }
+
+constant GstAutoplugSelectResult is export := guint32;
+our enum GstAutoplugSelectResultEnum is export <
+    GST_AUTOPLUG_SELECT_TRY
+    GST_AUTOPLUG_SELECT_EXPOSE
+    GST_AUTOPLUG_SELECT_SKIP
+>;
+
+constant GstPlayFlags is export := guint32;
+our enum GstPlayFlagsEnum is export (
+  GST_PLAY_FLAG_VIDEO             => 1,
+  GST_PLAY_FLAG_AUDIO             => (1 +< 1),
+  GST_PLAY_FLAG_TEXT              => (1 +< 2),
+  GST_PLAY_FLAG_VIS               => (1 +< 3),
+  GST_PLAY_FLAG_SOFT_VOLUME       => (1 +< 4),
+  GST_PLAY_FLAG_NATIVE_AUDIO      => (1 +< 5),
+  GST_PLAY_FLAG_NATIVE_VIDEO      => (1 +< 6),
+  GST_PLAY_FLAG_DOWNLOAD          => (1 +< 7),
+  GST_PLAY_FLAG_BUFFERING         => (1 +< 8),
+  GST_PLAY_FLAG_DEINTERLACE       => (1 +< 9),
+  GST_PLAY_FLAG_SOFT_COLORBALANCE => (1 +< 10),
+  GST_PLAY_FLAG_FORCE_FILTERS     => (1 +< 11),
+);
+
+constant GstPlaySinkType is export := guint32;
+our enum GstPlaySinkTypeEnum is export (
+    GST_PLAY_SINK_TYPE_AUDIO     =>  0,
+    GST_PLAY_SINK_TYPE_AUDIO_RAW =>  1,
+    GST_PLAY_SINK_TYPE_VIDEO     =>  2,
+    GST_PLAY_SINK_TYPE_VIDEO_RAW =>  3,
+    GST_PLAY_SINK_TYPE_TEXT      =>  4,
+    GST_PLAY_SINK_TYPE_LAST      =>  5,
+    GST_PLAY_SINK_TYPE_FLUSHING  =>  6,
+);
