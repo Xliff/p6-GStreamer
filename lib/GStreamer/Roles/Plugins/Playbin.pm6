@@ -13,6 +13,7 @@ use GStreamer::Roles::Plugins::Raw::Playbin;
 #use GStreamer::Plugins::Gst::Playback;
 
 use GLib::Value;
+use GLib::ReturnedValue;
 use GStreamer::Buffer;
 use GStreamer::Element;
 use GStreamer::Sample;
