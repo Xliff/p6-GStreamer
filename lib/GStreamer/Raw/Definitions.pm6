@@ -79,6 +79,7 @@ class GstChildProxy             is repr('CPointer') does GLib::Roles::Pointers i
 class GstClock                  is repr('CPointer') does GLib::Roles::Pointers is export { }
 class GstContext                is repr('CPointer') does GLib::Roles::Pointers is export { }
 class GstControlBinding         is repr('CPointer') does GLib::Roles::Pointers is export { }
+class GstControlSource          is repr('CPointer') does GLib::Roles::Pointers is export { }
 class GstDevice                 is repr('CPointer') does GLib::Roles::Pointers is export { }
 class GstDeviceProviderFactory  is repr('CPointer') does GLib::Roles::Pointers is export { }
 #class GstDateTime               is repr('CPointer') does GLib::Roles::Pointers is export { }
