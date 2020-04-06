@@ -14,7 +14,7 @@ role GStreamer::Roles::Plugins::SubtitleOverlay {
   method font-desc is rw  {
     my GLib::Value $gv .= new( G_TYPE_STRING );
     Proxy.new(
-      FETCH => -> $ {
+      FETCH => sub ($) {
         $gv = GLib::Value.new(
           self.prop_get('font-desc', $gv)
         );
@@ -31,7 +31,7 @@ role GStreamer::Roles::Plugins::SubtitleOverlay {
   method silent is rw  {
     my GLib::Value $gv .= new( G_TYPE_BOOLEAN );
     Proxy.new(
-      FETCH => -> $ {
+      FETCH => sub ($) {
         $gv = GLib::Value.new(
           self.prop_get('silent', $gv)
         );
@@ -48,7 +48,7 @@ role GStreamer::Roles::Plugins::SubtitleOverlay {
   method subtitle-encoding is rw  {
     my GLib::Value $gv .= new( G_TYPE_STRING );
     Proxy.new(
-      FETCH => -> $ {
+      FETCH => sub ($) {
         $gv = GLib::Value.new(
           self.prop_get('subtitle-encoding', $gv)
         );

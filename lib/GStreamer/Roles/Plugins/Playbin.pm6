@@ -46,7 +46,7 @@ role GStreamer::Roles::Plugins::Playbin {
   method audio-sink (:$raw = False) is rw  is also<audio_sink> {
     my GLib::Value $gv .= new( G_TYPE_OBJECT );
     Proxy.new(
-      FETCH => -> $ {
+      FETCH => sub ($) {
         $gv = GLib::Value.new(
           self.prop_get('audio-sink', $gv)
         );
@@ -68,7 +68,7 @@ role GStreamer::Roles::Plugins::Playbin {
   method frame (:$raw = False) is rw  {
     my GLib::Value $gv .= new( GStreamer::Buffer.get_type );
     Proxy.new(
-      FETCH => -> $ {
+      FETCH => sub ($) {
         $gv = GLib::Value.new(
           self.prop_get('frame', $gv)
         );
@@ -89,7 +89,7 @@ role GStreamer::Roles::Plugins::Playbin {
   method subtitle-font-desc is rw  is also<subtitle_font_desc> {
     my GLib::Value $gv .= new( G_TYPE_STRING );
     Proxy.new(
-      FETCH => -> $ {
+      FETCH => sub ($) {
         warn 'subtitle-font-desc does not allow reading' if $DEBUG;
 
         '';
@@ -105,7 +105,7 @@ role GStreamer::Roles::Plugins::Playbin {
   method video-sink (:$raw = False) is rw  is also<video_sink> {
     my GLib::Value $gv .= new( G_TYPE_OBJECT );
     Proxy.new(
-      FETCH => -> $ {
+      FETCH => sub ($) {
         $gv = GLib::Value.new(
           self.prop_get('video-sink', $gv)
         );
@@ -128,7 +128,7 @@ role GStreamer::Roles::Plugins::Playbin {
     my subset GstElementOrObject of Mu where GStreamer::Element | GstElement;
     my GLib::Value $gv .= new( GStreamer::Element.get-type );
     Proxy.new(
-      FETCH => -> $ {
+      FETCH => sub ($) {
         $gv = GLib::Value.new(
           self.prop_get('vis-plugin', $gv)
         );
@@ -151,7 +151,7 @@ role GStreamer::Roles::Plugins::Playbin {
   method volume is rw  {
     my GLib::Value $gv .= new( G_TYPE_DOUBLE );
     Proxy.new(
-      FETCH => -> $ {
+      FETCH => sub ($) {
         $gv = GLib::Value.new(
           self.prop_get('volume', $gv)
         );
@@ -168,7 +168,7 @@ role GStreamer::Roles::Plugins::Playbin {
   method connection-speed is rw  is also<connection_speed> {
     my GLib::Value $gv .= new( G_TYPE_UINT64 );
     Proxy.new(
-      FETCH => -> $ {
+      FETCH => sub ($) {
         $gv = GLib::Value.new(
           self.prop_get('connection-speed', $gv)
         );
@@ -185,7 +185,7 @@ role GStreamer::Roles::Plugins::Playbin {
   method av-offset is rw  is also<av_offset> {
     my GLib::Value $gv .= new( G_TYPE_INT64 );
     Proxy.new(
-      FETCH => -> $ {
+      FETCH => sub ($) {
         $gv = GLib::Value.new(
           self.prop_get('av-offset', $gv)
         );
@@ -202,7 +202,7 @@ role GStreamer::Roles::Plugins::Playbin {
   method buffer-duration is rw  is also<buffer_duration> {
     my GLib::Value $gv .= new( G_TYPE_INT64 );
     Proxy.new(
-      FETCH => -> $ {
+      FETCH => sub ($) {
         $gv = GLib::Value.new(
           self.prop_get('buffer-duration', $gv)
         );
@@ -219,7 +219,7 @@ role GStreamer::Roles::Plugins::Playbin {
   method buffer-size is rw  is also<buffer_size> {
     my GLib::Value $gv .= new( G_TYPE_INT );
     Proxy.new(
-      FETCH => -> $ {
+      FETCH => sub ($) {
         $gv = GLib::Value.new(
           self.prop_get('buffer-size', $gv)
         );
@@ -236,7 +236,7 @@ role GStreamer::Roles::Plugins::Playbin {
   method current-audio is rw  is also<current_audio> {
     my GLib::Value $gv .= new( G_TYPE_INT );
     Proxy.new(
-      FETCH => -> $ {
+      FETCH => sub ($) {
         $gv = GLib::Value.new(
           self.prop_get('current-audio', $gv)
         );
@@ -253,7 +253,7 @@ role GStreamer::Roles::Plugins::Playbin {
   method current-text is rw  is also<current_text> {
     my GLib::Value $gv .= new( G_TYPE_INT );
     Proxy.new(
-      FETCH => -> $ {
+      FETCH => sub ($) {
         $gv = GLib::Value.new(
           self.prop_get('current-text', $gv)
         );
@@ -270,7 +270,7 @@ role GStreamer::Roles::Plugins::Playbin {
   method current-video is rw  is also<current_video> {
     my GLib::Value $gv .= new( G_TYPE_INT );
     Proxy.new(
-      FETCH => -> $ {
+      FETCH => sub ($) {
         $gv = GLib::Value.new(
           self.prop_get('current-video', $gv)
         );
@@ -318,7 +318,7 @@ role GStreamer::Roles::Plugins::Playbin {
   method mute is rw  {
     my GLib::Value $gv .= new( G_TYPE_BOOLEAN );
     Proxy.new(
-      FETCH => -> $ {
+      FETCH => sub ($) {
         $gv = GLib::Value.new(
           self.prop_get('mute', $gv)
         );
@@ -335,7 +335,7 @@ role GStreamer::Roles::Plugins::Playbin {
   method n-audio is rw  is also<n_audio> {
     my GLib::Value $gv .= new( G_TYPE_INT );
     Proxy.new(
-      FETCH => -> $ {
+      FETCH => sub ($) {
         $gv = GLib::Value.new(
           self.prop_get('n-audio', $gv)
         );
@@ -351,7 +351,7 @@ role GStreamer::Roles::Plugins::Playbin {
   method n-text is rw  is also<n_text> {
     my GLib::Value $gv .= new( G_TYPE_INT );
     Proxy.new(
-      FETCH => -> $ {
+      FETCH => sub ($) {
         $gv = GLib::Value.new(
           self.prop_get('n-text', $gv)
         );
@@ -367,7 +367,7 @@ role GStreamer::Roles::Plugins::Playbin {
   method n-video is rw  is also<n_video> {
     my GLib::Value $gv .= new( G_TYPE_INT );
     Proxy.new(
-      FETCH => -> $ {
+      FETCH => sub ($) {
         $gv = GLib::Value.new(
           self.prop_get('n-video', $gv)
         );
@@ -383,7 +383,7 @@ role GStreamer::Roles::Plugins::Playbin {
   method ring-buffer-max-size is rw  is also<ring_buffer_max_size> {
     my GLib::Value $gv .= new( G_TYPE_UINT64 );
     Proxy.new(
-      FETCH => -> $ {
+      FETCH => sub ($) {
         $gv = GLib::Value.new(
           self.prop_get('ring-buffer-max-size', $gv)
         );
@@ -400,7 +400,7 @@ role GStreamer::Roles::Plugins::Playbin {
   method sample (:$raw = False) is rw  {
     my GLib::Value $gv .= new( G_TYPE_BOXED );
     Proxy.new(
-      FETCH => -> $ {
+      FETCH => sub ($) {
         $gv = GLib::Value.new(
           self.prop_get('sample', $gv)
         );
@@ -421,7 +421,7 @@ role GStreamer::Roles::Plugins::Playbin {
   method source (:$raw = False) is rw  {
     my GLib::Value $gv .= new( G_TYPE_OBJECT );
     Proxy.new(
-      FETCH => -> $ {
+      FETCH => sub ($) {
         $gv = GLib::Value.new(
           self.prop_get('source', $gv)
         );
@@ -442,7 +442,7 @@ role GStreamer::Roles::Plugins::Playbin {
   method subtitle-encoding is rw  is also<subtitle_encoding> {
     my GLib::Value $gv .= new( G_TYPE_STRING );
     Proxy.new(
-      FETCH => -> $ {
+      FETCH => sub ($) {
         $gv = GLib::Value.new(
           self.prop_get('subtitle-encoding', $gv)
         );
@@ -459,7 +459,7 @@ role GStreamer::Roles::Plugins::Playbin {
   method suburi is rw  {
     my GLib::Value $gv .= new( G_TYPE_STRING );
     Proxy.new(
-      FETCH => -> $ {
+      FETCH => sub ($) {
         $gv = GLib::Value.new(
           self.prop_get('suburi', $gv)
         );
@@ -476,7 +476,7 @@ role GStreamer::Roles::Plugins::Playbin {
   method text-sink (:$raw = False) is rw  is also<text_sink> {
     my GLib::Value $gv .= new( G_TYPE_OBJECT );
     Proxy.new(
-      FETCH => -> $ {
+      FETCH => sub ($) {
         $gv = GLib::Value.new(
           self.prop_get('text-sink', $gv)
         );
@@ -498,7 +498,7 @@ role GStreamer::Roles::Plugins::Playbin {
   method uri is rw  {
     my GLib::Value $gv .= new( G_TYPE_STRING );
     Proxy.new(
-      FETCH => -> $ {
+      FETCH => sub ($) {
         $gv = GLib::Value.new(
           self.prop_get('uri', $gv)
         );
@@ -515,7 +515,7 @@ role GStreamer::Roles::Plugins::Playbin {
   method current-suburi is rw  is also<current_suburi> {
     my GLib::Value $gv .= new( G_TYPE_STRING );
     Proxy.new(
-      FETCH => -> $ {
+      FETCH => sub ($) {
         $gv = GLib::Value.new(
           self.prop_get('current-suburi', $gv)
         );
@@ -531,7 +531,7 @@ role GStreamer::Roles::Plugins::Playbin {
   method current-uri is rw  is also<current_uri> {
     my GLib::Value $gv .= new( G_TYPE_STRING );
     Proxy.new(
-      FETCH => -> $ {
+      FETCH => sub ($) {
         $gv = GLib::Value.new(
           self.prop_get('current-uri', $gv)
           );
@@ -547,7 +547,7 @@ role GStreamer::Roles::Plugins::Playbin {
   method force-aspect-ratio is rw  is also<force_aspect_ratio> {
     my GLib::Value $gv .= new( G_TYPE_BOOLEAN );
     Proxy.new(
-      FETCH => -> $ {
+      FETCH => sub ($) {
         $gv = GLib::Value.new(
           self.prop_get('force-aspect-ratio', $gv)
         );
@@ -566,7 +566,7 @@ role GStreamer::Roles::Plugins::Playbin {
   {
     my GLib::Value $gv .= new( G_TYPE_OBJECT );
     Proxy.new(
-      FETCH => -> $ {
+      FETCH => sub ($) {
         $gv = GLib::Value.new(
           self.prop_get('audio-stream-combiner', $gv)
         );
@@ -590,7 +590,7 @@ role GStreamer::Roles::Plugins::Playbin {
   {
     my GLib::Value $gv .= new( G_TYPE_OBJECT );
     Proxy.new(
-      FETCH => -> $ {
+      FETCH => sub ($) {
         $gv = GLib::Value.new(
           self.prop_get('text-stream-combiner', $gv)
         );
@@ -614,7 +614,7 @@ role GStreamer::Roles::Plugins::Playbin {
   {
     my GLib::Value $gv .= new( G_TYPE_OBJECT );
     Proxy.new(
-      FETCH => -> $ {
+      FETCH => sub ($) {
         $gv = GLib::Value.new(
           self.prop_get('video-stream-combiner', $gv)
         );
