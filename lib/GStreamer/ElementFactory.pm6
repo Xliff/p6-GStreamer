@@ -2,17 +2,17 @@ use v6.c;
 
 use Method::Also;
 
-use GTK::Compat::Types;
 use GStreamer::Raw::Types;
 use GStreamer::Raw::ElementFactory;
 
+use GLib::GList;
 use GStreamer::Element;
 use GStreamer::PluginFeature;
 use GStreamer::PadTemplate;
 
 use GLib::Roles::ListData;
 
-our subset ElementFactoryAncestry is export of Mu
+our subset GstElementFactoryAncestry is export of Mu
   where GstElementFactory | GstPluginFeature;
 
 class GStreamer::ElementFactory is GStreamer::PluginFeature {
@@ -22,7 +22,7 @@ class GStreamer::ElementFactory is GStreamer::PluginFeature {
     self.setElementFactory($factory);
   }
 
-  method setElementFactory (ElementFactoryAncestry $_) {
+  method setElementFactory (GstElementFactoryAncestry $_) {
     my $to-parent;
 
     $!ef = do {
@@ -35,31 +35,32 @@ class GStreamer::ElementFactory is GStreamer::PluginFeature {
         $to-parent = $_;
         cast(GstElementFactory, $_);
       }
-    };
+    }
     self.setPluginFeature($to-parent);
   }
 
-  method GStreamer::Raw::Types::GstElementFactory
+  method GStreamer::Raw::Definitions::GstElementFactory
+    is also<GstElementFactory>
   { $!ef }
 
-  method new (GstElementFactory $factory) {
-    self.bless( :$factory );
+  method new (GstElementFactoryAncestry $factory) {
+    $factory ?? self.bless( :$factory ) !! Nil;
   }
 
-  method create (Str() $name, :$raw = False) {
+  method create (Str() $name = Str, :$raw = False) {
     my $e = gst_element_factory_create($!ef, $name);
 
     $e ??
       ( $raw ?? $e !! GStreamer::Element.new($e) )
       !!
-      Nil
+      GstElement;
   }
 
   method find (Str() $name, :$raw = False) {
     my $ef = gst_element_factory_find($name);
 
     die "Could not find an ElementFactory with the name '$name'!"
-      unless $ef.defined;
+      unless $ef;
 
     $raw ?? $ef !! GStreamer::ElementFactory.new($ef);
   }
@@ -71,7 +72,9 @@ class GStreamer::ElementFactory is GStreamer::PluginFeature {
       element-type
     >
   {
-    gst_element_factory_get_element_type($!ef);
+    state ($n, $t);
+
+    GTypeEnum( gst_element_factory_get_element_type($!ef) );
   }
 
   method get_author
@@ -110,6 +113,10 @@ class GStreamer::ElementFactory is GStreamer::PluginFeature {
     self.get_metadata(GST_ELEMENT_METADATA_DESCRIPTION);
   }
 
+  multi method get_klass is also<get-klass> {
+    self.get_metadata(GST_ELEMENT_METADATA_KLASS);
+  }
+
   method get_longname
     is also<
       get-longname
@@ -119,7 +126,7 @@ class GStreamer::ElementFactory is GStreamer::PluginFeature {
     self.get_metadata(GST_ELEMENT_METADATA_LONGNAME);
   }
 
-  method get_metadata (Str() $key) is also<get-metadata> {
+  multi method get_metadata (Str() $key) is also<get-metadata> {
     gst_element_factory_get_metadata($!ef, $key);
   }
 
@@ -130,11 +137,7 @@ class GStreamer::ElementFactory is GStreamer::PluginFeature {
       metadata-keys
     >
   {
-    my $mk = gst_element_factory_get_metadata_keys($!ef);
-
-    my ($cnt, $k, @mk) = (0);
-    @mk.push: $k while $k = $mk[$cnt++];
-    @mk;
+    CStringArrayToArray( gst_element_factory_get_metadata_keys($!ef) );
   }
 
   method get_num_pad_templates
@@ -147,29 +150,27 @@ class GStreamer::ElementFactory is GStreamer::PluginFeature {
     gst_element_factory_get_num_pad_templates($!ef);
   }
 
-  method get_static_pad_templates (:$raw = False)
+  method get_static_pad_templates (:$glist = False, :$raw = False)
     is also<
       get-static-pad-templates
       static_pad_templates
       static-pad-templates
     >
   {
-    my $pt = GLib::GList.new(
-      gst_element_factory_get_static_pad_templates($!ef)
-    );
+    my $ptl = gst_element_factory_get_static_pad_templates($!ef);
 
-    $pt = $pt but GLib::Roles::ListData[GstStaticPadTemplate] if $pt;
+    return Nil unless $ptl;
+    return $ptl if $glist;
 
-    # Check for object.
-    $pt ??
-      ( $raw ?? $pt.Array !!
-                $pt.Array.map({ GStreamer::StaticPadTemplate.new($_) }) )
-      !!
-      Nil;
+    $ptl = GLib::GList.new($ptl) but GLib::Roles::ListData[GstStaticPadTemplate];
+
+    $raw ?? $ptl.Array
+         !! $ptl.Array.map({ GStreamer::StaticPadTemplate.new($_) });
   }
 
   method get_type is also<get-type> {
     state ($n, $t);
+
     unstable_get_type( self.^name, &gst_element_factory_get_type, $n, $t );
   }
 
@@ -180,7 +181,7 @@ class GStreamer::ElementFactory is GStreamer::PluginFeature {
       uri-type
     >
   {
-    gst_element_factory_get_uri_type($!ef);
+    GTypeEnum( gst_element_factory_get_uri_type($!ef) );
   }
 
   method has_interface (Str() $interfacename) is also<has-interface> {
@@ -188,46 +189,53 @@ class GStreamer::ElementFactory is GStreamer::PluginFeature {
   }
 
   method list_filter (
+    GStreamer::ElementFactory:U:
     GList() $list,
-    GstCaps $caps,
-    GstPadDirection $direction,
-    gboolean $subsetonly,
+    GstCaps() $caps,
+    Int() $direction,
+    Int() $subsetonly,
+    :$glist = False,
     :$raw = False
   )
     is also<list-filter>
   {
-    my $ef = GLib::GList.new(
-      gst_element_factory_list_filter($list, $caps, $direction, $subsetonly)
+    my GstPadDirection $p = $direction;
+    my gboolean $s = $subsetonly.so.Int;
+
+    my $ef = gst_element_factory_list_filter(
+      $list,
+      $caps,
+      $direction,
+      $subsetonly
     );
 
-    $ef = $ef but GLib::Roles::ListData[GstElementFactory] if $ef;
+    return Nil unless $ef;
+    return $ef if $glist;
 
-    $ef ??
-      ( $raw ?? $ef.Array !!
-                $ef.Array({ GStreamer::ElementFactory.new($_ ) }) )
-      !!
-      Nil
+    $ef = GLib::GList.new($ef) but GLib::Roles::ListData[GstElementFactory];
+
+    $raw ?? $ef.Array
+         !! $ef.Array({ GStreamer::ElementFactory.new($_) });
   }
 
   method list_get_elements (
+    GStreamer::ElementFactory:U:
     Int() $type,
     GstRank $minrank,
+    :$glist = False,
     :$raw = False;
   )
     is also<list-get-elements>
   {
-    my $ef = GLib::GList.new(
-      gst_element_factory_list_get_elements($type, $minrank)
-    );
+    my $ef = gst_element_factory_list_get_elements($type, $minrank);
 
-    $ef = $ef but GLib::Roles::ListData[GstElementFactory] if $ef;
+    return Nil unless $ef;
+    return $ef if $glist;
 
-    $ef ??
-      ( $raw ??
-        $ef.Array !! $ef.Array({ GStreamer::ElementFactory.new($_ ) })
-      )
-      !!
-      Nil
+    $ef = GLib::GList.new($ef) but GLib::Roles::ListData[GstElementFactory];
+
+    $raw ?? $ef.Array
+         !! $ef.Array({ GStreamer::ElementFactory.new($_ ) })
   }
 
   method list_is_type (Int() $type) is also<list-is-type> {
@@ -240,7 +248,7 @@ class GStreamer::ElementFactory is GStreamer::PluginFeature {
     $e ??
       ( $raw ?? $e !! GStreamer::Element.new($e) )
       !!
-      Nil;
+      GstElement;
   }
 
   method register (
@@ -255,20 +263,20 @@ class GStreamer::ElementFactory is GStreamer::PluginFeature {
   method get_uri_protocols is also<get-uri-protocols> {
     my $up = gst_element_factory_get_uri_protocols($!ef);
 
-    my ($cnt, $s, @s) = (0);
-    @s.push: $s while $s = $up[$cnt++];
-    @s;
+    return Nil unless $up[0];
+
+    CStringArrayToArray($up[0]);
   }
 
-  method can_sink_all_caps (GstCaps $caps) is also<can-sink-all-caps> {
+  method can_sink_all_caps (GstCaps() $caps) is also<can-sink-all-caps> {
     so gst_element_factory_can_sink_all_caps($!ef, $caps);
   }
 
-  method can_sink_any_caps (GstCaps $caps) is also<can-sink-any-caps> {
+  method can_sink_any_caps (GstCaps() $caps) is also<can-sink-any-caps> {
     so gst_element_factory_can_sink_any_caps($!ef, $caps);
   }
 
-  method can_src_all_caps (GstCaps $caps) is also<can-src-all-caps> {
+  method can_src_all_caps (GstCaps() $caps) is also<can-src-all-caps> {
     so gst_element_factory_can_src_all_caps($!ef, $caps);
   }
 

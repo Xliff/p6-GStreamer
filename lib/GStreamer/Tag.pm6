@@ -2,18 +2,13 @@ use v6.c;
 
 use Method::Also;
 
-use GTK::Compat::Types;
 use GStreamer::Raw::Types;
 use GStreamer::Raw::TagList;
 
+use GLib::Roles::StaticClass;
+
 class GStreamer::Tag {
-
-  method new (|) {
-    warn 'GStreamer::Tag is a static class and does not need instantiation.'
-      if $DEBUG;
-
-    GStreamer::Tags;
-  }
+  also does GLib::Roles::StaticClass;
 
   method exists (Str() $tag) {
     gst_tag_exists($tag);

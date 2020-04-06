@@ -2,7 +2,7 @@ use v6.c;
 
 use Method::Also;
 
-use GTK::Compat::Types;
+
 use GStreamer::Raw::Types;
 use GStreamer::Raw::Sample;
 
@@ -43,7 +43,7 @@ class GStreamer::Sample is GStreamer::MiniObject {
   { $!s }
 
   multi method new (GstSample $sample) {
-    self.bless( :$sample );
+    $sample ?? self.bless( :$sample ) !! Nil;
   }
   multi method new (
     GstBuffer() $buffer,
@@ -51,7 +51,9 @@ class GStreamer::Sample is GStreamer::MiniObject {
     GstSegment() $segment,
     GstStructure() $info
   ) {
-    self.bless( sample => gst_sample_new($buffer, $caps, $segment, $info) );
+    my $sample = gst_sample_new($buffer, $caps, $segment, $info);
+
+    $sample ?? self.bless( :$sample ) !! Nil;
   }
 
   method buffer (:$raw = False) is rw {
@@ -62,7 +64,7 @@ class GStreamer::Sample is GStreamer::MiniObject {
         $b ??
           ( $raw ?? $b !! GStreamer::Buffer.new($b) )
           !!
-          Nil;
+          GstBuffer;
       },
       STORE => sub ($, GstBuffer() $buffer is copy) {
         gst_sample_set_buffer($!s, $buffer);
@@ -78,7 +80,7 @@ class GStreamer::Sample is GStreamer::MiniObject {
         $bl ??
           ( $raw ?? $bl !! GStreamer::BufferList.new($bl) )
           !!
-          Nil;
+          GstBufferList;
       },
       STORE => sub ($, GstBufferList() $buffer_list is copy) {
         gst_sample_set_buffer_list($!s, $buffer_list);
@@ -94,7 +96,7 @@ class GStreamer::Sample is GStreamer::MiniObject {
         $c ??
           ( $raw ?? $c !! GStreamer::Caps.new($c) )
           !!
-          Nil;
+          GstCaps;
       },
       STORE => sub ($, GstCaps() $caps is copy) {
         gst_sample_set_caps($!s, $caps);
@@ -110,7 +112,7 @@ class GStreamer::Sample is GStreamer::MiniObject {
         $s ??
           ( $raw ?? $s !! GStreamer::Structure.new($s) )
           !!
-          Nil;
+          GstStructure;
       },
       STORE => sub ($, GstStructure() $info is copy) {
         gst_sample_set_info($!s, $info);
@@ -126,7 +128,7 @@ class GStreamer::Sample is GStreamer::MiniObject {
         $s ??
           ( $raw ?? $s !! GStreamer::Segment.new($s) )
           !!
-          Nil;
+          GstSegment;
       },
       STORE => sub ($, GstSegment() $segment is copy) {
         gst_sample_set_segment($!s, $segment);
@@ -134,6 +136,8 @@ class GStreamer::Sample is GStreamer::MiniObject {
     );
   }
 
+  # cw: I don't really know what to do with GstMiniObject copy methods.
+  #     Most objects do NOT have them, but this is one way of handling it.
   proto method copy (|)
   { * }
 
@@ -149,7 +153,7 @@ class GStreamer::Sample is GStreamer::MiniObject {
     $sample ??
       ( $raw ?? $sample !! GStreamer::Sample.new($sample) )
       !!
-      Nil;
+      GstSample;
   }
 
   method get_type is also<get-type> {

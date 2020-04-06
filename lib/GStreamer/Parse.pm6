@@ -1,23 +1,20 @@
 use v6.c;
 
+use Method::Also;
+
 use NativeCall;
 
-use GTK::Compat::Types;
 use GStreamer::Raw::Types;
 use GStreamer::Raw::Parse;
 
 use GStreamer::Element;
 
+use GLib::Roles::StaticClass;
+
 class GStreamer::Parse {
+  also does GLib::Roles::StaticClass;
 
-  method new (|) {
-    warn 'GStreamer::Parse is a static class and does not need instantiation.'
-      unless $DEBUG;
-
-    GStreamer::Parse;
-  }
-
-  method error_quark {
+  method error_quark is also<error-quark> {
     gst_parse_error_quark();
   }
 
@@ -33,7 +30,7 @@ class GStreamer::Parse {
     $e ??
       ( $raw ?? $e !! GStreamer::Element.new($e) )
       !!
-      Nil;
+      GstElement;
   }
 
   method launch_full (
@@ -42,7 +39,9 @@ class GStreamer::Parse {
     Int() $flags, # GstParseFlags $flags,
     CArray[Pointer[GError]] $error = gerror,
     :$raw = False
-  ) {
+  )
+    is also<launch-full>
+  {
     my guint $f = $flags;
     clear_error;
     my $e = gst_parse_launch_full($pipeline_desc, $context, $f, $error);
@@ -51,7 +50,7 @@ class GStreamer::Parse {
     $e ??
       ( $raw ?? $e !! GStreamer::Element.new($e) )
       !!
-      Nil;
+      GstElement;
   }
 
   multi method launchv(
@@ -60,11 +59,8 @@ class GStreamer::Parse {
     $error = gerror,
     :$raw = False
   ) {
-    my $v = CArray[Str].new;
-    my $ne = @v.elems;
+    my $v = resolve-gstrv(@v);
 
-    $v[$_] = @v[$_] for ^$ne;
-    $v[$ne] = Str;
     samewith($v, $error, :$raw);
   }
   multi method launchv (
@@ -79,8 +75,12 @@ class GStreamer::Parse {
     $e ??
       ( $raw ?? $e !! GStreamer::Element.new($e) )
       !!
-      Nil;
+      GstElement;
   }
+
+  proto method launchv_full (|)
+    is also<launchv-full>
+  { * }
 
   multi method launchv_full (
     @v,
@@ -89,11 +89,8 @@ class GStreamer::Parse {
     CArray[Pointer[GError]] $error = gerror,
     :$raw = False
   ) {
-    my $v = CArray[Str].new;
-    my $ne = @v.elems;
+    my $v = resolve-gstrv(@v);
 
-    $v[$_] = @v[$_] for ^$ne;
-    $v[$ne] = Str;
     samewith($v, $context, $flags, $error, :$raw);
   }
   multi method launchv_full (
@@ -109,7 +106,7 @@ class GStreamer::Parse {
     $e ??
       ( $raw ?? $e !! GStreamer::Element.new($e) )
       !!
-      Nil;
+      GstElement;
   }
 
 }
@@ -122,25 +119,30 @@ class GStreamer::ParseContext {
   }
 
   method GStreamer::Raw::Types::GstParseContext
+    is also<GstParseContext>
   { $!pc }
 
   method new {
-    self.bless( parsecontext => gst_parse_context_new() );
+    my $parsecontext = gst_parse_context_new();
+
+    $parsecontext ?? self.bless( :$parsecontext ) !! Nil;
   }
 
   method copy {
-    self.bless( parsecontext => gst_parse_context_copy($!pc) );
+    my $parsecontext = gst_parse_context_copy($!pc);
+
+    $parsecontext ?? self.bless( :$parsecontext ) !! Nil;
   }
 
   method free {
     gst_parse_context_free($!pc);
   }
 
-  method get_missing_elements {
+  method get_missing_elements is also<get-missing-elements> {
     gst_parse_context_get_missing_elements($!pc);
   }
 
-  method get_type {
+  method get_type is also<get-type> {
     state ($n, $t);
 
     unstable_get_type( self.^name, &gst_parse_context_get_type, $n, $t );

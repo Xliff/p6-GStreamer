@@ -1,15 +1,17 @@
 use v6.c;
 
-use GTK::Compat::Types;
+use Method::Also;
+
 use GStreamer::Raw::Types;
 use GStreamer::Raw::Toc;
 
+use GLib::GList;
 use GStreamer::MiniObject;
 use GStreamer::TagList;
 
 use GLib::Roles::ListData;
 
-our subset TocEntryAncestry is export of Mu
+our subset GstTocEntryAncestry is export of Mu
   where GstTocEntry | GstMiniObject;
 
 class GStreamer::TocEntry is GStreamer::MiniObject {
@@ -19,7 +21,7 @@ class GStreamer::TocEntry is GStreamer::MiniObject {
     self.setTocEntry($entry);
   }
 
-  method setTocEntry (TocEntryAncestry $_) {
+  method setTocEntry (GstTocEntryAncestry $_) {
     my $to-parent;
 
     $!te = do {
@@ -32,144 +34,165 @@ class GStreamer::TocEntry is GStreamer::MiniObject {
         $to-parent = $_;
         cast(GstTocEntry, $_);
       }
-    };
+    }
     self.setMiniObject($to-parent);
   }
 
-  method new (Int() $toc_entry_type, Str $uid) {
+  multi method new (GstTocEntryAncestry $entry) {
+    $entry ?? self.bless(:$entry) !! Nil;
+  }
+  multi method new (Int() $toc_entry_type, Str $uid) {
     my GstTocEntryType $et = $toc_entry_type;
+    my $entry = gst_toc_entry_new($et, $uid);
 
-    self.bless( entry => gst_toc_entry_new($et, $uid) );
+    $entry ?? self.bless(:$entry) !! Nil;
   }
 
   method GStreamer::Raw::Types::GstTocEntry
+    is also<GstTocEntry>
   { $!te }
 
-  method append_sub_entry (GstTocEntry() $subentry) {
+  method append_sub_entry (GstTocEntry() $subentry) is also<append-sub-entry> {
     gst_toc_entry_append_sub_entry($!te, $subentry);
   }
 
-  method get_entry_type {
+  method get_entry_type is also<get-entry-type> {
     GstTocEntryTypeEnum( gst_toc_entry_get_entry_type($!te) );
   }
 
   proto method get_loop (|)
+      is also<get-loop>
   { * }
 
   multi method get_loop {
-    samewith($, $);
+    my $rv = callwith($, $, :all);
+
+    $rv[0] ?? $rv.skip(1) !! Nil;
   }
-  multi method get_loop ($loop_type is rw, $repeat_count is rw) {
+  multi method get_loop (
+    $loop_type is rw,
+    $repeat_count is rw,
+    :$all = False
+  ) {
     my GstTocLoopType $lt = 0;
     my gint $rpc = 0;
 
-    my $rc = so gst_toc_entry_get_loop($!te, $lt, $rpc);
-    ($loop_type, $repeat_count) = ($lt, $rc);
-    ($loop_type, $repeat_count, $rc);
+    my $rv = so gst_toc_entry_get_loop($!te, $lt, $rpc);
+    ($loop_type, $repeat_count) = ($lt, $rpc);
+    $all.not ?? $rv !! ($rv, $loop_type, $repeat_count);
   }
 
-  method get_parent (:$raw = False) {
+  method get_parent (:$raw = False) is also<get-parent> {
     my $p = gst_toc_entry_get_parent($!te);
 
     $p ??
       ( $raw ?? $p !! GStreamer::TocEntry.new($p) )
       !!
-      Nil;
+      GstTocEntry;
   }
 
   proto method get_start_stop_times (|)
+      is also<get-start-stop-times>
   { * }
 
   multi method get_start_stop_times {
-    samewith($, $);
+    my $rv = samewith($, $, :all);
+
+    $rv[0] ?? $rv.skip(1) !! Nil;
   }
-  multi method get_start_stop_times ($start is rw, $stop is rw) {
+  multi method get_start_stop_times (
+    $start is rw,
+    $stop is rw,
+    :$all = False
+  ) {
     my gint64 ($st, $sp) = 0 xx 2;
-    my $rc = so gst_toc_entry_get_start_stop_times($!te, $st, $sp);
+    my $rv = so gst_toc_entry_get_start_stop_times($!te, $st, $sp);
 
     ($start, $stop) = ($st, $sp);
-    ($start, $stop, $rc);
+    $all.not ?? $rv !! ($rv, $start, $stop);
   }
 
-  method get_sub_entries (:$raw = False) {
+  method get_sub_entries (:$glist = False, :$raw = False)
+    is also<get-sub-entries>
+  {
     my $sel = gst_toc_entry_get_sub_entries($!te);
 
-    do if $sel {
-      my $se = GLib::GList.new($sel)
-        but GLib::Roles::ListData[GstTocEntry];
+    return Nil unless $sel;
+    return $sel if $glist;
 
-      $se ??
-        ( $raw ?? $se.Array !! $se.Array.map({ GStreamer::TocEntry.new($_) }) )
-        !!
-        Nil;
-    } else {
-      Nil
-    };
+    $sel = GLib::GList.new($sel) but GLib::Roles::ListData[GstTocEntry];
+    $raw ?? $sel.Array !! $sel.Array.map({ GStreamer::TocEntry.new($_) });
   }
 
-  method get_tags (:$raw = False) {
+  method get_tags (:$raw = False) is also<get-tags> {
     my $tl = gst_toc_entry_get_tags($!te);
 
     $tl ??
       ( $raw ?? $tl !! GStreamer::TagList.new($tl) )
       !!
-      Nil;
+      GstTagList;
   }
 
-  method get_toc (:$raw = False) {
+  method get_toc (:$raw = False) is also<get-toc> {
     my $toc = gst_toc_entry_get_toc($!te);
 
     $toc ??
       ( $raw ?? $toc !! GStreamer::Toc.new($toc) )
       !!
-      Nil;
+      GstToc;
   }
 
-  method get_type {
+  method get_type is also<get-type> {
     state ($n, $t);
 
     unstable_get_type( self.^name, &gst_toc_entry_get_type, $n, $t );
   }
 
-  method get_uid {
+  method get_uid is also<get-uid> {
     gst_toc_entry_get_uid($!te);
   }
 
-  method is_alternative {
+  method is_alternative is also<is-alternative> {
     so gst_toc_entry_is_alternative($!te);
   }
 
-  method is_sequence {
+  method is_sequence is also<is-sequence> {
     so gst_toc_entry_is_sequence($!te);
   }
 
-  method merge_tags (GstTagList() $tags, GstTagMergeMode $mode) {
+  method merge_tags (GstTagList() $tags, GstTagMergeMode $mode)
+    is also<merge-tags>
+  {
     my GstTagMergeMode $m = $mode;
 
     gst_toc_entry_merge_tags($!te, $tags, $m);
   }
 
-  method set_loop (Int() $loop_type, Int() $repeat_count) {
+  method set_loop (Int() $loop_type, Int() $repeat_count) is also<set-loop> {
     my GstTocLoopType $lt = $loop_type;
     my gint $rc = $repeat_count;
 
     gst_toc_entry_set_loop($!te, $lt, $rc);
   }
 
-  method set_start_stop_times (Int() $start, Int() $stop) {
+  method set_start_stop_times (Int() $start, Int() $stop)
+    is also<set-start-stop-times>
+  {
     my gint64 ($st, $sp) = ($start, $stop);
 
     gst_toc_entry_set_start_stop_times($!te, $start, $stop);
   }
 
-  method set_tags (GstTagList() $tags) {
+  method set_tags (GstTagList() $tags) is also<set-tags> {
     gst_toc_entry_set_tags($!te, $tags);
   }
 
   method type_get_nick (
     GStreamer::TocEntry:U:
     Int() $type
-  ) {
+  )
+    is also<type-get-nick>
+  {
     my GstTocEntryType $t = $type;
 
     gst_toc_entry_type_get_nick($t);
@@ -177,7 +200,7 @@ class GStreamer::TocEntry is GStreamer::MiniObject {
 
 }
 
-our subset TocAncestry is export of Mu
+our subset GstTocAncestry is export of Mu
   where GstToc | GstMiniObject;
 
 class GStreamer::Toc is GStreamer::MiniObject {
@@ -187,7 +210,7 @@ class GStreamer::Toc is GStreamer::MiniObject {
     self.setToc($toc);
   }
 
-  method setToc (TocAncestry $_) {
+  method setToc (GstTocAncestry $_) {
     my $to-parent;
 
     $!t = do {
@@ -205,12 +228,17 @@ class GStreamer::Toc is GStreamer::MiniObject {
   }
 
   method GStreamer::Raw::Types::GstToc
+    is also<GstToc>
   { $!t }
 
-  method new (Int() $scope) {
+  multi method new (GstTocAncestry $toc) {
+    $toc ?? self.bless( :$toc ) !! Nil;
+  }
+  multi method new (Int() $scope) {
     my GstTocScope $s = $scope;
+    my $toc = gst_toc_new($s);
 
-    self.bless( toc => gst_toc_new($s) );
+    $toc ?? self.bless( :$toc ) !! Nil;
   }
 
   method tags (:$raw = False) is rw {
@@ -221,7 +249,7 @@ class GStreamer::Toc is GStreamer::MiniObject {
         $tl ??
           ( $raw ?? $tl !! GStreamer::TagList.new($tl) )
           !!
-          Nil;
+          GstTagList;
       },
       STORE => sub ($, GstTagList() $tags is copy) {
         gst_toc_set_tags($!t, $tags);
@@ -229,7 +257,7 @@ class GStreamer::Toc is GStreamer::MiniObject {
     );
   }
 
-  method append_entry (GstTocEntry() $entry) {
+  method append_entry (GstTocEntry() $entry) is also<append-entry> {
     gst_toc_append_entry($!t, $entry);
   }
 
@@ -237,37 +265,31 @@ class GStreamer::Toc is GStreamer::MiniObject {
     gst_toc_dump($!t);
   }
 
-  method find_entry (Str() $uid) {
+  method find_entry (Str() $uid) is also<find-entry> {
     gst_toc_find_entry($!t, $uid);
   }
 
-  method get_entries (:$raw = False) {
+  method get_entries (:$glist = False, :$raw = False) is also<get-entries> {
     my $ell = gst_toc_get_entries($!t);
 
-    do if $ell {
-      my $el = GLib::GList($ell)
-        but GLib::Roles::ListData[GstTocEntry];
+    return Nil unless $ell;
+    return $ell if $glist;
 
-      $el ??
-        ( $raw ?? $el.Array !! $el.Array.map({ GStreamer::TocEntry.new($_) }) )
-        !!
-        Nil
-    } else {
-      Nil;
-    }
+    $ell = GLib::GList($ell) but GLib::Roles::ListData[GstTocEntry];
+    $raw ?? $ell.Array !! $ell.Array.map({ GStreamer::TocEntry.new($_) });
   }
 
-  method get_scope {
+  method get_scope is also<get-scope> {
     GstTocScopeEnum( gst_toc_get_scope($!t) );
   }
 
-  method get_type {
+  method get_type is also<get-type> {
     state ($n, $t);
 
     unstable_get_type( self.^name, &gst_toc_get_type, $n, $t );
   }
 
-  method merge_tags (GstTagList $tags, Int() $mode) {
+  method merge_tags (GstTagList $tags, Int() $mode) is also<merge-tags> {
     my GstTagMergeMode $m = $mode;
 
     gst_toc_merge_tags($!t, $tags, $m);

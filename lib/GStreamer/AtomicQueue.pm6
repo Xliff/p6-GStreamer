@@ -2,7 +2,6 @@ use v6.c;
 
 use Method::Also;
 
-use GTK::Compat::Types;
 use GStreamer::Raw::Types;
 use GStreamer::Raw::AtomicQueue;
 
@@ -21,8 +20,9 @@ class GStreamer::AtomicQueue {
 
   method new (Int() $size) {
     my guint $s = $size;
+    my $queue = gst_atomic_queue_new($s);
 
-    self.bless( queue => gst_atomic_queue_new($s) );
+    $queue ?? self.bless( :$queue ) !! Nil;
   }
 
   method get_type is also<get-type> {
@@ -47,12 +47,12 @@ class GStreamer::AtomicQueue {
     gst_atomic_queue_push($!aq, $data);
   }
 
-  method ref {
+  method ref is also<upref> {
     gst_atomic_queue_ref($!aq);
     self;
   }
 
-  method unref {
+  method unref is also<downref> {
     gst_atomic_queue_unref($!aq);
   }
 

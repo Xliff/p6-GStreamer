@@ -2,7 +2,6 @@ use v6.c;
 
 use NativeCall;
 
-use GTK::Compat::Types;
 use GStreamer::Raw::Types;
 
 unit package GStreamer::Raw::Element;
@@ -459,6 +458,13 @@ sub gst_element_set_state (
 
 sub gst_element_sync_state_with_parent (GstElement $element)
   returns uint32
+  is native(gstreamer)
+  is export
+{ * }
+
+# From gsturi.h
+sub gst_element_make_from_uri (GstURIType $type, Str $uri, Str $elementname, CArray[Pointer[GError]] $error)
+  returns GstElement
   is native(gstreamer)
   is export
 { * }

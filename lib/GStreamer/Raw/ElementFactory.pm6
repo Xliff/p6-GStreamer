@@ -2,7 +2,6 @@ use v6.c;
 
 use NativeCall;
 
-use GTK::Compat::Types;
 use GStreamer::Raw::Types;
 
 unit package GStreamer::Raw::ElementFactory;
@@ -145,6 +144,12 @@ sub gst_element_factory_can_sink_any_caps (
   GstCaps $caps
 )
   returns gboolean
+  is native(gstreamer)
+  is export
+{ * }
+
+sub gst_element_factory_get_klass (GstElementFactory $factory)
+  returns Str
   is native(gstreamer)
   is export
 { * }

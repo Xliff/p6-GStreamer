@@ -10,11 +10,9 @@ use GStreamer::Message;
 use GStreamer::Pipeline;
 
 sub MAIN (
-  Int :$pattern  #= Valid values are 0-25
+  Int $pattern where * ~~ 0..24   #= Valid values are 0...24
 ) {
   GStreamer::Main.init;
-
-  die 'Illegal value for --pattern' unless $pattern ~~ 0..25;
 
   my $source   = GStreamer::ElementFactory.make('videotestsrc', 'source');
   my $sink     = GStreamer::ElementFactory.make('autovideosink', 'sink');

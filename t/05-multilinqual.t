@@ -1,11 +1,11 @@
 use v6.c;
 
-use GTK::Compat::Types;
+
 use GStreamer::Raw::Types;
 use GStreamer::Raw::Tags;
 
 use GLib::MainLoop;
-use GTK::Compat::IOChannel;
+use GLib::IOChannel;
 
 use GStreamer::ElementFactory;
 use GStreamer::Main;
@@ -33,9 +33,9 @@ sub MAIN {
   %data<playbin>.flags +&= +^GST_PLAY_FLAG_TEXT;
   %data<playbin>.connection-speed = 56;
 
-  my $bus = %data<playbin>.bus;
-  $bus.add_watch(-> *@a --> gboolean { handle-message( @a[1] ); 1 });
-  %data<stdin> = GTK::Compat::IOChannel.new(:unix, $*IN.native-descriptor);
+  %data<bus> = %data<playbin>.bus;
+  %data<bus>.add_watch(-> *@a --> gboolean { handle-message( @a[1] ); 1 });
+  %data<stdin> = GLib::IOChannel.new(:unix, $*IN.native-descriptor);
   %data<stdin>.add_watch(
     G_IO_IN,
     -> *@a --> gboolean { handle-keyboard; 1 }
@@ -54,7 +54,7 @@ sub MAIN {
       say "$_ is not defined!";
       next;
     }
-    .unref
+    %data{$_}.unref
   }
 }
 
@@ -70,15 +70,13 @@ sub analyze-streams {
 
   for <n-video n-audio n-text> -> $t {
     for ^( %data{$t} ) -> $sn {
-      
+
       my $tags = %data<playbin>.emit-get-tags(
         "get-{ $t.substr(2) }-tags",
         $sn
       );
 
       if $tags.defined {
-        $tags = GStreamer::TagList.new($tags);
-
         given $t {
           when 'n-video' {
             say qq:to/VIDEO/;
@@ -120,8 +118,8 @@ sub analyze-streams {
 
 sub handle-message($m is copy) {
   CATCH { default { .message.say } }
-  $m = GStreamer::Message.new($m);
 
+  $m = GStreamer::Message.new($m);
   given $m.type {
 
     when GST_MESSAGE_ERROR {
@@ -151,9 +149,9 @@ sub handle-message($m is copy) {
 }
 
 sub handle-keyboard {
-  my ($in, $a, $b, $rc) = %data<stdin>.read_line;
+  my ($rs, $in) = %data<stdin>.read_line;
 
-  if $rc == G_IO_STATUS_NORMAL {
+  if $rs == G_IO_STATUS_NORMAL {
     if $in !~~ /^ (\d) $$ / {
       say 'Invalid entry.';
     } elsif $in !~~ 0 ..^ %data<n-audio> {

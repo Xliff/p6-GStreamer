@@ -1,13 +1,14 @@
 use v6.c;
 
-use GTK::Compat::Types;
+use Method::Also;
+
 use GStreamer::Raw::Types;
 use GStreamer::Raw::StreamCollection;
 
 use GStreamer::Object;
 use GStreamer::Stream;
 
-our subset StreamCollectionAncestry is export of Mu
+our subset GstStreamCollectionAncestry is export of Mu
   where GstStreamCollection | GstObject;
 
 class GStreamer::StreamCollection is GStreamer::Object {
@@ -17,7 +18,7 @@ class GStreamer::StreamCollection is GStreamer::Object {
     self.setStreamCollection($collection) if $collection.defined;
   }
 
-  method setStreamCollection(StreamCollectionAncestry $_) {
+  method setStreamCollection(GstStreamCollectionAncestry $_) {
     my $to-parent;
     $!sc = do {
       when GstStreamCollection {
@@ -33,41 +34,44 @@ class GStreamer::StreamCollection is GStreamer::Object {
     self.setGstObject($to-parent);
   }
 
-  method GStreamer::Raw::Types::GStreamCollection
+  method GStreamer::Raw::Types::GstStreamCollection
+    is also<GstStreamCollection>
   { $!sc }
 
-  multi method new (GstStreamCollection $collection) {
-    self.bless( :$collection );
+  multi method new (GstStreamCollectionAncestry $collection) {
+    $collection ?? self.bless( :$collection ) !! Nil;
   }
   multi method new (Str() $upstream_id) {
-    self.bless( collection => gst_stream_collection_new($upstream_id) );
+    my $collection = gst_stream_collection_new($upstream_id);
+
+    $collection ?? self.bless( :$collection ) !! Nil;
   }
 
-  method add_stream (GstStream() $stream) {
+  method add_stream (GstStream() $stream) is also<add-stream> {
     so gst_stream_collection_add_stream($!sc, $stream);
   }
 
-  method get_size {
+  method get_size is also<get-size> {
     gst_stream_collection_get_size($!sc);
   }
 
-  method get_stream (Int() $index, :$raw = False) {
+  method get_stream (Int() $index, :$raw = False) is also<get-stream> {
     my guint $i = $index;
     my $s = gst_stream_collection_get_stream($!sc, $i);
 
     $s ??
       ( $raw ?? $s !! GStreamer::Stream.new($s) )
       !!
-      Nil;
+      GstStream;
   }
 
-  method get_type {
+  method get_type is also<get-type> {
     state ($n, $t);
 
     unstable_get_type( self.^name, &gst_stream_collection_get_type, $n, $t );
   }
 
-  method get_upstream_id {
+  method get_upstream_id is also<get-upstream-id> {
     gst_stream_collection_get_upstream_id($!sc);
   }
 

@@ -1,4 +1,5 @@
 typePrefix=Gst
 prefix=GStreamer::
 modules=GStreamer::Raw::Types
-backups=backup,bitbucket
+backups=backup,bitbucket,google-backup,azure-backup
+libdirs=lib,resources

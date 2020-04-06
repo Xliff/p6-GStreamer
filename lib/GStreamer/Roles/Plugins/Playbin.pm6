@@ -4,14 +4,13 @@ use Method::Also;
 
 use NativeCall;
 
-use GTK::Compat::Types;
 use GStreamer::Raw::Types;
 
-use GTK::Raw::ReturnedValue;
+use GLib::Raw::ReturnedValue;
 use GStreamer::Raw::Subs;
 use GStreamer::Roles::Plugins::Raw::Playbin;
 
-use GStreamer::Plugins::Gst::Playback;
+#use GStreamer::Plugins::Gst::Playback;
 
 use GLib::Value;
 use GStreamer::Buffer;
@@ -19,12 +18,12 @@ use GStreamer::Element;
 use GStreamer::Sample;
 use GStreamer::TagList;
 
-use GTK::Roles::Properties;
-use GTK::Roles::Signals::Generic;
+use GLib::Roles::Object;
+use GLib::Roles::Signals::Generic;
 
 role GStreamer::Roles::Plugins::Playbin {
-  also does GTK::Roles::Properties;
-  also does GTK::Roles::Signals::Generic;
+  also does GLib::Roles::Object;
+  also does GLib::Roles::Signals::Generic;
 
   has $!pb;
   has %!signals-pb;
@@ -39,6 +38,7 @@ role GStreamer::Roles::Plugins::Playbin {
 
   method !flags-get-type {
     state ($n, $t);
+
     unstable_get_type( self.^name, &gst_play_flags_get_type, $n, $t );
   }
 
@@ -55,7 +55,7 @@ role GStreamer::Roles::Plugins::Playbin {
         $e ??
           ( $raw ?? $e !! GStreamer::Element.new($e) )
           !!
-          Nil
+          GstElement
       },
       STORE => -> $, GObject() $val is copy {
         $gv.object = $val;
@@ -77,7 +77,7 @@ role GStreamer::Roles::Plugins::Playbin {
         $b ??
           ( $raw ?? $b !! GStreamer::Buffer.new($b) )
           !!
-          Nil;
+          GstBuffer;
       },
       STORE => -> $,  $val is copy {
         warn 'frame does not allow writing'
@@ -91,8 +91,8 @@ role GStreamer::Roles::Plugins::Playbin {
     Proxy.new(
       FETCH => sub ($) {
         warn 'subtitle-font-desc does not allow reading' if $DEBUG;
-        '';
 
+        '';
       },
       STORE => -> $, Str() $val is copy {
         $gv.string = $val;
@@ -114,7 +114,7 @@ role GStreamer::Roles::Plugins::Playbin {
         $v ??
           ( $raw ?? $v !! GStreamer::Element.new($v) )
           !!
-          Nil;
+          GstElement;
       },
       STORE => -> $, GstElement() $val is copy {
         $gv.object = $val;
@@ -125,7 +125,8 @@ role GStreamer::Roles::Plugins::Playbin {
 
   # Type: GstElement
   method vis-plugin (:$raw = False) is rw  is also<vis_plugin> {
-    my GLib::Value $gv .= new( G_TYPE_OBJECT );
+    my subset GstElementOrObject of Mu where GStreamer::Element | GstElement;
+    my GLib::Value $gv .= new( GStreamer::Element.get-type );
     Proxy.new(
       FETCH => sub ($) {
         $gv = GLib::Value.new(
@@ -136,9 +137,10 @@ role GStreamer::Roles::Plugins::Playbin {
         $v ??
           ( $raw ?? $v !! GStreamer::Element.new($v) )
           !!
-          Nil;
+          GstElement;
       },
-      STORE => -> $, GstElement() $val is copy {
+      STORE => -> $, GstElementOrObject $val is copy {
+        $val .= GObject if $val ~~ GStreamer::Element;
         $gv.object = $val;
         self.prop_set('vis-plugin', $gv);
       }
@@ -283,25 +285,31 @@ role GStreamer::Roles::Plugins::Playbin {
 
   # Type: GstPlayFlags
   method flags is rw  {
-    my GLib::Value $gv .= new(
-      do {
-        state ($n, $t);
-
-        unstable_get_type( self.^name, &global_gst_play_flags_get_type, $n, $t )
-      }
-    );
+    # say 'flags';
+    # my GLib::Value $gv .= new(
+    #   do {
+    #     state ($n, $t);
+    #
+    #     unstable_get_type( self.^name, &global_gst_play_flags_get_type, $n, $t )
+    #   }
+    #   G_TYPE_UINT64
+    # );
     #my GLib::Value $gv .= new( G_TYPE_INT );
+    my $la = CArray[guint].new;
     Proxy.new(
-      FETCH => sub ($) {
-        $gv = GLib::Value.new(
-          self.prop_get('flags', $gv)
-        );
-        GstPlayFlagsEnum( $gv.flags );
+      FETCH => -> $ {
+        # $gv = GLib::Value.new(
+        #   self.prop_get('flags', $gv)
+        # );
+        $la[0] = 0;
+        gst_object_get_uint($!pb.p, 'flags', $la, Str);
+        $la[0];
       },
       STORE => -> $, Int() $val is copy {
-        $gv.uint = $val;
-
-        self.prop_set('flags', $gv);
+        # $gv.uint = $val;
+        # self.prop_set('flags', $gv);
+        my guint $v = $val;
+        gst_object_set_uint($!pb.p, 'flags', $v, Str);
       }
     );
   }
@@ -401,7 +409,7 @@ role GStreamer::Roles::Plugins::Playbin {
         $s ??
           ( $raw ?? $s !! GStreamer::Sample.new($s) )
           !!
-          Nil;
+          GstSample;
       },
       STORE => -> $,  $val is copy {
         warn 'sample does not allow writing'
@@ -422,7 +430,7 @@ role GStreamer::Roles::Plugins::Playbin {
         $e ??
           ( $raw ?? $e !! GStreamer::Element.new($e) )
           !!
-          Nil;
+          GstElement;
       },
       STORE => -> $, $val is copy {
         warn 'source does not allow writing'
@@ -477,7 +485,7 @@ role GStreamer::Roles::Plugins::Playbin {
         $s ??
           ( $raw ?? $s !! GStreamer::Element.new($s) )
           !!
-          Nil;
+          GstElement;
       },
       STORE => -> $, GstElement() $val is copy {
         $gv.object = $val;
@@ -567,7 +575,7 @@ role GStreamer::Roles::Plugins::Playbin {
         $e ??
           ( $raw ?? $e !! GStreamer::Element.new($e) )
           !!
-          Nil;
+          GstElement;
       },
       STORE => -> $, GstElement() $val is copy {
         $gv.object = $val;
@@ -591,7 +599,7 @@ role GStreamer::Roles::Plugins::Playbin {
         $e ??
           ( $raw ?? $e !! GStreamer::Element.new($e) )
           !!
-          Nil;
+          GstElement;
       },
       STORE => -> $, GstElement() $val is copy {
         $gv.object = $val;
@@ -615,7 +623,7 @@ role GStreamer::Roles::Plugins::Playbin {
         $e ??
           ( $raw ?? $e !! GStreamer::Element.new($e) )
           !!
-          Nil;
+          GstElement;
       },
       STORE => -> $, GstElement() $val is copy {
         $gv.object = $val;
@@ -720,9 +728,10 @@ role GStreamer::Roles::Plugins::Playbin {
 
   multi method emit-get-tags (
     Str() $name,
-    Int() $i
+    Int() $i,
+    :$raw = False
   ) {
-    samewith($name, $i, $);
+    samewith($name, $i, $, :$raw);
   }
   multi method emit-get-tags (
     Str() $name,
@@ -730,16 +739,18 @@ role GStreamer::Roles::Plugins::Playbin {
     $taglist is rw,
     :$raw = False
   ) {
+    my gint $ii = $i;
     my $tl = CArray[Pointer[GstTagList]].new;
+    $tl[0] = Pointer[GstTagList];
 
-    $tl[0] = Pointer[GstTagList].new;
-    g-signal-emit-get-tags($!pb, $name, $i, $tl, G_TYPE_NONE);
+    g-signal-emit-get-tags($!pb, $name, $ii, $tl);
 
-    ($taglist) = ppr($tl);
+    $taglist = ppr($tl);
+
     $taglist ??
       ( $raw ?? $taglist !! GStreamer::TagList.new($taglist) )
       !!
-      Nil;
+      GstTagList;
   }
 
   # GstPlayBin, gint, gpointer
@@ -821,7 +832,6 @@ role GStreamer::Roles::Plugins::Playbin {
     %!signals-pb{$signal}[0];
   }
 
-
   # GstPlayBin, gint, gpointer --> GstTagList
   method connect-get-tags (
     $obj,
@@ -875,3 +885,57 @@ role GStreamer::Roles::Plugins::Playbin {
   }
 
 }
+
+sub gst_object_set_uint (
+  Pointer $element,
+  Str $name,
+  guint $value,
+  Str
+)
+  is native(gobject)
+  is symbol('g_object_set')
+{ * }
+
+sub gst_object_get_uint (
+  Pointer $element,
+  Str $name,
+  CArray[guint] $value,
+  Str
+)
+  is native(gobject)
+  is symbol('g_object_get')
+{ * }
+
+constant GstAutoplugSelectResult is export := guint32;
+our enum GstAutoplugSelectResultEnum is export <
+    GST_AUTOPLUG_SELECT_TRY
+    GST_AUTOPLUG_SELECT_EXPOSE
+    GST_AUTOPLUG_SELECT_SKIP
+>;
+
+constant GstPlayFlags is export := guint32;
+our enum GstPlayFlagsEnum is export (
+  GST_PLAY_FLAG_VIDEO             => 1,
+  GST_PLAY_FLAG_AUDIO             => (1 +< 1),
+  GST_PLAY_FLAG_TEXT              => (1 +< 2),
+  GST_PLAY_FLAG_VIS               => (1 +< 3),
+  GST_PLAY_FLAG_SOFT_VOLUME       => (1 +< 4),
+  GST_PLAY_FLAG_NATIVE_AUDIO      => (1 +< 5),
+  GST_PLAY_FLAG_NATIVE_VIDEO      => (1 +< 6),
+  GST_PLAY_FLAG_DOWNLOAD          => (1 +< 7),
+  GST_PLAY_FLAG_BUFFERING         => (1 +< 8),
+  GST_PLAY_FLAG_DEINTERLACE       => (1 +< 9),
+  GST_PLAY_FLAG_SOFT_COLORBALANCE => (1 +< 10),
+  GST_PLAY_FLAG_FORCE_FILTERS     => (1 +< 11),
+);
+
+constant GstPlaySinkType is export := guint32;
+our enum GstPlaySinkTypeEnum is export (
+    GST_PLAY_SINK_TYPE_AUDIO     =>  0,
+    GST_PLAY_SINK_TYPE_AUDIO_RAW =>  1,
+    GST_PLAY_SINK_TYPE_VIDEO     =>  2,
+    GST_PLAY_SINK_TYPE_VIDEO_RAW =>  3,
+    GST_PLAY_SINK_TYPE_TEXT      =>  4,
+    GST_PLAY_SINK_TYPE_LAST      =>  5,
+    GST_PLAY_SINK_TYPE_FLUSHING  =>  6,
+);

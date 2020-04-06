@@ -1,6 +1,5 @@
 use v6.c;
 
-use GTK::Compat::Types;
 use GStreamer::Raw::Types;
 use GStreamer::Raw::Value;
 
@@ -52,39 +51,6 @@ class GStreamer::Value is GLib::Value {
         gst_value_set_structure(self.gvalue, $structure);
       }
     );
-  }
-
-  method array_append_and_take_value (GValue() $append_value) {
-    gst_value_array_append_and_take_value(self.gvalue, $append_value);
-  }
-
-  method array_append_value (GValue() $append_value) {
-    gst_value_array_append_value(self.gvalue, $append_value);
-  }
-
-  method array_get_size {
-    gst_value_array_get_size(self.gvalue);
-  }
-
-  method array_get_type {
-    state ($n, $t);
-
-    unstable_get_type(
-      self.^name ~ '-Array',
-      &gst_value_array_get_type,
-      $n,
-      $t
-    );
-  }
-
-  method array_get_value (Int() $index) {
-    my guint $i = $index;
-
-    gst_value_array_get_value(self.gvalue, $i);
-  }
-
-  method array_prepend_value (GValue() $prepend_value) {
-    gst_value_array_prepend_value(self.gvalue, $prepend_value);
   }
 
   method can_compare (GValue() $value2) {
@@ -301,47 +267,6 @@ class GStreamer::Value is GLib::Value {
     so gst_value_is_subset(self.gvalue, $value2);
   }
 
-  method list_append_and_take_value (GValue() $append_value) {
-    gst_value_list_append_and_take_value(self.gvalue, $append_value);
-  }
-
-  method list_append_value (GValue() $append_value) {
-    gst_value_list_append_value(self.gvalue, $append_value);
-  }
-
-  method list_concat (GValue() $value1, GValue() $value2) {
-    gst_value_list_concat(self.gvalue, $value1, $value2);
-  }
-
-  method list_get_size {
-    gst_value_list_get_size(self.gvalue);
-  }
-
-  method list_get_type {
-    state ($n, $t);
-
-    unstable_get_type(
-      self.^name ~ '-List',
-      &gst_value_list_get_type,
-      $n,
-      $t
-    );
-  }
-
-  method list_get_value (Int() $index) {
-    my guint $i = $index;
-
-    gst_value_list_get_value(self.gvalue, $i);
-  }
-
-  method list_merge (GValue() $value1, GValue() $value2) {
-    gst_value_list_merge(self.gvalue, $value1, $value2);
-  }
-
-  method list_prepend_value (GValue() $prepend_value) {
-    gst_value_list_prepend_value(self.gvalue, $prepend_value);
-  }
-
   # method register (GValueTable $table) {
   #   gst_value_register($table);
   # }
@@ -418,6 +343,88 @@ class GStreamer::Value is GLib::Value {
 
   method union (GValue() $value1, GValue() $value2) {
     so gst_value_union(self.gvalue, $value1, $value2);
+  }
+
+}
+
+class GStreamer::Value::Array is GStreamer::Value {
+
+  method append_and_take_value (GValue() $append_value) {
+    gst_value_array_append_and_take_value(self.gvalue, $append_value);
+  }
+
+  method append_value (GValue() $append_value) {
+    gst_value_array_append_value(self.gvalue, $append_value);
+  }
+
+  method get_size {
+    gst_value_array_get_size(self.gvalue);
+  }
+
+  method get_type {
+    state ($n, $t);
+
+    unstable_get_type(
+      self.^name,
+      &gst_value_array_get_type,
+      $n,
+      $t
+    );
+  }
+
+  method get_value (Int() $index) {
+    my guint $i = $index;
+
+    gst_value_array_get_value(self.gvalue, $i);
+  }
+
+  method prepend_value (GValue() $prepend_value) {
+    gst_value_array_prepend_value(self.gvalue, $prepend_value);
+  }
+
+}
+
+class GStreamer::Value::List is GStreamer::Value {
+
+  method append_and_take_value (GValue() $append_value) {
+    gst_value_list_append_and_take_value(self.gvalue, $append_value);
+  }
+
+  method append_value (GValue() $append_value) {
+    gst_value_list_append_value(self.gvalue, $append_value);
+  }
+
+  method concat (GValue() $value1, GValue() $value2) {
+    gst_value_list_concat(self.gvalue, $value1, $value2);
+  }
+
+  method get_size {
+    gst_value_list_get_size(self.gvalue);
+  }
+
+  method get_type {
+    state ($n, $t);
+
+    unstable_get_type(
+      self.^name,
+      &gst_value_list_get_type,
+      $n,
+      $t
+    );
+  }
+
+  method get_value (Int() $index) {
+    my guint $i = $index;
+
+    gst_value_list_get_value(self.gvalue, $i);
+  }
+
+  method merge (GValue() $value1, GValue() $value2) {
+    gst_value_list_merge(self.gvalue, $value1, $value2);
+  }
+
+  method prepend_value (GValue() $prepend_value) {
+    gst_value_list_prepend_value(self.gvalue, $prepend_value);
   }
 
 }

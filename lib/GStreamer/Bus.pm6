@@ -2,7 +2,6 @@ use v6.c;
 
 use Method::Also;
 
-use GTK::Compat::Types;
 use GStreamer::Raw::Types;
 use GStreamer::Raw::Bus;
 
@@ -41,10 +40,12 @@ class GStreamer::Bus is GStreamer::Object {
   { $!b }
 
   multi method new (GstBus $bus) {
-    self.bless( :$bus );
+    $bus ?? self.bless( :$bus ) !! Nil;
   }
   multi method new {
-    self.bless( bus => gst_bus_new() );
+    my $bus = gst_bus_new();
+
+    $bus ?? self.bless( :$bus ) !! Nil;
   }
 
   method add_signal_watch is also<add-signal-watch> {
@@ -92,7 +93,7 @@ class GStreamer::Bus is GStreamer::Object {
     $s ??
       ( $raw ?? $s !! GLib::Source.new($s) )
       !!
-      Nil;
+      GSource;
   }
 
   method disable_sync_message_emission is also<disable-sync-message-emission> {
@@ -127,15 +128,21 @@ class GStreamer::Bus is GStreamer::Object {
 
   method peek (:$raw = False) {
     my $m = gst_bus_peek($!b);
+    my $lb = 'GStreamer::Message';
 
-    my $msg-late-bound = ::('GStreamer::Message');
+    (my $msg-late-bound = ::("$lb")).so;
+    if $msg-late-bound ~~ Failure {
+      require ::($ = $lb);
+      $msg-late-bound = ::($ = $lb);
+    }
+
     die 'GStreamer::Message was not found! Please add its use statement in the calling script!'
       if $msg-late-bound ~~ Failure;
 
     $m ??
       ( $raw ?? $m !! $msg-late-bound.new($m) )
       !!
-      Nil;
+      GstMessage;
   }
 
   method poll (
@@ -144,28 +151,38 @@ class GStreamer::Bus is GStreamer::Object {
     :$raw = False
   ) {
     my $m = gst_bus_poll($!b, $events, $timeout);
+    my $lb = 'GStreamer::Message';
 
-    my $msg-late-bound = ::('GStreamer::Message');
+    (my $msg-late-bound = ::("$lb")).so;
+    if $msg-late-bound ~~ Failure {
+      require ::($ = $lb);
+      $msg-late-bound = ::($ = $lb);
+    }
     die 'GStreamer::Message was not found! Please add its use statement in the calling script!'
       if $msg-late-bound ~~ Failure;
 
     $m ??
       ( $raw ?? $m !! $msg-late-bound.new($m) )
       !!
-      Nil;
+      GstMessage;
   }
 
   method pop (:$raw = False) {
     my $m = gst_bus_pop($!b);
+    my $lb = 'GStreamer::Message';
 
-    my $msg-late-bound = ::('GStreamer::Message');
+    (my $msg-late-bound = ::("$lb")).so;
+    if $msg-late-bound ~~ Failure {
+      require ::($ = $lb);
+      $msg-late-bound = ::($ = $lb);
+    }
     die 'GStreamer::Message was not found! Please add its use statement in the calling script!'
       if $msg-late-bound ~~ Failure;
 
     $m ??
       ( $raw ?? $m !! $msg-late-bound.new($m) )
       !!
-      Nil;
+      GstMessage;
   }
 
   method pop_filtered (
@@ -176,15 +193,20 @@ class GStreamer::Bus is GStreamer::Object {
   {
     my guint $t = $types;
     my $m = gst_bus_pop_filtered($!b, $t);
+    my $lb = 'GStreamer::Message';
 
-    my $msg-late-bound = ::('GStreamer::Message');
+    (my $msg-late-bound = ::("$lb")).so;
+    if $msg-late-bound ~~ Failure {
+      require ::($ = $lb);
+      $msg-late-bound = ::($ = $lb);
+    }
     die 'GStreamer::Message was not found! Please add its use statement in the calling script!'
       if $msg-late-bound ~~ Failure;
 
     $m ??
       ( $raw ?? $m !! $msg-late-bound.new($m) )
       !!
-      Nil;
+      GstMessage;
   }
 
   method post (GstMessage() $message) {
@@ -230,15 +252,20 @@ class GStreamer::Bus is GStreamer::Object {
   {
     my uint64 $to = $timeout;
     my $m = gst_bus_timed_pop($!b, $timeout);
+    my $lb = 'GStreamer::Message';
 
-    my $msg-late-bound = ::('GStreamer::Message');
+    (my $msg-late-bound = ::("$lb")).so;
+    if $msg-late-bound ~~ Failure {
+      require ::($ = $lb);
+      $msg-late-bound = ::($ = $lb);
+    }
     die 'GStreamer::Message was not found! Please add its use statement in the calling script!'
       if $msg-late-bound ~~ Failure;
 
     $m ??
       ( $raw ?? $m !! $msg-late-bound.new($m) )
       !!
-      Nil;
+      GstMessage;
   }
 
   method timed_pop_filtered (
@@ -251,15 +278,20 @@ class GStreamer::Bus is GStreamer::Object {
     my uint64 $to = $timeout;
     my guint $t = $types;
     my $m = gst_bus_timed_pop_filtered($!b, $to, $t);
+    my $lb = 'GStreamer::Message';
 
-    my $msg-late-bound = ::('GStreamer::Message');
+    (my $msg-late-bound = ::("$lb")).so;
+    if $msg-late-bound ~~ Failure {
+      require ::($ = $lb);
+      $msg-late-bound = ::($ = $lb);
+    }
     die 'GStreamer::Message was not found! Please add its use statement in the calling script!'
       if $msg-late-bound ~~ Failure;
 
     $m ??
       ( $raw ?? $m !! $msg-late-bound.new($m) )
       !!
-      Nil;
+      GstMessage;
   }
 
 }

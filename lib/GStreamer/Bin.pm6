@@ -2,7 +2,6 @@ use v6.c;
 
 use Method::Also;
 
-use GTK::Compat::Types;
 use GStreamer::Raw::Types;
 use GStreamer::Raw::Bin;
 
@@ -11,8 +10,8 @@ use GStreamer::Iterator;
 
 use GStreamer::Roles::ChildProxy;
 
-our subset BinAncestry is export of Mu
-  where GstBin | GstChildProxy | ElementAncestry;
+our subset GstBinAncestry is export of Mu
+  where GstBin | GstChildProxy | GstElementAncestry;
 
 class GStreamer::Bin is GStreamer::Element {
   also does GStreamer::Roles::ChildProxy;
@@ -23,7 +22,7 @@ class GStreamer::Bin is GStreamer::Element {
     self.setBin($bin) if $bin.defined;
   }
 
-  method setBin(BinAncestry $_) {
+  method setBin(GstBinAncestry $_) {
     my $to-parent;
 
     $!b = do {
@@ -51,11 +50,13 @@ class GStreamer::Bin is GStreamer::Element {
     is also<GstBin>
   { $!b }
 
-  multi method new (GstBin $bin) {
-    self.bless( :$bin );
+  multi method new (GstBinAncestry $bin) {
+    $bin ?? self.bless( :$bin ) !! Nil;
   }
   multi method new (Str() $name) {
-    self.bless( bin => gst_bin_new($name) );
+    my $bin = gst_bin_new($name);
+
+    $bin ?? self.bless( :$bin ) !! Nil;
   }
 
   method suppressed_flags is rw is also<suppressed-flags> {
@@ -75,8 +76,8 @@ class GStreamer::Bin is GStreamer::Element {
 
   method add_many (*@e) is also<add-many> {
     my $dieMsg = qq:to/DIE/.&nocr;
-      Items passed to GStreamer::Bin.add_many must be GStreamer::Element
-      compatible!
+      Items passed to GStreamer::Bin.add_many must be GStreamer::Element {''
+      }compatible!
       DIE
 
     die $dieMsg unless @e.all ~~ (GStreamer::Element, GstElement).any;
@@ -91,7 +92,7 @@ class GStreamer::Bin is GStreamer::Element {
     $e ??
       ( $raw ?? $e !! GStreamer::Element.new($e) )
       !!
-      Nil;
+      GstElement;
   }
 
   method get_by_name (Str() $name, :$raw = False) is also<get-by-name> {
@@ -100,7 +101,7 @@ class GStreamer::Bin is GStreamer::Element {
     $e ??
       ( $raw ?? $e !! GStreamer::Element.new($e) )
       !!
-      Nil;
+      GstElement;
   }
 
   method get_by_name_recurse_up (Str() $name,:$raw = False)
@@ -111,7 +112,7 @@ class GStreamer::Bin is GStreamer::Element {
     $e ??
       ( $raw ?? $e !! GStreamer::Element.new($e) )
       !!
-      Nil;
+      GstElement;
   }
 
   method get_type is also<get-type> {
@@ -128,7 +129,7 @@ class GStreamer::Bin is GStreamer::Element {
     $i ??
       ( $raw ?? $i !! GStreamer::Iterator.new($i) )
       !!
-      Nil;
+      GstIterator;
   }
 
   method iterate_elements (:$raw = False) is also<iterate-elements> {
@@ -137,7 +138,7 @@ class GStreamer::Bin is GStreamer::Element {
     $i ??
       ( $raw ?? $i !! GStreamer::Iterator.new($i) )
       !!
-      Nil;
+      GstIterator;
   }
 
   method iterate_recurse (:$raw = False) is also<iterate-recurse> {
@@ -146,7 +147,7 @@ class GStreamer::Bin is GStreamer::Element {
     $i ??
       ( $raw ?? $i !! GStreamer::Iterator.new($i) )
       !!
-      Nil;
+      GstIterator;
   }
 
   method iterate_sinks (:$raw = False) is also<iterate-sinks> {
@@ -155,7 +156,7 @@ class GStreamer::Bin is GStreamer::Element {
     $i ??
       ( $raw ?? $i !! GStreamer::Iterator.new($i) )
       !!
-      Nil;
+      GstIterator;
   }
 
   method iterate_sorted (:$raw = False) is also<iterate-sorted> {
@@ -164,7 +165,7 @@ class GStreamer::Bin is GStreamer::Element {
     $i ??
       ( $raw ?? $i !! GStreamer::Iterator.new($i) )
       !!
-      Nil;
+      GstIterator;
   }
 
   method iterate_sources (:$raw = False) is also<iterate-sources> {
@@ -173,7 +174,7 @@ class GStreamer::Bin is GStreamer::Element {
     $i ??
       ( $raw ?? $i !! GStreamer::Iterator.new($i) )
       !!
-      Nil;
+      GstIterator;
   }
 
   method recalculate_latency is also<recalculate-latency> {
@@ -186,8 +187,8 @@ class GStreamer::Bin is GStreamer::Element {
 
   method remove_many (*@e) is also<remove-many> {
     my $dieMsg = qq:to/DIE/.&nocr;
-      Items passed to GStreamer::Bin.remove_many must be GStreamer::Element
-      compatible!
+      Items passed to GStreamer::Bin.remove_many must be GStreamer::Element {''
+      }compatible!
       DIE
 
     die $dieMsg unless @e.all ~~ (GStreamer::Element, GstElement).any;

@@ -1,13 +1,11 @@
 #!/usr/bin/env perl6
 use v6.c;
 
-use GTK::Compat::Types;
 use GStreamer::Raw::Types;
 
 use GDK::Threads;
-use GTK::Compat::IOChannel;
+use GLib::IOChannel;
 use GLib::MainLoop;
-
 use GStreamer::Element;
 use GStreamer::Event;
 use GStreamer::Query;
@@ -24,9 +22,9 @@ sub reset-sink {
 }
 
 sub send-seek-event {
-  my ($pos, $rc) = %data<pipeline>.query-position(GST_FORMAT_TIME, :all);
+  my $pos = %data<pipeline>.query-position(GST_FORMAT_TIME, :all);
 
-  unless $rc {
+  unless $pos.defined {
     say 'Unable to retrieve current position.';
     exit 1;
   }
@@ -36,9 +34,9 @@ sub send-seek-event {
     GST_FORMAT_TIME,
     GST_SEEK_FLAG_FLUSH +| GST_SEEK_FLAG_ACCURATE,
     GST_SEEK_TYPE_SET,
-    %data<rate> > 0 ?? $pos !! 0,
+    %data<rate> > 0 ?? $pos !! -1,
     GST_SEEK_TYPE_END,
-    %data<rate> > 0 ?? 0 !! $pos,
+    %data<rate> > 0 ?? -1 !! $pos,
   );
   my $seek-event = GStreamer::Event.new(:seek, |@ep);
 
@@ -50,9 +48,9 @@ sub send-seek-event {
 sub handle-keyboard {
   CATCH { default { .message.say } }
 
-  my ($in, $, $, $rc) = %data<stdin>.read_line;
+  my ($rs, $in) = %data<stdin>.read_line;
 
-  return unless $rc = G_IO_STATUS_NORMAL;
+  return unless $rs == G_IO_STATUS_NORMAL;
 
   given $in.substr(0, 1) {
     when 'p' | 'P' {
@@ -109,8 +107,11 @@ sub MAIN  {
     "playbin uri=https://www.freedesktop.org/software/gstreamer-sdk/data/media/sintel_trailer-480p.webm"
   ) but GStreamer::Roles::Plugins::Playbin;
 
-  %data<stdin> = GTK::Compat::IOChannel.unix_new($*IN.native-descriptor);
-  %data<stdin>.add_watch(G_IO_IN, -> *@a --> gboolean { handle-keyboard; 1 });
+  %data<stdin> = GLib::IOChannel.unix_new($*IN.native-descriptor);
+  %data<stdin>.add_watch(G_IO_IN, -> *@a --> gboolean {
+    handle-keyboard;
+    1
+  });
 
   if %data<pipeline>.set-state(GST_STATE_PLAYING) == GST_STATE_CHANGE_FAILURE {
     say 'Unable to set the pipeline to the playing state';
@@ -120,7 +121,6 @@ sub MAIN  {
   %data<playing> = True;
   %data<rate> = 1;
   ( %data<loop> = GLib::MainLoop.new ).run;
-
 
   LEAVE {
     %data<pipeline>.set-state(GST_STATE_NULL) if %data<pipeline>.defined;

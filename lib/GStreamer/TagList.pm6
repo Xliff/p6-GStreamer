@@ -3,7 +3,6 @@ use v6.c;
 use Method::Also;
 use NativeCall;
 
-use GTK::Compat::Types;
 use GStreamer::Raw::Types;
 use GStreamer::Raw::TagList;
 use GStreamer::Raw::Tags;
@@ -15,7 +14,7 @@ use GStreamer::Raw::Subs;
 use GStreamer::MiniObject;
 use GStreamer::Sample;
 
-our subset TagListAncestry is export of Mu
+our subset GstTagListAncestry is export of Mu
   where GstTagList | GstMiniObject;
 
 class GStreamer::TagList is GStreamer::MiniObject {
@@ -25,7 +24,7 @@ class GStreamer::TagList is GStreamer::MiniObject {
     self.setTagList($taglist);
   }
 
-  method setTagList (TagListAncestry $_) {
+  method setTagList (GstTagListAncestry $_) {
     my $to-parent;
 
     $!tl = do {
@@ -49,8 +48,8 @@ class GStreamer::TagList is GStreamer::MiniObject {
   multi method new {
     GStreamer::TagList.new_empty;
   }
-  multi method new (GstTagList $taglist) {
-    self.bless( :$taglist )
+  multi method new (GstTagListAncestry $taglist) {
+    $taglist ?? self.bless( :$taglist ) !! Nil;
   }
   multi method new (Str $string) {
     GStreamer::TagList.new_from_string($string);
@@ -62,11 +61,15 @@ class GStreamer::TagList is GStreamer::MiniObject {
   }
 
   method new_empty is also<new-empty> {
-    self.bless( taglist => gst_tag_list_new_empty() );
+    my $taglist = gst_tag_list_new_empty();
+
+    $taglist ?? self.bless( :$taglist ) !! Nil;
   }
 
   method new_from_string (Str() $string ) is also<new-from-string> {
-    self.bless( taglist => gst_tag_list_new_from_string($string) );
+    my $taglist = gst_tag_list_new_from_string($string);
+
+    $taglist ?? self.bless( :$taglist ) !! Nil;
   }
 
   method scope is rw {
@@ -93,11 +96,6 @@ class GStreamer::TagList is GStreamer::MiniObject {
   method add (Str() $tag, $value) {
     warn 'GStreamer::TagList.add NYI';
   }
-  method add_values (*@a) is also<add-values> {
-    for @a.rotor(2) -> ($t, $v) {
-      self.add($t, $v);
-    }
-  }
 
   method add_valuesv (Int() $mode, *@a) is also<add-valuesv> {
     die 'Values portion of list must be a GValue'
@@ -108,12 +106,16 @@ class GStreamer::TagList is GStreamer::MiniObject {
     }
   }
 
-  method add_value (Int() $mode, Str() $tag, GValue() $value)
+  multi method add_value (Int() $mode, Str() $tag, GValue() $value)
     is also<add-value>
   {
     my GstTagMergeMode $m = $mode;
 
     gst_tag_list_add_value($!tl, $mode, $tag, $value);
+  }
+
+  multi method add_values (Int() $mode, *@a) is also<add-values> {
+    self.add_valuesv($mode, |@a);
   }
 
   method copy (GstTagList() $orig, :$raw = False) {
@@ -125,7 +127,7 @@ class GStreamer::TagList is GStreamer::MiniObject {
     $c ??
       ( $raw ?? $c !! GStreamer::TagList.new($c) )
       !!
-      Nil;
+      GstTagList;
   }
 
   proto method copy_value (|)
@@ -139,7 +141,8 @@ class GStreamer::TagList is GStreamer::MiniObject {
   ) {
     my $d = GValue.new;
 
-    GStreamer::TagList.copy_value($d, $!tl, $tag);
+    my $rv = self.copy_value($d, $!tl, $tag, :all, :$raw);
+    $rv[0] ?? $rv[1] !! Nil;
   }
   multi method copy_value (
     GStreamer::TagList:U:
@@ -149,11 +152,14 @@ class GStreamer::TagList is GStreamer::MiniObject {
     :$all = False,
     :$raw = False
   ) {
-    my $rc = gst_tag_list_copy_value($dest, $list, $tag);
-    my $rv = $dest;
+    my $rv = gst_tag_list_copy_value($dest, $list, $tag);
 
-    $rv = GLib::Value.new($dest) unless $raw;
-    $all.not ?? $rv !! ($rv, $rc);
+    $dest = $dest ??
+      ( $raw ?? $dest !! GLib::Value.new($dest) )
+      !!
+      GValue;
+
+    $all.not ?? $rv !! ($rv, $dest);
   }
 
   method foreach (
@@ -167,15 +173,17 @@ class GStreamer::TagList is GStreamer::MiniObject {
       is also<get-boolean>
   { * }
 
-  multi method get_boolean (Str() $tag, :$all = False) {
-    samewith($tag, $, :$all);
+  multi method get_boolean (Str() $tag) {
+    my $rv = samewith($tag, $, :all);
+
+    $rv[0] ?? $rv[1] !! Nil;
   }
   multi method get_boolean (Str() $tag, $value is rw, :$all = False) {
     my gboolean $v = 0;
-    my $rc = gst_tag_list_get_boolean($!tl, $tag, $v);
+    my $rv = gst_tag_list_get_boolean($!tl, $tag, $v);
 
     $value = $v;
-    $all.not ?? $value !! ($value, $rc);
+    $all.not ?? $rv !! ($rv, $value);
   }
 
   proto method get_boolean_index (|)
@@ -183,43 +191,51 @@ class GStreamer::TagList is GStreamer::MiniObject {
   { * }
 
   multi method get_boolean_index (Str() $tag) {
-    samewith($tag, $, $);
+    my $rv = samewith($tag, $, $, :all);
+
+    $rv[0] ?? $rv.skip(1) !! Nil;
   }
   multi method get_boolean_index (
     Str() $tag,
     $index is rw,
     $value is rw,
+    :$all = False
   ) {
     my guint $i = 0;
     my gboolean $v = 0;
-    my $rc = gst_tag_list_get_boolean_index($!tl, $tag, $i, $v);
+    my $rv = gst_tag_list_get_boolean_index($!tl, $tag, $i, $v);
 
     ($index, $value) = ($i, $v);
-    ($index, $value, $rc);
+    ($rv, $index, $value);
   }
 
   proto method get_date (|)
       is also<get-date>
   { * }
 
-  multi method get_date (Str() $tag, :$all = False) {
-    samewith($tag, $, :$all);
+  multi method get_date (Str() $tag) {
+    my $rv = samewith($tag, $, :all);
+
+    $rv[0] ?? $rv[1] !! Nil;
   }
   multi method get_date (Str() $tag, $value is rw, :$all = False) {
     my $v = CArray[GDate].new;
     $v[0] = 0;
-    my $rc = gst_tag_list_get_date($!tl, $tag, $v);
+
+    my $rv = gst_tag_list_get_date($!tl, $tag, $v);
 
     $value = ppr($v);
-    $all.not ?? $value !! ($value, $rc);
+    $all.not ?? $rv !! ($rv, $value);
   }
 
   proto method get_date_index (|)
       is also<get-date-index>
   { * }
 
-  multi method get_date_index (Str() $tag, Int() $index, :$all = False) {
-    samewith($tag, $index, $, :$all);
+  multi method get_date_index (Str() $tag, Int() $index) {
+    my $rv = samewith($tag, $index, $, :all);
+
+    $rv[0] ?? $rv[1] !! Nil;
   }
   multi method get_date_index (
     Str() $tag,
@@ -231,9 +247,9 @@ class GStreamer::TagList is GStreamer::MiniObject {
     my $v = CArray[GDate].new;
     $v[0] = 0;
 
-    my $rc = gst_tag_list_get_date_index($!tl, $tag, $i, $v);
+    my $rv = gst_tag_list_get_date_index($!tl, $tag, $i, $v);
     $value = ppr($v);
-    $all.not ?? $value !! ($value, $rc);
+    $all.not ?? $rv !! ($rv, $value);
   }
 
   proto method get_date_time (|)
@@ -241,24 +257,28 @@ class GStreamer::TagList is GStreamer::MiniObject {
   { * }
 
   multi method get_date_time (Str() $tag, :$all = False) {
-    samewith($tag, $, :$all);
+    my $rv = samewith($tag, $, :all);
+
+    $rv[0] ?? $rv[1] !! Nil;
   }
   multi method get_date_time (Str() $tag, $value is rw, :$all = False) {
     my $da = CArray[Pointer[GstDateTime]].new;
-
     $da[0] = Pointer[GstDateTime].new;
-    my $rc = gst_tag_list_get_date_time($!tl, $tag, $da);
+
+    my $rv = gst_tag_list_get_date_time($!tl, $tag, $da);
 
     ($value) = ppr($da);
-    $all.not ?? $value !! ($value, $rc);
+    $all.not ?? $rv !! ($rv, $value);
   }
 
   proto method get_date_time_index (|)
       is also<get-date-time-index>
   { * }
 
-  multi method get_date_time_index (Str() $tag, Int() $index, :$all = False) {
-    samewith($tag, $index, $, :$all);
+  multi method get_date_time_index (Str() $tag, Int() $index) {
+    my $rv = samewith($tag, $index, $, :all);
+
+    $rv[0] ?? $rv[1] !! Nil;
   }
   multi method get_date_time_index (
     Str() $tag,
@@ -268,62 +288,66 @@ class GStreamer::TagList is GStreamer::MiniObject {
   ) {
     my guint $i = 0;
     my $da = CArray[Pointer[GstDateTime]].new;
-
     $da[0] = Pointer[GstDateTime].new;
-    my $rc = gst_tag_list_get_date_time_index($!tl, $tag, $i, $da);
+
+    my $rv = gst_tag_list_get_date_time_index($!tl, $tag, $i, $da);
     $value = ppr($da);
-    $all.not ?? $value !! ($value, $rc);
+    $all.not ?? $rv !! ($rv, $value);
   }
 
   proto method get_double (|)
       is also<get-double>
   { * }
 
-  multi method get_double (Str() $tag, :$all = False) {
-    samewith($tag, $, :$all);
+  multi method get_double (Str() $tag) {
+    my $rv = samewith($tag, $, :all);
   }
   multi method get_double (Str() $tag, $value is rw, :$all = False) {
     my gdouble $v = 0e0;
-    my $rc = gst_tag_list_get_double($!tl, $tag, $v);
+    my $rv = gst_tag_list_get_double($!tl, $tag, $v);
 
     $value = $v;
-    $all.not ?? $value !! ($value, $rc);
+    $all.not ?? $rv !! ($rv, $value);
   }
 
   proto method get_double_index (|)
       is also<get-double-index>
   { * }
 
-  multi method get_double_index (Str() $tag, $index, :$all = False) {
-    samewith($tag, $index, $, :$all);
+  multi method get_double_index (Str() $tag, Int() $index) {
+    my $rv = samewith($tag, $index, $, :all);
+
+    $rv[0] ?? $rv[1] !! Nil;
   }
   multi method get_double_index (
     Str() $tag,
-    Int() $index, 
+    Int() $index,
     $value is rw,
     :$all = False
   ) {
     my gint $i = $index;
     my gdouble $v = 0e0;
-    my $rc = gst_tag_list_get_double_index($!tl, $tag, $i, $v);
+    my $rv = gst_tag_list_get_double_index($!tl, $tag, $i, $v);
 
     $value = $v;
-    $all.not ?? $value !! ($value, $rc);
+    $all.not ?? $rv !! ($rv, $value);
   }
 
   proto method get_float (|)
       is also<get-float>
   { * }
 
-  multi method get_float (Str() $tag, :$all = False) {
-    samewith($tag, $, :$all);
+  multi method get_float (Str() $tag) {
+    my $rv = samewith($tag, $, :all);
+
+    $rv[0] ?? $rv[1] !! Nil;
   }
   multi method get_float (Str() $tag, $value is rw, :$all = False) {
     my gfloat $v = 0e0;
-    my $rc = gst_tag_list_get_float($!tl, $tag, $v);
+    my $rv = gst_tag_list_get_float($!tl, $tag, $v);
 
     $value = $v;
-    $all.not ?? $value !! ($value, $rc);
+    $all.not ?? $rv !! ($rv, $value);
   }
 
   proto method get_float_index (|)
@@ -331,45 +355,56 @@ class GStreamer::TagList is GStreamer::MiniObject {
   { * }
 
   multi method get_float_index (Str() $tag) {
-    samewith($tag, $, $);
+    my $rv = samewith($tag, $, $, :all);
+
+    $rv[0] ?? $rv.skip(1) !! Nil;
   }
-  multi method get_float_index (Str() $tag, $index is rw, $value is rw) {
+  multi method get_float_index (
+    Str() $tag,
+    $index is rw,
+    $value is rw,
+    :$all = False
+  ) {
     my guint $i = 0;
     my gfloat $v = 0e0;
-    my $rc = gst_tag_list_get_float_index($!tl, $tag, $i, $v);
+    my $rv = gst_tag_list_get_float_index($!tl, $tag, $i, $v);
 
     ($index, $value) = ($i, $v);
-    ($index, $value, $rc);
+    ($rv, $index, $value);
   }
 
   proto method get_int (|)
       is also<get-int>
   { * }
 
-  multi method get_int (Str() $tag, :$all = False) {
-    samewith($tag, $, :$all);
+  multi method get_int (Str() $tag) {
+    my $rv = samewith($tag, $, :all);
+
+    $rv[0] ?? $rv[1] !! Nil;
   }
   multi method get_int (Str() $tag, $value is rw, :$all = False) {
     my gint $v = 0;
-    my $rc = gst_tag_list_get_int($!tl, $tag, $v);
+    my $rv = gst_tag_list_get_int($!tl, $tag, $v);
 
     $value = $v;
-    $all.not ?? $value !! ($value, $rc);
+    $all.not ?? $rv !! ($rv, $value);
   }
 
   proto method get_int64 (|)
       is also<get-int64>
   { * }
 
-  multi method get_int64 (Str() $tag, :$all = False)  {
-    samewith($tag, $, :$all);
+  multi method get_int64 (Str() $tag)  {
+    my $rv = samewith($tag, $, :all);
+
+    $rv[0] ?? $rv[1] !! Nil;
   }
   multi method get_int64 (Str $tag, $value is rw, :$all = False) {
     my guint64 $v = 0;
-    my $rc = gst_tag_list_get_int64($!tl, $tag, $v);
+    my $rv = gst_tag_list_get_int64($!tl, $tag, $v);
 
     $value = $v;
-    $all.not ?? $value !! ($value, $rc);
+    $all.not ?? $rv !! ($rv, $value);
   }
 
   proto method get_int64_index (|)
@@ -377,15 +412,22 @@ class GStreamer::TagList is GStreamer::MiniObject {
   { * }
 
   multi method get_int64_index (Str() $tag) {
-    samewith($tag, $, $);
+    my $rv = samewith($tag, $, $, :all);
+
+    $rv[0] ?? $rv.skip(1) !! Nil;
   }
-  multi method get_int64_index (Str() $tag, $index is rw, $value is rw) {
+  multi method get_int64_index (
+    Str() $tag,
+    $index is rw,
+    $value is rw,
+    :$all = False
+  ) {
     my guint $i = 0;
     my gint64 $v = 0;
 
-    my $rc = gst_tag_list_get_int64_index($!tl, $tag, $i, $v);
+    my $rv = gst_tag_list_get_int64_index($!tl, $tag, $i, $v);
     ($index, $value) = ($i, $v);
-    ($index, $value, $rc);
+    $all.not ?? $rv !! ($rv, $index, $value);
   }
 
   proto method get_int_index (|)
@@ -393,30 +435,39 @@ class GStreamer::TagList is GStreamer::MiniObject {
   { * }
 
   multi method get_int_index (Str() $tag) {
-    samewith($tag, $, $);
+    my $rv = samewith($tag, $, $, :all);
+
+    $rv[0] ?? $rv.skip(1) !! Nil;
   }
-  multi method get_int_index (Str() $tag, $index is rw, $value is rw) {
+  multi method get_int_index (
+    Str() $tag,
+    $index is rw,
+    $value is rw,
+    :$all = False
+  ) {
     my guint $i = 0;
     my gint $v = 0;
 
-    my $rc = gst_tag_list_get_int_index($!tl, $tag, $i, $v);
+    my $rv = gst_tag_list_get_int_index($!tl, $tag, $i, $v);
     ($index, $value) = ($i, $v);
-    ($index, $value, $rc);
+    $all.not ?? $rv !! ($rv, $index, $value);
   }
 
   proto method get_pointer (|)
       is also<get-pointer>
   { * }
 
-  multi method get_pointer (Str() $tag, :$all = False) {
-    samewith($tag, $, :$all);
+  multi method get_pointer (Str() $tag) {
+    my $rv = samewith($tag, $, :all);
+
+    $rv[0] ?? $rv[1] !! Nil;
   }
   multi method get_pointer (Str() $tag, $value is rw, :$all = False) {
     my gpointer $v = gpointer.new;
-    my $rc = gst_tag_list_get_pointer($!tl, $tag, $v);
+    my $rv = gst_tag_list_get_pointer($!tl, $tag, $v);
 
     $value = $v;
-    $all.not ?? $value !! ($value, $rc);
+    $all.not ?? $rv !! ($rv, $value);
   }
 
   proto method get_pointer_index (|)
@@ -424,15 +475,22 @@ class GStreamer::TagList is GStreamer::MiniObject {
   { * }
 
   multi method get_pointer_index (Str() $tag) {
-    samewith($tag, $, $);
+    my $rv = samewith($tag, $, $, :all);
+
+    $rv[0] ?? $rv.skip(1) !! Nil;
   }
-  multi method get_pointer_index (Str() $tag, $index is rw, $value is rw) {
+  multi method get_pointer_index (
+    Str() $tag,
+    $index is rw,
+    $value is rw,
+    :$all = False
+  ) {
     my guint $i = 0;
     my gpointer $v = gpointer.new;
-    my $rc = gst_tag_list_get_pointer_index($!tl, $tag, $index, $value);
+    my $rv = gst_tag_list_get_pointer_index($!tl, $tag, $index, $value);
 
     ($index, $value) = ($i, $v);
-    ($index, $value, $rc)
+    $all.not ?? $rv !! ($rv, $index, $value)
   }
 
   proto method get_sample (|)
@@ -440,7 +498,9 @@ class GStreamer::TagList is GStreamer::MiniObject {
   { * }
 
   multi method get_sample (Str() $tag, :$all = False, :$raw = False) {
-    samewith($tag, $, :$all);
+    my $rv = samewith($tag, $, :all);
+
+    $rv[0] ?? $rv[1] !! Nil;
   }
   multi method get_sample (
     Str() $tag,
@@ -449,12 +509,12 @@ class GStreamer::TagList is GStreamer::MiniObject {
     :$raw = False
   ) {
     my $sa = CArray[Pointer[GstSample]].new;
-
     $sa[0] = Pointer[GstSample].new;
-    my $rc = gst_tag_list_get_sample($!tl, $tag, $sample);
+
+    my $rv = gst_tag_list_get_sample($!tl, $tag, $sample);
     ($sample) = ppr($sa);
     $sample = GStreamer::Sample.new($sample) unless $raw;
-    $all.not ?? $sample !! ($sample, $rc);
+    $all.not ?? $rv !! ($rv, $sample);
   }
 
   proto method get_sample_index (|)
@@ -462,38 +522,48 @@ class GStreamer::TagList is GStreamer::MiniObject {
   { * }
 
   multi method get_sample_index (Str() $tag, :$raw = False) {
-    samewith($tag, $, $);
+    my $rv = samewith($tag, $, $, :all);
+
+    $rv[0] ?? $rv.skip(1) !! Nil;
   }
   multi method get_sample_index (
     Str() $tag,
     $index is rw,
     $sample is rw,
+    :$all = False,
     :$raw = False
   ) {
     my guint $i = 0;
     my $sa = CArray[Pointer[GstSample]].new;
-
     $sa[0] = Pointer[GstSample].new;
-    my $rc = gst_tag_list_get_sample_index($!tl, $tag, $i, $sa);
+
+    my $rv = gst_tag_list_get_sample_index($!tl, $tag, $i, $sa);
     ($index, $sample) = ppr($i, $sa);
     $sample = GStreamer::Sample.new($sample) unless $raw;
-    ($index, $sample, $rc);
+    $all.not ?? $rv !! ($rv, $index, $sample);
   }
 
   proto method get_string (|)
       is also<get-string>
   { * }
 
-  multi method get_string (Str() $tag, :$all = False) {
-    samewith($tag, $, :$all);
+  multi method get_string (Str() $tag) {
+    my $rv = samewith($tag, $, :all);
+
+    $rv[0] ?? $rv[1] !! Nil;
   }
-  multi method get_string (Str() $tag, $value is rw, :$all = False) {
+  multi method get_string (
+    Str() $tag,
+    $value is rw,
+    :$all = False,
+  ) {
     my $sa = CArray[Str].new;
     $sa[0] = Str;
 
-    my $rc = gst_tag_list_get_string($!tl, $tag, $sa);
+    my $rv = gst_tag_list_get_string($!tl, $tag, $sa);
+
     ($value) = ppr($sa);
-    $all.not ?? $value !! ($value, $rc);
+    $all.not ?? $rv !! ($rv, $value);
   }
 
   proto method get_string_index (|)
@@ -501,16 +571,23 @@ class GStreamer::TagList is GStreamer::MiniObject {
   { * }
 
   multi method get_string_index (Str() $tag) {
-    samewith($tag, $, $);
+    my $rv = samewith($tag, $, $, :all);
+
+    $rv[0] ?? $rv.skip(1) !! Nil;
   }
-  multi method get_string_index (Str() $tag, $index is rw, $value is rw) {
+  multi method get_string_index (
+    Str() $tag,
+    $index is rw,
+    $value is rw,
+    :$all = False
+  ) {
     my guint $i = 0;
     my $sa = CArray[Str].new;
     $sa[0] = Str;
 
-    my $rc = gst_tag_list_get_string_index($!tl, $tag, $i, $sa);
+    my $rv = gst_tag_list_get_string_index($!tl, $tag, $i, $sa);
     ($index, $value) = ppr($i, $sa);
-    ($index, $value, $rc);
+    $all.not ?? $rv !! ($rv, $index, $value);
   }
 
   method get_tag_size (Str() $tag) is also<get-tag-size> {
@@ -528,28 +605,33 @@ class GStreamer::TagList is GStreamer::MiniObject {
   { * }
 
   multi method get_uint (Str() $tag, :$all = False) {
-    samewith($tag, $, :$all);
+    my $rv = samewith($tag, $, :all);
+
+    $rv[0] ?? $rv[1] !! Nil;
   }
   multi method get_uint (Str() $tag, $value is rw, :$all = False) {
     my guint $v = 0;
-    my $rc = gst_tag_list_get_uint($!tl, $tag, $v);
+    my $rv = gst_tag_list_get_uint($!tl, $tag, $v);
+
     $value = $v;
-    $all.not ?? $value !! ($value, $rc);
+    $all.not ?? $rv !! ($rv, $value);
   }
 
   proto method get_uint64 (|)
       is also<get-uint64>
   { * }
 
-  multi method get_uint64 (Str() $tag, :$all = False) {
-    samewith($tag, $, :$all);
+  multi method get_uint64 (Str() $tag) {
+    my $rv = samewith($tag, $, :all);
+
+    $rv[0] ?? $rv[1] !! Nil;
   }
   multi method get_uint64 (Str() $tag, $value is rw, :$all = False) {
     my guint64 $v = 0;
-    my $rc = gst_tag_list_get_uint64($!tl, $tag, $v);
+    my $rv = gst_tag_list_get_uint64($!tl, $tag, $v);
 
     $value = $v;
-    $all.not ?? $value !! ($value, $rc);
+    $all.not ?? $rv !! ($rv, $value);
   }
 
   proto method get_uint64_index (|)
@@ -557,15 +639,22 @@ class GStreamer::TagList is GStreamer::MiniObject {
   { * }
 
   multi method get_uint64_index (Str() $tag) {
-    samewith($tag, $, $);
+    my $rv = samewith($tag, $, $, :all);
+
+    $rv[0] ?? $rv.skip(1) !! Nil;
   }
-  multi method get_uint64_index (Str() $tag, $index is rw, $value is rw) {
+  multi method get_uint64_index (
+    Str() $tag,
+    $index is rw,
+    $value is rw,
+    :$all = False
+  ) {
     my guint $i = 0;
     my guint64 $v = 0;
-    my $rc = gst_tag_list_get_uint64_index($!tl, $tag, $i, $v);
+    my $rv = gst_tag_list_get_uint64_index($!tl, $tag, $i, $v);
 
     ($index, $value) = ($i, $v);
-    ($index, $value, $rc);
+    $all.not ?? $rv !! ($rv, $index, $value);
   }
 
   proto method get_uint_index (|)
@@ -573,14 +662,21 @@ class GStreamer::TagList is GStreamer::MiniObject {
   { * }
 
   multi method get_uint_index (Str() $tag) {
-    samewith($tag, $, $);
+    my $rv = samewith($tag, $, $, :all);
+
+    $rv[0] ?? $rv.skip(1) !! Nil;
   }
-  multi method get_uint_index (Str $tag, $index is rw, $value is rw) {
+  multi method get_uint_index (
+    Str() $tag,
+    $index is rw,
+    $value is rw,
+    :$all = False
+  ) {
     my guint ($i, $v) = 0 xx 2;
-    my $rc = gst_tag_list_get_uint_index($!tl, $tag, $i, $v);
+    my $rv = gst_tag_list_get_uint_index($!tl, $tag, $i, $v);
 
     ($index, $value) = ($i, $v);
-    ($index, $value, $rc);
+    ($rv, $index, $value);
   }
 
   proto method get_value_index (|)
@@ -597,11 +693,8 @@ class GStreamer::TagList is GStreamer::MiniObject {
     $v ??
       ( $raw ?? $v !! GLib::Value.new($v) )
       !!
-      Nil;
+      GValue;
   }
-
-  proto method insert (|)
-  { * }
 
   multi method insert (GstTagList() $from, Int() $mode) {
     GStreamer::TagList.insert($!tl, $from, $mode);
@@ -651,6 +744,7 @@ class GStreamer::TagList is GStreamer::MiniObject {
     GstTagList() $list1, GstTagList() $list2, Int() $mode
   ) {
     my GstTagMergeMode $m = $mode;
+
     gst_tag_list_merge($list1, $list2, $mode);
   }
 
@@ -673,8 +767,10 @@ class GStreamer::TagList is GStreamer::MiniObject {
       is also<peek-string-index>
   { * }
 
-  multi method peek_string_index (Str() $tag, Int() $index, :$all = False) {
-    samewith($tag, $index, $, :$all);
+  multi method peek_string_index (Str() $tag, Int() $index) {
+    my $rv = samewith($tag, $index, $, :all);
+
+    $rv[0] ?? $rv[1] !! Nil;
   }
   multi method peek_string_index (
     Str() $tag,
@@ -685,9 +781,10 @@ class GStreamer::TagList is GStreamer::MiniObject {
     my guint $i = $index;
     my $sa = CArray[Str].new;
     $sa[0] = Str;
-    my $rc = gst_tag_list_peek_string_index($!tl, $tag, $i, $sa);
+
+    my $rv = gst_tag_list_peek_string_index($!tl, $tag, $i, $sa);
     ($value) = ppr($sa);
-    $all.not ?? $value !! ($value, $rc);
+    $all.not ?? $rv !! ($rv, $value);
   }
 
   method remove_tag (Str() $tag) is also<remove-tag> {

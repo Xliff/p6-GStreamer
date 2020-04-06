@@ -2,15 +2,11 @@ use v6.c;
 
 use Method::Also;
 
-use NativeCall;
+use GLib::Raw::Enums;
 
-use GTK::Compat::Types;
-use GLib::Values;
-
-use GTK::Roles::Properties;
+use GLib::Value;
 
 role GStreamer::Roles::Plugins::TcpClientSrc {
-  also does GTK::Roles::Properties;
 
   # Type: gchar
   method host is rw  {
@@ -62,3 +58,5 @@ role GStreamer::Roles::Plugins::TcpClientSrc {
       }
     );
   }
+
+}

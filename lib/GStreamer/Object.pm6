@@ -3,37 +3,34 @@ use v6.c;
 use Method::Also;
 use NativeCall;
 
-use GTK::Compat::Types;
 use GStreamer::Raw::Types;
 use GStreamer::Raw::Object;
 
-use GTK::Raw::Utils;
-
 use GLib::Value;
 
-use GTK::Roles::Properties;
+use GLib::Roles::Object;
 
 class GStreamer::Object {
-  also does GTK::Roles::Properties;
+  also does GLib::Roles::Object;
 
-  has GstObject $!o;
+  has GstObject $!gst-o;
 
   submethod BUILD (:$object) {
     self.setGstObject($object) if $object;
   }
 
-  multi method Numeric { $!o.p }
+  multi method Numeric { $!gst-o.p }
 
   method setGstObject(GstObject $object) {
-    self!setObject( cast(GObject, $!o = $object) )
+    self!setObject( cast(GObject, $!gst-o = $object) )
   }
 
   method GStreamer::Raw::Types::GstObject
     is also<GstObject>
-  { $!o }
+  { $!gst-o }
 
   multi method new (GstObject $object) {
-    self.bless( :$object );
+    $object ?? self.bless( :$object ) !! Nil;
   }
   multi method new (|c) {
     my $dieMsg = qq:to/DIE/.chomp;
@@ -47,10 +44,12 @@ class GStreamer::Object {
   method control_rate is rw is also<control-rate> {
     Proxy.new(
       FETCH => sub ($) {
-        gst_object_get_control_rate($!o);
+        gst_object_get_control_rate($!gst-o);
       },
-      STORE => sub ($, $control_rate is copy) {
-        gst_object_set_control_rate($!o, $control_rate);
+      STORE => sub ($, Int() $control_rate is copy) {
+        my GstClockTime $c = $control_rate;
+
+        gst_object_set_control_rate($!gst-o, $c);
       }
     );
   }
@@ -58,10 +57,10 @@ class GStreamer::Object {
   method name is rw {
     Proxy.new(
       FETCH => sub ($) {
-        gst_object_get_name($!o);
+        gst_object_get_name($!gst-o);
       },
       STORE => sub ($, Str() $name is copy) {
-        gst_object_set_name($!o, $name);
+        gst_object_set_name($!gst-o, $name);
       }
     );
   }
@@ -69,15 +68,15 @@ class GStreamer::Object {
   method parent (:$raw = False) is rw {
     Proxy.new(
       FETCH => sub ($) {
-        my $o = gst_object_get_parent($!o);
+        my $o = gst_object_get_parent($!gst-o);
 
         $o ??
           ( $raw ?? $o !! GStreamer::Object.new($o) )
           !!
-          Nil;
+          GstObject;
       },
       STORE => sub ($, GstObject() $parent is copy) {
-        gst_object_set_parent($!o, $parent);
+        gst_object_set_parent($!gst-o, $parent);
       }
     );
   }
@@ -85,7 +84,7 @@ class GStreamer::Object {
   method add_control_binding (GstControlBinding() $binding)
     is also<add-control-binding>
   {
-    gst_object_add_control_binding($!o, $binding);
+    gst_object_add_control_binding($!gst-o, $binding);
   }
 
   method check_uniqueness (GStreamer::Object:U:
@@ -128,50 +127,80 @@ class GStreamer::Object {
   method get_control_binding (Str() $property_name)
     is also<get-control-binding>
   {
-    gst_object_get_control_binding($!o, $property_name);
+    gst_object_get_control_binding($!gst-o, $property_name);
   }
 
-  method get_g_value_array (
-    Str() $property_name,
-    GstClockTime $timestamp,
-    GstClockTime $interval,
-    guint $n_values,
-    gpointer $values,
-    :$raw = False
-  )
+  proto method get_g_value_array (|)
     is also<get-g-value-array>
-  {
-    gst_object_get_g_value_array(
-      $!o,
+  { * }
+
+  multi method get_g_value_array (
+    Str() $property_name,
+    Int() $timestamp,
+    Int() $interval,
+    Int() $n_values,
+    :$raw = False
+  ) {
+    my $rv = callwith(
       $property_name,
       $timestamp,
       $interval,
       $n_values,
-      $values
-    );
-    my $v = $values but GLib::Roles::TypedBuffer[GValue].new(
-      size => $n_values
+      @,
+      :all,
+      :$raw
     );
 
-    $v ??
+    $rv[0] ?? $rv[1] !! Nil;
+  }
+  multi method get_g_value_array (
+    Str() $property_name,
+    Int() $timestamp,
+    Int() $interval,
+    Int() $n_values,
+    @values,
+    :$all = False,
+    :$raw = False
+  ) {
+    my GstClockTime ($ts, $in) = ($timestamp, $interval);
+    my guint $n = $n_values;
+
+    # CALLER ALLOCATES!
+    my $v = GLib::Roles::TypedBuffer[GValue].new(size => $n);
+
+    my $rv = so gst_object_get_g_value_array(
+      $!gst-o,
+      $property_name,
+      $ts,
+      $in,
+      $n,
+      $v
+    );
+
+    my @array = $v ??
       ( $raw ?? $v.Array !! $v.Array.map({ GLib::Value.new($_) }) )
       !!
       Nil;
+
+    $all.not ?? $rv !! ($rv, @array)
   }
 
   method get_path_string is also<get-path-string> {
-    gst_object_get_path_string($!o);
+    gst_object_get_path_string($!gst-o);
   }
 
   method get_type is also<get-type> {
     state ($n, $t);
+
     unstable_get_type( self.^name, &gst_object_get_type, $n, $t );
   }
 
-  method get_value (Str() $property_name, GstClockTime $timestamp)
+  method get_value (Str() $property_name, Int() $timestamp)
     is also<get-value>
   {
-    gst_object_get_value($!o, $property_name, $timestamp);
+    my GstClockTime $t = $timestamp;
+
+    gst_object_get_value($!gst-o, $property_name, $t);
   }
 
   # This method is probably better left to C!
@@ -185,7 +214,7 @@ class GStreamer::Object {
   #   is also<get-value-array>
   # {
   #   gst_object_get_value_array(
-  #     $!o,
+  #     $!gst-o,
   #     $property_name,
   #     $timestamp,
   #     $interval,
@@ -204,35 +233,35 @@ class GStreamer::Object {
   }
 
   method has_active_control_bindings is also<has-active-control-bindings> {
-    so gst_object_has_active_control_bindings($!o);
+    so gst_object_has_active_control_bindings($!gst-o);
   }
 
   method has_as_ancestor (GstObject() $ancestor) is also<has-as-ancestor> {
-    so gst_object_has_as_ancestor($!o, $ancestor);
+    so gst_object_has_as_ancestor($!gst-o, $ancestor);
   }
 
   method has_as_parent (GstObject() $parent) is also<has-as-parent> {
-    so gst_object_has_as_parent($!o, $parent);
+    so gst_object_has_as_parent($!gst-o, $parent);
   }
 
-  method ref {
-    gst_object_ref($!o);
+  method ref is also<upref> {
+    gst_object_ref($!gst-o);
     self;
   }
 
   method ref_sink is also<ref-sink> {
-    gst_object_ref_sink($!o);
+    gst_object_ref_sink($!gst-o);
     self;
   }
 
   method remove_control_binding (GstControlBinding() $binding)
     is also<remove-control-binding>
   {
-    gst_object_remove_control_binding($!o, $binding);
+    gst_object_remove_control_binding($!gst-o, $binding);
   }
 
   method replace (GstObject() $newobj) {
-    gst_object_replace($!o, $newobj);
+    gst_object_replace($!gst-o, $newobj);
   }
 
   method set_control_binding_disabled (
@@ -241,29 +270,29 @@ class GStreamer::Object {
   )
     is also<set-control-binding-disabled>
   {
-    gst_object_set_control_binding_disabled($!o, $property_name, $disabled);
+    gst_object_set_control_binding_disabled($!gst-o, $property_name, $disabled);
   }
 
   method set_control_bindings_disabled (Int() $disabled)
     is also<set-control-bindings-disabled>
   {
-    gst_object_set_control_bindings_disabled($!o, $disabled);
+    gst_object_set_control_bindings_disabled($!gst-o, $disabled);
   }
 
   method suggest_next_sync is also<suggest-next-sync> {
-    gst_object_suggest_next_sync($!o);
+    gst_object_suggest_next_sync($!gst-o);
   }
 
   method sync_values (GstClockTime $timestamp) is also<sync-values> {
-    gst_object_sync_values($!o, $timestamp);
+    gst_object_sync_values($!gst-o, $timestamp);
   }
 
   method unparent {
-    gst_object_unparent($!o);
+    gst_object_unparent($!gst-o);
   }
 
-  method unref {
-    gst_object_unref($!o);
+  method unref is also<downref> {
+    gst_object_unref($!gst-o);
   }
 
 }

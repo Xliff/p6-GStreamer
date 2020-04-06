@@ -1,0 +1,18 @@
+Begun:     April 2, 2020
+Concluded: April 6, 2020!
+
+t/01-basic.t         -- OK
+t/02-concept.t       -- OK
+t/03-seeking.t       -- OK
+t/04-playing-speed.t -- PASS: Playback direction do not work, but this
+                              behavior is also exhibited in the reference
+                              implementation. See c-helpers/02-playing-speed.c.
+                              Also, the reference implementation has a bug
+                              with setting playback speed, which the Raku
+                              implementation does not.
+t/05-multilingual.t  -- OK! \o/
+t/06-pad-caps.t      -- OK
+t/07-audio-player.t  -- OUT OF SCOPE due to its multithreaded nature. Rakudo
+                        currently does NOT support C-based multithreaded
+                        routines
+t/08-visualization.t -- OK!!! \o/ \o\ /o/ \o/

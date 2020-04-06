@@ -2,20 +2,15 @@ use v6.c;
 
 use NativeCall;
 
-use GTK::Compat::Types;
 use GStreamer::Raw::Types;
 use GStreamer::Raw::Format;
 
 use GStreamer::Iterator;
 
+use GLib::Roles::StaticClass;
+
 class GStreamer::Format {
-
-  method new(|) {
-    warn 'GStreamer::Format is a static class and does not need instantiation.'
-      if $DEBUG;
-
-    GStreamer::Format;
-  }
+  also does GLib::Roles::StaticClass;
 
   method get_by_nick (Str() $nick) {
     gst_format_get_by_nick($nick);
@@ -45,9 +40,13 @@ class GStreamer::Format {
   }
   multi method gst_formats_contains (
     CArray[uint32] $formats,   # Zero Terminated
-    GstFormat $format
+    Int() $format
   ) {
-    gst_formats_contains($formats, $format);
+    my GstFormat $f = $format;
+
+    die '$formats input must be zero-terminated!' if $formats[* - 1];
+
+    gst_formats_contains($formats, $f);
   }
 
   method iterate_definitions (:$raw = False) {
@@ -56,7 +55,7 @@ class GStreamer::Format {
     $i ??
       ( $raw ?? $i !! GStreamer::Iterator.new($i) )
       !!
-      Nil;
+      GstIterator;
   }
 
   method register (Str() $nick, Str() $description) {
@@ -64,9 +63,11 @@ class GStreamer::Format {
   }
 
   method to_quark (
-    guint $format # GstFormat $format
+    Int() $format # GstFormat $format
   ) {
-    gst_format_to_quark($format);
+    my GstFormat $f = $format;
+
+    gst_format_to_quark($f);
   }
 
 }

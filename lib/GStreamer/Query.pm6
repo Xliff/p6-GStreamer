@@ -4,17 +4,17 @@ use Method::Also;
 
 use NativeCall;
 
-use GTK::Compat::Types;
 use GStreamer::Raw::Types;
 use GStreamer::Raw::Query;
-
 use GStreamer::Raw::Subs;
 
+use GStreamer::Caps;
+use GStreamer::Context;
 use GStreamer::MiniObject;
 use GStreamer::Allocator;
 use GStreamer::Structure;
 
-our subset QueryAncestry is export of Mu
+our subset GstQueryAncestry is export of Mu
   where GstQuery | GstMiniObject;
 
 class GStreamer::Query is GStreamer::MiniObject {
@@ -24,7 +24,7 @@ class GStreamer::Query is GStreamer::MiniObject {
     self.setQuery($query);
   }
 
-  method setQuery (QueryAncestry $_) {
+  method setQuery (GstQueryAncestry $_) {
     my $to-parent;
 
     $!q = do {
@@ -41,18 +41,21 @@ class GStreamer::Query is GStreamer::MiniObject {
     self.setMiniObject($to-parent);
   }
 
-  method GStreamer::Raw::Types::GstQuery
+  method GStreamer::Raw::Structs::GstQuery
+    is also<GstQuery>
   { $!q }
 
-  multi method new (GstQuery $query) {
-    self.bless( :$query ) if $query.defined;
+  multi method new (GstQueryAncestry $query) {
+    $query ?? self.bless( :$query ) !! Nil;
   }
 
   multi method new (GstCaps() $c, :accept-caps(:$accept_caps) is required) {
     GStreamer::Query.new_accept_caps($c);
   }
   method new_accept_caps (GstCaps() $c) is also<new-accept-caps> {
-    self.bless( query => gst_query_new_accept_caps($c) );
+    my $query = gst_query_new_accept_caps($c);
+
+    $query ?? self.bless( :$query ) !! Nil;
   }
 
   multi method new (
@@ -66,15 +69,18 @@ class GStreamer::Query is GStreamer::MiniObject {
     is also<new-allocation>
   {
     my gboolean $n = $need_pool.so.Int;
+    my $query = gst_query_new_allocation($c, $need_pool);
 
-    self.bless( query => gst_query_new_allocation($c, $need_pool) );
+    $query ?? self.bless( :$query ) !! Nil;
   }
 
   multi method new (:$bitrate is required) {
     GStreamer::Query.new_bitrate;
   }
   method new_bitrate is also<new-bitrate> {
-    self.bless( query  => gst_query_new_bitrate() );
+    my $query = gst_query_new_bitrate();
+
+    $query ?? self.bless( :$query ) !! Nil;
   }
 
   multi method new (Int() $format, :$buffering is required) {
@@ -82,22 +88,27 @@ class GStreamer::Query is GStreamer::MiniObject {
   }
   method new_buffering (Int() $format) is also<new-buffering> {
     my GstFormat $f = $format;
+    my $query = gst_query_new_buffering($f);
 
-    self.bless( query => gst_query_new_buffering($f) );
+    $query ?? self.bless( :$query ) !! Nil;
   }
 
   multi method new (GstCaps() $f, :$caps is required) {
     GStreamer::Query.new_caps($f);
   }
   method new_caps (GstCaps() $f) is also<new-caps> {
-    self.bless( querry => gst_query_new_caps($f) );
+    my $query = gst_query_new_caps($f);
+
+    $query ?? self.bless( :$query ) !! Nil;
   }
 
   multi method new (Str() $ctxt, :$context is required) {
     GStreamer::Query.new_context($ctxt);
   }
   method new_context (Str() $context) is also<new-context> {
-    self.bless( query => gst_query_new_context($context) );
+    my $query = gst_query_new_context($context);
+
+    $query ?? self.bless( :$query ) !! Nil;
   }
 
   multi method new (
@@ -113,8 +124,9 @@ class GStreamer::Query is GStreamer::MiniObject {
   {
     my gint64 $v = 0;
     my GstFormat ($sf, $df) = ($src_format, $dest_format);
+    my $query = gst_query_new_convert($sf, $v, $df);
 
-    self.bless( query => gst_query_new_convert($sf, $v, $df) );
+    $query ?? self.bless( :$query ) !! Nil;
   }
 
   multi method new (
@@ -127,14 +139,18 @@ class GStreamer::Query is GStreamer::MiniObject {
   method new_custom (Int() $type, GstStructure() $structure)
     is also<new-custom>
   {
-    self.bless( query => gst_query_new_custom($type, $structure) );
+    my $query = gst_query_new_custom($type, $structure);
+
+    $query ?? self.bless( :$query ) !! Nil;
   }
 
   multi method new (:$drain is required) {
     GStreamer::Query.new_drain;
   }
   method new_drain is also<new-drain> {
-    self.bless( query => gst_query_new_drain() );
+    my $query = gst_query_new_drain();
+
+    $query ?? self.bless( :$query ) !! Nil;
   }
 
   multi method new (Int() $format, :$duration is required) {
@@ -142,22 +158,27 @@ class GStreamer::Query is GStreamer::MiniObject {
   }
   method new_duration (Int() $format) is also<new-duration> {
     my GstFormat $f = $format;
+    my $query = gst_query_new_duration($f);
 
-    self.bless( query => gst_query_new_duration($f) );
+    $query ?? self.bless( :$query ) !! Nil;
   }
 
   multi method new (:$formats is required) {
     GStreamer::Query.new_formats;
   }
   method new_formats is also<new-formats> {
-    self.bless( query => gst_query_new_formats() );
+    my $query = gst_query_new_formats();
+
+    $query ?? self.bless( :$query ) !! Nil;
   }
 
   multi method new (:$latency is required) {
     GStreamer::Query.new_latency;
   }
   method new_latency is also<new-latency> {
-    self.bless( query => gst_query_new_latency() );
+    my $query = gst_query_new_latency();
+
+    $query ?? self.bless( :$query ) !! Nil;
   }
 
   multi method new (Int() $format, :$position is required) {
@@ -165,15 +186,18 @@ class GStreamer::Query is GStreamer::MiniObject {
   }
   method new_position (Int() $format) is also<new-position> {
     my GstFormat $f = $format;
+    my $query = gst_query_new_position($f);
 
-    self.bless( query => gst_query_new_position($f) );
+    $query ?? self.bless( :$query ) !! Nil;
   }
 
   multi method new (:$scheduling is required) {
     GStreamer::Query.new_scheduling();
   }
   method new_scheduling is also<new-scheduling> {
-    self.bless( query => gst_query_new_scheduling() );
+    my $query = gst_query_new_scheduling();
+
+    $query ?? self.bless( :$query ) !! Nil;
   }
 
   multi method new (Int() $format, :$seeking is required) {
@@ -181,8 +205,9 @@ class GStreamer::Query is GStreamer::MiniObject {
   }
   method new_seeking (Int() $format) is also<new-seeking> {
     my GstFormat $f = $format;
+    my $query = gst_query_new_seeking($f);
 
-    self.bless( query => gst_query_new_seeking($f) );
+    $query ?? self.bless( :$query ) !! Nil;
   }
 
   multi method new (Int() $format, :$segment is required) {
@@ -190,15 +215,18 @@ class GStreamer::Query is GStreamer::MiniObject {
   }
   method new_segment (Int() $format) is also<new-segment> {
     my GstFormat $f = $format;
+    my $query = gst_query_new_segment($f);
 
-    self.bless( query => gst_query_new_segment($f) );
+    $query ?? self.bless( :$query ) !! Nil;
   }
 
   multi method new (:$uri is required) {
     GStreamer::Query.new_uri;
   }
   method new_uri is also<new-uri> {
-    self.bless( query => gst_query_new_uri() );
+    my $query = gst_query_new_uri();
+
+    $query ?? self.bless( :$query ) !! Nil;
   }
 
   method add_allocation_meta (Int() $api, GstStructure() $params)
@@ -227,6 +255,7 @@ class GStreamer::Query is GStreamer::MiniObject {
     is also<add-allocation-pool>
   {
     my guint ($s, $mnb, $mxb) = ($size, $min_buffers, $max_buffers);
+
     gst_query_add_allocation_pool($!q, $pool, $s, $mnb, $mxb);
   }
 
@@ -254,7 +283,7 @@ class GStreamer::Query is GStreamer::MiniObject {
     my GType $a = $api;
     my guint $i = $index;
 
-    so gst_query_find_allocation_meta($!q, $api, $index);
+    so gst_query_find_allocation_meta($!q, $a, $i);
   }
 
   method get_n_allocation_metas is also<get-n-allocation-metas> {
@@ -283,7 +312,7 @@ class GStreamer::Query is GStreamer::MiniObject {
     $s ??
       ( $raw ?? $s !! GStreamer::Structure.new($s) )
       !!
-      Nil;
+      GstStructure;
   }
 
   method get_type is also<get-type> {
@@ -311,18 +340,22 @@ class GStreamer::Query is GStreamer::MiniObject {
   }
 
   proto method parse_accept_caps (|)
-      is also<parse-accept-caps>
+    is also<parse-accept-caps>
   { * }
 
-  multi method parse_accept_caps {
-    samewith ($);
+  multi method parse_accept_caps (:$raw = False) {
+    samewith($, :$raw);
   }
-  multi method parse_accept_caps ($caps is rw) {
+  multi method parse_accept_caps ($caps is rw, :$raw = False) {
     my $c = CArray[Pointer[GstCaps]].new;
-    $c[0] = Pointer[GstCaps].new;
+    $c[0] = Pointer[GstCaps];
 
     my $rc = gst_query_parse_accept_caps($!q, $c);
+
     ($caps) = ppr( $c[0] );
+    return GstCaps unless $caps;
+
+    $caps = GStreamer::Caps.new($caps) unless $raw;
     $caps;
   }
 
@@ -344,16 +377,23 @@ class GStreamer::Query is GStreamer::MiniObject {
       is also<parse-allocation>
   { * }
 
-  multi method parse_allocation {
-    samewith ($, $);
+  multi method parse_allocation (:$raw = False) {
+    samewith ($, $, :$raw = False);
   }
-  multi method parse_allocation ($caps is rw, $need_pool is rw) {
+  multi method parse_allocation (
+    $caps is rw,
+    $need_pool is rw,
+    :$raw = False
+  ) {
     my gboolean $np = 0;
     my $c = CArray[Pointer[GstCaps]].new;
     $c[0] = Pointer[GstCaps].new;
 
     gst_query_parse_allocation($!q, $c, $np);
     ($caps, $need_pool) = ppr($c, $np);
+    $caps = $caps // GstCaps;
+    $caps = GStreamer::Caps.new($caps) if $caps and $raw.not;
+    ($caps, $need_pool);
   }
 
   proto method parse_bitrate (|)
@@ -365,8 +405,8 @@ class GStreamer::Query is GStreamer::MiniObject {
   }
   multi method parse_bitrate ($nominal_bitrate is rw) {
     my guint $nb = 0;
-    gst_query_parse_bitrate($!q, $nb);
 
+    gst_query_parse_bitrate($!q, $nb);
     $nominal_bitrate = $nb;
   }
 
@@ -379,8 +419,8 @@ class GStreamer::Query is GStreamer::MiniObject {
   }
   multi method parse_buffering_percent ($busy is rw, $percent is rw) {
     my guint ($b, $p) = 0 xx 2;
-    gst_query_parse_buffering_percent($!q, $b, $p);
 
+    gst_query_parse_buffering_percent($!q, $b, $p);
     ($busy, $percent) = ($b, $p);
   }
 
@@ -422,22 +462,26 @@ class GStreamer::Query is GStreamer::MiniObject {
     my gint64 $bl = $buffering_left;
     gst_query_parse_buffering_stats($!q, $m, $ai, $ao, $bl);
 
-    ($mode ,$avg_in ,$avg_out ,$buffering_left) = ($m, $ai, $ao, $bl);
+    ($mode ,$avg_in ,$avg_out ,$buffering_left) =
+      ( GstBufferingModeEnum($m), $ai, $ao, $bl );
   }
 
   proto method parse_caps (|)
     is also<parse-caps>
   { * }
 
-  multi method parse_caps {
-    samewith($);
+  multi method parse_caps (:$raw = False) {
+    samewith($, :$raw);
   }
-  multi method parse_caps ($filter is rw) {
+  multi method parse_caps ($filter is rw, :$raw = False) {
     my $fa = CArray[Pointer[GstCaps]].new;
 
     $fa[0] = Pointer[GstCaps].new;
     gst_query_parse_caps($!q, $fa);
     ($filter) = ppr($fa);
+
+    return GstCaps unless $filter;
+    $filter = GStreamer::Caps.new($filter) unless $raw;
     $filter;
   }
 
@@ -445,15 +489,17 @@ class GStreamer::Query is GStreamer::MiniObject {
     is also<parse-caps-result>
   { * }
 
-  multi method parse_caps_result {
-    samewith($);
+  multi method parse_caps_result ($raw = False) {
+    samewith($, :$raw);
   }
-  multi method parse_caps_result ($caps is rw) {
+  multi method parse_caps_result ($caps is rw, :$raw = False) {
     my $ca = CArray[Pointer[GstCaps]].new;
 
     $ca[0] = Pointer[GstCaps].new;
     gst_query_parse_caps_result($!q, $ca);
     ($caps) = ppr($ca);
+    return GstCaps unless $caps;
+    $caps = GStreamer::Caps($caps) unless $raw;
     $caps;
   }
 
@@ -461,15 +507,17 @@ class GStreamer::Query is GStreamer::MiniObject {
     is also<parse-context>
   { * }
 
-  multi method parse_context {
-    samewith($);
+  multi method parse_context (:$raw = False) {
+    samewith($, :$raw);
   }
-  multi method parse_context ($context is rw)  {
+  multi method parse_context ($context is rw, :$raw = False)  {
     my $ca = CArray[Pointer[GstContext]].new;
 
     $ca[0] = Pointer[GstContext].new;
     gst_query_parse_context($!q, $ca);
     ($context) = ppr($ca);
+    return GstContext unless $context;
+    $context = GStreamer::Context.new($context) unless $raw;
     $context;
   }
 
@@ -506,7 +554,8 @@ class GStreamer::Query is GStreamer::MiniObject {
     my gint64 ($sv, $dv) = 0 xx 2;
 
     gst_query_parse_convert($!q, $sf, $sv, $df, $dv);
-    ($src_format, $src_value, $dest_format, $dest_value) = ($sf, $sv, $df, $dv);
+    ($src_format, $src_value, $dest_format, $dest_value) =
+      ( GstFormatEnum($sf), $sv, GstFormatEnum($df), $dv );
   }
 
   proto method parse_duration (|)
@@ -521,7 +570,7 @@ class GStreamer::Query is GStreamer::MiniObject {
     my gint64 $d = 0;
 
     gst_query_parse_duration($!q, $f, $d);
-    ($format, $duration) = ($f, $d);
+    ($format, $duration) = ( GstFormatEnum($f), $d );
   }
 
   proto method parse_latency (|)
@@ -541,7 +590,7 @@ class GStreamer::Query is GStreamer::MiniObject {
     my GstClockTime ($mnl, $mxl) = 0 xx 2;
 
     gst_query_parse_latency($!q, $live, $min_latency, $max_latency);
-    ($live, $min_latency, $max_latency) = ($l, $mnl, $mxl);
+    ($live, $min_latency, $max_latency) = ($l.so.Int, $mnl, $mxl);
   }
 
   proto method parse_n_formats (|)
@@ -580,36 +629,42 @@ class GStreamer::Query is GStreamer::MiniObject {
 
   multi method parse_nth_allocation_param (
     Int() $index,
-    GstAllocationParams() $params
+    :$raw = False
   ) {
-    samewith($index, $, $params);
+    samewith($index, $, $, :$raw);
   }
   multi method parse_nth_allocation_param (
     Int() $index,
     $allocator is rw,
-    GstAllocationParams() $params
+    $params is rw,
+    :$raw = False
   ) {
     my guint $i = $index;
     my $aa = CArray[Pointer[GstAllocator]].new;
+    my $p = GstAllocationParams.new;
 
     $aa[0] = Pointer[GstAllocator].new;
-    gst_query_parse_nth_allocation_param($!q, $i, $aa, $params);
+    gst_query_parse_nth_allocation_param($!q, $i, $aa, $p);
     ($allocator) = ppr($aa);
-    $allocator;
+    $params = $p;
+    return GstAllocator unless $allocator;
+    $allocator = GStreamer::Allocator.new($allocator) unless $raw;
+    ($allocator, $params);
   }
 
   proto method parse_nth_allocation_pool (|)
   { * }
 
-  multi method parse_nth_allocation_pool (Int() $index) {
-    samewith($index, $, $, $, $);
+  multi method parse_nth_allocation_pool (Int() $index, :$raw = False) {
+    samewith($index, $, $, $, $, :$raw);
   }
   multi method parse_nth_allocation_pool (
     Int() $index,
     $pool        is rw,
     $size        is rw,
     $min_buffers is rw,
-    $max_buffers is rw
+    $max_buffers is rw,
+    :$raw = False
   )
     is also<parse-nth-allocation-pool>
   {
@@ -617,9 +672,16 @@ class GStreamer::Query is GStreamer::MiniObject {
     my guint ($s, $mnb, $mxb) = 0 xx 3;
     my $ba = CArray[Pointer[GstBufferPool]].new;
 
-    $ba[0] = Pointer[GstBufferPool].new;
+    $ba[0] = Pointer[GstBufferPool];
     gst_query_parse_nth_allocation_pool($!q, $i, $ba, $s, $mnb, $mxb);
-    ($pool, $size, $min_buffers, $max_buffers) = ($ba, $s, $mnb, $mxb);
+
+    $pool = $ba[0] ??
+      ( $raw ?? $ba[0].deref !! GStreamer::BufferPool($ba[0].deref) )
+      !!
+      GstBufferPool;
+
+    ($size, $min_buffers, $max_buffers) = ($s, $mnb, $mxb);
+    ($pool, $size, $min_buffers, $max_buffers)
   }
 
   proto method parse_nth_buffering_range (|)
@@ -653,7 +715,7 @@ class GStreamer::Query is GStreamer::MiniObject {
     my guint $i =  $index;
 
     gst_query_parse_nth_format($!q, $i, $f);
-    $format = $f;
+    $format = GstFormatEnum($f);
   }
 
   method parse_nth_scheduling_mode (Int() $index)
@@ -678,7 +740,7 @@ class GStreamer::Query is GStreamer::MiniObject {
     my gint64    $c = 0;
 
     gst_query_parse_position($!q, $f, $c);
-    ($format, $cur) = ($f, $c);
+    ($format, $cur) = ( GstFormatEnum($f), $c );
   }
 
   proto method parse_scheduling (|)
@@ -698,7 +760,8 @@ class GStreamer::Query is GStreamer::MiniObject {
     my gint ($mns, $mxs, $a) = 0 xx 3;
 
     gst_query_parse_scheduling($!q, $f, $mns, $mxs, $a);
-    ($flags, $minsize, $maxsize, $align) = ($f, $mns, $mxs, $a);
+    ($flags, $minsize, $maxsize, $align) =
+      ( GstSchedulingFlagsEnum($f), $mns, $mxs, $a )
   }
 
   proto method parse_seeking (|)
@@ -719,7 +782,8 @@ class GStreamer::Query is GStreamer::MiniObject {
     my gint64    ($ss, $se) = 0 xx 2;
 
     gst_query_parse_seeking($!q, $f, $s, $ss, $se);
-    ($format, $seekable, $segment_start, $segment_end) = ($f, $s, $ss, $se);
+    ($format, $seekable, $segment_start, $segment_end) =
+      ( GstFormatEnum($f), $s.so.Int, $ss, $se );
   }
 
 
@@ -741,7 +805,8 @@ class GStreamer::Query is GStreamer::MiniObject {
     my gint64 ($stv, $spv) = 0 xx 2;
 
     gst_query_parse_segment($!q, $r, $f, $stv, $spv);
-    ($rate, $format, $start_value, $stop_value) = ($r, $f, $stv, $spv);
+    ($rate, $format, $start_value, $stop_value) =
+      ($r, GstFormatEnum($f), $stv, $spv);
   }
 
   proto method parse_uri (|)
@@ -787,7 +852,7 @@ class GStreamer::Query is GStreamer::MiniObject {
     my gboolean $p = 0;
 
     gst_query_parse_uri_redirection_permanent($!q, $p);
-    $permanent = $p;
+    $permanent = $p.so.Int;
   }
 
   method remove_nth_allocation_meta (Int() $index)
@@ -833,7 +898,7 @@ class GStreamer::Query is GStreamer::MiniObject {
   method set_accept_caps_result (Int() $result)
     is also<set-accept-caps-result>
   {
-    my gboolean $r = $result;
+    my gboolean $r = $result.so.Int;
 
     gst_query_set_accept_caps_result($!q, $r);
   }
@@ -937,7 +1002,7 @@ class GStreamer::Query is GStreamer::MiniObject {
   )
     is also<set-latency>
   {
-    my gboolean $l = $live;
+    my gboolean $l = $live.so.Int;
     my GstClockTime ($mnl, $mxl) = ($min_latency, $max_latency);
 
     gst_query_set_latency($!q, $l, $mnl, $mxl);
@@ -1015,7 +1080,7 @@ class GStreamer::Query is GStreamer::MiniObject {
     is also<set-seeking>
   {
     my GstFormat $f = $format;
-    my gboolean $s = $seekable;
+    my gboolean $s = $seekable.so.Int;
     my gint64 ($ss, $se) = ($segment_start, $segment_end);
 
     gst_query_set_seeking($!q, $f, $s, $ss, $se);
@@ -1047,7 +1112,7 @@ class GStreamer::Query is GStreamer::MiniObject {
   method set_uri_redirection_permanent (Int() $permanent)
     is also<set-uri-redirection-permanent>
   {
-    my gboolean $p = $permanent;
+    my gboolean $p = $permanent.so.Int;
 
     gst_query_set_uri_redirection_permanent($!q, $p);
   }
@@ -1082,7 +1147,7 @@ class GStreamer::Query is GStreamer::MiniObject {
     $s ??
       ( $raw ?? $s !! GStreamer::Structure.new($s) )
       !!
-      Nil;
+      GstStructure;
   }
 
 }

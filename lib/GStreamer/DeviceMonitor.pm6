@@ -2,7 +2,6 @@ use v6.c;
 
 use Method::Also;
 
-use GTK::Compat::Types;
 use GStreamer::Raw::Types;
 use GStreamer::Raw::DeviceMonitor;
 
@@ -13,7 +12,7 @@ use GLib::GList;
 use GStreamer::Bus;
 use GStreamer::Device;
 
-our subset DeviceMonitorAncestry is export of Mu
+our subset GstDeviceMonitorAncestry is export of Mu
   where GstDeviceMonitor | GstObject;
 
 class GStreamer::DeviceMonitor is GStreamer::Object {
@@ -23,7 +22,7 @@ class GStreamer::DeviceMonitor is GStreamer::Object {
     self.setDeviceMonitor($monitor);
   }
 
-  method setDeviceMonitor (DeviceMonitorAncestry $_) {
+  method setDeviceMonitor (GstDeviceMonitorAncestry $_) {
     my $to-parent;
 
     $!dm = do {
@@ -40,11 +39,13 @@ class GStreamer::DeviceMonitor is GStreamer::Object {
     self.setObject($to-parent);
   }
 
-  multi method new ($monitor) {
-    self.bless( :$monitor );
+  multi method new (GstDeviceMonitorAncestry $monitor) {
+    $monitor ?? self.bless( :$monitor ) !! Nil;
   }
   multi method new {
-    self.bless( monitor => gst_device_monitor_new() );
+    my $monitor = gst_device_monitor_new();
+
+    $monitor ?? self.bless( :$monitor ) !! Nil;
   }
 
   method show_all_devices is rw is also<show-all-devices> {
@@ -53,7 +54,7 @@ class GStreamer::DeviceMonitor is GStreamer::Object {
         so gst_device_monitor_get_show_all_devices($!dm);
       },
       STORE => sub ($, Int() $show_all is copy) {
-        my gboolean $sa = $show_all;
+        my gboolean $sa = $show_all.so.Int;
 
         gst_device_monitor_set_show_all_devices($!dm, $sa);
       }
@@ -75,22 +76,22 @@ class GStreamer::DeviceMonitor is GStreamer::Object {
     $b ??
       ( $raw ?? $b !! GStreamer::Bus.new($b) )
       !!
-      Nil;
+      GstBus;
   }
 
-  method get_devices (:$raw = False)
+  method get_devices (:$glist = False, :$raw = False)
     is also<
       get-devices
       devices
     >
   {
-    my $d = GLib::GList.new( gst_device_monitor_get_devices($!dm) )
-      but GLib::Roles::ListData[GstDevice];
+    my $dl = gst_device_monitor_get_devices($!dm);
 
-    $d ??
-      ( $raw ?? $d.Array !! $d.Array.map({ GStreamer::Device.new($_) }) )
-      !!
-      Nil;
+    return Nil unless $dl;
+    return $dl if $glist;
+
+    $dl = GLib::GList.new($dl) but GLib::Roles::ListData[GstDevice];
+    $raw ?? $dl.Array !! $dl.Array.map({ GStreamer::Device.new($_) });
   }
 
   method get_providers
@@ -99,16 +100,7 @@ class GStreamer::DeviceMonitor is GStreamer::Object {
       providers
     >
   {
-    my @p;
-    my $pa = gst_device_monitor_get_providers($!dm);
-
-    if $pa {
-      my $pa-idx = 0;
-      repeat {
-        @p.push( $pa[$pa-idx] );
-      } while $pa[$pa-idx++];
-    }
-    @p;
+    CStringArrayToArray( gst_device_monitor_get_providers($!dm) );
   }
 
   method get_type is also<get-type> {

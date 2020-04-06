@@ -1,6 +1,7 @@
 use v6.c;
 
-use GTK::Compat::Types;
+use Method::Also;
+
 use GStreamer::Raw::Types;
 use GStreamer::Raw::MiniObject;
 
@@ -16,17 +17,18 @@ class GStreamer::MiniObject {
   }
 
   method GStreamer::Raw::Types::GstMiniObject
+    is also<GstMiniObject>
   { * }
 
   method new (GstMiniObject $mini-object) {
-    self.bless( :$mini-object )
+    $mini-object ?? self.bless( :$mini-object ) !! Nil;
   }
 
-  method add_parent (GstMiniObject() $parent) {
+  method add_parent (GstMiniObject() $parent) is also<add-parent> {
     gst_mini_object_add_parent($!mo, $parent);
   }
 
-  method get_qdata (GQuark $quark) {
+  method get_qdata (GQuark $quark) is also<get-qdata> {
     gst_mini_object_get_qdata($!mo, $quark);
   }
 
@@ -37,7 +39,9 @@ class GStreamer::MiniObject {
   method clear_mini_object (
     GStreamer::MiniObject:U:
     GstMiniObject $o
-  ) {
+  )
+    is also<clear-mini-object>
+  {
     gst_clear_mini_object($o);
   }
 
@@ -47,7 +51,7 @@ class GStreamer::MiniObject {
     $c ??
       ( $raw ?? $c !! GStreamer::MiniObject.new($c) )
       !!
-      Nil;
+      GstMiniObject;
   }
 
   method init (
@@ -63,7 +67,7 @@ class GStreamer::MiniObject {
     gst_mini_object_init($obj, $f, $t, $copy_func, $dispose_func, $free_func);
   }
 
-  method is_writable {
+  method is_writable is also<is-writable> {
     so gst_mini_object_is_writable($!mo);
   }
 
@@ -73,20 +77,20 @@ class GStreamer::MiniObject {
     so gst_mini_object_lock($!mo, $f);
   }
 
-  method make_writable (:$raw = False) {
+  method make_writable (:$raw = False) is also<make-writable> {
     my $o = gst_mini_object_make_writable($!mo);
 
     $o ??
       ( $raw ?? $o !! GStreamer::MiniObject.new($o) )
       !!
-      Nil;
+      GstMiniObject;
   }
 
-  method ref {
+  method ref is also<upref> {
     gst_mini_object_ref($!mo);
   }
 
-  method remove_parent (GstMiniObject() $parent) {
+  method remove_parent (GstMiniObject() $parent) is also<remove-parent> {
     gst_mini_object_remove_parent($!mo, $parent);
   }
 
@@ -98,7 +102,9 @@ class GStreamer::MiniObject {
     GQuark $quark,
     gpointer $data,
     GDestroyNotify $destroy
-  ) {
+  )
+    is also<set-qdata>
+  {
     gst_mini_object_set_qdata($!mo, $quark, $data, $destroy);
   }
 
@@ -106,7 +112,7 @@ class GStreamer::MiniObject {
     gst_mini_object_steal($!mo);
   }
 
-  method steal_qdata (GQuark $quark) {
+  method steal_qdata (GQuark $quark) is also<steal-qdata> {
     gst_mini_object_steal_qdata($!mo, $quark);
   }
 
@@ -122,15 +128,28 @@ class GStreamer::MiniObject {
     gst_mini_object_unlock($!mo, $f);
   }
 
-  method unref {
+  method unref is also<downref> {
     gst_mini_object_unref($!mo);
   }
 
-  method weak_ref (GstMiniObjectNotify $notify, gpointer $data) {
+  method weak_ref (GstMiniObjectNotify $notify, gpointer $data)
+    is also<
+      weak-ref
+      weak_upref
+      weak-upref
+    >
+  {
     gst_mini_object_weak_ref($!mo, $notify, $data);
+    self;
   }
 
-  method weak_unref (GstMiniObjectNotify $notify, gpointer $data) {
+  method weak_unref (GstMiniObjectNotify $notify, gpointer $data)
+    is also<
+      weak-unref
+      weak_downref
+      weak-downref
+    >
+  {
     gst_mini_object_weak_unref($!mo, $notify, $data);
   }
 
