@@ -10,6 +10,8 @@ use GStreamer::Main;
 use GStreamer::Parse;
 use GStreamer::Registry;
 
+use GStreamer::Roles::Plugins::Playbin;
+
 sub filter-vis-features ($f, $d) {
   CATCH { default { .message.say } }
 
@@ -47,14 +49,13 @@ sub MAIN {
 
   my $pipeline = GStreamer::Parse.launch(
     'playbin uri=http://radio.hbr1.com:19800/ambient.ogg'
-  );
+  ) but GStreamer::Roles::Plugins::Playbin;
 
   die 'Could not create pipeline!' unless $pipeline;
 
   # $flags | GST_PLAY_FLAGS_VIS
-  my $flags = ($pipeline.prop_get_uint('flags') // 0) +| (1 +< 3);
-  $pipeline.prop_set_uint('flags', $flags);
-  $pipeline.prop_set_ptr('vis-plugin', $vis-plugin.p);
+  $pipeline.flags +|= GST_PLAY_FLAG_VIS;
+  $pipeline.vis-plugin = $vis-plugin;
   $pipeline.set_state(GST_STATE_PLAYING);
 
   my $bus = $pipeline.bus;
