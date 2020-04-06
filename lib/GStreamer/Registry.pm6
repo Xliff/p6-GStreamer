@@ -3,6 +3,7 @@ use v6.c;
 use Method::Also;
 
 use GStreamer::Raw::Types;
+use GStreamer::Raw::PluginFeature;
 use GStreamer::Raw::Registry;
 
 use GLib::GList;
@@ -22,7 +23,7 @@ class GStreamer::Registry is GStreamer::Object {
     self.setRegistry($registry);
   }
 
-  method setRegistry(GstRegistryAncestry $registry) {
+  method setRegistry(GstRegistryAncestry $_) {
     my $to-parent;
 
     $!r = do {
@@ -77,12 +78,27 @@ class GStreamer::Registry is GStreamer::Object {
 
   method feature_filter (
     &filter,
-    Int() $first,
-    gpointer $user_data = gpointer
-  ) is also<feature-filter> {
+    Int() $first = False,
+    gpointer $user_data = gpointer,
+    :$glist = False,
+    :$raw = False
+  )
+    is also<feature-filter>
+  {
     my gboolean $f = $first.so.Int;
+    my $fl = gst_registry_feature_filter($!r, &filter, $f, $user_data);
 
-    gst_registry_feature_filter($!r, &filter, $f, $user_data);
+    return Nil unless $fl;
+    return $fl if $glist;
+
+    my $fll = GLib::GList.new($fl) but GLib::Roles::ListData[GstPluginFeature];
+    my @r = $raw ?? $fll.Array
+                 !! $fll.Array.map({ GStreamer::PluginFeature.new($_) });
+
+    # Free list AFTER return array is created.
+    gst_plugin_feature_list_free($fl);
+    
+    @r
   }
 
   method find_feature (Str() $name, Int() $type, :$raw = False) is also<find-feature> {
