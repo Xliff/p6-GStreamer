@@ -128,5 +128,6 @@ constant GST_ELEMENT_METADATA_DESCRIPTION is export = 'description';
 constant GST_ELEMENT_METADATA_AUTHOR      is export = 'author';
 constant GST_ELEMENT_METADATA_DOC_URI     is export = 'doc-uri';
 constant GST_ELEMENT_METADATA_ICON_NAME   is export = 'icon-name';
+constant GST_ELEMENT_METADATA_KLASS       is export = 'klass';
 
 constant GST_PADDING = 4;
