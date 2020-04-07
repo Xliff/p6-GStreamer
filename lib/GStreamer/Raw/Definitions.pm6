@@ -92,6 +92,7 @@ class GstGhostPad               is repr('CPointer') does GLib::Roles::Pointers i
 class GstIterator               is repr('CPointer') does GLib::Roles::Pointers is export { }
 #class GstMessage                is repr('CPointer') does GLib::Roles::Pointers is export { }
 #class GstObject                 is repr('CPointer') does GLib::Roles::Pointers is export { }
+class GstNavigation             is repr('CPointer') does GLib::Roles::Pointers is export { }
 class GstPad                    is repr('CPointer') does GLib::Roles::Pointers is export { }
 class GstPadProbeInfo           is repr('CPointer') does GLib::Roles::Pointers is export { }
 #class GstPadTemplate            is repr('CPointer') does GLib::Roles::Pointers is export { }
