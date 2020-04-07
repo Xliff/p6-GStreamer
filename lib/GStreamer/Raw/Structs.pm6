@@ -324,3 +324,31 @@ class GstStaticPadTemplate is repr<CStruct>      does GLib::Roles::Pointers is e
   has GstPadPresence       $.presence;
   HAS GstStaticCaps        $.static_caps;
 };
+
+class GstColorBalanceChannel is repr<CStruct>    does GLib::Roles::Pointers is export {
+  has GObject              $!parent;
+  has Str                  $!label;
+  has gint                 $.min_value is rw;
+  has gint                 $.max_value is rw;
+
+  # private
+  has gpointer             $!gst_reserved0;
+  has gpointer             $!gst_reserved1;
+  has gpointer             $!gst_reserved2;
+  has gpointer             $!gst_reserved3;
+
+  method min-value is rw {
+    self.min_value;
+  }
+
+  method max-value is rw {
+    self.max_value;
+  }
+
+  method label is rw {
+    Proxy.new:
+      FETCH => -> $           { self.^attributes[1].get_value(self)    },
+      STORE => -> $, Str() \s { self.^attributes[1].set_value(self, s) };
+  }
+
+}

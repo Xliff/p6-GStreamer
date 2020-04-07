@@ -17,12 +17,14 @@ constant GstElementFactoryListType is export := uint64;
 
 # cw: I now realize, that at some point, ALL of these will have to be functions
 #     to account for the various distributions and OSes out there.
-constant gstreamer is export = 'gstreamer-1.0',v0;
+constant gstreamer       is export = 'gstreamer-1.0',v0;
+constant gstreamer-video is export = 'gstreamer-video-1.0',v0;
 
 constant GstBufferListFunc                 is export := Pointer;
 constant GstBusSyncHandler                 is export := Pointer;
 constant GstClockCallback                  is export := Pointer;
 constant GstClockID                        is export := Pointer;
+constant GstColorBalance                   is export := Pointer;
 constant GstElementCallAsyncFunc           is export := Pointer;
 constant GstElementForeachPadFunc          is export := Pointer;
 constant GstIteratorCopyFunction           is export := Pointer;
