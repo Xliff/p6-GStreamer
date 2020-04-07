@@ -13,7 +13,6 @@ use GStreamer::Roles::Plugins::Raw::Playbin;
 #use GStreamer::Plugins::Gst::Playback;
 
 use GLib::Value;
-use GLib::ReturnedValue;
 use GStreamer::Buffer;
 use GStreamer::Element;
 use GStreamer::Sample;
@@ -21,10 +20,11 @@ use GStreamer::TagList;
 
 use GLib::Roles::Object;
 use GLib::Roles::Signals::Generic;
+use GStreamer::Roles::Video::ColorBalance;
 
 role GStreamer::Roles::Plugins::Playbin {
-  also does GLib::Roles::Object;
   also does GLib::Roles::Signals::Generic;
+  also does GStreamer::Roles::Video::ColorBalance;
 
   has $!pb;
   has %!signals-pb;
