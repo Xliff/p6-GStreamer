@@ -8,7 +8,7 @@ use GStreamer::Raw::Exports;
 
 constant forced = 1;
 
-unit package GIO::Raw::Types;
+unit package GStreamer::Raw::Types;
 
 need GLib::Raw::Definitions;
 need GLib::Raw::Enums;
