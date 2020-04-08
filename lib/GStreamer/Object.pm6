@@ -195,9 +195,11 @@ class GStreamer::Object {
     unstable_get_type( self.^name, &gst_object_get_type, $n, $t );
   }
 
-  method get_value (Str() $property_name, Int() $timestamp)
+  proto method get_value (|)
     is also<get-value>
-  {
+  { * }
+
+  multi method get_value (Str() $property_name, Int() $timestamp) {
     my GstClockTime $t = $timestamp;
 
     gst_object_get_value($!gst-o, $property_name, $t);
