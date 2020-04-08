@@ -13,19 +13,15 @@ use GLib::Roles::ListData;
 role GStreamer::Roles::Video::ColorBalance {
   has GstColorBalance $!cb;
 
-  submethod TWEAK {
-    self!roleInit-ColorBalance;
+  method roleInit-ColorBalance {
+    my \i = findProperImplementor(self.^attributes);
+
+    $!cb = cast( GstColorBalance, i.get_value(self) );
   }
 
   method GStreamer::Raw::Definitions::GstColorBalance
     is also<GstColorBalance>
   { $!cb }
-
-  method !roleInit-ColorBalance {
-    my \i = findProperImplementor(self.^attributes);
-
-    $!cb = cast( GstColorBalance, i.get_value(self) );
-  }
 
   method get_balance_type {
     GstColorBalanceTypeEnum( gst_color_balance_get_balance_type($!cb) )
@@ -37,7 +33,18 @@ role GStreamer::Roles::Video::ColorBalance {
     unstable_get_type( self.^name, &gst_color_balance_get_type, $n, $t );
   }
 
-  method get_value (GstColorBalanceChannel() $channel) {
+  # Must be done this way to resolve ambiguity between this and
+  # GStreamer::Object.get_value
+  multi method get_value (
+    GstColorBalanceChannel() $chan,
+    :color_channel(:color-channel(:$channel)) is required
+  )
+    is default
+  {
+    self.get_channel_value($chan);
+  }
+
+  method get_channel_value (GstColorBalanceChannel() $channel) {
     gst_color_balance_get_value($!cb, $channel);
   }
 
@@ -47,10 +54,16 @@ role GStreamer::Roles::Video::ColorBalance {
     return Nil unless $cl;
     return $cl if $glist;
 
-    $cl = GLib::Value.new($cl)
+    $cl = GLib::GList.new($cl)
       but GLib::Roles::ListData[GstColorBalanceChannel];
     $cl ?? $cl.Array
         !! $cl.Array.map({ GStreamer::Video::ColorBalanceChannel.new($_) });
+  }
+
+  method get_channels {
+    my @channels = self.list_channels;
+
+    (do for @channels { "{ .label }" => $_ }).Hash
   }
 
   method set_value (GstColorBalanceChannel() $channel, Int() $value) {

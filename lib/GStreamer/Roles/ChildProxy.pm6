@@ -10,11 +10,7 @@ use GStreamer::Raw::ChildProxy;
 role GStreamer::Roles::ChildProxy {
   has GstChildProxy $!cp;
 
-  submethod TWEAK {
-    self!roleInit-ChildProxy;
-  }
-
-  method !roleInit-ChildProxy {
+  method roleInit-ChildProxy {
     my \i = findProperImplementor(self.^attributes);
     my $o = cast( GstChildProxy, i.get_value(self) );
 

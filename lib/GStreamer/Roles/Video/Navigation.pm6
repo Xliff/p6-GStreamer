@@ -6,14 +6,10 @@ use GStreamer::Raw::Video::Navigation;
 role GStreamer::Roles::Video::Navigation {
   has GstNavigation $!n;
 
-  submethod TWEAK {
-    self!roleInit-Navigation;
-  }
+  method roleInit-Navigation {
+    my \i = findProperImplementor(self.^attributes);
 
-  method !roleInit-Navigation {
-    my \i = findProperImplementor(self.^attrbutes);
-
-    $!n = cast(GstNavigation, i);
+    $!n = cast( GstNavigation, i.get_value(self) );
   }
 
   method get_type {
