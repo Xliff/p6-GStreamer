@@ -44,6 +44,7 @@ class GStreamer::Bin is GStreamer::Element {
     }
     $!cp //= cast(GstChildProxy, $_);      # GStreamer::Roles::ChildProxy
     self.setElement($to-parent);
+    self.roleInit-ChildProxy unless $!cp;
   }
 
   method GStreamer::Raw::Types::GstBin
