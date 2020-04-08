@@ -21,16 +21,19 @@ use GStreamer::TagList;
 use GLib::Roles::Object;
 use GLib::Roles::Signals::Generic;
 use GStreamer::Roles::Video::ColorBalance;
+use GStreamer::Roles::Video::Navigation;
 
 role GStreamer::Roles::Plugins::Playbin {
   also does GLib::Roles::Signals::Generic;
   also does GStreamer::Roles::Video::ColorBalance;
+  also does GStreamer::Roles::Video::Navigation;
 
   has $!pb;
   has %!signals-pb;
 
   submethod TWEAK {
-    self!setObject( $!pb = cast(GObject, self.GstObject) );
+    self.roleInit-Navigation;
+    self.roleInit-ColorBalance;
   }
 
   # Check to insure all methods are provided!
