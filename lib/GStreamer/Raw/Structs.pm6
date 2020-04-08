@@ -326,7 +326,7 @@ class GstStaticPadTemplate is repr<CStruct>      does GLib::Roles::Pointers is e
 };
 
 class GstColorBalanceChannel is repr<CStruct>    does GLib::Roles::Pointers is export {
-  has GObject              $!parent;
+  HAS GObjectStruct        $!parent;
   has Str                  $!label;
   has gint                 $.min_value is rw;
   has gint                 $.max_value is rw;
