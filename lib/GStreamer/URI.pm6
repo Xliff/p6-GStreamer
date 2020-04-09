@@ -284,7 +284,13 @@ class GStreamer::URI {
     $rv;
   }
 
-  method has_protocol (Str() $uri, Str() $protocol) is also<has-protocol> {
+  method has_protocol (
+    GStreamer::URI:U:
+    Str() $uri,
+    Str() $protocol
+  )
+    is also<has-protocol>
+  {
     so gst_uri_has_protocol($uri, $protocol);
   }
 
