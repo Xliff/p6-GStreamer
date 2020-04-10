@@ -1,5 +1,7 @@
 use v6.c;
 
+use Method::Also;
+
 use GStreamer::Raw::Types;
 use GStreamer::Player::Raw::StreamInfo;
 
@@ -42,7 +44,7 @@ class GStreamer::Player::StreamInfo is GStreamer::Object {
     $video-info ?? self.bless( :$video-info ) !! Nil;
   }
 
-  method get_caps (:$raw = False) {
+  method get_caps (:$raw = False) is also<get-caps> {
     my $c = gst_player_stream_info_get_caps($!p);
 
     $c ??
@@ -51,19 +53,40 @@ class GStreamer::Player::StreamInfo is GStreamer::Object {
       GstCaps;
   }
 
-  method get_codec {
+  method get_codec
+    is also<
+      get-codec
+      codec
+    >
+  {
     gst_player_stream_info_get_codec($!p);
   }
 
-  method get_index {
+  method get_index
+    is also<
+      get-index
+      index
+    >
+  {
     gst_player_stream_info_get_index($!p);
   }
 
-  method get_stream_type {
+  method get_stream_type
+    is also<
+      get-stream-type
+      stream_type
+      stream-type
+    >
+  {
     gst_player_stream_info_get_stream_type($!p);
   }
 
-  method get_tags (:$raw = False) {
+  method get_tags (:$raw = False)
+    is also<
+      get-tags
+      tags
+    >
+  {
     my $tl = gst_player_stream_info_get_tags($!p);
 
     $tl ??
