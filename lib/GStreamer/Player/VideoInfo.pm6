@@ -43,7 +43,7 @@ class GStreamer::Player::VideoInfo is GStreamer::Player::StreamInfo {
   }
 
   method get_bitrate is also<get-bitrate> {
-    gst_player_video_info_get_bitrate($!p);
+    gst_player_video_info_get_bitrate($!vi);
   }
 
   proto method get_framerate (|)
@@ -56,16 +56,16 @@ class GStreamer::Player::VideoInfo is GStreamer::Player::StreamInfo {
   multi method get_framerate ($fps_n is rw, $fps_d is rw) {
     my gint ($n, $d) = 0 xx 2;
 
-    gst_player_video_info_get_framerate($!p, $n, $d);
+    gst_player_video_info_get_framerate($!vi, $n, $d);
     ($fps_n, $fps_d) = ($n, $d);
   }
 
   method get_height is also<get-height> {
-    gst_player_video_info_get_height($!p);
+    gst_player_video_info_get_height($!vi);
   }
 
   method get_max_bitrate is also<get-max-bitrate> {
-    gst_player_video_info_get_max_bitrate($!p);
+    gst_player_video_info_get_max_bitrate($!vi);
   }
 
   proto method get_pixel_aspect_ratio (|)
@@ -78,12 +78,12 @@ class GStreamer::Player::VideoInfo is GStreamer::Player::StreamInfo {
   multi method get_pixel_aspect_ratio ($par_n is rw, $par_d is rw) {
     my gint ($n, $d) = 0 xx 2;
 
-    gst_player_video_info_get_pixel_aspect_ratio($!p, $n, $d);
+    gst_player_video_info_get_pixel_aspect_ratio($!vi, $n, $d);
     ($par_n, $par_d) = ($n, $d);
   }
 
   method get_width is also<get-width> {
-    gst_player_video_info_get_width($!p);
+    gst_player_video_info_get_width($!vi);
   }
 
 }
