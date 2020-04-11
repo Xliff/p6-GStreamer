@@ -10,3 +10,6 @@
 
 - When late binding, attempt to detect the Failure object and emit a helpful
   message. see GStreamer::Bus for an example.
+
+- Write a function to check for the proper libs. GStreamer being a suite,
+  this could help in curbing errors when this is released.
