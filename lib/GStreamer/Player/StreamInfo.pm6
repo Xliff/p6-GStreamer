@@ -13,16 +13,16 @@ our subset GstPlayerStreamInfo is export of Mu
   GstPlayerStreamInfo | GstObject;
 
 class GStreamer::Player::StreamInfo is GStreamer::Object {
-  has GstPlayerStreamInfo $!vi;
+  has GstPlayerStreamInfo $!si;
 
-  submethod BUILD (:$video-info) {
-    self.setStreamInfo($video-info);
+  submethod BUILD (:$stream-info) {
+    self.setStreamInfo($stream-info);
   }
 
   method setStreamInfo (GstPlayerStreamInfoAncestry $_) {
     my $to-parent;
 
-    $!vi = do {
+    $!si = do {
       when GstPlayerStreamInfo {
         $to-parent = cast(GstObject, $_);
         $_;
@@ -38,19 +38,19 @@ class GStreamer::Player::StreamInfo is GStreamer::Object {
 
   method GStreamer::Raw::Definitions::GstPlayerStreamInfo
     is also<GstPlayerStreamInfo>
-  { $!vi }
+  { $!si }
 
   method new (GstPlayerStreamInfoAncestry $video-info) {
-    $video-info ?? self.bless( :$video-info ) !! Nil;
+    $video-info ?? self.bless( :$stream-info ) !! Nil;
   }
 
   method get_caps (:$raw = False) is also<get-caps> {
-    my $c = gst_player_stream_info_get_caps($!p);
+    my $c = gst_player_stream_info_get_caps($!si);
 
     $c ??
       ( $raw ?? $c !! GStreamer::Caps.new($c) )
       !!
-      GstCaps;
+      Nil;
   }
 
   method get_codec
@@ -59,7 +59,7 @@ class GStreamer::Player::StreamInfo is GStreamer::Object {
       codec
     >
   {
-    gst_player_stream_info_get_codec($!p);
+    gst_player_stream_info_get_codec($!si);
   }
 
   method get_index
@@ -68,7 +68,7 @@ class GStreamer::Player::StreamInfo is GStreamer::Object {
       index
     >
   {
-    gst_player_stream_info_get_index($!p);
+    gst_player_stream_info_get_index($!si);
   }
 
   method get_stream_type
@@ -78,7 +78,7 @@ class GStreamer::Player::StreamInfo is GStreamer::Object {
       stream-type
     >
   {
-    gst_player_stream_info_get_stream_type($!p);
+    gst_player_stream_info_get_stream_type($!si);
   }
 
   method get_tags (:$raw = False)
@@ -87,12 +87,12 @@ class GStreamer::Player::StreamInfo is GStreamer::Object {
       tags
     >
   {
-    my $tl = gst_player_stream_info_get_tags($!p);
+    my $tl = gst_player_stream_info_get_tags($!si);
 
     $tl ??
       ( $raw ?? $tl !! GStreamer::TagList.new($tl) )
       !!
-      GstTagList;
+      Nil;
   }
 
 }
