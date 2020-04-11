@@ -352,3 +352,20 @@ class GstColorBalanceChannel is repr<CStruct>    does GLib::Roles::Pointers is e
   }
 
 }
+
+class GstPlayerVisualization is repr<CStruct>  does GLib::Roles::Pointers is export {
+  has Str $!name;
+  has Str $!description;
+
+  method name is rw {
+    Proxy.new:
+      FETCH => -> $           { self.^attributes[0].get_value(self)    },
+      STORE => -> $, Str() \s { self.^attributes[0].set_value(self, s) };
+  }
+
+  method description is rw {
+    Proxy.new:
+      FETCH => -> $           { self.^attributes[1].get_value(self)    },
+      STORE => -> $, Str() \s { self.^attributes[1].set_value(self, s) };
+  }
+}
