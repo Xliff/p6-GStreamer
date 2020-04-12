@@ -4,7 +4,7 @@ use NativeCall;
 
 use GStreamer::Raw::Types;
 
-unit package GStreamer::Player::Raw::VideoInfo;
+unit package GStreamer::Player::Raw::StreamInfo;
 
 ### /usr/include/gstreamer-1.0/gst/player/gstplayer-media-info.h
 
