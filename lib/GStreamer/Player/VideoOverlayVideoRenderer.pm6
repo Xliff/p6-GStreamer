@@ -5,12 +5,14 @@ use Method::Also;
 use GStreamer::Raw::Types;
 use GStreamer::Player::Raw::VideoOverlayVideoRenderer;
 
-use GLib::Object;
+use GLib::Roles::Object;
 
 our subset GstPlayerVideoOverlayVideoRendererAncestry is export of Mu
   where GstPlayerVideoOverlayVideoRenderer | GstVideoRenderer | GObject;
 
-class GStreamer::Player::VideoOverlayVideoRenderer is GLib::Object {
+class GStreamer::Player::VideoOverlayVideoRenderer {
+  also does GLib::Roles::Object;
+  
   has $!vovr;
 
   submethod BUILD (:$vovr) {

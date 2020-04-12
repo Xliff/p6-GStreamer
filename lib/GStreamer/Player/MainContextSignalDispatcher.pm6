@@ -6,12 +6,14 @@ use NativeCall;
 
 use GStreamer::Raw::Types;
 
-use GLib::Object;
+use GLib::Roles::Object;
 
 our subset GstMainContextSignalDispatcherAncestry is export of Mu
-  where GstMainContextSignalDispatcher | GstPlayerSignalDispatcher | GObject;
+  where GstPlayerMainContextSignalDispatcher | GstPlayerSignalDispatcher | GObject;
 
-class GStreamer::Player::MainContextSignalDispatcher is GLib::Object {
+class GStreamer::Player::MainContextSignalDispatcher {
+  also does GLib::Roles::Object;
+  
   has GstPlayerMainContextSignalDispatcher $!mcsd;
 
   submethod BUILD (:$csd) {
