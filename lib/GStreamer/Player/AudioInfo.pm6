@@ -42,23 +42,50 @@ class GStreamer::Player::AudioInfo is GStreamer::Player::StreamInfo {
     $audio-info ?? self.bless( :$audio-info ) !! Nil;
   }
 
-  method get_bitrate {
+  method get_bitrate
+    is also<
+      get-bitrate
+      bitrate
+    >
+  {
     gst_player_audio_info_get_bitrate($!p);
   }
 
-  method get_channels {
+  method get_channels
+    is also<
+      get-channels
+      channels
+    >
+  {
     gst_player_audio_info_get_channels($!p);
   }
 
-  method get_language {
+  method get_language
+    is also<
+      get-language
+      language
+    >
+  {
     gst_player_audio_info_get_language($!p);
   }
 
-  method get_max_bitrate {
+  method get_max_bitrate
+    is also<
+      get-max-bitrate
+      max_bitrate
+      max-bitrate
+    >
+  {
     gst_player_audio_info_get_max_bitrate($!p);
   }
 
-  method get_sample_rate {
+  method get_sample_rate
+    is also<
+      get-sample-rate
+      sample_rate
+      sample-rate
+    >
+  {
     gst_player_audio_info_get_sample_rate($!p);
   }
 
