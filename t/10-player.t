@@ -49,8 +49,8 @@ sub on-update ($, $p, $) {
 
   return unless $p == -1 || $dur <= 0;
 
-  $ps = $pos.fmt("%{ GST_TIME_FORMAT }", |gst-time-args($pos)).substr(0, 8);
-  $ds = $dur.fmt("%{ GST_TIME_FORMAT }", |gst-time-args($dur)).substr(0, 8);
+  $ps = $pos.fmt("{ GST_TIME_FORMAT }", |gst-time-args($pos)).substr(0, 8);
+  $ds = $dur.fmt("{ GST_TIME_FORMAT }", |gst-time-args($dur)).substr(0, 8);
   say "{ $ps } / { $ds } { ' ' x 63 }";
 }
 
@@ -120,7 +120,7 @@ multi sub print-subtitle-info ($si) {
 sub print-all-stream-info ($i) {
   say qq:to/INFO/;
     URI : { $i.get-uri }
-    Duration: { sprintf("%{ GST_TIME_FORMAT }", |gst-time-args($i.get-duration)) }
+    Duration: { sprintf("{ GST_TIME_FORMAT }", |gst-time-args($i.get-duration)) }
     Global taglist:
     INFO
 
