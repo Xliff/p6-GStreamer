@@ -2,6 +2,10 @@ use v6.c
 
 use NativeCall;
 
+use GLib::Raw::Definitions;
+use GStreamer::Raw::Definitions;
+use GStreamer::Raw::Structs;
+
 unit package GStreamer::Player::Raw::VideoOverlayVideoRenderer;
 
 ### /usr/include/gstreamer-1.0/gst/player/gstplayer-video-overlay-video-renderer.h
