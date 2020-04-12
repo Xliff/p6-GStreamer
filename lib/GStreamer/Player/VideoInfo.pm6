@@ -3,7 +3,7 @@ use v6.c;
 use Method::Also;
 
 use GStreamer::Raw::Types;
-use GStreamer::Player::Raw::VideoInfo;
+use GStreamer::Player::Raw::StreamInfo;
 
 use GStreamer::Player::StreamInfo;
 
