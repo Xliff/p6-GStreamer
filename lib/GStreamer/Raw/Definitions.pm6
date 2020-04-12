@@ -17,8 +17,9 @@ constant GstElementFactoryListType is export := uint64;
 
 # cw: I now realize, that at some point, ALL of these will have to be functions
 #     to account for the various distributions and OSes out there.
-constant gstreamer       is export = 'gstreamer-1.0',v0;
-constant gstreamer-video is export = 'gstvideo-1.0',v0;
+constant gstreamer         is export = 'gstreamer-1.0',v0;
+constant gstreamer-video   is export = 'gstvideo-1.0',v0;
+constant gstreamer-player  is export = 'gstplayer-1.0',v0;
 
 constant GstBufferListFunc                 is export := Pointer;
 constant GstBusSyncHandler                 is export := Pointer;
@@ -118,9 +119,14 @@ class GstMapInfo                is repr('CPointer') does GLib::Roles::Pointers i
 #class GstMemory                 is repr('CPointer') does GLib::Roles::Pointers is export { }
 class GstMeta                   is repr('CPointer') does GLib::Roles::Pointers is export { }
 class GstParentBufferMeta       is repr('CPointer') does GLib::Roles::Pointers is export { }
+class GstPlayerSignalDispatcher is repr('CPointer') does GLib::Roles::Pointers is export { }
+class GstPlayerVideoRenderer    is repr('CPointer') does GLib::Roles::Pointers is export { }
 class GstReferenceTimestampMeta is repr('CPointer') does GLib::Roles::Pointers is export { }
 class GstUri                    is repr('CPointer') does GLib::Roles::Pointers is export { }
 class GstURIHandler             is repr('CPointer') does GLib::Roles::Pointers is export { }
+
+class GstPlayerVideoOverlayVideoRenderer is repr('CPointer') does GLib::Roles::Pointers is export { }
+class GstMainContextSignalDispatcher     is repr('CPointer') does GLib::Roles::Pointers is export { }
 
 constant GST_OBJECT_FLAG_LAST      is export = 1 +< 4;
 constant GST_CLOCK_TIME_NONE       is export = 18446744073709551615;
