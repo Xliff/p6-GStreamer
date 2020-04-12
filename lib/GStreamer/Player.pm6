@@ -6,11 +6,10 @@ use GStreamer::Raw::Types;
 use GStreamer::Player::Raw::Player;
 
 use GStreamer::Element;
+use GStreamer::Object;
 use GStreamer::Player::AudioInfo;
-use GStreamer::Player::GstPlayerVideoInfo;
 use GStreamer::Player::SubtitleInfo;
 use GStreamer::Player::VideoInfo;
-use GStreamer::Object;
 use GStreamer::Sample;
 use GStreamer::Structure;
 
