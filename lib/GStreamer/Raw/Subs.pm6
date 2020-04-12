@@ -45,3 +45,7 @@ sub time_args ($d) is export {
      $d % GST_SECOND
   ) !! (99, 99, 99, 999999999)
 }
+
+sub timeval-to-time (GTimeVal $tv) {
+  $tv.tv_sec * GST_SECOND + $tv.tv_usec * GST_USECOND;
+}

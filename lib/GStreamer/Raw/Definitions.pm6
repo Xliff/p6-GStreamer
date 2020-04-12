@@ -126,6 +126,9 @@ constant GST_OBJECT_FLAG_LAST      is export = 1 +< 4;
 constant GST_CLOCK_TIME_NONE       is export = 18446744073709551615;
 constant GST_TIME_FORMAT           is export = '%u:%02u:%02u.%09u';
 constant GST_SECOND                is export = 1000000000;
+constant GST_MSECOND               is export = 1000000;
+constant GST_USECOND               is export = 1000;
+constant GST_NSECOND               is export = 1;
 
 constant GST_ELEMENT_METADATA_LONGNAME    is export = 'long-name';
 constant GST_ELEMENT_METADATA_DESCRIPTION is export = 'description';
