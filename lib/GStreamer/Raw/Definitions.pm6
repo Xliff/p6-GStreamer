@@ -9,7 +9,7 @@ use GLib::Roles::Pointers;
 unit package GStreamer::Raw::Definitions;
 
 # Number of forced compiles made.
-constant forced = 1;
+constant forced = 2;
 
 constant GstClockTime              is export := int64;
 constant GstClockTimeDiff          is export := int64;
@@ -141,6 +141,11 @@ constant GST_SECOND                is export = 1000000000;
 constant GST_MSECOND               is export = 1000000;
 constant GST_USECOND               is export = 1000;
 constant GST_NSECOND               is export = 1;
+
+constant GST_PLAY_KB_ARROW_UP      is export = "\033[A";
+constant GST_PLAY_KB_ARROW_DOWN    is export = "\033[B";
+constant GST_PLAY_KB_ARROW_RIGHT   is export = "\033[C";
+constant GST_PLAY_KB_ARROW_LEFT    is export = "\033[D";
 
 constant GST_ELEMENT_METADATA_LONGNAME    is export = 'long-name';
 constant GST_ELEMENT_METADATA_DESCRIPTION is export = 'description';

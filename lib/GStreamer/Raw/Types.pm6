@@ -6,7 +6,7 @@ use GLib::Raw::Exports;
 use GIO::Raw::Exports;
 use GStreamer::Raw::Exports;
 
-constant forced = 1;
+constant forced = 2;
 
 unit package GStreamer::Raw::Types;
 
