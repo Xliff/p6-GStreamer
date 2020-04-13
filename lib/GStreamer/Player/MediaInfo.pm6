@@ -8,10 +8,10 @@ use GStreamer::Player::Raw::StreamInfo;
 use GStreamer::Object;
 use GStreamer::Sample;
 
-our subset GstPlayerMediaInfo is export of Mu
-  GstPlayerMediaInfo | GstObject;
+our subset GstPlayerMediaInfoAncestry is export of Mu
+  where GstPlayerMediaInfo | GstObject;
 
-class GStreamer::Player::MediaInfo is GStreamer::Object; {
+class GStreamer::Player::MediaInfo is GStreamer::Object {
   has GstPlayerMediaInfo $!mi;
 
   submethod BUILD (:$video-info) {
@@ -43,7 +43,7 @@ class GStreamer::Player::MediaInfo is GStreamer::Object; {
     $media-info ?? self.bless( :$media-info ) !! Nil;
   }
 
-  method get_audio_streams (:$glist = False, $raw = False)
+  method get_audio_streams (:$glist = False, :$raw = False)
     is also<
       get-audio-streams
       audio_streams
@@ -57,7 +57,7 @@ class GStreamer::Player::MediaInfo is GStreamer::Object; {
     # Note to self... ahhh.. heh... the logic on this should be
     # `if $glist && $raw`.... mea culpa!
     # Yes, this applies to the ENTIRE PRODUCT LINE!
-    return $asl if $glist && $raw
+    return $asl if $glist && $raw;
 
     $asl = GLib::GList.new($asl) but GLib::Roles::ListData[GstPlayerAudioInfo];
 
@@ -144,7 +144,7 @@ class GStreamer::Player::MediaInfo is GStreamer::Object; {
     gst_player_media_info_get_number_of_video_streams($!mi);
   }
 
-  method get_stream_list (:$glist = False, $raw = False)
+  method get_stream_list (:$glist = False, :$raw = False)
     is also<
       get-stream-list
       stream_list
@@ -201,7 +201,7 @@ class GStreamer::Player::MediaInfo is GStreamer::Object; {
     gst_player_media_info_get_uri($!mi);
   }
 
-  method get_video_streams
+  method get_video_streams (:$glist = False, :$raw = False)
     is also<
       get-video-streams
       video_streams
@@ -213,7 +213,7 @@ class GStreamer::Player::MediaInfo is GStreamer::Object; {
     return Nil unless $vsl;
     return $vsl if $glist && $raw;
 
-    $sl = GLib::GList.new($vsl) but GLib::Roles::ListData[GstPlayerVideoInfo];
+    $vsl = GLib::GList.new($vsl) but GLib::Roles::ListData[GstPlayerVideoInfo];
 
     return $vsl if $glist;
 

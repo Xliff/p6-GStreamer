@@ -9,8 +9,8 @@ use GStreamer::Caps;
 use GStreamer::Object;
 use GStreamer::TagList;
 
-our subset GstPlayerStreamInfo is export of Mu
-  GstPlayerStreamInfo | GstObject;
+our subset GstPlayerStreamInfoAncestry is export of Mu
+  where GstPlayerStreamInfo | GstObject;
 
 class GStreamer::Player::StreamInfo is GStreamer::Object {
   has GstPlayerStreamInfo $!si;
@@ -40,8 +40,8 @@ class GStreamer::Player::StreamInfo is GStreamer::Object {
     is also<GstPlayerStreamInfo>
   { $!si }
 
-  method new (GstPlayerStreamInfoAncestry $video-info) {
-    $video-info ?? self.bless( :$stream-info ) !! Nil;
+  method new (GstPlayerStreamInfoAncestry $stream-info) {
+    $stream-info ?? self.bless( :$stream-info ) !! Nil;
   }
 
   method get_caps (:$raw = False) is also<get-caps> {

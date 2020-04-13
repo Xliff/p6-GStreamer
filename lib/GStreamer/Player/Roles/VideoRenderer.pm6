@@ -7,7 +7,7 @@ use GStreamer::Raw::Types;
 use GStreamer::Element;
 
 role GStreamer::Player::Roles::VideoRenderer {
-  has GstPlayerVideoRenderer $!vr
+  has GstPlayerVideoRenderer $!vr;
 
   method roleInit-VideoRenderer {
     my \i = findProperImplementor(self.^attributes);

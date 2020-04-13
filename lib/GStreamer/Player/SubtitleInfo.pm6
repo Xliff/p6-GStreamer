@@ -20,7 +20,7 @@ class GStreamer::Player::SubtitleInfo is GStreamer::Player::StreamInfo {
   method setSubtitleInfo (GstPlayerSubtitleInfoAncestry $_) {
     my $to-parent;
 
-    $!ai = do {
+    $!si = do {
       when GstPlayerSubtitleInfo {
         $to-parent = cast(GstPlayerStreamInfo, $_);
         $_;
@@ -36,7 +36,7 @@ class GStreamer::Player::SubtitleInfo is GStreamer::Player::StreamInfo {
 
   method GStreamer::Raw::Definitions::GstPlayerSubtitleInfo
     is also<GstPlayerSubtitleInfo>
-  { $!ai }
+  { $!si }
 
   method new (GstPlayerSubtitleInfoAncestry $subtitle-info) {
     $subtitle-info ?? self.bless( :$subtitle-info ) !! Nil;

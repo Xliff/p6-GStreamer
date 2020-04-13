@@ -215,10 +215,5 @@ sub gst_player_video_info_get_pixel_aspect_ratio (
 sub gst_player_video_info_get_width (GstPlayerVideoInfo $info)
   returns gint
   is native(gstreamer-player)
+  is export
 { * }
-a
-
-# Trimmed: 3
-# 34:  (gst_player_media_info_get_video_streams) GList*        gst_player_get_video_streams    (const GstPlayerMediaInfo *info);
-# 35:  (gst_player_media_info_get_audio_streams) GList*        gst_player_get_audio_streams    (const GstPlayerMediaInfo *info);
-# 36:  (gst_player_media_info_get_subtitle_streams) GList*        gst_player_get_subtitle_streams (const GstPlayerMediaInfo *info);
