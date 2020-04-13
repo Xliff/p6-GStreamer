@@ -2,6 +2,7 @@ use v6.c;
 
 use GStreamer::Raw::Types;
 
+use GLib::Convert;
 use GLib::MainLoop;
 use GLib::Object::IsType;
 use GStreamer::DateTime;
@@ -10,10 +11,13 @@ use GStreamer::Player;
 use GStreamer::Player::AudioInfo;
 use GStreamer::Player::MainContextSignalDispatcher;
 use GStreamer::Player::MediaInfo;
-use GStreamer::Player::SubtitleInfo
+use GStreamer::Player::SubtitleInfo;
 use GStreamer::Player::VideoInfo;
+use GStreamer::URI;
 
 my %data;
+
+constant VOLUME_STEPS = 20;
 
 sub GENERATE-USAGE ($, |) {
   my $usage = &*GENERATE-USAGE(&MAIN, &MAIN.signature);
@@ -27,14 +31,14 @@ sub usage {
 }
 
 sub next-item {
-  if !play-next {
+  if !play-next() {
     say "Reached end of play list.";
     %data<loop>.quit;
   }
 }
 
 sub on-end {
-  &say;
+  &say();
   next-item;
 }
 
@@ -44,13 +48,13 @@ sub on-error ($, $e, $) {
   next-item;
 }
 
-sub on-update ($, $p, $) {
+sub on-update ($, $pos, $) {
   my $dur = %data<player>.get-int64('duration');
 
-  return unless $p == -1 || $dur <= 0;
+  return unless $pos == -1 || $dur <= 0;
 
-  $ps = $pos.fmt("{ GST_TIME_FORMAT }", |gst-time-args($pos)).substr(0, 8);
-  $ds = $dur.fmt("{ GST_TIME_FORMAT }", |gst-time-args($dur)).substr(0, 8);
+  my $ps = $pos.fmt("{ GST_TIME_FORMAT }", |time-args($pos)).substr(0, 8);
+  my $ds = $dur.fmt("{ GST_TIME_FORMAT }", |time-args($dur)).substr(0, 8);
   say "{ $ps } / { $ds } { ' ' x 63 }";
 }
 
@@ -62,9 +66,9 @@ sub print-one-tag ($l, $t) {
   my $num-tags = $l.get-tag-size($t);
 
   for ^$num-tags {
-    my $v = $l.get-value-index($t, $i);
+    my $v = $l.get-value-index($t, $_);
 
-    say "    { $tag } : {
+    say "    { $t } : {
       do if $v.type == GStreamer::DateTime.get-type {
         my $dt = GStreamer::DateTime.new( cast(GstDateTime, $v.boxed) );
         die 'Could not retrieve date time value!' unless $dt;
@@ -73,7 +77,7 @@ sub print-one-tag ($l, $t) {
       } elsif $v.type ∈ GTypeEnum.enums.values {
         "{ $v.value }";
       } else {
-        "tag of type '{ g_type_name($v) }'";
+        "tag of type '{ get_gtype_name($v) }'";
       }
     }";
   }
@@ -120,12 +124,12 @@ multi sub print-subtitle-info ($si) {
 sub print-all-stream-info ($i) {
   say qq:to/INFO/;
     URI : { $i.get-uri }
-    Duration: { sprintf("{ GST_TIME_FORMAT }", |gst-time-args($i.get-duration)) }
+    Duration: { sprintf("{ GST_TIME_FORMAT }", |time-args($i.get-duration)) }
     Global taglist:
     INFO
 
-  if $i.get-tags -> $t {
-    print-one-tag($_} for $t;
+  if $i.get-tags() -> $t {
+    print-one-tag($_) for $t;
   } else {
     say '  (nil) ';
   }
@@ -196,10 +200,10 @@ sub print-current-tracks {
 }
 
 sub print-media-info ($mi) {
-  print-all-stream-info($mi)    ; &say;
-  print-all-video-stream($mi)   ; &say;
-  print-all-audio-stream($mi)   ; &say;
-  print-all-subtitle-stream($mi); &say;
+  print-all-stream-info($mi)    ; &say();
+  print-all-video-stream($mi)   ; &say();
+  print-all-audio-stream($mi)   ; &say();
+  print-all-subtitle-stream($mi); &say();
 }
 
 sub on-media-update ($, $i, $) {
@@ -225,17 +229,17 @@ sub play-new (@uris, $volume --> Nil) {
   %data<loop> = GLib::MainLoop.new;
   %data<desired-state> = GST_STATE_PLAYING;
 
-  set-relative-volume($volume - 1e0);
+  relative-vol($volume - 1e0);
 }
 
 sub play-free {
   %data{$_}.unref for <player loop>;
 }
 
-sub set-relative-volume($vs) {
+sub relative-vol($vs) {
   my $vol = %data<player>.get-double('volume');
 
-  $vol = ($vol + $vs).round * VOLUME_STEPS / VOLUME_STEPS;
+  #$vol = ($vol + $vs).round * VOLUME_STEPS / VOLUME_STEPS;
   $vol = 0e0  if $vol < 0e0;
   $vol = 10e0 if $vol > 10e0;
   %data<player>.set-double('volume', $vol);
@@ -254,9 +258,9 @@ sub play-uri-get-display-name ($u) {
 }
 
 sub play-uri ($u) {
-  play-reset;
+  #play-reset;
 
-  say "Now playing { play-uri-get-diusplay-name($u) }";
+  say "Now playing { play-uri-get-display-name($u) }";
   %data<player>.set_data_string('uri', $u);
   %data<player>.play;
 }
@@ -267,34 +271,34 @@ sub play-next {
     say 'Looping playlist';
     %data<play>.cur-idx = -1;
   }
-  play-uri(%data<uris>[ ++%data<cur-idx> ];
+  play-uri( %data<uris>[ ++%data<cur-idx> ] );
   True;
 }
 
 sub play-prev {
   return False if %data<cur-idx>.not || %data<uris>.elems < 1;
-  play-uri(%data<uris>[ --%data<cur-idx> ];
+  play-uri( %data<uris>[ --%data<cur-idx> ] );
   True;
 }
 
 sub do-play {
   say "{ .fmt('%4u') } : { %data<playlist>[$_] }" for ^%data<playlist>;
   return unless play-next;
-  %playlist<mainloop>.run;
+  %data<mainloop>.run;
 }
 
 sub add-to-playlist($f) {
-  if gst_uri_is_falid($f) {
+  if GStreamer::URI.is-valid($f) {
     %data<playlist>.push: $f;
     return;
   }
 
   if $f.IO.d {
     %data<playlist>.push($_) for $f.IO.dir(test => *.IO.f);
-    return;.
+    return;
   }
 
-  if ( my $uri = gst_filename_to_uri($f) ) {
+  if ( my $uri = GLib::Convert.filename-to-uri($f) ) {
     %data<playlist>.push: $uri;
   } else {
     say "Could not make URI out of filename '{ $uri }'";
@@ -303,8 +307,8 @@ sub add-to-playlist($f) {
 
 sub toggle-paused {
   %data<desired-state> = do given %data<desired-state> {
-    when GST_STATE_PLAYING {  GST_STATE_PAUSED; %data<player>.pause }
-    when GST_STATE_PAUSED  { GST_STATE_PLAYING; %data<player>.play  }
+    when GST_STATE_PLAYING { %data<player>.pause; GST_STATE_PAUSED;  }
+    when GST_STATE_PAUSED  { %data<player>.play;  GST_STATE_PLAYING; }
   }
 }
 
@@ -320,7 +324,7 @@ sub relative-seek ($per) {
 
   $pos += $dur * $per;
   $pos = 0 if $pos < 0;
-  %data<player.seek($pos);
+  %data<player>.seek($pos);
 }
 
 sub on-key ($key, $data) {
@@ -336,7 +340,7 @@ sub on-key ($key, $data) {
     when '<'    { play-prev             }
     when '>'    { if play-next.not {
                     say "\nReached end of play list.";
-                    %data<mainloop.quit
+                    %data<mainloop>.quit;
                   }
                 }
     when '\033' { %data<mainloop>.quit if $key.chars == 1; }
@@ -346,6 +350,7 @@ sub on-key ($key, $data) {
       when $key eq GST_PLAY_KB_ARROW_LEFT  { relative-seek(-0.01)            }
       when $key eq GST_PLAY_KB_ARROW_UP    { relative-vol( 1 / VOLUME_STEPS) }
       when $key eq GST_PLAY_KB_ARROW_DOWN  { relative-vol(-1 / VOLUME_STEPS) }
+
       default                              { say "  code { .fmt('%3d') }"
                                                for $key.comb                 }
     }
@@ -377,14 +382,14 @@ sub MAIN (
   %data<repeat> = $repeat;
 
   if $interractive {
-    #if set-key-handler(&on-key, $play {
+    #if set-key-handler(&on-key) {
     #  LEAVE { gst_play_kb_set_key_handler (NULL, NULL) }
     #} else {
     #  say "Interractive keyboard handling in terminal not available";
     #}
   }
 
-  do-play($play);
+  do-play;
   #play-free($play);
   &say();
   # # gst_deinit(); # Convert to Raku
