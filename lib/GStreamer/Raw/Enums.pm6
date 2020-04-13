@@ -994,6 +994,14 @@ our enum GstNavigationQueryTypeEnum is export (
     GST_NAVIGATION_QUERY_ANGLES   => 2,
 );
 
+constant GstPlayerColorBalanceType is export := guint32;
+our enum GstPlayerColorBalanceTypeEnum is export <
+  GST_PLAYER_COLOR_BALANCE_BRIGHTNESS
+  GST_PLAYER_COLOR_BALANCE_CONTRAST
+  GST_PLAYER_COLOR_BALANCE_SATURATION
+  GST_PLAYER_COLOR_BALANCE_HUE
+>;
+
 constant GstVideoAlphaMode is export := guint32;
 our enum GstVideoAlphaModeEnum is export <
     GST_VIDEO_ALPHA_MODE_COPY
@@ -1127,4 +1135,9 @@ our enum GstVideoVBIParserResultEnum is export (
     GST_VIDEO_VBI_PARSER_RESULT_DONE  => 0,
     GST_VIDEO_VBI_PARSER_RESULT_OK    => 1,
     GST_VIDEO_VBI_PARSER_RESULT_ERROR => 2,
+);
+
+constant GstPlayerError is export := guint32;
+our enum GstPlayerErrorEnum is export (
+  GST_PLAYER_ERROR_FAILED => 0
 );
