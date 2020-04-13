@@ -99,6 +99,7 @@ class GstPadProbeInfo           is repr('CPointer') does GLib::Roles::Pointers i
 #class GstPadTemplate            is repr('CPointer') does GLib::Roles::Pointers is export { }
 class GstParseContext           is repr('CPointer') does GLib::Roles::Pointers is export { }
 class GstPipeline               is repr('CPointer') does GLib::Roles::Pointers is export { }
+class GstPlayer                 is repr('CPointer') does GLib::Roles::Pointers is export { }
 class GstPlugin                 is repr('CPointer') does GLib::Roles::Pointers is export { }
 class GstPluginFeature          is repr('CPointer') does GLib::Roles::Pointers is export { }
 class GstProbeInfo              is repr('CPointer') does GLib::Roles::Pointers is export { }
@@ -119,14 +120,19 @@ class GstMapInfo                is repr('CPointer') does GLib::Roles::Pointers i
 #class GstMemory                 is repr('CPointer') does GLib::Roles::Pointers is export { }
 class GstMeta                   is repr('CPointer') does GLib::Roles::Pointers is export { }
 class GstParentBufferMeta       is repr('CPointer') does GLib::Roles::Pointers is export { }
+class GstPlayerAudioInfo        is repr('CPointer') does GLib::Roles::Pointers is export { }
+class GstPlayerMediaInfo        is repr('CPointer') does GLib::Roles::Pointers is export { }
 class GstPlayerSignalDispatcher is repr('CPointer') does GLib::Roles::Pointers is export { }
+class GstPlayerStreamInfo       is repr('CPointer') does GLib::Roles::Pointers is export { }
+class GstPlayerSubtitleInfo     is repr('CPointer') does GLib::Roles::Pointers is export { }
+class GstPlayerVideoInfo        is repr('CPointer') does GLib::Roles::Pointers is export { }
 class GstPlayerVideoRenderer    is repr('CPointer') does GLib::Roles::Pointers is export { }
 class GstReferenceTimestampMeta is repr('CPointer') does GLib::Roles::Pointers is export { }
 class GstUri                    is repr('CPointer') does GLib::Roles::Pointers is export { }
 class GstURIHandler             is repr('CPointer') does GLib::Roles::Pointers is export { }
 
-class GstPlayerVideoOverlayVideoRenderer is repr('CPointer') does GLib::Roles::Pointers is export { }
-class GstMainContextSignalDispatcher     is repr('CPointer') does GLib::Roles::Pointers is export { }
+class GstPlayerVideoOverlayVideoRenderer   is repr('CPointer') does GLib::Roles::Pointers is export { }
+class GstPlayerMainContextSignalDispatcher is repr('CPointer') does GLib::Roles::Pointers is export { }
 
 constant GST_OBJECT_FLAG_LAST      is export = 1 +< 4;
 constant GST_CLOCK_TIME_NONE       is export = 18446744073709551615;
