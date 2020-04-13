@@ -13,7 +13,7 @@ our subset GstMainContextSignalDispatcherAncestry is export of Mu
 
 class GStreamer::Player::MainContextSignalDispatcher {
   also does GLib::Roles::Object;
-  
+
   has GstPlayerMainContextSignalDispatcher $!mcsd;
 
   submethod BUILD (:$csd) {
@@ -76,7 +76,7 @@ class GStreamer::Player::MainContextSignalDispatcher {
         $v = cast(GMainContext, $v);
         $raw ?? $v !! GLib::MainContext.new($v);
       },
-      STORE => -> $, GtkTreeModel() $val is copy {
+      STORE => -> $, GMainContext() $val is copy {
         warn 'application-context can only be set at construct-time!'
           if $DEBUG;
       }
