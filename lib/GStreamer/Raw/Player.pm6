@@ -4,7 +4,7 @@ use NativeCall;
 
 use GStreamer::Raw::Types;
 
-unit package GStreamer::Player::Raw::Player;
+unit package GStreamer::Raw::Player;
 
 ### /usr/include/gstreamer-1.0/gst/player/gstplayer.h
 
