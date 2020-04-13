@@ -39,11 +39,11 @@ class GStreamer::Player is GStreamer::Object {
         cast(GstPlayer, $_);
       }
     }
-    self.setObject($to-player);
+    self.setObject($to-parent);
   }
 
   method GStreamer::Raw::Definitions::GstPlayer
-    is <GstPlayer>
+    is also<GstPlayer>
   { $!p }
 
   subset DispatchOrObject of Mu
@@ -59,7 +59,7 @@ class GStreamer::Player is GStreamer::Object {
     GstPlayerVideoRenderer() $renderer,
     GstPlayerSignalDispatcher() $dispatcher
   ) {
-    my $player = gst_player_new($!p, $renderer, $dispatcher);
+    my $player = gst_player_new($renderer, $dispatcher);
 
     $player ?? self.bless(:$player) !! Nil;
   }
@@ -102,7 +102,7 @@ class GStreamer::Player is GStreamer::Object {
   {
     my $a = gst_player_get_current_audio_track($!p);
 
-    $a ?/
+    $a ??
       ( $raw ?? $a !! GStreamer::Player::AudioInfo.new($a) )
       !!
       GstPlayerAudioInfo;
@@ -141,10 +141,10 @@ class GStreamer::Player is GStreamer::Object {
   method get_media_info (:$raw = False) is also<get-media-info> {
     my $mi = gst_player_get_media_info($!p);
 
-    $vi ??
-      ( $raw ?/ $vi !! GStreamer::Player::VideoInfo.new($vi) )
+    $mi ??
+      ( $raw ?? $mi !! GStreamer::Player::MediaInfo.new($mi) )
       !!
-      GstPlayerVideoInfo;
+      GstPlayerMediaInfo;
   }
 
   # Make so flags can be checked using ∈/(elem) !
@@ -337,7 +337,7 @@ class GStreamer::Player is GStreamer::Object {
   }
 
   method set_visualization (Str() $name) is also<set-visualization> {
-    so st_player_set_visualization($!p, $name);
+    so gst_player_set_visualization($!p, $name);
   }
 
   method set_visualization_enabled (Int() $enabled)
