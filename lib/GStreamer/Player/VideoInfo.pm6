@@ -86,4 +86,8 @@ class GStreamer::Player::VideoInfo is GStreamer::Player::StreamInfo {
     gst_player_video_info_get_width($!vi);
   }
 
+  method get_size is also<get-size> {
+    (self.get_width, self.get_height)
+  }
+
 }
