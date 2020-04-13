@@ -48,7 +48,7 @@ class GStreamer::Player::AudioInfo is GStreamer::Player::StreamInfo {
       bitrate
     >
   {
-    gst_player_audio_info_get_bitrate($!p);
+    gst_player_audio_info_get_bitrate($!ai);
   }
 
   method get_channels
@@ -57,7 +57,7 @@ class GStreamer::Player::AudioInfo is GStreamer::Player::StreamInfo {
       channels
     >
   {
-    gst_player_audio_info_get_channels($!p);
+    gst_player_audio_info_get_channels($!ai);
   }
 
   method get_language
@@ -66,7 +66,7 @@ class GStreamer::Player::AudioInfo is GStreamer::Player::StreamInfo {
       language
     >
   {
-    gst_player_audio_info_get_language($!p);
+    gst_player_audio_info_get_language($!ai);
   }
 
   method get_max_bitrate
@@ -76,7 +76,7 @@ class GStreamer::Player::AudioInfo is GStreamer::Player::StreamInfo {
       max-bitrate
     >
   {
-    gst_player_audio_info_get_max_bitrate($!p);
+    gst_player_audio_info_get_max_bitrate($!ai);
   }
 
   method get_sample_rate
@@ -86,7 +86,7 @@ class GStreamer::Player::AudioInfo is GStreamer::Player::StreamInfo {
       sample-rate
     >
   {
-    gst_player_audio_info_get_sample_rate($!p);
+    gst_player_audio_info_get_sample_rate($!ai);
   }
 
 }
