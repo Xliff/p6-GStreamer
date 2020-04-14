@@ -5,6 +5,7 @@ use Method::Also;
 use GStreamer::Raw::Types;
 use GStreamer::Raw::Player;
 
+use GLib::Value;
 use GStreamer::Element;
 use GStreamer::Object;
 use GStreamer::Player::AudioInfo;
@@ -67,12 +68,10 @@ class GStreamer::Player is GStreamer::Object {
 
   # Type: GstPlayerAudioInfo
   method current-audio-track (:$raw = False) is rw {
-    my $gv;
+    my $gv = GLib::Value.new( G_TYPE_OBJECT );
     Proxy.new(
       FETCH => sub ($) {
-        $gv = GLib::Value.new(
-          self.prop_get('current-audio-track', $gv)
-        );
+        self.prop_get('current-audio-track', $gv);
 
         return Nil unless $gv.object;
 
@@ -87,19 +86,17 @@ class GStreamer::Player is GStreamer::Object {
 
   # Type: GstPlayerSubtitleInfo
   method current-subtitle-track (:$raw = False) is rw  {
-    my $gv;
+    my $gv = GLib::Value.new( G_TYPE_OBJECT );
     Proxy.new(
       FETCH => sub ($) {
-        $gv = GLib::Value.new(
-          self.prop_get('current-subtitle-track', $gv)
-        );
+        self.prop_get('current-subtitle-track', $gv);
 
         return Nil unless $gv.object;
 
         my $si = cast(GstPlayerAudioInfo, $gv.object);
         $raw ?? $si !! GStreamer::AudioInfo.new($si);
       },
-      STORE => -> $,  $val is copy {
+      STORE => -> $, $val is copy {
         warn 'current-subtitle-track does not allow writing'
       }
     );
@@ -107,19 +104,17 @@ class GStreamer::Player is GStreamer::Object {
 
   # Type: GstPlayerVideoInfo
   method current-video-track (:$raw = False) is rw  {
-    my $gv;
+    my $gv = GLib::Value.new( G_TYPE_OBJECT );
     Proxy.new(
       FETCH => sub ($) {
-        $gv = GLib::Value.new(
-          self.prop_get('current-video-track', $gv)
-        );
+        self.prop_get('current-video-track', $gv);
 
         return Nil unless $gv.object;
 
         my $vi = cast(GstPlayerVideoInfo, $gv.object);
         $raw ?? $vi !! GStreamer::VideoInfo.new($vi);
       },
-      STORE => -> $,  $val is copy {
+      STORE => -> $, $val is copy {
         warn 'current-video-track does not allow writing'
       }
     );
@@ -127,12 +122,10 @@ class GStreamer::Player is GStreamer::Object {
 
   # Type: guint64
   method duration is rw  {
-    my $gv;
+    my $gv = GLib::Value.new( G_TYPE_UINT64 );
     Proxy.new(
       FETCH => sub ($) {
-        $gv = GLib::Value.new(
-          self.prop_get('duration', $gv)
-        );
+        self.prop_get('duration', $gv);
         $gv.uint64;
       },
       STORE => -> $, Int() $val is copy {
@@ -143,12 +136,10 @@ class GStreamer::Player is GStreamer::Object {
 
   # Type: GstPlayerMediaInfo
   method media-info (:$raw = False) is rw  {
-    my $gv;
+    my $gv = GLib::Value.new( G_TYPE_OBJECT );
     Proxy.new(
       FETCH => sub ($) {
-        $gv = GLib::Value.new(
-          self.prop_get('media-info', $gv)
-        );
+        self.prop_get('media-info', $gv);
 
         return Nil unless $gv.object;
 
@@ -163,16 +154,13 @@ class GStreamer::Player is GStreamer::Object {
 
   # Type: gboolean
   method mute is rw  {
-    my $gv;
+    my $gv = GLib::Value.new( G_TYPE_BOOLEAN );
     Proxy.new(
       FETCH => sub ($) {
-        $gv = GLib::Value.new(
-          self.prop_get('mute', $gv)
-        );
+        self.prop_get('mute', $gv);
         $gv.boolean;
       },
       STORE => -> $, Int() $val is copy {
-        $gv = GLib::Value.new( G_TYPE_BOOLEAN );
         $gv.boolean = $val;
         self.prop_set('mute', $gv);
       }
@@ -181,12 +169,10 @@ class GStreamer::Player is GStreamer::Object {
 
   # Type: GstElement
   method pipeline (:$raw = False) is rw  {
-    my $gv;
+    my $gv = GLib::Value.new( GStreamer::Element.get-type );
     Proxy.new(
       FETCH => sub ($) {
-        $gv = GLib::Value.new(
-          self.prop_get('pipeline', $gv)
-        );
+        self.prop_get('pipeline', $gv);
 
         return Nil unless $gv.object;
 
@@ -201,12 +187,10 @@ class GStreamer::Player is GStreamer::Object {
 
   # Type: guint64
   method position is rw  {
-    my $gv;
+    my $gv = GLib::Value.new( G_TYPE_UINT64 );
     Proxy.new(
       FETCH => sub ($) {
-        $gv = GLib::Value.new(
-          self.prop_get('position', $gv)
-        );
+        self.prop_get('position', $gv);
         $gv.uint64;
       },
       STORE => -> $, Int() $val is copy {
@@ -217,16 +201,13 @@ class GStreamer::Player is GStreamer::Object {
 
   # Type: guint
   method position-update-interval is rw  {
-    my $gv;
+    my $gv = GLib::Value.new( G_TYPE_UINT );
     Proxy.new(
       FETCH => sub ($) {
-        $gv = GLib::Value.new(
-          self.prop_get('position-update-interval', $gv)
-        );
+        self.prop_get('position-update-interval', $gv);
         $gv.uint;
       },
       STORE => -> $, Int() $val is copy {
-        $gv = GLib::Value.new( G_TYPE_UINT );
         $gv.uint = $val;
         self.prop_set('position-update-interval', $gv);
       }
@@ -235,16 +216,13 @@ class GStreamer::Player is GStreamer::Object {
 
   # Type: gdouble
   method rate is rw  {
-    my $gv;
+    my $gv = GLib::Value.new( G_TYPE_DOUBLE );
     Proxy.new(
       FETCH => sub ($) {
-        $gv = GLib::Value.new(
-          self.prop_get('rate', $gv)
-        );
+        self.prop_get('rate', $gv);
         $gv.double;
       },
       STORE => -> $, Num() $val is copy {
-        $gv = GLib::Value.new( G_TYPE_DOUBLE );
         $gv.double = $val;
         self.prop_set('rate', $gv);
       }
@@ -253,14 +231,13 @@ class GStreamer::Player is GStreamer::Object {
 
   # Type: GstPlayerSignalDispatcher
   method signal-dispatcher is rw  {
-    my $gv;
+    my $gv = GLib::Value.new( G_TYPE_OBJECT );
     Proxy.new(
       FETCH => sub ($) {
         warn 'signal-dispatcher does not allow reading' if $DEBUG;
         0;
       },
       STORE => -> $, GstPlayerSignalDispatcher() $val is copy {
-        $gv = GLib::Value.new( G_TYPE_OBJECT );
         $gv.object = $val;
         self.prop_set('signal-dispatcher', $gv);
       }
@@ -269,16 +246,13 @@ class GStreamer::Player is GStreamer::Object {
 
   # Type: gchar
   method suburi is rw  {
-    my $gv;
+    my $gv = GLib::Value.new( G_TYPE_STRING );
     Proxy.new(
       FETCH => sub ($) {
-        $gv = GLib::Value.new(
-          self.prop_get('suburi', $gv)
-        );
+        self.prop_get('suburi', $gv);
         $gv.string;
       },
       STORE => -> $, Str() $val is copy {
-        $gv = GLib::Value.new( G_TYPE_STRING );
         $gv.string = $val;
         self.prop_set('suburi', $gv);
       }
@@ -287,16 +261,13 @@ class GStreamer::Player is GStreamer::Object {
 
   # Type: gchar
   method uri is rw  {
-    my $gv;
+    my $gv = GLib::Value.new( G_TYPE_STRING );
     Proxy.new(
       FETCH => sub ($) {
-        $gv = GLib::Value.new(
-          self.prop_get('uri', $gv)
-        );
+        self.prop_get('uri', $gv);
         $gv.string;
       },
       STORE => -> $, Str() $val is copy {
-        $gv = GLib::Value.new( G_TYPE_STRING );
         $gv.string = $val;
         self.prop_set('uri', $gv);
       }
@@ -305,14 +276,13 @@ class GStreamer::Player is GStreamer::Object {
 
   # Type: GstPlayerVideoRenderer
   method video-renderer is rw  {
-    my $gv;
+    my $gv = GLib::Value.new( G_TYPE_OBJECT );
     Proxy.new(
       FETCH => sub ($) {
         warn 'video-renderer does not allow reading' if $DEBUG;
         0;
       },
       STORE => -> $, GstPlayerVideoRenderer() $val is copy {
-        $gv = GLib::Value.new( G_TYPE_OBJECT );
         $gv.object = $val;
         self.prop_set('video-renderer', $gv);
       }
@@ -321,16 +291,13 @@ class GStreamer::Player is GStreamer::Object {
 
   # Type: gdouble
   method volume is rw  {
-    my $gv;
+    my $gv = GLib::Value.new( G_TYPE_DOUBLE );
     Proxy.new(
       FETCH => sub ($) {
-        $gv = GLib::Value.new(
-          self.prop_get('volume', $gv)
-        );
+        self.prop_get('volume', $gv);
         $gv.double;
       },
       STORE => -> $, Num() $val is copy {
-        $gv = GLib::Value.new( G_TYPE_DOUBLE );
         $gv.double = $val;
         self.prop_set('volume', $gv);
       }
