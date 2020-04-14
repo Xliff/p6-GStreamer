@@ -8,6 +8,7 @@ use GStreamer::Raw::Player;
 use GStreamer::Element;
 use GStreamer::Object;
 use GStreamer::Player::AudioInfo;
+use GStreamer::Player::MainContextSignalDispatcher;
 use GStreamer::Player::SubtitleInfo;
 use GStreamer::Player::VideoInfo;
 use GStreamer::Sample;
@@ -39,7 +40,7 @@ class GStreamer::Player is GStreamer::Object {
         cast(GstPlayer, $_);
       }
     }
-    self.setObject($to-parent);
+    self.setGstObject($to-parent);
   }
 
   method GStreamer::Raw::Definitions::GstPlayer
@@ -51,9 +52,7 @@ class GStreamer::Player is GStreamer::Object {
           GStreamer::Player::MainContextSignalDispatcher;
 
   multi method new (DispatchOrObject $dispatcher is copy) {
-    $dispatcher .= GstPlayerMainContextSignalDispatcher
-      if $dispatcher ~~ GStreamer::Playeer::MainContextSignalDispatcher;
-    samewith($, $dispatcher);
+    samewith(GstPlayerVideoRenderer, $dispatcher);
   }
   multi method new (
     GstPlayerVideoRenderer() $renderer,
