@@ -16,7 +16,7 @@ class GStreamer::Player::StreamInfo is GStreamer::Object {
   has GstPlayerStreamInfo $!si;
 
   submethod BUILD (:$stream-info) {
-    self.setStreamInfo($stream-info);
+    self.setStreamInfo($stream-info) if $stream-info;
   }
 
   method setStreamInfo (GstPlayerStreamInfoAncestry $_) {
