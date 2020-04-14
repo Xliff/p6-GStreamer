@@ -22,12 +22,12 @@ role GStreamer::Roles::Signals::Player {
     %!signals-p{$signal} //= do {
       my \𝒮 = Supplier.new;
       $hid = g-connect-error($obj, $signal,
-        -> $, $, $ud {
+        -> $, $e, $ud {
           CATCH {
-            default { $s.note($_) }
+            default { 𝒮.note($_) }
           }
 
-          $s.emit( [self, $, $ud ] );
+          𝒮.emit( [self, $e, $ud ] );
         },
         Pointer, 0
       );
@@ -49,10 +49,10 @@ role GStreamer::Roles::Signals::Player {
       $hid = g-connect-media-info-updated($obj, $signal,
         -> $, $gpmi, $ud {
           CATCH {
-            default { $s.note($_) }
+            default { 𝒮.note($_) }
           }
 
-          $s.emit( [self, $gpmi, $ud ] );
+          𝒮.emit( [self, $gpmi, $ud ] );
         },
         Pointer, 0
       );
