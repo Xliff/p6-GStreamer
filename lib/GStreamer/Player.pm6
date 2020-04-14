@@ -14,13 +14,13 @@ use GStreamer::Player::VideoInfo;
 use GStreamer::Sample;
 use GStreamer::Structure;
 
-use GLib::Roles::Signals::Generic;
+use GStreamer::Roles::Signals::Player;
 
 our subset GstPlayerAncestry is export of Mu
   where GstPlayer | GstObject;
 
 class GStreamer::Player is GStreamer::Object {
-  also does GLib::Roles::Signals::Generic;
+  also does GStreamer::Roles::Signals::Player;
 
   has GstPlayer $!p;
 
