@@ -93,7 +93,7 @@ class GStreamer::Bus is GStreamer::Object {
     $s ??
       ( $raw ?? $s !! GLib::Source.new($s) )
       !!
-      GSource;
+      Nil;
   }
 
   method disable_sync_message_emission is also<disable-sync-message-emission> {
@@ -142,7 +142,7 @@ class GStreamer::Bus is GStreamer::Object {
     $m ??
       ( $raw ?? $m !! $msg-late-bound.new($m) )
       !!
-      GstMessage;
+      Nil;
   }
 
   method poll (
@@ -164,7 +164,7 @@ class GStreamer::Bus is GStreamer::Object {
     $m ??
       ( $raw ?? $m !! $msg-late-bound.new($m) )
       !!
-      GstMessage;
+      Nil;
   }
 
   method pop (:$raw = False) {
@@ -182,7 +182,7 @@ class GStreamer::Bus is GStreamer::Object {
     $m ??
       ( $raw ?? $m !! $msg-late-bound.new($m) )
       !!
-      GstMessage;
+      Nil;
   }
 
   method pop_filtered (
@@ -206,7 +206,7 @@ class GStreamer::Bus is GStreamer::Object {
     $m ??
       ( $raw ?? $m !! $msg-late-bound.new($m) )
       !!
-      GstMessage;
+      Nil;
   }
 
   method post (GstMessage() $message) {
@@ -265,7 +265,7 @@ class GStreamer::Bus is GStreamer::Object {
     $m ??
       ( $raw ?? $m !! $msg-late-bound.new($m) )
       !!
-      GstMessage;
+      Nil;
   }
 
   method timed_pop_filtered (
@@ -291,7 +291,7 @@ class GStreamer::Bus is GStreamer::Object {
     $m ??
       ( $raw ?? $m !! $msg-late-bound.new($m) )
       !!
-      GstMessage;
+      Nil;
   }
 
 }

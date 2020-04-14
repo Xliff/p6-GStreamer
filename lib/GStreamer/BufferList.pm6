@@ -95,7 +95,7 @@ class GStreamer::BufferList is GStreamer::MiniObject {
     $c ??
       ( $raw ?? $c !! GStreamer::BufferList.new($c) )
       !!
-      GstBufferList;
+      Nil;
   }
 
   method foreach (
@@ -112,7 +112,7 @@ class GStreamer::BufferList is GStreamer::MiniObject {
     $b ??
       ( $raw ?? $b !! GStreamer::Buffer.new($b) )
       !!
-      GstBuffer;
+      Nil;
   }
 
   method get_type is also<get-type> {
@@ -128,7 +128,7 @@ class GStreamer::BufferList is GStreamer::MiniObject {
     $b ??
       ( $raw ?? $b !! GStreamer::Buffer.new($b) )
       !!
-      GstBuffer;
+      Nil;
   }
 
   method insert (Int() $idx, GstBuffer() $buffer) {

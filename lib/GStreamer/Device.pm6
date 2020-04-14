@@ -54,7 +54,7 @@ class GStreamer::Device is GStreamer::Object {
     $e ??
       ( $raw ?? $e !! GStreamer::Element.new($e) )
       !!
-      GstElement;
+      Nil;
   }
 
   method get_caps (:$raw = False) is also<get-caps> {
@@ -63,7 +63,7 @@ class GStreamer::Device is GStreamer::Object {
     $c ??
       ( $raw ?? $c !! GStreamer::Caps.new($c) )
       !!
-      GstElement;
+      Nil;
   }
 
   method get_device_class is also<get-device-class> {
@@ -80,7 +80,7 @@ class GStreamer::Device is GStreamer::Object {
     $p ??
       ( $raw ?? $p !! GStreamer::Structure.new($p) )
       !!
-      GstStructure;
+      Nil;
   }
 
   method get_type is also<get-type> {

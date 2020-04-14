@@ -82,7 +82,7 @@ class GStreamer::CapsFeatures {
     $c ??
       ( $raw ?? $c !! GStreamer::CapsFeatures.new($c) )
       !!
-      GstCapsFeatures;
+      Nil;
   }
 
   method free {

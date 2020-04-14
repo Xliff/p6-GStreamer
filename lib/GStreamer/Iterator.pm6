@@ -80,7 +80,7 @@ class GStreamer::Iterator {
     $c ??
       ( $raw ?? $c !! GStreamer::Iterator.new($c) )
       !!
-      GstIterator;
+      Nil;
   }
 
   method filter (
@@ -93,7 +93,7 @@ class GStreamer::Iterator {
     $i ??
       ( $raw ?? $i !! GStreamer::Iterator.new($i) )
       !!
-      GstIterator;
+      Nil;
   }
 
   method find_custom (

@@ -312,7 +312,7 @@ class GStreamer::Query is GStreamer::MiniObject {
     $s ??
       ( $raw ?? $s !! GStreamer::Structure.new($s) )
       !!
-      GstStructure;
+      Nil;
   }
 
   method get_type is also<get-type> {
@@ -678,7 +678,7 @@ class GStreamer::Query is GStreamer::MiniObject {
     $pool = $ba[0] ??
       ( $raw ?? $ba[0].deref !! GStreamer::BufferPool($ba[0].deref) )
       !!
-      GstBufferPool;
+      Nil;
 
     ($size, $min_buffers, $max_buffers) = ($s, $mnb, $mxb);
     ($pool, $size, $min_buffers, $max_buffers)
@@ -1147,7 +1147,7 @@ class GStreamer::Query is GStreamer::MiniObject {
     $s ??
       ( $raw ?? $s !! GStreamer::Structure.new($s) )
       !!
-      GstStructure;
+      Nil;
   }
 
 }

@@ -127,7 +127,7 @@ class GStreamer::TagList is GStreamer::MiniObject {
     $c ??
       ( $raw ?? $c !! GStreamer::TagList.new($c) )
       !!
-      GstTagList;
+      Nil;
   }
 
   proto method copy_value (|)
@@ -157,7 +157,7 @@ class GStreamer::TagList is GStreamer::MiniObject {
     $dest = $dest ??
       ( $raw ?? $dest !! GLib::Value.new($dest) )
       !!
-      GValue;
+      Nil;
 
     $all.not ?? $rv !! ($rv, $dest);
   }
@@ -693,7 +693,7 @@ class GStreamer::TagList is GStreamer::MiniObject {
     $v ??
       ( $raw ?? $v !! GLib::Value.new($v) )
       !!
-      GValue;
+      Nil;
   }
 
   multi method insert (GstTagList() $from, Int() $mode) {

@@ -30,7 +30,7 @@ class GStreamer::Parse {
     $e ??
       ( $raw ?? $e !! GStreamer::Element.new($e) )
       !!
-      GstElement;
+      Nil;
   }
 
   method launch_full (
@@ -50,7 +50,7 @@ class GStreamer::Parse {
     $e ??
       ( $raw ?? $e !! GStreamer::Element.new($e) )
       !!
-      GstElement;
+      Nil;
   }
 
   multi method launchv(
@@ -75,7 +75,7 @@ class GStreamer::Parse {
     $e ??
       ( $raw ?? $e !! GStreamer::Element.new($e) )
       !!
-      GstElement;
+      Nil;
   }
 
   proto method launchv_full (|)
@@ -106,7 +106,7 @@ class GStreamer::Parse {
     $e ??
       ( $raw ?? $e !! GStreamer::Element.new($e) )
       !!
-      GstElement;
+      Nil;
   }
 
 }

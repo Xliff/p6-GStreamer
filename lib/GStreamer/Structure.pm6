@@ -106,7 +106,7 @@ class GStreamer::Structure {
     $s ??
       ( $raw ?? $s !! GStreamer::Structure.new($s) )
       !!
-      GstStructure;
+      Nil;
   }
 
   method name is rw {
@@ -140,7 +140,7 @@ class GStreamer::Structure {
     $s ??
       ( $raw ?? $s !! GStreamer::Structure.new($s) )
       !!
-      GstStructure;
+      Nil;
   }
 
   multi method clear {
@@ -465,7 +465,7 @@ class GStreamer::Structure {
     $v ??
       ( $raw ?? $v !! GLib::Value.new($v) )
       !!
-      GValue;
+      Nil;
   }
 
   method has_field (Str() $fieldname) is also<has-field> {
@@ -495,7 +495,7 @@ class GStreamer::Structure {
     $v ??
       ( $raw ?? $v !! GLib::Value.new($v) )
       !!
-      GValue;
+      Nil;
   }
 
   method id_has_field (Int() $field) is also<id-has-field> {

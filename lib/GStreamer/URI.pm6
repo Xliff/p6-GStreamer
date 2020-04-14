@@ -240,7 +240,7 @@ class GStreamer::URI {
     $ht ??
       ( $raw ?? $ht !! GLib::HashTable.new($ht) )
       !!
-      GHashTable;
+      Nil;
   }
 
   method get_protocol (GStreamer::URI:U: Str() $uri) is also<get-protocol> {

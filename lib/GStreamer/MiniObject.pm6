@@ -51,7 +51,7 @@ class GStreamer::MiniObject {
     $c ??
       ( $raw ?? $c !! GStreamer::MiniObject.new($c) )
       !!
-      GstMiniObject;
+      Nil;
   }
 
   method init (
@@ -83,7 +83,7 @@ class GStreamer::MiniObject {
     $o ??
       ( $raw ?? $o !! GStreamer::MiniObject.new($o) )
       !!
-      GstMiniObject;
+      Nil;
   }
 
   method ref is also<upref> {

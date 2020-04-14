@@ -53,7 +53,7 @@ class GStreamer::ElementFactory is GStreamer::PluginFeature {
     $e ??
       ( $raw ?? $e !! GStreamer::Element.new($e) )
       !!
-      GstElement;
+      Nil;
   }
 
   method find (Str() $name, :$raw = False) {
@@ -248,7 +248,7 @@ class GStreamer::ElementFactory is GStreamer::PluginFeature {
     $e ??
       ( $raw ?? $e !! GStreamer::Element.new($e) )
       !!
-      GstElement;
+      Nil;
   }
 
   method register (

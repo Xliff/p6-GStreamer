@@ -81,7 +81,7 @@ role GStreamer::Roles::Plugins::Playbin {
         $b ??
           ( $raw ?? $b !! GStreamer::Buffer.new($b) )
           !!
-          GstBuffer;
+          Nil;
       },
       STORE => -> $,  $val is copy {
         warn 'frame does not allow writing'
@@ -118,7 +118,7 @@ role GStreamer::Roles::Plugins::Playbin {
         $v ??
           ( $raw ?? $v !! GStreamer::Element.new($v) )
           !!
-          GstElement;
+          Nil;
       },
       STORE => -> $, GstElement() $val is copy {
         $gv.object = $val;
@@ -141,7 +141,7 @@ role GStreamer::Roles::Plugins::Playbin {
         $v ??
           ( $raw ?? $v !! GStreamer::Element.new($v) )
           !!
-          GstElement;
+          Nil;
       },
       STORE => -> $, GstElementOrObject $val is copy {
         $val .= GObject if $val ~~ GStreamer::Element;
@@ -413,7 +413,7 @@ role GStreamer::Roles::Plugins::Playbin {
         $s ??
           ( $raw ?? $s !! GStreamer::Sample.new($s) )
           !!
-          GstSample;
+          Nil;
       },
       STORE => -> $,  $val is copy {
         warn 'sample does not allow writing'
@@ -434,7 +434,7 @@ role GStreamer::Roles::Plugins::Playbin {
         $e ??
           ( $raw ?? $e !! GStreamer::Element.new($e) )
           !!
-          GstElement;
+          Nil;
       },
       STORE => -> $, $val is copy {
         warn 'source does not allow writing'
@@ -489,7 +489,7 @@ role GStreamer::Roles::Plugins::Playbin {
         $s ??
           ( $raw ?? $s !! GStreamer::Element.new($s) )
           !!
-          GstElement;
+          Nil;
       },
       STORE => -> $, GstElement() $val is copy {
         $gv.object = $val;
@@ -579,7 +579,7 @@ role GStreamer::Roles::Plugins::Playbin {
         $e ??
           ( $raw ?? $e !! GStreamer::Element.new($e) )
           !!
-          GstElement;
+          Nil;
       },
       STORE => -> $, GstElement() $val is copy {
         $gv.object = $val;
@@ -603,7 +603,7 @@ role GStreamer::Roles::Plugins::Playbin {
         $e ??
           ( $raw ?? $e !! GStreamer::Element.new($e) )
           !!
-          GstElement;
+          Nil;
       },
       STORE => -> $, GstElement() $val is copy {
         $gv.object = $val;
@@ -627,7 +627,7 @@ role GStreamer::Roles::Plugins::Playbin {
         $e ??
           ( $raw ?? $e !! GStreamer::Element.new($e) )
           !!
-          GstElement;
+          Nil;
       },
       STORE => -> $, GstElement() $val is copy {
         $gv.object = $val;
@@ -754,7 +754,7 @@ role GStreamer::Roles::Plugins::Playbin {
     $taglist ??
       ( $raw ?? $taglist !! GStreamer::TagList.new($taglist) )
       !!
-      GstTagList;
+      Nil;
   }
 
   # GstPlayBin, gint, gpointer

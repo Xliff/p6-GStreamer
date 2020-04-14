@@ -248,7 +248,7 @@ class GStreamer::Buffer is GStreamer::MiniObject {
     $cd ??
       ( $raw ?? $cd !! GStreamer::Buffer.new($cd) )
       !!
-      GstBuffer;
+      Nil;
   }
 
   method copy_into (
@@ -291,7 +291,7 @@ class GStreamer::Buffer is GStreamer::MiniObject {
     $b ??
       ( $raw ?? $b !! GStreamer::Buffer.new($b) )
       !!
-      GstBuffer;
+      Nil;
   }
 
   method extract (Int() $offset, gpointer $dest, Int() $size) {
@@ -362,7 +362,7 @@ class GStreamer::Buffer is GStreamer::MiniObject {
     $m ??
       ( $raw ?? $m !! GStreamer::Memory.new($m) )
       !!
-      GstMemory;
+      Nil;
   }
 
   method get_max_memory ( GStreamer::Buffer:U: ) is also<get-max-memory> {
@@ -376,7 +376,7 @@ class GStreamer::Buffer is GStreamer::MiniObject {
     $m ??
       ( $raw ?? $m !! GStreamer::Memory.new($m) )
       !!
-      GstMemory;
+      Nil;
   }
 
   method get_memory_range (Int() $idx, Int() $length, :$raw = False)
@@ -388,7 +388,7 @@ class GStreamer::Buffer is GStreamer::MiniObject {
     $m ??
       ( $raw ?? $m !! GStreamer::Memory.new($m) )
       !!
-      GstMemory;
+      Nil;
   }
 
   method get_meta (Int() $api) is also<get-meta> {
@@ -506,7 +506,7 @@ class GStreamer::Buffer is GStreamer::MiniObject {
     $m ??
       ( $raw ?? $m !! GStreamer::Meta.new($m) )
       !!
-      GstMeta;
+      Nil;
   }
 
   method iterate_meta_filtered (
@@ -522,7 +522,7 @@ class GStreamer::Buffer is GStreamer::MiniObject {
     $meta ??
       ( $raw ?? $meta !! GStreamer::Meta.new($meta) )
       !!
-      GstMeta;
+      Nil;
   }
 
   method map (GstMapInfo() $info, Int() $flags) {
@@ -574,7 +574,7 @@ class GStreamer::Buffer is GStreamer::MiniObject {
     $m ??
       ( $raw ?? $m !! GStreamer::Memory.new($m) )
       !!
-      GstMemory;
+      Nil;
   }
 
   method prepend_memory (GstMemory() $mem) is also<prepend-memory> {

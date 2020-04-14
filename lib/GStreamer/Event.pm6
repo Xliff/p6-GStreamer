@@ -454,7 +454,7 @@ class GStreamer::Event is GStreamer::MiniObject {
     $s ??
       ( $raw ?? $s !! GStreamer::Segment.new($s) )
       !!
-      GstSegment;
+      Nil;
   }
   multi method copy_segment (GstSegment() $segment)  {
     gst_event_copy_segment($!e, $segment);
@@ -466,7 +466,7 @@ class GStreamer::Event is GStreamer::MiniObject {
     $s ??
       ( $raw ?? $s !! GStreamer::Structure.new($s) )
       !!
-      GstStructure;
+      Nil;
   }
 
   method get_type is also<get-type> {
@@ -810,7 +810,7 @@ class GStreamer::Event is GStreamer::MiniObject {
     $stream = $sa[0] ??
       ( $raw ?? $sa[0] !! GStreamer::Stream.new( $sa[0] ) )
       !!
-      GstStream;
+      Nil;
   }
 
   proto method parse_stream_collection (|)
@@ -832,7 +832,7 @@ class GStreamer::Event is GStreamer::MiniObject {
     $collection = $col[0] ??
       ( $raw ?? $col[0] !! GStreamer::StreamCollection.new( $col[0] ) )
       !!
-      GstStreamCollection;
+      Nil;
   }
 
   proto method parse_stream_flags (|)
@@ -874,7 +874,7 @@ class GStreamer::Event is GStreamer::MiniObject {
 
     gst_event_parse_stream_start($!e, $sa);
 
-    $stream_id = $sa[0] ?? $sa[0] !! Str;
+    $stream_id = $sa[0] ?? $sa[0] !! Nil;
   }
 
   proto method parse_tag (|)
@@ -911,7 +911,7 @@ class GStreamer::Event is GStreamer::MiniObject {
 
     gst_event_parse_toc($!e, $ta, $u);
 
-    my $t = $ta[0] ?? $ta[0] !! GstToc;
+    my $t = $ta[0] ?? $ta[0] !! Nil;
 
     ($toc, $updated) = (
       $raw ?? $t !! GStreamer::Toc.new($t),
@@ -989,7 +989,7 @@ class GStreamer::Event is GStreamer::MiniObject {
     $s ??
       ( $raw ?? $s !! GStreamer::Structure.new($s) )
       !!
-      GstStructure;
+      Nil;
   }
 
 }

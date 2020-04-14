@@ -68,7 +68,7 @@ class GStreamer::ProxyPad is GStreamer::Pad {
     $pp ??
       ( $raw ?? $pp !! GStreamer::ProxyPad.new($pp) )
       !!
-      GstProxyPad;
+      Nil;
   }
 
   method get_type is also<get-type> {
@@ -124,7 +124,7 @@ class GStreamer::ProxyPad is GStreamer::Pad {
     $i ??
       ( $raw ?? $i !! GStreamer::Iterator.new($i) )
       !!
-      GstIterator;
+      Nil;
   }
 
 }

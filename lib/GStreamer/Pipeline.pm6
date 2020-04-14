@@ -70,7 +70,7 @@ class GStreamer::Pipeline is GStreamer::Bin {
         $c ??
           ( $raw ?? $c !! GStreamer::Clock.new($c) )
           !!
-          GstClock;
+          Nil;
       },
       STORE => sub ($, GstClock() $clock is copy) {
         gst_pipeline_set_clock($!p, $clock);
@@ -119,7 +119,7 @@ class GStreamer::Pipeline is GStreamer::Bin {
     $b ??
       ( $raw ?? $b !! GStreamer::Bus.new($b) )
       !!
-      GstBus;
+      Nil;
   }
 
   method get_pipeline_clock (:$raw = False)
@@ -134,7 +134,7 @@ class GStreamer::Pipeline is GStreamer::Bin {
     $c ??
       ( $raw ?? $c !! GStreamer::Clock.new($c) )
       !!
-      GstClock;
+      Nil;
   }
 
   method get_type is also<get-type> {

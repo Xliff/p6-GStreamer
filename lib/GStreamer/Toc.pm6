@@ -88,7 +88,7 @@ class GStreamer::TocEntry is GStreamer::MiniObject {
     $p ??
       ( $raw ?? $p !! GStreamer::TocEntry.new($p) )
       !!
-      GstTocEntry;
+      Nil;
   }
 
   proto method get_start_stop_times (|)
@@ -130,7 +130,7 @@ class GStreamer::TocEntry is GStreamer::MiniObject {
     $tl ??
       ( $raw ?? $tl !! GStreamer::TagList.new($tl) )
       !!
-      GstTagList;
+      Nil;
   }
 
   method get_toc (:$raw = False) is also<get-toc> {
@@ -139,7 +139,7 @@ class GStreamer::TocEntry is GStreamer::MiniObject {
     $toc ??
       ( $raw ?? $toc !! GStreamer::Toc.new($toc) )
       !!
-      GstToc;
+      Nil;
   }
 
   method get_type is also<get-type> {
@@ -249,7 +249,7 @@ class GStreamer::Toc is GStreamer::MiniObject {
         $tl ??
           ( $raw ?? $tl !! GStreamer::TagList.new($tl) )
           !!
-          GstTagList;
+          Nil;
       },
       STORE => sub ($, GstTagList() $tags is copy) {
         gst_toc_set_tags($!t, $tags);

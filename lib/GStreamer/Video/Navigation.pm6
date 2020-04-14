@@ -127,7 +127,7 @@ class GStreamer::Video::Navigation::Message {
     $m ??
       ( $raw ?? $m !! GStreamer::Message.new($m) )
       !!
-      GstMessage;
+      Nil;
   }
 
   method new_commands_changed (GstObject() $src, :$raw = False)
@@ -138,7 +138,7 @@ class GStreamer::Video::Navigation::Message {
     $m ??
       ( $raw ?? $m !! GStreamer::Message.new($m) )
       !!
-      GstMessage;
+      Nil;
   }
 
   method new_event (GstObject() $src, GstEvent() $event, :$raw = False)
@@ -149,7 +149,7 @@ class GStreamer::Video::Navigation::Message {
     $m ??
       ( $raw ?? $m !! GStreamer::Message.new($m) )
       !!
-      GstMessage;
+      Nil;
   }
 
   method new_mouse_over (GstObject() $src, Int() $active, :$raw = False)
@@ -161,7 +161,7 @@ class GStreamer::Video::Navigation::Message {
     $m ??
       ( $raw ?? $m !! GStreamer::Message.new($m) )
       !!
-      GstMessage;
+      Nil;
   }
 
   method get_type (GstMessage() $m) is also<get-type> {
@@ -245,7 +245,7 @@ class GStreamer::Video::Navigation::Query {
     $q ??
       ( $raw ?? $q !! GStreamer::Query.new($q) )
       !!
-      GstQuery;
+      Nil;
   }
 
   method new_commands (:$raw = False) is also<new-commands> {
@@ -254,7 +254,7 @@ class GStreamer::Video::Navigation::Query {
     $q ??
       ( $raw ?? $q !! GStreamer::Query.new($q) )
       !!
-      GstQuery;
+      Nil;
   }
 
   method get_type (GstQuery() $q) is also<get-type> {

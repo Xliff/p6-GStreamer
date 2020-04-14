@@ -73,7 +73,7 @@ class GStreamer::Object {
         $o ??
           ( $raw ?? $o !! GStreamer::Object.new($o) )
           !!
-          GstObject;
+          Nil;
       },
       STORE => sub ($, GstObject() $parent is copy) {
         gst_object_set_parent($!gst-o, $parent);

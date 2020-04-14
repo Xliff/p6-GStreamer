@@ -60,7 +60,7 @@ class GStreamer::Segment {
     $sc ??
       ( $raw ?? $sc !! GStreamer::Segment.new($sc) )
       !!
-      GstSegment;
+      Nil;
   }
 
   method copy_into (GstSegment() $dest) is also<copy-into> {

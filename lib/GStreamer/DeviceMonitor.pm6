@@ -76,7 +76,7 @@ class GStreamer::DeviceMonitor is GStreamer::Object {
     $b ??
       ( $raw ?? $b !! GStreamer::Bus.new($b) )
       !!
-      GstBus;
+      Nil;
   }
 
   method get_devices (:$glist = False, :$raw = False)
