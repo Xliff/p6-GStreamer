@@ -24,6 +24,10 @@ class GStreamer::Video::ColorBalanceChannel {
     $!cbc = $channel;
   }
 
+  submethod TWEAK {
+    self.roleInit-Object;
+  }
+
   method GStreamer::Raw::Structs::GstColorBalanceChannel
     is also<GstColorBalanceChannel>
   { $!cbc }
