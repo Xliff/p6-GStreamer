@@ -358,7 +358,7 @@ sub on-key ($key, $data) {
 }
 
 sub print-version {
-  say "10-player.t version v0.0.1";
+  say "\n10-player.t version v0.0.1";
   exit;
 }
 
@@ -369,11 +369,13 @@ sub MAIN (
   Int  :$volume,             #= Volume
   Str  :$playlist,           #= Playlist file containing input media files
   Bool :loop(:$repeat),      #= Loop playback
-  *@items where *.elems > 0
+  *@items
 ) {
   print-version if $version;
-  die "Playlist file '{ $playlist }' does not exist!"
-    unless $playlist && $playlist.IO.e;
+  if $playlist {
+    die "Playlist file '{ $playlist }' does not exist!"
+      unless $playlist.IO.e;
+  }
 
   add-to-playlist($_) for ($playlist ?? $playlist.IO.lines !! @items);
   %data<playlist>.sort({ rand }) if $shuffle;
