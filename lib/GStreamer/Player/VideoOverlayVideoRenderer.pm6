@@ -12,7 +12,7 @@ our subset GstPlayerVideoOverlayVideoRendererAncestry is export of Mu
 
 class GStreamer::Player::VideoOverlayVideoRenderer {
   also does GLib::Roles::Object;
-  
+
   has $!vovr;
 
   submethod BUILD (:$vovr) {
@@ -44,7 +44,7 @@ class GStreamer::Player::VideoOverlayVideoRenderer {
         cast(GstPlayerVideoOverlayVideoRenderer, $_);
       }
     }
-    self.setObject($to-parent);
+    self!setObject($to-parent);
   }
 
   method GStreamer::Raw::Definitions::GstPlayerVideoOverlayVideoRenderer
