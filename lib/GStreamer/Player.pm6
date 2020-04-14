@@ -14,12 +14,14 @@ use GStreamer::Player::VideoInfo;
 use GStreamer::Sample;
 use GStreamer::Structure;
 
-use GLib::Roles::StaticClass;
+use GLib::Roles::Signals::Generic;
 
 our subset GstPlayerAncestry is export of Mu
   where GstPlayer | GstObject;
 
 class GStreamer::Player is GStreamer::Object {
+  also does GLib::Roles::Signals::Generic;
+
   has GstPlayer $!p;
 
   submethod BUILD (:$player) {
@@ -63,7 +65,349 @@ class GStreamer::Player is GStreamer::Object {
     $player ?? self.bless(:$player) !! Nil;
   }
 
-  ## SIGNALS! -- Probably need to be done by hand.
+  # Type: GstPlayerAudioInfo
+  method current-audio-track (:$raw = False) is rw {
+    my $gv;
+    Proxy.new(
+      FETCH => sub ($) {
+        $gv = GLib::Value.new(
+          self.prop_get('current-audio-track', $gv)
+        );
+
+        return Nil unless $gv.object;
+
+        my $ai = cast(GstPlayerAudioInfo, $gv.object);
+        $raw ?? $ai !! GStreamer::AudioInfo.new($ai);
+      },
+      STORE => -> $,  $val is copy {
+        warn 'current-audio-track does not allow writing'
+      }
+    );
+  }
+
+  # Type: GstPlayerSubtitleInfo
+  method current-subtitle-track (:$raw = False) is rw  {
+    my $gv;
+    Proxy.new(
+      FETCH => sub ($) {
+        $gv = GLib::Value.new(
+          self.prop_get('current-subtitle-track', $gv)
+        );
+
+        return Nil unless $gv.object;
+
+        my $si = cast(GstPlayerAudioInfo, $gv.object);
+        $raw ?? $si !! GStreamer::AudioInfo.new($si);
+      },
+      STORE => -> $,  $val is copy {
+        warn 'current-subtitle-track does not allow writing'
+      }
+    );
+  }
+
+  # Type: GstPlayerVideoInfo
+  method current-video-track (:$raw = False) is rw  {
+    my $gv;
+    Proxy.new(
+      FETCH => sub ($) {
+        $gv = GLib::Value.new(
+          self.prop_get('current-video-track', $gv)
+        );
+
+        return Nil unless $gv.object;
+
+        my $vi = cast(GstPlayerVideoInfo, $gv.object);
+        $raw ?? $vi !! GStreamer::VideoInfo.new($vi);
+      },
+      STORE => -> $,  $val is copy {
+        warn 'current-video-track does not allow writing'
+      }
+    );
+  }
+
+  # Type: guint64
+  method duration is rw  {
+    my $gv;
+    Proxy.new(
+      FETCH => sub ($) {
+        $gv = GLib::Value.new(
+          self.prop_get('duration', $gv)
+        );
+        $gv.uint64;
+      },
+      STORE => -> $, Int() $val is copy {
+        warn 'duration does not allow writing'
+      }
+    );
+  }
+
+  # Type: GstPlayerMediaInfo
+  method media-info (:$raw = False) is rw  {
+    my $gv;
+    Proxy.new(
+      FETCH => sub ($) {
+        $gv = GLib::Value.new(
+          self.prop_get('media-info', $gv)
+        );
+
+        return Nil unless $gv.object;
+
+        my $mi = cast(GstPlayerAudioInfo, $gv.object);
+        $raw ?? $mi !! GStreamer::MediaInfo.new($mi);
+      },
+      STORE => -> $,  $val is copy {
+        warn 'media-info does not allow writing'
+      }
+    );
+  }
+
+  # Type: gboolean
+  method mute is rw  {
+    my $gv;
+    Proxy.new(
+      FETCH => sub ($) {
+        $gv = GLib::Value.new(
+          self.prop_get('mute', $gv)
+        );
+        $gv.boolean;
+      },
+      STORE => -> $, Int() $val is copy {
+        $gv = GLib::Value.new( G_TYPE_BOOLEAN );
+        $gv.boolean = $val;
+        self.prop_set('mute', $gv);
+      }
+    );
+  }
+
+  # Type: GstElement
+  method pipeline (:$raw = False) is rw  {
+    my $gv;
+    Proxy.new(
+      FETCH => sub ($) {
+        $gv = GLib::Value.new(
+          self.prop_get('pipeline', $gv)
+        );
+
+        return Nil unless $gv.object;
+
+        my $e = cast(GstElement, $gv.object);
+        $raw ?? $e !! GStreamer::Element.new($e);
+      },
+      STORE => -> $,  $val is copy {
+        warn 'pipeline does not allow writing'
+      }
+    );
+  }
+
+  # Type: guint64
+  method position is rw  {
+    my $gv;
+    Proxy.new(
+      FETCH => sub ($) {
+        $gv = GLib::Value.new(
+          self.prop_get('position', $gv)
+        );
+        $gv.uint64;
+      },
+      STORE => -> $, Int() $val is copy {
+        warn 'position does not allow writing'
+      }
+    );
+  }
+
+  # Type: guint
+  method position-update-interval is rw  {
+    my $gv;
+    Proxy.new(
+      FETCH => sub ($) {
+        $gv = GLib::Value.new(
+          self.prop_get('position-update-interval', $gv)
+        );
+        $gv.uint;
+      },
+      STORE => -> $, Int() $val is copy {
+        $gv = GLib::Value.new( G_TYPE_UINT );
+        $gv.uint = $val;
+        self.prop_set('position-update-interval', $gv);
+      }
+    );
+  }
+
+  # Type: gdouble
+  method rate is rw  {
+    my $gv;
+    Proxy.new(
+      FETCH => sub ($) {
+        $gv = GLib::Value.new(
+          self.prop_get('rate', $gv)
+        );
+        $gv.double;
+      },
+      STORE => -> $, Num() $val is copy {
+        $gv = GLib::Value.new( G_TYPE_DOUBLE );
+        $gv.double = $val;
+        self.prop_set('rate', $gv);
+      }
+    );
+  }
+
+  # Type: GstPlayerSignalDispatcher
+  method signal-dispatcher is rw  {
+    my $gv;
+    Proxy.new(
+      FETCH => sub ($) {
+        warn 'signal-dispatcher does not allow reading' if $DEBUG;
+        0;
+      },
+      STORE => -> $, GstPlayerSignalDispatcher() $val is copy {
+        $gv = GLib::Value.new( G_TYPE_OBJECT );
+        $gv.object = $val;
+        self.prop_set('signal-dispatcher', $gv);
+      }
+    );
+  }
+
+  # Type: gchar
+  method suburi is rw  {
+    my $gv;
+    Proxy.new(
+      FETCH => sub ($) {
+        $gv = GLib::Value.new(
+          self.prop_get('suburi', $gv)
+        );
+        $gv.string;
+      },
+      STORE => -> $, Str() $val is copy {
+        $gv = GLib::Value.new( G_TYPE_STRING );
+        $gv.string = $val;
+        self.prop_set('suburi', $gv);
+      }
+    );
+  }
+
+  # Type: gchar
+  method uri is rw  {
+    my $gv;
+    Proxy.new(
+      FETCH => sub ($) {
+        $gv = GLib::Value.new(
+          self.prop_get('uri', $gv)
+        );
+        $gv.string;
+      },
+      STORE => -> $, Str() $val is copy {
+        $gv = GLib::Value.new( G_TYPE_STRING );
+        $gv.string = $val;
+        self.prop_set('uri', $gv);
+      }
+    );
+  }
+
+  # Type: GstPlayerVideoRenderer
+  method video-renderer is rw  {
+    my $gv;
+    Proxy.new(
+      FETCH => sub ($) {
+        warn 'video-renderer does not allow reading' if $DEBUG;
+        0;
+      },
+      STORE => -> $, GstPlayerVideoRenderer() $val is copy {
+        $gv = GLib::Value.new( G_TYPE_OBJECT );
+        $gv.object = $val;
+        self.prop_set('video-renderer', $gv);
+      }
+    );
+  }
+
+  # Type: gdouble
+  method volume is rw  {
+    my $gv;
+    Proxy.new(
+      FETCH => sub ($) {
+        $gv = GLib::Value.new(
+          self.prop_get('volume', $gv)
+        );
+        $gv.double;
+      },
+      STORE => -> $, Num() $val is copy {
+        $gv = GLib::Value.new( G_TYPE_DOUBLE );
+        $gv.double = $val;
+        self.prop_set('volume', $gv);
+      }
+    );
+  }
+
+  # Is originally:
+  # GstPlayer, gint, gpointer --> void
+  method buffering {
+    self.connect-int($!p, 'buffering');
+  }
+
+  # Is originally:
+  # GstPlayer, guint64, gpointer --> void
+  method duration-changed {
+    self.connect-long($!p, 'duration-changed');
+  }
+
+  # Is originally:
+  # GstPlayer, gpointer --> void
+  method end-of-stream {
+    self.connect($!p, 'end-of-stream');
+  }
+
+  # Is originally:
+  # GstPlayer, GError, gpointer --> void
+  method error {
+    self.connect-error($!p);
+  }
+
+  # Is originally:
+  # GstPlayer, GstPlayerMediaInfo, gpointer --> void
+  method media-info-updated {
+    self.connect-media-info-updated($!p);
+  }
+
+  # Is originally:
+  # GstPlayer, gpointer --> void
+  method mute-changed {
+    self.connect($!p, 'mute-changed');
+  }
+
+  # Is originally:
+  # GstPlayer, guint64, gpointer --> void
+  method position-updated {
+    self.connect-long($!p, 'position-updated');
+  }
+
+  # Is originally:
+  # GstPlayer, guint64, gpointer --> void
+  method seek-done {
+    self.connect-long($!p, 'seek-done');
+  }
+
+  # Is originally:
+  # GstPlayer, GstPlayerState, gpointer --> void
+  method state-changed {
+    self.connect-uint($!p, 'state-changed');
+  }
+
+  # Is originally:
+  # GstPlayer, gint, gint, gpointer --> void
+  method video-dimensions-changed {
+    self.connect-intint($!p, 'video-dimensions-changed');
+  }
+
+  # Is originally:
+  # GstPlayer, gpointer --> void
+  method volume-changed {
+    self.connect($!p, 'volume-changed');
+  }
+
+  # Is originally:
+  # GstPlayer, GError, gpointer --> void
+  method warning {
+    self.connect-error($!p, 'warning');
+  }
 
   method error_get_name is also<error-get-name> {
     gst_player_error_get_name($!p);
@@ -93,7 +437,7 @@ class GStreamer::Player is GStreamer::Object {
     $s ??
       ( $raw ?? $s !! GStreamer::Structure.new($s) )
       !!
-      GstStructure;
+      Nil;
   }
 
   method get_current_audio_track (:$raw = False)
@@ -104,7 +448,7 @@ class GStreamer::Player is GStreamer::Object {
     $a ??
       ( $raw ?? $a !! GStreamer::Player::AudioInfo.new($a) )
       !!
-      GstPlayerAudioInfo;
+      Nil;
   }
 
   method get_current_subtitle_track (:$raw = False)
@@ -115,7 +459,7 @@ class GStreamer::Player is GStreamer::Object {
     $st ??
       ( $raw ?? $st !! GStreamer::Player::SubtitleInfo.new($st) )
       !!
-      GstPlayerSubtitleInfo;
+      Nil;
   }
 
   method get_current_video_track (:$raw = False)
@@ -126,7 +470,7 @@ class GStreamer::Player is GStreamer::Object {
     $vt ??
       ( $raw ?? $vt !! GStreamer::Player::VideoInfo.new($vt))
       !!
-      GstPlayerVideoInfo;
+      Nil;
   }
 
   method get_current_visualization is also<get-current-visualization> {
@@ -143,7 +487,7 @@ class GStreamer::Player is GStreamer::Object {
     $mi ??
       ( $raw ?? $mi !! GStreamer::Player::MediaInfo.new($mi) )
       !!
-      GstPlayerMediaInfo;
+      Nil;
   }
 
   # Make so flags can be checked using ∈/(elem) !
@@ -165,7 +509,7 @@ class GStreamer::Player is GStreamer::Object {
     $e ??
       ( $raw ?? $e !! GStreamer::Element.new($e) )
       !!
-      GstElement;
+      Nil;
   }
 
   method get_position is also<get-position> {
@@ -205,7 +549,7 @@ class GStreamer::Player is GStreamer::Object {
     $s ??
       ( $raw ?? $s !! GStreamer::Sample.new($s) )
       !!
-      GstSample;
+      Nil;
   }
 
   method get_volume is also<get-volume> {
@@ -358,6 +702,8 @@ class GStreamer::Player is GStreamer::Object {
   }
 
 }
+
+use GLib::Roles::StaticClass;
 
 class GStreamer::Player::Config {
   also does GLib::Roles::StaticClass;
