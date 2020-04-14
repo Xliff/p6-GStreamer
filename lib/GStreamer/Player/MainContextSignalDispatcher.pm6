@@ -45,7 +45,7 @@ class GStreamer::Player::MainContextSignalDispatcher {
         cast(GstPlayerMainContextSignalDispatcher, $_);
       }
     }
-    self.setObject($to-parent);
+    self!setObject($to-parent);
   }
 
   method GStreamer::Raw::Definitions::GstPlayerMainContextSignalDispatcher
@@ -53,11 +53,14 @@ class GStreamer::Player::MainContextSignalDispatcher {
   { $!mcsd }
 
   # Should be in a compunit dedicated for the role, but not there yet.
-  method GStreamer::Raw::Definition::GstPlayerSignalDispatcher
+  method GStreamer::Raw::Definitions::GstPlayerSignalDispatcher
     is also<GstPlayerSignalDispatcher>
   { cast(GstPlayerSignalDispatcher, $!mcsd)  }
 
-  method new (GMainContext() $app-context) {
+  multi method new {
+    samewith(GMainContext);
+  }
+  multi method new (GMainContext() $app-context) {
     my $csd = gst_player_g_main_context_signal_dispatcher_new($app-context);
 
     $csd ?? self.bless( :$csd ) !! Nil;
