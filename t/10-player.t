@@ -33,23 +33,26 @@ sub usage {
 sub next-item {
   if !play-next() {
     say "Reached end of play list.";
-    %data<loop>.quit;
+    %data<mainloop>.quit;
   }
 }
 
 sub on-end {
+  CATCH { default { .message.say } }
   &say();
   next-item;
 }
 
 sub on-error ($, $e, $) {
+  CATCH { default { .message.say } }
   warn "ERROR { $e.message } for { %data<uris>[%data<cur-idx>] }";
   %data<repeat> = False;
   next-item;
 }
 
 sub on-update ($, $pos, $) {
-  my $dur = %data<player>.get-int64('duration');
+  CATCH { default { .message.say } }
+  my $dur = %data<player>.duration;
 
   return unless $pos == -1 || $dur <= 0;
 
@@ -207,13 +210,15 @@ sub print-media-info ($mi) {
 }
 
 sub on-media-update ($, $i, $) {
+  CATCH { default { .message.say } }
+
   once {
     print-media-info( GStreamer::Player::MediaInfo.new($i) );
     print-current-tracks;
   }
 }
 
-sub play-new (@uris, $volume --> Nil) {
+sub play-new (@uris, $volume) {
   %data<uris cur-idx> = (@uris, -1);
   %data<dispatcher> = GStreamer::Player::MainContextSignalDispatcher.new();
   %data<player> = GStreamer::Player.new( %data<dispatcher> );
@@ -224,25 +229,30 @@ sub play-new (@uris, $volume --> Nil) {
   %data<player>.media-info-updated.tap( -> *@a { on-media-update(  |@a ) });
   %data<player>.end-of-stream.tap(      -> *@a { on-end                  });
 
-  %data<player>.buffering.tap(-> *@a { say "Buffering: { @a[1] }" });
+  %data<player>.buffering.tap(-> *@a {
+    CATCH { default { .message.say } }
+    say "Buffering: { @a[1] }"
+  });
 
-  %data<loop> = GLib::MainLoop.new;
+  %data<mainloop> = GLib::MainLoop.new;
   %data<desired-state> = GST_STATE_PLAYING;
 
   relative-vol($volume - 1e0);
+
+  Nil;
 }
 
 sub play-free {
   %data{$_}.unref for <player loop>;
 }
 
-sub relative-vol($vs) {
-  my $vol = %data<player>.get-double('volume');
+sub relative-vol ($vs) {
+  my $vol = %data<player>.volume;
 
-  #$vol = ($vol + $vs).round * VOLUME_STEPS / VOLUME_STEPS;
+  $vol = ($vol + $vs).round * VOLUME_STEPS / VOLUME_STEPS;
   $vol = 0e0  if $vol < 0e0;
   $vol = 10e0 if $vol > 10e0;
-  %data<player>.set-double('volume', $vol);
+  %data<player>.volume = $vol;
 
   say "Volume: { ($vol * 100e0).fmt('%.0f') }%                  ";
 }
@@ -261,7 +271,7 @@ sub play-uri ($u) {
   #play-reset;
 
   say "Now playing { play-uri-get-display-name($u) }";
-  %data<player>.set_data_string('uri', $u);
+  %data<player>.uri = $u;
   %data<player>.play;
 }
 
@@ -363,12 +373,12 @@ sub print-version {
 }
 
 sub MAIN (
-  Bool :$version,            #= Print version information and exit
-  Bool :$shuffle,            #= Shuffle playlist
-  Bool :$interractive,       #= Interactive control via keyboard
-  Int  :$volume,             #= Volume
-  Str  :$playlist,           #= Playlist file containing input media files
-  Bool :loop(:$repeat),      #= Loop playback
+  Bool :$version,                #= Print version information and exit
+  Bool :$shuffle,                #= Shuffle playlist
+  Bool :$interractive,           #= Interactive control via keyboard
+  Num  :$volume         = 1e0,   #= Volume
+  Str  :$playlist,               #= Playlist file containing input media files
+  Bool :loop(:$repeat),          #= Loop playback
   *@items
 ) {
   print-version if $version;
