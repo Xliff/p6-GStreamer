@@ -7,6 +7,7 @@ use GStreamer::Player::Raw::StreamInfo;
 
 use GStreamer::Object;
 use GStreamer::Sample;
+use GStreamer::TagList;
 
 our subset GstPlayerMediaInfoAncestry is export of Mu
   where GstPlayerMediaInfo | GstObject;
@@ -14,8 +15,8 @@ our subset GstPlayerMediaInfoAncestry is export of Mu
 class GStreamer::Player::MediaInfo is GStreamer::Object {
   has GstPlayerMediaInfo $!mi;
 
-  submethod BUILD (:$video-info) {
-    self.setMediaInfo($video-info);
+  submethod BUILD (:$media-info) {
+    self.setMediaInfo($media-info);
   }
 
   method setMediaInfo (GstPlayerMediaInfoAncestry $_) {
