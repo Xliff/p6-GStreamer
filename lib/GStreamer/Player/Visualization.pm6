@@ -56,14 +56,11 @@ class GStreamer::Player::Visualizations {
     return Nil unless $vl;
     return $vl if $list;
 
-    my @vl;
-    my $idx = 0;
-    while $vl[$idx] {
-      @vl[$idx] = $vl[$idx++]
-    }
-    self!free($vl);
+    my @vl = CArrayToArray(Pointer[GstPlayerVisualization], $vl);
     @vl = @vl.map({ .defined ?? .deref !! GstPlayerVisualization });
     @vl = @vl.map({ GStreamer::Player::Visualization.new($_) }) unless $raw;
+    # Might need to copy each before free!
+    #self!free($vl);
     @vl;
   }
 
