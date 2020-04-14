@@ -5,9 +5,16 @@ use Method::Also;
 use GStreamer::Raw::Types;
 use GStreamer::Player::Raw::StreamInfo;
 
+use GLib::GList;
 use GStreamer::Object;
 use GStreamer::Sample;
 use GStreamer::TagList;
+use GStreamer::Player::StreamInfo;
+use GStreamer::Player::AudioInfo;
+use GStreamer::Player::VideoInfo;
+use GStreamer::Player::SubtitleInfo;
+
+use GLib::Roles::ListData;
 
 our subset GstPlayerMediaInfoAncestry is export of Mu
   where GstPlayerMediaInfo | GstObject;
@@ -177,12 +184,12 @@ class GStreamer::Player::MediaInfo is GStreamer::Object {
     return Nil unless $ssl;
     return $ssl if $glist && $raw;
 
-    $ssl = GLib::GList.new($ssl) but GLib::Roles::ListData[GstPlayerMediaInfo];
+    $ssl = GLib::GList.new($ssl) but GLib::Roles::ListData[GstPlayerSubtitleInfo];
 
     return $ssl if $glist;
 
     $raw ?? $ssl.Array
-         !! $ssl.Array.map({ GStreamer::Player::StreamInfo.new($_) })
+         !! $ssl.Array.map({ GStreamer::Player::SubtitleInfo.new($_) })
   }
 
   method get_tags (:$raw = False) is also<get-tags> {
