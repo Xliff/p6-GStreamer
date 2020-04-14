@@ -11,6 +11,7 @@ use GStreamer::Player;
 use GStreamer::Player::AudioInfo;
 use GStreamer::Player::MainContextSignalDispatcher;
 use GStreamer::Player::MediaInfo;
+use GStreamer::Player::StreamInfo;
 use GStreamer::Player::SubtitleInfo;
 use GStreamer::Player::VideoInfo;
 use GStreamer::URI;
@@ -38,26 +39,26 @@ sub next-item {
 }
 
 sub on-end {
-  CATCH { default { .message.say } }
+  CATCH { default { .message.say; .backtrace.concise.say } }
   &say();
   next-item;
 }
 
 sub on-error ($, $e, $) {
-  CATCH { default { .message.say } }
-  warn "ERROR { $e.message } for { %data<uris>[%data<cur-idx>] }";
+  CATCH { default { .message.say; .backtrace.concise.say } }
+  warn "ERROR { $e.message } for { %data<uris>[ %data<cur-idx> ] }";
   %data<repeat> = False;
   next-item;
 }
 
 sub on-update ($, $pos, $) {
-  CATCH { default { .message.say } }
+  CATCH { default { .message.say; .backtrace.concise.say } }
   my $dur = %data<player>.duration;
 
   return unless $pos == -1 || $dur <= 0;
 
-  my $ps = $pos.fmt("{ GST_TIME_FORMAT }", |time-args($pos)).substr(0, 8);
-  my $ds = $dur.fmt("{ GST_TIME_FORMAT }", |time-args($dur)).substr(0, 8);
+  my $ps = $pos.fmt( "{ GST_TIME_FORMAT }", |time-args($pos) ).substr(0, 8);
+  my $ds = $dur.fmt( "{ GST_TIME_FORMAT }", |time-args($dur) ).substr(0, 8);
   say "{ $ps } / { $ds } { ' ' x 63 }";
 }
 
@@ -132,7 +133,7 @@ sub print-all-stream-info ($i) {
     INFO
 
   if $i.get-tags() -> $t {
-    print-one-tag($_) for $t;
+    print-one-tag($_, '') for $t;
   } else {
     say '  (nil) ';
   }
@@ -149,7 +150,7 @@ sub print-all-stream-info ($i) {
       SINFO
     if $v.get-tags -> $t {
       say '  taglist : ';
-      print-one-tag($_) for $t;
+      print-one-tag($_, '') for $t;
     }
 
     my $si = $v.GstPlayerStreamInfo;
@@ -167,11 +168,9 @@ sub print-common ($i, \c, $g, &p) {
   my $list = $i."{ $g }"();
   return unless $list;
 
-  for $list {
-    my $si = c.new($_);
-
-    say "{ $si.get-stream-type }_{ $si.get-index } #";
-    &p($i);
+  for $list.Array {
+    say "{ .get-stream-type }_{ .get-index } #";
+    &p($_);
   }
 }
 
@@ -179,14 +178,14 @@ sub print-all-video-stream ($i) {
   my \C := GStreamer::Player::VideoInfo;
 
   say "All video streams: ";
-  print-common($i, C, 'get-video-streams', &print-audio-info);
+  print-common($i, C, 'get-video-streams', &print-video-info);
 }
 
 sub print-all-subtitle-stream ($i) {
   my \C := GStreamer::Player::SubtitleInfo;
 
   say "All subtitle streams: ";
-  print-common($i, C, 'get-subtitle-streams', &print-audio-info);
+  print-common($i, C, 'get-subtitle-streams', &print-subtitle-info);
 }
 
 sub print-all-audio-stream ($i) {
@@ -197,9 +196,9 @@ sub print-all-audio-stream ($i) {
 }
 
 sub print-current-tracks {
-  say "Current video track:\n{    print-video-info    }";
-  say "Current audio track:\n{    print-audio-info    }";
-  say "Current subtitle track:\n{ print-subtitle-info }";
+  say "Current video track:\n";    print-video-info;
+  say "Current audio track:\n";    print-audio-info;
+  say "Current subtitle track:\n"; print-subtitle-info;
 }
 
 sub print-media-info ($mi) {
@@ -210,7 +209,7 @@ sub print-media-info ($mi) {
 }
 
 sub on-media-update ($, $i, $) {
-  CATCH { default { .message.say } }
+  CATCH { default { .message.say; .backtrace.concise.say } }
 
   once {
     print-media-info( GStreamer::Player::MediaInfo.new($i) );
@@ -230,7 +229,7 @@ sub play-new (@uris, $volume) {
   %data<player>.end-of-stream.tap(      -> *@a { on-end                  });
 
   %data<player>.buffering.tap(-> *@a {
-    CATCH { default { .message.say } }
+    CATCH { default { .message.say; .backtrace.concise.say } }
     say "Buffering: { @a[1] }"
   });
 
