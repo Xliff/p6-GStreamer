@@ -994,6 +994,8 @@ our enum GstNavigationQueryTypeEnum is export (
     GST_NAVIGATION_QUERY_ANGLES   => 2,
 );
 
+# VIDEO
+
 constant GstVideoAlphaMode is export := guint32;
 our enum GstVideoAlphaModeEnum is export <
     GST_VIDEO_ALPHA_MODE_COPY
@@ -1062,6 +1064,18 @@ our enum GstVideoMatrixModeEnum is export <
     GST_VIDEO_MATRIX_MODE_NONE
 >;
 
+constant GstVideoMultiviewFlags is export := guint32;
+our enum GstVideoMultiviewFlagsEnum is export (
+  GST_VIDEO_MULTIVIEW_FLAGS_NONE             => 0,
+  GST_VIDEO_MULTIVIEW_FLAGS_RIGHT_VIEW_FIRST => 1,
+  GST_VIDEO_MULTIVIEW_FLAGS_LEFT_FLIPPED     => (1 +< 1),
+  GST_VIDEO_MULTIVIEW_FLAGS_LEFT_FLOPPED     => (1 +< 2),
+  GST_VIDEO_MULTIVIEW_FLAGS_RIGHT_FLIPPED    => (1 +< 3),
+  GST_VIDEO_MULTIVIEW_FLAGS_RIGHT_FLOPPED    => (1 +< 4),
+  GST_VIDEO_MULTIVIEW_FLAGS_HALF_ASPECT      => (1 +< 14),
+  GST_VIDEO_MULTIVIEW_FLAGS_MIXED_MONO       => (1 +< 15)
+);
+
 constant GstVideoMultiviewMode is export := gint32;
 our enum GstVideoMultiviewModeEnum is export (
     GST_VIDEO_MULTIVIEW_MODE_NONE                        => -1,
@@ -1128,3 +1142,33 @@ our enum GstVideoVBIParserResultEnum is export (
     GST_VIDEO_VBI_PARSER_RESULT_OK    => 1,
     GST_VIDEO_VBI_PARSER_RESULT_ERROR => 2,
 );
+
+constant GstPlayerColorBalanceType is export := guint32;
+our enum GstPlayerColorBalanceTypeEnum is export <
+  GST_PLAYER_COLOR_BALANCE_BRIGHTNESS
+  GST_PLAYER_COLOR_BALANCE_CONTRAST
+  GST_PLAYER_COLOR_BALANCE_SATURATION
+  GST_PLAYER_COLOR_BALANCE_HUE
+>;
+
+constant GstPlayerError is export := guint32;
+our enum GstPlayerErrorEnum is export (
+  GST_PLAYER_ERROR_FAILED => 0
+);
+
+constant GstPlayerSnapshotFormat is export := guint32;
+enum GstPlayerSnapshotFormatEnum is export (
+  GST_PLAYER_THUMBNAIL_RAW_NATIVE => 0,
+  'GST_PLAYER_THUMBNAIL_RAW_xRGB',
+  'GST_PLAYER_THUMBNAIL_RAW_BGRx',
+  'GST_PLAYER_THUMBNAIL_JPG',
+  'GST_PLAYER_THUMBNAIL_PNG'
+);
+
+constant GstPlayerState is export := guint32;
+our enum GstPlayerStateEnum is export <
+  GST_PLAYER_STATE_STOPPED
+  GST_PLAYER_STATE_BUFFERING
+  GST_PLAYER_STATE_PAUSED
+  GST_PLAYER_STATE_PLAYING
+>;

@@ -55,7 +55,7 @@ class GStreamer::Format {
     $i ??
       ( $raw ?? $i !! GStreamer::Iterator.new($i) )
       !!
-      GstIterator;
+      Nil;
   }
 
   method register (Str() $nick, Str() $description) {

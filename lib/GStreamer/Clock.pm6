@@ -94,7 +94,7 @@ class GStreamer::Clock is GStreamer::Object {
         $c ??
           ( $raw ?? $c !! GStreamer::Clock.new($c) )
           !!
-          GstClock;
+          Nil;
       },
       STORE => sub ($, GstClock() $master is copy) {
         gst_clock_set_master($!c, $master);

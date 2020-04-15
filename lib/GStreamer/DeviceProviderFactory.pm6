@@ -51,7 +51,7 @@ class GStreamer::DeviceProviderFactory is GStreamer::PluginFeature {
     $dp ??
       ( $raw ?? $dp !! GStreamer::DeviceProvider.new($dp) )
       !!
-      GstDeviceProvider;
+      Nil;
   }
 
   method get_by_name (
@@ -66,7 +66,7 @@ class GStreamer::DeviceProviderFactory is GStreamer::PluginFeature {
     $dp ??
       ( $raw ?? $dp !! GStreamer::DeviceProvider.new($dp) )
       !!
-      GstDeviceProvider;
+      Nil;
   }
 
   method get_device_provider_type is also<get-device-provider-type> {

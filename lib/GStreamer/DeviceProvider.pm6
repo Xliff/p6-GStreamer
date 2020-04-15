@@ -76,7 +76,7 @@ class GStreamer::DeviceProvider is GStreamer::Object {
     $b ??
       ( $raw ?? $b !! GStreamer::Bus.new($b) )
       !!
-      GstBus;
+      Nil;
   }
 
   method get_devices (

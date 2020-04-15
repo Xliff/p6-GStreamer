@@ -65,7 +65,7 @@ class GStreamer::Stream is GStreamer::Object {
         $c ??
           ( $raw ?? $c !! GStreamer::Caps.new($c) )
           !!
-          GstCaps;
+          Nil;
       },
       STORE => sub ($, GstCaps() $caps is copy) {
         gst_stream_set_caps($!s, $caps);
@@ -107,7 +107,7 @@ class GStreamer::Stream is GStreamer::Object {
         $t ??
           ( $raw ?? $t !! GStreamer::TagList.new($t) )
           !!
-          GstTagList;
+          Nil;
       },
       STORE => sub ($, GstTagList() $tags is copy) {
         gst_stream_set_tags($!s, $tags);

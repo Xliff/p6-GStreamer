@@ -108,7 +108,7 @@ class GStreamer::Registry is GStreamer::Object {
     $f ??
       ( $raw ?? $f !! GStreamer::PluginFeature.new($f) )
       !!
-      GstPluginFeature;
+      Nil;
   }
 
   method find_plugin (Str() $name, :$raw = False) is also<find-plugin> {
@@ -117,7 +117,7 @@ class GStreamer::Registry is GStreamer::Object {
     $p ??
       ( $raw ?? $p !! GStreamer::Plugin.new($p) )
       !!
-      GstPlugin;
+      Nil;
   }
 
   method get_feature_list (Int() $type, :$glist = False, :$raw = False) is also<get-feature-list> {

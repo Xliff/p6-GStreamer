@@ -239,7 +239,7 @@ class GStreamer::DateTime {
     $gdt ??
       ( $raw ?? $gdt !! GLib::DateTime.new($gdt) )
       !!
-      GDateTime;
+      Nil;
   }
 
   method to_iso8601_string is also<to-iso8601-string> {

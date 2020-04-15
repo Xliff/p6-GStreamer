@@ -910,7 +910,7 @@ class GStreamer::Message is GStreamer::MiniObject {
         $v ??
           ( $raw ?? $v !! GLib::Value.new($v) )
           !!
-          GValue;
+          Nil;
       },
       STORE => sub ($, GValue() $object is copy) {
         gst_message_set_stream_status_object($!m, $object);
@@ -922,7 +922,7 @@ class GStreamer::Message is GStreamer::MiniObject {
     $!m.src ??
       ( $raw ?? $!m.src !! GStreamer::Object.new($!m.src) )
       !!
-      GstObject;
+      Nil;
   }
 
   method add_redirect_entry (
@@ -945,7 +945,7 @@ class GStreamer::Message is GStreamer::MiniObject {
     $s ??
       ( $raw ?? $s !! GStreamer::Structure.new($s) )
       !!
-      GstStructure;
+      Nil;
   }
 
   method get_type is also<get-type> {
@@ -1800,7 +1800,7 @@ class GStreamer::Message is GStreamer::MiniObject {
     $s ??
       ( $raw ?? $s !! GStreamer::Structure.new($s) )
       !!
-      GstStructure;
+      Nil;
   }
 
   # Save for when GstMessage is converted to CStruct

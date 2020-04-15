@@ -9,7 +9,7 @@ use GLib::Roles::Pointers;
 unit package GStreamer::Raw::Definitions;
 
 # Number of forced compiles made.
-constant forced = 1;
+constant forced = 2;
 
 constant GstClockTime              is export := int64;
 constant GstClockTimeDiff          is export := int64;
@@ -17,8 +17,9 @@ constant GstElementFactoryListType is export := uint64;
 
 # cw: I now realize, that at some point, ALL of these will have to be functions
 #     to account for the various distributions and OSes out there.
-constant gstreamer       is export = 'gstreamer-1.0',v0;
-constant gstreamer-video is export = 'gstvideo-1.0',v0;
+constant gstreamer         is export = 'gstreamer-1.0',v0;
+constant gstreamer-video   is export = 'gstvideo-1.0',v0;
+constant gstreamer-player  is export = 'gstplayer-1.0',v0;
 
 constant GstBufferListFunc                 is export := Pointer;
 constant GstBusSyncHandler                 is export := Pointer;
@@ -98,6 +99,7 @@ class GstPadProbeInfo           is repr('CPointer') does GLib::Roles::Pointers i
 #class GstPadTemplate            is repr('CPointer') does GLib::Roles::Pointers is export { }
 class GstParseContext           is repr('CPointer') does GLib::Roles::Pointers is export { }
 class GstPipeline               is repr('CPointer') does GLib::Roles::Pointers is export { }
+class GstPlayer                 is repr('CPointer') does GLib::Roles::Pointers is export { }
 class GstPlugin                 is repr('CPointer') does GLib::Roles::Pointers is export { }
 class GstPluginFeature          is repr('CPointer') does GLib::Roles::Pointers is export { }
 class GstProbeInfo              is repr('CPointer') does GLib::Roles::Pointers is export { }
@@ -118,14 +120,32 @@ class GstMapInfo                is repr('CPointer') does GLib::Roles::Pointers i
 #class GstMemory                 is repr('CPointer') does GLib::Roles::Pointers is export { }
 class GstMeta                   is repr('CPointer') does GLib::Roles::Pointers is export { }
 class GstParentBufferMeta       is repr('CPointer') does GLib::Roles::Pointers is export { }
+class GstPlayerAudioInfo        is repr('CPointer') does GLib::Roles::Pointers is export { }
+class GstPlayerMediaInfo        is repr('CPointer') does GLib::Roles::Pointers is export { }
+class GstPlayerSignalDispatcher is repr('CPointer') does GLib::Roles::Pointers is export { }
+class GstPlayerStreamInfo       is repr('CPointer') does GLib::Roles::Pointers is export { }
+class GstPlayerSubtitleInfo     is repr('CPointer') does GLib::Roles::Pointers is export { }
+class GstPlayerVideoInfo        is repr('CPointer') does GLib::Roles::Pointers is export { }
+class GstPlayerVideoRenderer    is repr('CPointer') does GLib::Roles::Pointers is export { }
 class GstReferenceTimestampMeta is repr('CPointer') does GLib::Roles::Pointers is export { }
 class GstUri                    is repr('CPointer') does GLib::Roles::Pointers is export { }
 class GstURIHandler             is repr('CPointer') does GLib::Roles::Pointers is export { }
+
+class GstPlayerVideoOverlayVideoRenderer   is repr('CPointer') does GLib::Roles::Pointers is export { }
+class GstPlayerMainContextSignalDispatcher is repr('CPointer') does GLib::Roles::Pointers is export { }
 
 constant GST_OBJECT_FLAG_LAST      is export = 1 +< 4;
 constant GST_CLOCK_TIME_NONE       is export = 18446744073709551615;
 constant GST_TIME_FORMAT           is export = '%u:%02u:%02u.%09u';
 constant GST_SECOND                is export = 1000000000;
+constant GST_MSECOND               is export = 1000000;
+constant GST_USECOND               is export = 1000;
+constant GST_NSECOND               is export = 1;
+
+constant GST_PLAY_KB_ARROW_UP      is export = "\033[A";
+constant GST_PLAY_KB_ARROW_DOWN    is export = "\033[B";
+constant GST_PLAY_KB_ARROW_RIGHT   is export = "\033[C";
+constant GST_PLAY_KB_ARROW_LEFT    is export = "\033[D";
 
 constant GST_ELEMENT_METADATA_LONGNAME    is export = 'long-name';
 constant GST_ELEMENT_METADATA_DESCRIPTION is export = 'description';

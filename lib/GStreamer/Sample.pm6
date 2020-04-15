@@ -64,7 +64,7 @@ class GStreamer::Sample is GStreamer::MiniObject {
         $b ??
           ( $raw ?? $b !! GStreamer::Buffer.new($b) )
           !!
-          GstBuffer;
+          Nil;
       },
       STORE => sub ($, GstBuffer() $buffer is copy) {
         gst_sample_set_buffer($!s, $buffer);
@@ -80,7 +80,7 @@ class GStreamer::Sample is GStreamer::MiniObject {
         $bl ??
           ( $raw ?? $bl !! GStreamer::BufferList.new($bl) )
           !!
-          GstBufferList;
+          Nil;
       },
       STORE => sub ($, GstBufferList() $buffer_list is copy) {
         gst_sample_set_buffer_list($!s, $buffer_list);
@@ -96,7 +96,7 @@ class GStreamer::Sample is GStreamer::MiniObject {
         $c ??
           ( $raw ?? $c !! GStreamer::Caps.new($c) )
           !!
-          GstCaps;
+          Nil;
       },
       STORE => sub ($, GstCaps() $caps is copy) {
         gst_sample_set_caps($!s, $caps);
@@ -112,7 +112,7 @@ class GStreamer::Sample is GStreamer::MiniObject {
         $s ??
           ( $raw ?? $s !! GStreamer::Structure.new($s) )
           !!
-          GstStructure;
+          Nil;
       },
       STORE => sub ($, GstStructure() $info is copy) {
         gst_sample_set_info($!s, $info);
@@ -128,7 +128,7 @@ class GStreamer::Sample is GStreamer::MiniObject {
         $s ??
           ( $raw ?? $s !! GStreamer::Segment.new($s) )
           !!
-          GstSegment;
+          Nil;
       },
       STORE => sub ($, GstSegment() $segment is copy) {
         gst_sample_set_segment($!s, $segment);
@@ -153,7 +153,7 @@ class GStreamer::Sample is GStreamer::MiniObject {
     $sample ??
       ( $raw ?? $sample !! GStreamer::Sample.new($sample) )
       !!
-      GstSample;
+      Nil;
   }
 
   method get_type is also<get-type> {

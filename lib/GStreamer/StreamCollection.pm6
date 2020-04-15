@@ -62,7 +62,7 @@ class GStreamer::StreamCollection is GStreamer::Object {
     $s ??
       ( $raw ?? $s !! GStreamer::Stream.new($s) )
       !!
-      GstStream;
+      Nil;
   }
 
   method get_type is also<get-type> {

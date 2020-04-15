@@ -177,7 +177,7 @@ class GStreamer::Element is GStreamer::Object {
     $b ??
       ( $raw ?? $b !! GStreamer::Bus.new($b) )
       !!
-      GstBus;
+      Nil;
   }
 
   method get_clock (:$raw = False)
@@ -191,7 +191,7 @@ class GStreamer::Element is GStreamer::Object {
     $c ??
       ( $raw ?? $c !! GStreamer::Clock.new($c) )
       !!
-      GstClock;
+      Nil;
   }
 
   method get_context (Str() $context_type, :$raw = False)
@@ -202,7 +202,7 @@ class GStreamer::Element is GStreamer::Object {
     $c ??
       ( $raw ?? $c !! GStreamer::Context.new($c) )
       !!
-      GstContext;
+      Nil;
   }
 
   method get_context_unlocked (Str() $context_type, :$raw = False)
@@ -213,7 +213,7 @@ class GStreamer::Element is GStreamer::Object {
     $c ??
       ( $raw ?? $c !! GStreamer::Context.new($c) )
       !!
-      GstContext;
+      Nil;
   }
 
   method get_contexts (:$glist = False, :$raw = False)
@@ -242,7 +242,7 @@ class GStreamer::Element is GStreamer::Object {
     $f ??
       ( $raw ?? $f !! ::('GST::ElementFactory').new($f) )
       !!
-      GstElementFactory;
+      Nil;
   }
 
   method get_metadata (Str() $key) is also<get-metadata> {
@@ -257,7 +257,7 @@ class GStreamer::Element is GStreamer::Object {
     $p ??
       ( $raw ?? $p !! GStreamer::PadTemplate.new($p) )
       !!
-      GstPadTemplate;
+      Nil;
   }
 
   method get_pad_template_list (:$glist = False, :$raw = False)
@@ -280,7 +280,7 @@ class GStreamer::Element is GStreamer::Object {
     $p ??
       ( $raw ?? $p !! GStreamer::Pad.new($p) )
       !!
-      GstPad;
+      Nil;
   }
 
   method get_start_time
@@ -310,7 +310,7 @@ class GStreamer::Element is GStreamer::Object {
     $sp ??
       ( $raw ?? $sp !! GStreamer::Pad.new($sp) )
       !!
-      GstPad;
+      Nil;
   }
 
   method get_type is also<get-type> {
@@ -329,7 +329,7 @@ class GStreamer::Element is GStreamer::Object {
     $p ??
       ( $raw ?? $p !! GStreamer::Iterator.new($p) )
       !!
-      GstIterator;
+      Nil;
   }
 
   method iterate_sink_pads (:$raw = False ) is also<iterate-sink-pads> {
@@ -338,7 +338,7 @@ class GStreamer::Element is GStreamer::Object {
     $sp ??
       ( $raw ?? $sp !! GStreamer::Iterator.new($sp) )
       !!
-      GstIterator;
+      Nil;
   }
 
   method iterate_src_pads (:$raw = False) is also<iterate-src-pads> {
@@ -347,7 +347,7 @@ class GStreamer::Element is GStreamer::Object {
     $sp ??
       ( $raw ?? $sp !! GStreamer::Iterator.new($sp) )
       !!
-      GstIterator;
+      Nil;
   }
 
   method lost_state is also<lost-state> {
@@ -373,7 +373,7 @@ class GStreamer::Element is GStreamer::Object {
     $e ??
       ( $raw ?? $e !! GStreamer::Element.new($e) )
       !!
-      GstElement;
+      Nil;
   }
 
   method message_full (
@@ -442,7 +442,7 @@ class GStreamer::Element is GStreamer::Object {
     $c ??
       ( $raw ?? $c !! GStreamer::Clock.new($c) )
       !!
-      GstClock;
+      Nil;
   }
 
   method query (GstQuery() $query) {
@@ -478,7 +478,7 @@ class GStreamer::Element is GStreamer::Object {
     $p ??
       ( $raw ?? $p !! GStreamer::Pad.new($p) )
       !!
-      GstPad;
+      Nil;
   }
 
   method seek (
@@ -564,7 +564,7 @@ class GStreamer::Element is GStreamer::Object {
     $p ??
       ( $raw ?? $p !! GStreamer::Pad.new($p) )
       !!
-      GstPad;
+      Nil;
   }
 
   method get_compatible_pad_template (GstPadTemplate() $template, :$raw = False)
@@ -575,7 +575,7 @@ class GStreamer::Element is GStreamer::Object {
     $pt ??
       ( $raw ?? $pt !! GStreamer::PadTemplate.new($pt) )
       !!
-      GstPadTemplate;
+      Nil;
   }
 
   method link (GstElement() $dest) {

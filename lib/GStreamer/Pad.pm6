@@ -172,7 +172,7 @@ class GStreamer::Pad is GStreamer::Object {
     $c ??
       ( $raw ?? $c !! GStreamer::Caps.new($c) )
       !!
-      GstCaps;
+      Nil;
   }
 
   method get_current_caps (:$raw = False)
@@ -187,7 +187,7 @@ class GStreamer::Pad is GStreamer::Object {
     $c ??
       ( $raw ?? $c !! GStreamer::Caps.new($c) )
       !!
-      GstCaps;
+      Nil;
   }
 
   method get_direction
@@ -221,7 +221,7 @@ class GStreamer::Pad is GStreamer::Object {
     $pt ??
       ( $raw ?? $pt !! ::('GStreamer::PadTemplate').new($pt) )
       !!
-      GstPadTemplate;
+      Nil;
   }
 
   method get_pad_template_caps (:$raw = False)
@@ -236,7 +236,7 @@ class GStreamer::Pad is GStreamer::Object {
     $c ??
       ( $raw ?? $c !! GStreamer::Caps.new($c) )
       !!
-      GstCaps;
+      Nil;
   }
 
   method get_parent (:$raw = False)
@@ -250,7 +250,7 @@ class GStreamer::Pad is GStreamer::Object {
     $pe ??
       ( $raw ?? $pe !! ::('GStreamer::Element').new($pe) )
       !!
-      GstElement;
+      Nil;
   }
 
   method get_peer (:$raw = False)
@@ -264,7 +264,7 @@ class GStreamer::Pad is GStreamer::Object {
     $p ??
       ( $raw ?? $p !! GStreamer::Pad.new($p) )
       !!
-      GstPad;
+      Nil;
   }
 
   method get_range (
@@ -346,7 +346,7 @@ class GStreamer::Pad is GStreamer::Object {
     $i ??
       ( $raw ?? $i !! GStreamer::Iterator.new($i) )
       !!
-      GstIterator;
+      Nil;
   }
 
   method iterate_internal_links_default (GstObject() $parent, :$raw = False)
@@ -357,7 +357,7 @@ class GStreamer::Pad is GStreamer::Object {
     $i ??
       ( $raw ?? $i !! GStreamer::Iterator.new($i) )
       !!
-      GstIterator;
+      Nil;
   }
 
   method link (GstPad() $sinkpad) {
@@ -492,7 +492,7 @@ class GStreamer::Pad is GStreamer::Object {
     $c ??
       ( $raw ?? $c !! GStreamer::Caps.new($c) )
       !!
-      GstCaps;
+      Nil;
   }
 
   method remove_probe (

@@ -148,7 +148,7 @@ class GStreamer::Plugin is GStreamer::Object {
     $pp ??
       ( $raw ?? $pp !! GStreamer::Plugin.new($pp) )
       !!
-      GstPlugin;
+      Nil;
   }
 
   method load_by_name (Str() $name, :$raw = False) is also<load-by-name> {
@@ -157,7 +157,7 @@ class GStreamer::Plugin is GStreamer::Object {
     $p ??
       ( $raw ?? $p !! GStreamer::Plugin.new($p) )
       !!
-      GstPlugin;
+      Nil;
   }
 
   method load_file (
@@ -174,7 +174,7 @@ class GStreamer::Plugin is GStreamer::Object {
     $rc ??
       ( $raw ?? $rc !! GStreamer::Plugin.new($rc) )
       !!
-      GstPlugin;
+      Nil;
   }
 
   method register_static (

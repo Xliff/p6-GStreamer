@@ -2,6 +2,7 @@ use v6.c;
 
 use NativeCall;
 
+use GLib::Raw::Structs;
 use GStreamer::Raw::Definitions;
 
 use GLib::Roles::Pointers;
@@ -10,7 +11,7 @@ unit package GStreamer::Raw::Subs;
 
 subset PassThru of Mu where Str | CArray;
 
-sub ppr(*@a) is export {
+sub ppr (*@a) is export {
   @a .= map({
     if $_ ~~ CArray {
       if .[0].defined {
@@ -44,4 +45,8 @@ sub time_args ($d) is export {
     ($d / GST_SECOND) % 60,
      $d % GST_SECOND
   ) !! (99, 99, 99, 999999999)
+}
+
+sub timeval-to-time (GTimeVal $tv) {
+  $tv.tv_sec * GST_SECOND + $tv.tv_usec * GST_USECOND;
 }

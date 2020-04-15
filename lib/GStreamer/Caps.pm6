@@ -150,7 +150,7 @@ class GStreamer::Caps is GStreamer::MiniObject {
     $c ??
       ( $raw ?? $c !! GStreamer::Caps.new($c) )
       !!
-      GstCaps;
+      Nil;
   }
 
   method copy_nth (Int() $nth, :$raw = False) is also<copy-nth> {
@@ -160,7 +160,7 @@ class GStreamer::Caps is GStreamer::MiniObject {
     $caps ??
       ( $raw ?? $caps !! GStreamer::Caps.new($caps) )
       !!
-      GstCaps;
+      Nil;
   }
 
   method filter_and_map_in_place (
@@ -178,7 +178,7 @@ class GStreamer::Caps is GStreamer::MiniObject {
     $c ??
       ( $raw ?? $c !! GStreamer::Caps.new($c) )
       !!
-      GstCaps;
+      Nil;
   }
 
   method foreach (
@@ -205,7 +205,7 @@ class GStreamer::Caps is GStreamer::MiniObject {
     $s ??
       ( $raw ?? $s !! GStreamer::Structure.new($s) )
       !!
-      GstStructure;
+      Nil;
   }
 
   method get_type is also<get-type> {
@@ -310,7 +310,7 @@ class GStreamer::Caps is GStreamer::MiniObject {
     $n ??
       ( $raw ?? $n !! Gstreamer::Caps.new($n) )
       !!
-      GstCaps;
+      Nil;
   }
 
   method remove_structure (Int() $idx) is also<remove-structure> {
@@ -346,7 +346,7 @@ class GStreamer::Caps is GStreamer::MiniObject {
     $s ??
       ( $raw ?? $s !! GStreamer::Caps.new($s) )
       !!
-      GstCaps;
+      Nil;
   }
 
   method steal_structure (Int() $index) is also<steal-structure> {
@@ -361,7 +361,7 @@ class GStreamer::Caps is GStreamer::MiniObject {
     $sl ??
       ( $raw ?? $sl !! GStreamer::Caps.new($sl) )
       !!
-      GstCaps;
+      Nil;
   }
 
   method to_string
@@ -379,7 +379,7 @@ class GStreamer::Caps is GStreamer::MiniObject {
     $t ??
       ( $raw ?? $t !! GStreamer::Caps.new($t) )
       !!
-      GstCaps;
+      Nil;
   }
 
 }
@@ -409,7 +409,7 @@ class GStreamer::StaticCaps {
     $c ??
       ( $raw ?? $c !! GStreamer::Caps.new($c) )
       !!
-      GstCaps;
+      Nil;
   }
 
   method get_type {

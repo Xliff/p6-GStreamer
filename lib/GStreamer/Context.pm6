@@ -44,7 +44,7 @@ class GStreamer::Context is GStreamer::MiniObject {
     $s ??
       ( $raw ?? $s !! GStreamer::Structure.new($s) )
       !!
-      GstStructure;
+      Nil;
   }
 
   method get_type is also<get-type> {
@@ -67,7 +67,7 @@ class GStreamer::Context is GStreamer::MiniObject {
     $e ??
       ( $raw ?? $e !! GStreamer::Structure.new($e) )
       !!
-      GstStructure;
+      Nil;
   }
 
 }

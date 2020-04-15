@@ -214,7 +214,9 @@ class GStreamer::URI {
     gst_uri_append_path($!u, $relative_path);
   }
 
-  method append_path_segment (Str() $path_segment) is also<append-path-segment> {
+  method append_path_segment (Str() $path_segment)
+    is also<append-path-segment>
+  {
     gst_uri_append_path_segment($!u, $path_segment);
   }
 
@@ -238,7 +240,7 @@ class GStreamer::URI {
     $ht ??
       ( $raw ?? $ht !! GLib::HashTable.new($ht) )
       !!
-      GHashTable;
+      Nil;
   }
 
   method get_protocol (GStreamer::URI:U: Str() $uri) is also<get-protocol> {
@@ -332,7 +334,9 @@ class GStreamer::URI {
     so gst_uri_normalize($!u);
   }
 
-  method protocol_is_supported (Str() $protocol) is also<protocol-is-supported> {
+  method protocol_is_supported (Str() $protocol)
+    is also<protocol-is-supported>
+  {
     so gst_uri_protocol_is_supported($!u, $protocol);
   }
 

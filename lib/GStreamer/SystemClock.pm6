@@ -48,7 +48,7 @@ class GStreamer::SystemClock is GStreamer::Clock {
     $sc ??
       ( $raw ?? $sc !! GStreamer::SystemClock.new($sc) )
       !!
-      GstClock;
+      Nil;
   }
 
   method set_default (GstClock() $nc) {

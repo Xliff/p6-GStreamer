@@ -44,7 +44,7 @@ class GStreamer::Allocator is GStreamer::Object {
     $m ??
       ( $raw ?? $m !! GStreamer::Memory.new($m) )
       !!
-      GstMemory;
+      Nil;
   }
 
   method find (GStreamer::Allocator:U: Str() $name, :$raw = False) {
@@ -53,7 +53,7 @@ class GStreamer::Allocator is GStreamer::Object {
     $a ??
       ( $raw ?? $a !! GStreamer::Allocator.new($a) )
       !!
-      GstAllocator;
+      Nil;
   }
 
   method free (GstMemory() $memory) {

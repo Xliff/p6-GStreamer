@@ -87,7 +87,7 @@ class GStreamer::PluginFeature is GStreamer::Object {
     $p ??
       ( $raw ?? $p !! GStreamer::Plugin.new($p) )
       !!
-      GstPlugin;
+      Nil;
   }
 
   method get_plugin_name
@@ -121,7 +121,7 @@ class GStreamer::PluginFeature is GStreamer::Object {
     $l ??
       ( $raw ?? $l !! GLib::GList.new($list) )
       !!
-      GList;
+      Nil;
   }
 
   method list_debug (
