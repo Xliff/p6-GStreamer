@@ -20,6 +20,7 @@ constant GstElementFactoryListType is export := uint64;
 constant gstreamer         is export = 'gstreamer-1.0',v0;
 constant gstreamer-video   is export = 'gstvideo-1.0',v0;
 constant gstreamer-player  is export = 'gstplayer-1.0',v0;
+constant gstreamer-base    is export = 'gstbase-1.0',v0;
 
 constant GstBufferListFunc                 is export := Pointer;
 constant GstBusSyncHandler                 is export := Pointer;

@@ -369,3 +369,26 @@ class GstPlayerVisualization is repr<CStruct>  does GLib::Roles::Pointers is exp
       STORE => -> $, Str() \s { self.^attributes[1].set_value(self, s) };
   }
 }
+
+# BASE
+
+class GstBitReader           is repr<CStruct>  does GLib::Roles::Pointers is export {
+  has CArray[guint8] $!data;
+  has guint          $.size;
+  has guint          $.byte;
+  has guint          $.bit;
+
+  has gpointer       $!gst_reserved0;
+  has gpointer       $!gst_reserved1;
+  has gpointer       $!gst_reserved2;
+  has gpointer       $!gst_reserved3;
+
+  method data is rw {
+    Proxy.new:
+      FETCH => -> $ { self.^attributes[0].get_value(self)    },
+
+      STORE => -> $, CArray[guint8] \d {
+        self.^attributes[0].set_value(self, d)
+      };
+  }
+}
