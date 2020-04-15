@@ -1,0 +1,14 @@
+At the time of this writing, 10-player.t is working. However there are still a
+few outstanding issues:
+
+   - There are quite a few places where undefined values are printed
+   - A GLib warning is being issueed when attempting to play certain anime.
+     This was encountered using
+     /media/cbwood/Content/Torrents/\[HorribleSubs\]\ Darwin\'s\ Game\ -\ 01\ \[1080p\].mkv
+
+I think it may be in the best interest to try and create isolated cases of this in order
+to track down the problem, and then apply fixes to the actual 10-player.t file.
+
+Given this, I think it is fine to merge these changes back into master.
+
+- 04/15/2020.
