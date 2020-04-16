@@ -287,7 +287,7 @@ class GstPadStruct_abi     is repr<CStruct> {
   has GType                $.gtype;
 }
 
-class GstPadStruct_resv    is repr<CStruct> {
+class GstPadding           is repr<CStruct>     does GLib::Roles::Pointers is export {
   has gpointer             $!r0;
   has gpointer             $!r1;
   has gpointer             $!r2;
@@ -295,7 +295,7 @@ class GstPadStruct_resv    is repr<CStruct> {
 }
 
 class GstPadStructABI      is repr<CUnion> {
-  HAS GstPadStruct_resv    $!reserved;
+  HAS GstPadding           $!reserved;
   HAS GstPadStruct_abi     $!abi;
 }
 
@@ -311,10 +311,7 @@ class GstPadTemplate       is repr<CStruct>     does GLib::Roles::Pointers is ex
 class GstStaticCaps        is repr<CStruct>      does GLib::Roles::Pointers is export {
   has GstCaps              $.caps;
   has Str                  $.string;
-  has gpointer             $!r0;
-  has gpointer             $!r1;
-  has gpointer             $!r2;
-  has gpointer             $!r3;
+  HAS GstPadding           $!padding
 }
 
 # Test assumption: If the last element is HAS, it will be interpreted as if it were a NULL pointer.
@@ -332,10 +329,7 @@ class GstColorBalanceChannel is repr<CStruct>    does GLib::Roles::Pointers is e
   has gint                 $.max_value is rw;
 
   # private
-  has gpointer             $!gst_reserved0;
-  has gpointer             $!gst_reserved1;
-  has gpointer             $!gst_reserved2;
-  has gpointer             $!gst_reserved3;
+  HAS GstPadding           $!padding;
 
   method min-value is rw {
     self.min_value;
@@ -378,10 +372,7 @@ class GstBitReader           is repr<CStruct>  does GLib::Roles::Pointers is exp
   has guint          $.byte;
   has guint          $.bit;
 
-  has gpointer       $!gst_reserved0;
-  has gpointer       $!gst_reserved1;
-  has gpointer       $!gst_reserved2;
-  has gpointer       $!gst_reserved3;
+  HAS GstPadding     $!reserved;
 
   method data is rw {
     Proxy.new:
@@ -397,13 +388,10 @@ class GstBitWriter           is repr<CStruct>  does GLib::Roles::Pointers is exp
   has CArray[guint8] $!data;
   has guint          $!bit_size;
 
-  has guint    $!bit_capacity;
-  has gboolean $!auto_grow;
-  has gboolean $!owned;
-  has gpointer $!gst_reserved0;
-  has gpointer $!gst_reserved1;
-  has gpointer $!gst_reserved2;
-  has gpointer $!gst_reserved3;
+  has guint          $!bit_capacity;
+  has gboolean       $!auto_grow;
+  has gboolean       $!owned;
+  HAS GstPadding     $!padding;
 
   method data is rw {
     Proxy.new:
@@ -413,4 +401,28 @@ class GstBitWriter           is repr<CStruct>  does GLib::Roles::Pointers is exp
         self.^attributes[0].set_value(self, d)
       };
   }
+}
+
+class GstPaddingLarge        is repr<CStruct>  does GLib::Roles::Pointers is export {
+  HAS GstPadding      $!padding0;
+  HAS GstPadding      $!padding1;
+  HAS GstPadding      $!padding2;
+  HAS GstPadding      $!padding3;
+  HAS GstPadding      $!padding4;
+}
+
+class GstAggregator          is repr<CStruct>  does GLib::Roles::Pointers is export {
+  HAS GstElement      $.parent;
+  has GstPad          $.segment;
+  has gpointer        $!private;
+
+  HAS GstPaddingLarge $!padding;
+}
+
+class GstAggregatorPad       is repr<CStruct>  does GLib::Roles::Pointers is export {
+  HAS GstPad          $.parent;
+  HAS GstSegment      $.segment;
+  has gpointer        $!private;
+
+  HAS GstPadding      $!padding;
 }
