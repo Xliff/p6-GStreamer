@@ -3,7 +3,7 @@ use v6.c;
 use NativeCall;
 
 use GStreamer::Raw::Types;
-use GStreamer::Base::Raw::BitWriter;
+use GStreamer::Raw::Base::BitWriter;
 
 class GStreamer::Base::BitWriter {
   has GstBitWriter $!bw;

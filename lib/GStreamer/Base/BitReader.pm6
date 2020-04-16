@@ -3,7 +3,7 @@ use v6.c;
 use NativeCall;
 
 use GStreamer::Raw::Types;
-use GStreamer::Base::Raw::BitReader;
+use GStreamer::Raw::Base::BitReader;
 
 class GStreamer::Base::BitReader {
   has GstBitReader $!br handles <data size byte bit>;
