@@ -26,7 +26,7 @@ class GStreamer::Element is GStreamer::Object {
   has GstElement $!e is implementor;
 
   submethod BUILD (:$element) {
-    self.setElement($element) if $element.defined;
+    self.setElement($element) if $element;
   }
 
   method setElement(GstElementAncestry $_) {
