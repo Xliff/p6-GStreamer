@@ -392,3 +392,25 @@ class GstBitReader           is repr<CStruct>  does GLib::Roles::Pointers is exp
       };
   }
 }
+
+class GstBitWriter           is repr<CStruct>  does GLib::Roles::Pointers is export {
+  has CArray[guint8] $!data;
+  has guint          $!bit_size;
+
+  has guint    $!bit_capacity;
+  has gboolean $!auto_grow;
+  has gboolean $!owned;
+  has gpointer $!gst_reserved0;
+  has gpointer $!gst_reserved1;
+  has gpointer $!gst_reserved2;
+  has gpointer $!gst_reserved3;
+
+  method data is rw {
+    Proxy.new:
+      FETCH => -> $ { self.^attributes[0].get_value(self)    },
+
+      STORE => -> $, CArray[guint8] \d {
+        self.^attributes[0].set_value(self, d)
+      };
+  }
+}
