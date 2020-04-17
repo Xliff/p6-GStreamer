@@ -70,6 +70,7 @@ constant GstCapsFilterMapFunc              is export := Pointer;
 constant GstCapsForeachFunc                is export := Pointer;
 constant GstCapsMapFunc                    is export := Pointer;
 
+class GstAdapter                is repr('CPointer') does GLib::Roles::Pointers is export { }
 #class GstAllocator              is repr('CPointer') does GLib::Roles::Pointers is export { }
 class GstAllocationParams       is repr('CPointer') does GLib::Roles::Pointers is export { }
 class GstAtomicQueue            is repr('CPointer') does GLib::Roles::Pointers is export { }
