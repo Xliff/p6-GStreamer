@@ -1,5 +1,7 @@
 use v6.c;
 
+use Method::Also;
+
 use GStreamer::Raw::Types;
 use GStreamer::Raw::Base::BaseParse;
 
@@ -33,7 +35,7 @@ class GStreamer::Base::BaseParse is GStreamer::Element {
   }
 
   method GStreamer::Raw::Structs::GstBaseParse
-  #  is also<GstBaseParse>
+    is also<GstBaseParse>
   { $!bp }
 
   method new (GstBaseParseAncestry $base-parse ) {
@@ -45,7 +47,9 @@ class GStreamer::Base::BaseParse is GStreamer::Element {
     Int() $ts,
     Int() $key,
     Int() $force
-  ) {
+  )
+    is also<add-index-entry>
+  {
     my guint64 $o = $offset;
     my GstClockTime $t = $ts;
     my gboolean ($k, $f) = ($key, $force).map( *.so.Int );
@@ -54,6 +58,7 @@ class GStreamer::Base::BaseParse is GStreamer::Element {
   }
 
   proto method convert_default (|)
+      is also<convert-default>
   { * }
 
   multi method convert_default (
@@ -84,19 +89,22 @@ class GStreamer::Base::BaseParse is GStreamer::Element {
     gst_base_parse_drain($!bp);
   }
 
-  method finish_frame (GstBaseParseFrame() $frame, Int() $size) {
+  method finish_frame (GstBaseParseFrame() $frame, Int() $size)
+    is also<finish-frame>
+  {
     my gint $s = $size;
 
     GstFlowReturnEnum( gst_base_parse_finish_frame($!bp, $frame, $s) );
   }
 
-  method get_type {
+  method get_type is also<get-type> {
     state ($n, $t);
 
     unstable_get_type( self.^name, &gst_base_parse_get_type, $n, $t );
   }
 
   proto method merge_tags (|)
+      is also<merge-tags>
   { * }
 
   multi method merge_tags (Int() $mode) {
@@ -108,17 +116,19 @@ class GStreamer::Base::BaseParse is GStreamer::Element {
     gst_base_parse_merge_tags($!bp, $tags, $m);
   }
 
-  method push_frame (GstBaseParseFrame() $frame) {
+  method push_frame (GstBaseParseFrame() $frame) is also<push-frame> {
     GstFlowReturnEnum( gst_base_parse_push_frame($!bp, $frame) );
   }
 
-  method set_average_bitrate (Int() $bitrate) {
+  method set_average_bitrate (Int() $bitrate) is also<set-average-bitrate> {
     my guint $b = $bitrate;
 
     gst_base_parse_set_average_bitrate($!bp, $b);
   }
 
-  method set_duration (Int() $fmt, Int() $duration, Int() $interval) {
+  method set_duration (Int() $fmt, Int() $duration, Int() $interval)
+    is also<set-duration>
+  {
     my GstFormat $f = $fmt;
     my gint64 $d = $duration;
     my gint $i = $interval;
@@ -131,67 +141,73 @@ class GStreamer::Base::BaseParse is GStreamer::Element {
     Int() $fps_den,
     Int() $lead_in,
     Int() $lead_out
-  ) {
+  )
+    is also<set-frame-rate>
+  {
     my gint ($fn, $fd, $li, $lo) = ($fps_num, $fps_den, $lead_in, $lead_out);
 
     gst_base_parse_set_frame_rate($!bp, $fn, $fd, $li, $lo);
   }
 
-  method set_has_timing_info (Int() $has_timing) {
+  method set_has_timing_info (Int() $has_timing) is also<set-has-timing-info> {
     my gboolean $h = $has_timing.so.Int;
 
     gst_base_parse_set_has_timing_info($!bp, $h);
   }
 
-  method set_infer_ts (Int() $infer_ts) {
+  method set_infer_ts (Int() $infer_ts) is also<set-infer-ts> {
     my gboolean $i = $infer_ts.so.Int;
 
     gst_base_parse_set_infer_ts($!bp, $i);
   }
 
-  method set_latency (Int() $min_latency, Int() $max_latency) {
+  method set_latency (Int() $min_latency, Int() $max_latency)
+    is also<set-latency>
+  {
     my GstClockTime ($mnl, $mxl) = ($min_latency, $max_latency);
 
     gst_base_parse_set_latency($!bp, $mnl, $mxl);
   }
 
-  method set_min_frame_size (Int() $min_size) {
+  method set_min_frame_size (Int() $min_size) is also<set-min-frame-size> {
     my guint $m = $min_size;
 
     gst_base_parse_set_min_frame_size($!bp, $m);
   }
 
-  method set_passthrough (Int() $passthrough) {
+  method set_passthrough (Int() $passthrough) is also<set-passthrough> {
     my gboolean $p = $passthrough.so.Int;
 
     gst_base_parse_set_passthrough($!bp, $p);
   }
 
-  method set_pts_interpolation (Int() $pts_interpolate) {
+  method set_pts_interpolation (Int() $pts_interpolate)
+    is also<set-pts-interpolation>
+  {
     my gboolean $p = $pts_interpolate.so.Int;
 
     gst_base_parse_set_pts_interpolation($!bp, $p);
   }
 
-  method set_syncable (gboolean $syncable) {
+  method set_syncable (gboolean $syncable) is also<set-syncable> {
     my gboolean $s = $syncable.so.Int;
 
     gst_base_parse_set_syncable($!bp, $s);
   }
 
-  method set_ts_at_offset (Int() $offset) {
+  method set_ts_at_offset (Int() $offset) is also<set-ts-at-offset> {
     my gsize $o = $offset;
 
     gst_base_parse_set_ts_at_offset($!bp, $o);  }
 
 }
 
-# --- TODO --- finish!
+
 class GStreamer::Base::BaseParseFrame {
   has GstBaseParseFrame $!bpf;
 
   method GStreamer::Raw::Structs::GstBaseParseFrame
-  #  is also<GstBaseParseFrame>
+    is also<GstBaseParseFrame>
   { $!bpf }
 
   multi method new (GstBaseParseFrame $parse-frame) {
@@ -205,22 +221,27 @@ class GStreamer::Base::BaseParseFrame {
     $parse-frame ?? self.bless( :$parse-frame ) !! Nil;
   }
 
-  method copy {
-    gst_base_parse_frame_copy($!bpf);
+  method copy (:$raw = False) {
+    my $c = gst_base_parse_frame_copy($!bpf);
+
+    $c ??
+      ( $raw ?? $c !! GStreamer::Base::BaseParseFrame.new($c) )
+      !!
+      Nil;
   }
 
   method free {
     gst_base_parse_frame_free($!bpf);
   }
 
-  method get_type {
+  method get_type is also<get-type> {
     state ($n, $t);
 
     unstable_get_type( self.^name, &gst_base_parse_frame_get_type, $n, $t );
   }
 
-  method init {
-    gst_base_parse_frame_init($!bpf);
+  method init (GStreamer::Base::BaseParseFrame:U: GstBaseParseFrame $f) {
+    gst_base_parse_frame_init($f);
   }
 
 }
