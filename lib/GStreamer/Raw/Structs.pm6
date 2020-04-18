@@ -368,9 +368,9 @@ class GstPlayerVisualization is repr<CStruct>  does GLib::Roles::Pointers is exp
 
 class GstBitReader           is repr<CStruct>  does GLib::Roles::Pointers is export {
   has CArray[guint8] $!data;
-  has guint          $.size;
-  has guint          $.byte;
-  has guint          $.bit;
+  has guint          $.size is rw;
+  has guint          $.byte is rw;
+  has guint          $.bit  is rw;
 
   HAS GstPadding     $!reserved;
 
@@ -425,4 +425,44 @@ class GstAggregatorPad       is repr<CStruct>  does GLib::Roles::Pointers is exp
   has gpointer        $!private;
 
   HAS GstPadding      $!padding;
+}
+
+class GstBaseParseFrame      is repr<CStruct>  does GLib::Roles::Pointers is export {
+  has GstBuffer $!buffer;
+  has GstBuffer $!out_buffer;
+  has guint     $.flags    is rw;
+  has guint64   $.offset   is rw;
+  has gint      $.overhead is rw;
+  # Private
+  has gint      $!size;
+  has guint     $!ri0;
+  has guint     $!ri1;
+  has gpointer  $!reserved0;
+  has gpointer  $!reserved1;
+  has guint     $!private_flags;
+
+  method buffer is rw {
+    Proxy.new:
+      FETCH => -> $           { self.^attributes[0].get_value(self)    },
+      STORE => -> $, Str() \s { self.^attributes[0].set_value(self, s) };
+  }
+
+  method out_buffer is rw {
+    Proxy.new:
+      FETCH => -> $           { self.^attributes[1].get_value(self)    },
+      STORE => -> $, Str() \s { self.^attributes[1].set_value(self, s) };
+  }
+}
+
+class GstBaseParse           is repr<CStruct>  does GLib::Roles::Pointers is export {
+  has GstElement      $.element;
+
+  # Protected
+  has GstPad          $.sinkpad;
+  has GstPad          $.srcpad;
+  has guint           $.flags;
+  has GstSegment      $.segment;
+
+  HAS GstPaddingLarge $!padding;
+  has Pointer         $!private;
 }
