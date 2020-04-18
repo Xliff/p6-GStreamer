@@ -14,10 +14,10 @@ class GStreamer::Base::BaseParse is GStreamer::Element {
   has GstBaseParse $!bp;
 
   submethod BUILD (:$aggregator-pad) {
-    self.setAggregatorPad($aggregator-pad);
+    self.setBaseParse($aggregator-pad);
   }
 
-  method setAggregatorPad(GstBaseParseAncestry $_) {
+  method setBaseParse(GstBaseParseAncestry $_) {
     my $to-parent;
 
     $!bp = do  {
