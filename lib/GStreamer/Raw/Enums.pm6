@@ -1175,15 +1175,12 @@ our enum GstPlayerStateEnum is export <
 
 # BASE
 
-# XXX - This didn't parse from get_enums. Please find out why!
-# enum {
-#   GST_BASE_PARSE_FRAME_FLAG_NONE         = 0,
-#   GST_BASE_PARSE_FRAME_FLAG_NEW_FRAME    = (1 << 0),
-#   GST_BASE_PARSE_FRAME_FLAG_NO_FRAME     = (1 << 1),
-#   GST_BASE_PARSE_FRAME_FLAG_CLIP         = (1 << 2),
-#   GST_BASE_PARSE_FRAME_FLAG_DROP         = (1 << 3),
-#   GST_BASE_PARSE_FRAME_FLAG_QUEUE        = (1 << 4)
-# } GstBaseParseFrameFlags;
+constant GstBaseSrcFlags is export := guint32;
+our enum GstBaseSrcFlagsEnum is export (
+    GST_BASE_SRC_FLAG_STARTING => 1,
+    GST_BASE_SRC_FLAG_STARTED  => (GST_ELEMENT_FLAG_LAST +< 1),
+    GST_BASE_SRC_FLAG_LAST     => (GST_ELEMENT_FLAG_LAST +< 6),
+);
 
 constant GstBaseParseFrameFlags is export := guint32;
 our enum GstBaseParseFrameFlagsEnum is export (
