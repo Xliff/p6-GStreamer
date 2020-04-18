@@ -7,7 +7,9 @@ use NativeCall;
 use GStreamer::Raw::Types;
 use GStreamer::Raw::Base::Aggregator;
 
+use GStreamer::Buffer;
 use GStreamer::Element;
+use GStreamer::Pad;
 
 our subset GstAggregatorAncestry is export of Mu
   where GstAggregator | GstElementAncestry;
@@ -113,33 +115,76 @@ class GStreamer::Base::Aggregator is GStreamer::Element {
 
 }
 
-# Still not complete. No API page available.
-# --- TODO --- Complete!
-class GStreamer::Base::AggregatorPad is GStreamer::Base::Aggregator {
+
+our subset GstAggregatorPadAncestry is export of Mu
+  where GstAggregatorPad | GstPad;
+
+class GStreamer::Base::AggregatorPad is GStreamer::Pad {
   has GstAggregatorPad $!ap;
 
-  method pad_drop_buffer is also<pad-drop-buffer> {
-    gst_aggregator_pad_drop_buffer($!ap);
+  submethod BUILD (:$aggregator-pad) {
+    self.setAggregatorPad($aggregator-pad);
   }
 
-  method pad_get_type is also<pad-get-type> {
-    gst_aggregator_pad_get_type();
+  method setAggregatorPad(GstAggregatorPadAncestry $_) {
+    my $to-parent;
+
+    $!ap = do  {
+      when GstAggregatorPad {
+        $to-parent = cast(GstPad, $_);
+        $_;
+      }
+
+      default {
+        $to-parent = $_;
+        cast(GstAggregatorPad, $_);
+      }
+    }
+    self.setGstPad($to-parent);
   }
 
-  method pad_has_buffer is also<pad-has-buffer> {
-    gst_aggregator_pad_has_buffer($!ap);
+  method GStreamer::Raw::Definitions::GstAggregatorPad
+    is also<GstAggregatorPad>
+  { $!ap }
+
+  method new (GstAggregatorPadAncestry $aggregator-pad ) {
+    $aggregator-pad ?? self.bless( :$aggregator-pad ) !! Nil;
   }
 
-  method pad_is_eos is also<pad-is-eos> {
-    gst_aggregator_pad_is_eos($!ap);
+  method drop_buffer is also<drop-buffer> {
+    so gst_aggregator_pad_drop_buffer($!ap);
   }
 
-  method pad_peek_buffer is also<pad-peek-buffer> {
-    gst_aggregator_pad_peek_buffer($!ap);
+  method get_type is also<get-type> {
+    state ($n, $t);
+
+    unstable_get_type( self.^name, &gst_aggregator_pad_get_type, $n, $t );
   }
 
-  method pad_pop_buffer is also<pad-pop-buffer> {
-    gst_aggregator_pad_pop_buffer($!ap);
+  method has_buffer is also<has-buffer> {
+    so gst_aggregator_pad_has_buffer($!ap);
+  }
+
+  method is_eos is also<is-eos> {
+    so gst_aggregator_pad_is_eos($!ap);
+  }
+
+  method peek_buffer (:$raw = False) is also<peek-buffer> {
+    my $b = gst_aggregator_pad_peek_buffer($!ap);
+
+    $b ??
+      ( $raw ?? $b !! GStreamer::Buffer.new($b) )
+      !!
+      Nil;
+  }
+  
+  method pop_buffer (:$raw = False) is also<pop-buffer> {
+    my $b = gst_aggregator_pad_pop_buffer($!ap);
+
+    $b ??
+      ( $raw ?? $b !! GStreamer::Buffer.new($b) )
+      !!
+      Nil;
   }
 
 }
