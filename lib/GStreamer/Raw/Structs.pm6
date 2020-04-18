@@ -466,3 +466,27 @@ class GstBaseParse           is repr<CStruct>  does GLib::Roles::Pointers is exp
   HAS GstPaddingLarge $!padding;
   has Pointer         $!private;
 }
+
+class GstCollectPads         is repr<CStruct>  does GLib::Roles::Pointers is export {
+  has GstObject                $!object;
+  has GSList                   $.data;
+  has GRecMutex                $!stream-lock;
+  has Pointer                  $!private;
+  HAS GstPadding               $!padding;
+}
+
+class GstCollectData         is repr<CStruct>  does GLib::Roles::Pointers is export {
+  has GstCollectPads           $!collect;
+  has GstPad                   $!pad;
+  has GstBuffer                $!buffer;
+  has guint                    $!pos;
+  has GstSegment               $!segment;
+
+  has GstCollectPadsStateFlags $!state;
+  has gpointer                 $!private;
+  HAS GstPadding               $!padding;
+
+  method ABI-abi-dts {
+    +$!padding[0];
+  }
+}
