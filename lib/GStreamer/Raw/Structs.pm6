@@ -490,3 +490,38 @@ class GstCollectData         is repr<CStruct>  does GLib::Roles::Pointers is exp
     +$!padding[0];
   }
 }
+
+class GstBaseSink            is repr<CStruct>  does GLib::Roles::Pointers is export {
+  has GstElement       $.element;
+
+  # Protected
+  has GstPad           $.sinkpad;
+  has GstPadMode       $.pad_mode;
+
+  # Protected WITH LOCK
+  has guint64          $.offset;
+  has gboolean         $.can_activate_pull;
+  has gboolean         $.can_activate_push;
+
+  # Protected WITH PREROLL LOCK
+  has GMutex           $.preroll_lock;
+  has GCond            $.preroll_cond;
+  has gboolean         $.eos;
+  has gboolean         $.need_preroll;
+  has gboolean         $.have_preroll;
+  has gboolean         $.playing_async;
+
+  # Protectedf WITH STREAM LOCK
+  has gboolean         $.have_newsegment;
+  has GstSegment       $.segment;
+
+  # Private
+  has GstClockID       $!clock_id;
+  has gboolean         $!sync;
+  has gboolean         $!flushing;
+  has gboolean         $!running;
+  has gint64           $!max_lateness;
+  has Pointer          $!priv;
+
+  HAS GstPaddingLarge  $!padding;
+}
