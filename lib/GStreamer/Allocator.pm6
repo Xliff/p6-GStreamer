@@ -1,5 +1,6 @@
 use v6.c;
 
+use Method::Also;
 
 use GStreamer::Raw::Types;
 use GStreamer::Raw::Allocator;
@@ -33,6 +34,10 @@ class GStreamer::Allocator is GStreamer::Object {
     self.setGstObject($to-parent);
   }
 
+  method GStreamer::Raw::Structs::GstAllocator
+    is also<GstAllocator>
+  { $!a }
+
   method new (GstAllocatorAncestry $allocator) {
     $allocator ?? self.bless( :$allocator ) !! Nil;
   }
@@ -60,7 +65,7 @@ class GStreamer::Allocator is GStreamer::Object {
     gst_allocator_free($!a, $memory);
   }
 
-  method get_type {
+  method get_type is also<get-type> {
     state ($n, $t);
 
     unstable_get_type( self.^name, &gst_allocator_get_type, $n, $t );
@@ -96,7 +101,7 @@ class GStreamer::Allocator is GStreamer::Object {
     gst_allocator_register($name, $allocator);
   }
 
-  method set_default {
+  method set_default is also<set-default> {
     gst_allocator_set_default($!a);
   }
 
