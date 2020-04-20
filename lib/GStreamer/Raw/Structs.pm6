@@ -564,3 +564,22 @@ class GstBaseSrc             is repr<CStruct>  does GLib::Roles::Pointers is exp
   # Private
   HAS GstPaddingLarge  $!padding;
 };
+
+class GstBaseTransform       is repr<CStruct>  does GLib::Roles::Pointers is export {
+  has GstElement          $.element;
+
+  # Protected
+  has GstPad              $.sinkpad;
+  has GstPad              $.srcpad;
+
+  # MT-protected (with STREAM_LOCK)
+  has gboolean            $.have_segment;
+  has GstSegment          $.segment;
+  # Default submit_input_buffer places the buffer here,
+  # for consumption by the generate_output method:
+  has GstBuffer           $.queued_buf;
+
+  has Pointer             $!priv;
+
+  HAS GstPaddingLarge     $!padding;
+}
