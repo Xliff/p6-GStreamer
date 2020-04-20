@@ -27,7 +27,7 @@ sub gst_base_src_get_blocksize (GstBaseSrc $src)
 { * }
 
 sub gst_base_src_get_buffer_pool (GstBaseSrc $src)
-  returns CArray[GstBufferPool]
+  returns GstBufferPool
   is native(gstreamer-base)
   is export
 { * }

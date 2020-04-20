@@ -47,16 +47,19 @@ class GStreamer::Base::BaseSrc is GStreamer::Element {
       is also<get-allocator>
   { * }
 
-  multi method get_allocator {
-    samewith($, $);
+  multi method get_allocator (:$raw = False) {
+    samewith($, $, :$raw);
   }
-  multi method get_allocator ($allocator is rw, $params is rw) {
+  multi method get_allocator ($allocator is rw, $params is rw, :$raw = False) {
     my GstAllocationParams $p = 0;
     my $aa = CArray[Pointer[GstAllocator]].new;
 
     $aa[0] = Pointer[GstAllocator];
     gst_base_src_get_allocator($!bs, $aa, $p);
     ($allocator, $params) = ppr($aa, $p);
+    $allocator = GStreamer::Allocator.new($allocator)
+      unless $raw || $allocator.not;
+    ($allocator, $params);
   }
 
   method get_blocksize is also<get-blocksize> {
