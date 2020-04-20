@@ -525,3 +525,42 @@ class GstBaseSink            is repr<CStruct>  does GLib::Roles::Pointers is exp
 
   HAS GstPaddingLarge  $!padding;
 }
+
+class GstBaseSrc             is repr<CStruct>  does GLib::Roles::Pointers is export {
+  has GstElement       $.element;
+
+  # Protected
+  has GstPad           $.srcpad;
+
+  # MT-Protected with LIVE_LOCK
+  has GMutex           $!live_lock;
+  has GCond            $!live_cond;
+  has gboolean         $!is_live;
+  has gboolean         $!live_running;
+
+  # MT-Protected with LOCK
+  has guint            $!blocksize;             #= size of buffers when operating push based
+  has gboolean         $!can_activate_push;     #= some scheduling properties
+  has gboolean         $!random_access;
+
+  has GstClockID       $!clock_id;              #= for syncing
+
+  # MT-protected (with STREAM_LOCK *and* OBJECT_LOCK)
+  has GstSegment       $!segment;
+  # MT-protected (with STREAM_LOCK)
+  has gboolean         $!need_newsegment;
+  has gint             $!num_buffers;
+  has gint             $!num_buffers_left;
+
+  #ifndef GST_REMOVE_DEPRECATED
+  has gboolean         $!typefind;              #= unused
+  #endif
+
+  has gboolean         $!running;
+  has GstEvent         $!pending_seek;
+
+  has Pointer          $!priv;
+
+  # Private
+  HAS GstPaddingLarge  $!padding;
+};
