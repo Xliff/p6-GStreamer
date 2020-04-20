@@ -12,7 +12,7 @@ our subset GstBaseSrcAncestry is export of Mu
   where GstBaseSrc | GstElementAncestry;
 
 class GStreamer::Base::BaseSrc is GStreamer::Element {
-  has GstBaseSrc $!bs handles <element srcpad>;
+  has GstBaseSrc $!bs;
 
   submethod BUILD (:$base-src) {
     self.setGstBaseSrc($base-src);
