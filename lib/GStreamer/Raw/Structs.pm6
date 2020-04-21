@@ -583,3 +583,18 @@ class GstBaseTransform       is repr<CStruct>  does GLib::Roles::Pointers is exp
 
   HAS GstPaddingLarge     $!padding;
 }
+
+class GstDataQueueItem       is repr<CStruct>  does GLib::Roles::Pointers is export {
+  has GstMiniObject   $!object;
+  has guint           $.size     is rw;
+  has guint64         $.duration is rw;
+  has gboolean        $.visible  is rw;
+  has GDestroyNotify  $!destroy;                #= Setting $!destroy is currently NYI
+  HAS GstPadding      $!padding
+};
+
+class GstDataQueueSize       is repr<CStruct>  does GLib::Roles::Pointers is export {
+  has guint           $.visible is rw;
+  has guint           $.bytes   is rw;
+  has guint64         $.time    is rw;
+};
