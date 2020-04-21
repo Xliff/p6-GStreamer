@@ -24,7 +24,7 @@ class GStreamer::Base::DataQueue {
 
     $!dq = do {
       when    GstDataQueue { $_ }
-      default              { Cast(GstDataQueue, $_) }
+      default              { cast(GstDataQueue, $_) }
     }
 
     self.roleInit-Object;
@@ -53,49 +53,49 @@ class GStreamer::Base::DataQueue {
   method drop_head (Int() $type) is also<drop-head> {
     my GType $t = $type;
 
-    do gst_data_queue_drop_head($!bt, $t);
+    do gst_data_queue_drop_head($!dq, $t);
   }
 
   method flush {
-    gst_data_queue_flush($!bt);
+    gst_data_queue_flush($!dq);
   }
 
   method get_level (GstDataQueueSize $level) is also<get-level> {
-    gst_data_queue_get_level($!bt, $level);
+    gst_data_queue_get_level($!dq, $level);
   }
 
   method is_empty is also<is-empty> {
-    so gst_data_queue_is_empty($!bt);
+    so gst_data_queue_is_empty($!dq);
   }
 
   method is_full is also<is-full> {
-    so gst_data_queue_is_full($!bt);
+    so gst_data_queue_is_full($!dq);
   }
 
   method limits_changed is also<limits-changed> {
-    gst_data_queue_limits_changed($!bt);
+    gst_data_queue_limits_changed($!dq);
   }
 
   method peek (GstDataQueueItem $item) {
-    so gst_data_queue_peek($!bt, $item);
+    so gst_data_queue_peek($!dq, $item);
   }
 
   method pop (GstDataQueueItem $item) {
-    so gst_data_queue_pop($!bt, $item);
+    so gst_data_queue_pop($!dq, $item);
   }
 
   method push (GstDataQueueItem $item) {
-    so gst_data_queue_push($!bt, $item);
+    so gst_data_queue_push($!dq, $item);
   }
 
   method push_force (GstDataQueueItem $item) is also<push-force> {
-    so gst_data_queue_push_force($!bt, $item);
+    so gst_data_queue_push_force($!dq, $item);
   }
 
   method set_flushing (Int() $flushing) is also<set-flushing> {
     my gboolean $f = $flushing.so.Int;
 
-    gst_data_queue_set_flushing($!bt, $f);
+    gst_data_queue_set_flushing($!dq, $f);
   }
 
 }
