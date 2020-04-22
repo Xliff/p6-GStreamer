@@ -598,3 +598,16 @@ class GstDataQueueSize       is repr<CStruct>  does GLib::Roles::Pointers is exp
   has guint           $.bytes   is rw;
   has guint64         $.time    is rw;
 };
+
+class GstByteReader          is repr<CStruct>  does GLib::Roles::Pointers is export {
+  has CArray[guint8]  $!data;
+  has guint           $.size    is rw;
+  has guint           $.byte    is rw;
+  HAS GstPadding      $!padding;
+
+  method data is rw {
+    Proxy.new:
+      FETCH => -> $                    { self.^attributes[0].get_value(self)    },
+      STORE => -> $, CArray[guint8] \a { self.^attributes[0].set_value(self, a) };
+  }
+}
