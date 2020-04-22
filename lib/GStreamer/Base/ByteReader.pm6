@@ -130,6 +130,24 @@ class GStreamer::Base::ByteReader {
     $all.not ?? $rv !! ($rv, $val);
   }
 
+  method get_float (
+    $bits,
+    :little-endian(:little_endian(:$le)) is copy,
+    :big-endian(:big_endian(:$be))       is copy
+  ) {
+    die '$bits must be either 32 or 64!' unless $bits == (32, 64).any;
+
+    ($be, $le) = getEndian unless $le || $be;
+
+    if ($bits == 32) {
+      return self.get_float32_be if $be;
+      return self.get_float32_le if $le;
+    } else {
+      return self.get_float64_be if $be;
+      return self.get_float64_le if $le;
+    }
+  }
+
   proto method get_float32_be (|)
   { * }
 
@@ -192,6 +210,28 @@ class GStreamer::Base::ByteReader {
 
     $val = $v;
     $all.not ?? $rv !! ($rv, $val);
+  }
+
+  method get_int (
+    $bits,
+    :little-endian(:little_endian(:$le)) is copy,
+    :big-endian(:big_endian(:$be))       is copy
+  ) {
+    die '$bits must be either 32 or 64!' unless $bits == (8, 16, 24, 32, 64).any;
+
+    ($be, $le) = getEndian unless $le || $be;
+
+    do given $bits {
+      when 8  { return self.get_int8 }
+      when 16 { return self.get_int16_be if $be;
+                return self.get_int16_le if $le; }
+      when 24 { return self.get_int24_be if $be;
+                return self.get_int24_le if $le; }
+      when 32 { return self.get_int32_be if $be;
+                return self.get_int32_le if $le; }
+      when 64 { return self.get_int64_be if $be;
+                return self.get_int64_le if $le; }
+    }
   }
 
   proto method get_int16_be (|)
@@ -386,6 +426,32 @@ class GStreamer::Base::ByteReader {
     my guint $s = $size;
 
     so gst_byte_reader_get_sub_reader($!br, $sub_reader, $s);
+  }
+
+  sub getEndian {
+    ( $*KERNEL.endian == BigEndian, $*KERNEL.endian == LittleEndian );
+  }
+
+  method get_uint (
+    $bits,
+    :little-endian(:little_endian(:$le)) is copy,
+    :big-endian(:big_endian(:$be))       is copy
+  ) {
+    die '$bits must be either 32 or 64!' unless $bits == (8, 16, 24, 32, 64).any;
+
+    ($be, $le) = getEndian unless $le || $be;
+
+    do given $bits {
+      when 8  { return self.get_uint8 }
+      when 16 { return self.get_uint16_be if $be;
+                return self.get_uint16_le if $le; }
+      when 24 { return self.get_uint24_be if $be;
+                return self.get_uint24_le if $le; }
+      when 32 { return self.get_uint32_be if $be;
+                return self.get_uint32_le if $le; }
+      when 64 { return self.get_uint64_be if $be;
+                return self.get_uint64_le if $le; }
+    }
   }
 
   proto method get_uint16_be (|)
@@ -596,6 +662,24 @@ class GStreamer::Base::ByteReader {
     $all.not ?? $rv !! ($rv, $val);
   }
 
+  method peek_float (
+    $bits,
+    :little-endian(:little_endian(:$le)) is copy,
+    :big-endian(:big_endian(:$be))       is copy
+  ) {
+    die '$bits must be either 32 or 64!' unless $bits == (32, 64).any;
+
+    ($be, $le) = getEndian unless $le || $be;
+
+    if ($bits == 32) {
+      return self.peek_float32_be if $be;
+      return self.peek_float32_le if $le;
+    } else {
+      return self.peek_float64_be if $be;
+      return self.peek_float64_le if $le;
+    }
+  }
+
   proto method peek_float32_be (|)
   { * }
 
@@ -660,6 +744,28 @@ class GStreamer::Base::ByteReader {
     $all.not ?? $rv !! ($rv, $val);
   }
 
+  method peek_int (
+    $bits,
+    :little-endian(:little_endian(:$le)) is copy,
+    :big-endian(:big_endian(:$be))       is copy
+  ) {
+    die '$bits must be either 32 or 64!' unless $bits == (8, 16, 24, 32, 64).any;
+
+    ($be, $le) = getEndian unless $le || $be;
+
+    do given $bits {
+      when 8  { return self.peek_int8 }
+      when 16 { return self.peek_int16_be if $be;
+                return self.peek_int16_le if $le; }
+      when 24 { return self.peek_int24_be if $be;
+                return self.peek_int24_le if $le; }
+      when 32 { return self.peek_int32_be if $be;
+                return self.peek_int32_le if $le; }
+      when 64 { return self.peek_int64_be if $be;
+                return self.peek_int64_le if $le; }
+    }
+  }
+
   proto method peek_int16_be (|)
   { * }
 
@@ -692,7 +798,6 @@ class GStreamer::Base::ByteReader {
     $all.not ?? $rv !! ($rv, $val);
   }
 
-
   proto method peek_int24_be (|)
   { * }
 
@@ -709,7 +814,6 @@ class GStreamer::Base::ByteReader {
     $all.not ?? $rv !! ($rv, $val);
   }
 
-
   proto method peek_int24_le (|)
   { * }
 
@@ -725,7 +829,6 @@ class GStreamer::Base::ByteReader {
     $val = $v;
     $all.not ?? $rv !! ($rv, $val);
   }
-
 
   proto method peek_int32_be (|)
   { * }
@@ -794,7 +897,6 @@ class GStreamer::Base::ByteReader {
     $all.not ?? $rv !! ($rv, $val);
   }
 
-
   proto method peek_int8 (|)
   { * }
 
@@ -810,7 +912,6 @@ class GStreamer::Base::ByteReader {
     $val = $v;
     $all.not ?? $rv !! ($rv, $val);
   }
-
 
   proto method peek_string_utf8 (|)
   { * }
@@ -845,6 +946,28 @@ class GStreamer::Base::ByteReader {
     my guint $s = $size;
 
     gst_byte_reader_peek_sub_reader($!br, $sub_reader, $s);
+  }
+
+  method peek_uint (
+    $bits,
+    :little-endian(:little_endian(:$le)) is copy,
+    :big-endian(:big_endian(:$be))       is copy
+  ) {
+    die '$bits must be either 32 or 64!' unless $bits == (8, 16, 24, 32, 64).any;
+
+    ($be, $le) = getEndian unless $le || $be;
+
+    do given $bits {
+      when 8  { return self.peek_uint8 }
+      when 16 { return self.peek_uint16_be if $be;
+                return self.peek_uint16_le if $le; }
+      when 24 { return self.peek_uint24_be if $be;
+                return self.peek_uint24_le if $le; }
+      when 32 { return self.peek_uint32_be if $be;
+                return self.peek_uint32_le if $le; }
+      when 64 { return self.peek_uint64_be if $be;
+                return self.peek_uint64_le if $le; }
+    }
   }
 
   proto method peek_uint16_be (|)
