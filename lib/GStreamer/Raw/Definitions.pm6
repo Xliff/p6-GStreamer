@@ -108,6 +108,7 @@ class GstPluginFeature          is repr('CPointer') does GLib::Roles::Pointers i
 class GstProbeInfo              is repr('CPointer') does GLib::Roles::Pointers is export { }
 class GstProxyPad               is repr('CPointer') does GLib::Roles::Pointers is export { }
 #class GstQuery                  is repr('CPointer') does GLib::Roles::Pointers is export { }
+class GstQueueArray             is repr('CPointer') does GLib::Roles::Pointers is export { }
 class GstRegistry               is repr('CPointer') does GLib::Roles::Pointers is export { }
 class GstSample                 is repr('CPointer') does GLib::Roles::Pointers is export { }
 #class GstStaticCaps             is repr('CPointer') does GLib::Roles::Pointers is export { }
