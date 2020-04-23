@@ -611,3 +611,16 @@ class GstByteReader          is repr<CStruct>  does GLib::Roles::Pointers is exp
       STORE => -> $, CArray[guint8] \a { self.^attributes[0].set_value(self, a) };
   }
 }
+
+class GstByteWriter is repr<CStruct>  does GLib::Roles::Pointers is export {
+  # HAS does not suppport delegation via handles<> trait!
+  HAS GstByteReader $.parent;
+
+  has guint    $.alloc_size is rw;
+  has gboolean $.fixed      is rw;
+  has gboolean $.owned      is rw;
+
+  method data is rw { $.parent.data }
+  method size is rw { $.parent.size }
+  method byte is rw { $.parent.byte }
+}
