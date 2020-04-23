@@ -428,10 +428,6 @@ class GStreamer::Base::ByteReader {
     so gst_byte_reader_get_sub_reader($!br, $sub_reader, $s);
   }
 
-  sub getEndian {
-    ( $*KERNEL.endian == BigEndian, $*KERNEL.endian == LittleEndian );
-  }
-
   method get_uint (
     $bits,
     :little-endian(:little_endian(:$le)) is copy,
