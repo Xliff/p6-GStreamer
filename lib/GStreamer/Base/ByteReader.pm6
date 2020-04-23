@@ -9,12 +9,19 @@ class GStreamer::Base::ByteReader {
   has GstByteReader $!br handles <data size byte>;
 
   submethod BUILD (:$byte-reader) {
-    $!br = $byte-reader;
+    self.setGstByteReader($_);
+  }
+
+  method setGstByteReader (GstByteReader $_) {
+    $!br = $_;
   }
 
   method GStreamer::Raw::Structs::GstByteReader
   { $!br }
 
+  multi method new (GstByteReader $byte-reader) {
+    $byte-reader ?? self.bless( :$byte-reader ) !! Nil;
+  }
   multi method new (@data) {
     samewith( ArrayToCArray(guint8, @data), @data.elems );
   }
