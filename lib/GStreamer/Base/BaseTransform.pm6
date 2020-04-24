@@ -13,7 +13,7 @@ use GStreamer::Element;
 our subset GstBaseTransformAncestry is export of Mu
   where GstBaseTransform | GstElementAncestry;
 
-class GStreamer::Base::Transform is GStreamer::Element {
+class GStreamer::Base::BaseTransform is GStreamer::Element {
   has GstBaseTransform $!bt;
 
   submethod BUILD (:$base-src) {
