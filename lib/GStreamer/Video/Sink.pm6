@@ -49,26 +49,42 @@ class GStreamer::Video::Sink is GStreamer::Base::BaseSink {
     GstVideoRectangle $result,
     Int() $scaling
   ) is also<center-rect> {
-    # my gboolean $s = $scaling;
-    #
-    # gst_video_sink_center_rect($!vs, $dst, $result, $scaling);
-    die q:to/NYI/;
-      center_rect is NYI due to a NativeCall deficiency. As soon as that
-      is corrected, then support for this method will be enabled.
+    my gboolean $s = $scaling;
 
-      If this routine is important to your work, then please show your support
-      of the following Rakudo PR:
-        https://github.com/rakudo/rakudo/pull/2648
-      NYI
+    # See comments below.
+    # Special thanks to scovit++, whose workaround I am currently employing.
+    # For details, see:
+    #   https://colabti.org/irclogger/irclogger_log/raku-dev?date=2020-04-24#l316
+    gst_video_sink_center_rect(
+      $src.x +< 32 + $src.y,
+      $src.w +< 32 + $src.h,
+      $dst.x +< 32 + $dst.y,
+      $dst.w +< 32 + $dst.y,
+      $result,
+      $scaling
+    );
   }
 
 }
 
 ### /usr/include/gstreamer-1.0/gst/video/gstvideosink.h
 
-sub gst_video_sink_center_rect (
-  GstVideoRectangle $src,
-  GstVideoRectangle $dst,
+# Due to a libffi limitation, passing structs by value is currently not allowed
+# in rakudo.
+# sub gst_video_sink_center_rect (
+#   GstVideoRectangle $src,     # PASS-BY-VALUE!
+#   GstVideoRectangle $dst,     # PASS-BY-VALUE!
+#   GstVideoRectangle $result,
+#   gboolean $scaling
+# )
+#   is native(gstreamer-video)
+#   is export
+# { * }
+#
+# Therefore, we must resort to trickery!
+sub gst_video_sink_center_rect(
+  int64, int64, # GstVideoRectangle
+  int64, int64, # GstVideoRectangle
   GstVideoRectangle $result,
   gboolean $scaling
 )
