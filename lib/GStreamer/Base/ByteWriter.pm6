@@ -12,7 +12,7 @@ our subset GstByteWriterAncestry is export of Mu
   where GstByteWriter | GstByteReader;
 
 class GStreamer::Base::ByteWriter is GStreamer::Base::ByteReader {
-  has GstByteWriter $!bw handles <data size byte alloc_size fixed owned>;
+  has GstByteWriter $!bw handles <alloc_size fixed owned>;
 
   submethod BUILD (:$byte-writer) {
     self.setGstByteWriter($byte-writer);
