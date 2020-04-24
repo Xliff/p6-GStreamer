@@ -320,32 +320,9 @@ class GstStaticPadTemplate is repr<CStruct>      does GLib::Roles::Pointers is e
   has GstPadDirection      $.direction;
   has GstPadPresence       $.presence;
   HAS GstStaticCaps        $.static_caps;
-};
-
-class GstColorBalanceChannel is repr<CStruct>    does GLib::Roles::Pointers is export {
-  HAS GObjectStruct        $!parent;
-  has Str                  $!label;
-  has gint                 $.min_value is rw;
-  has gint                 $.max_value is rw;
-
-  # private
-  HAS GstPadding           $!padding;
-
-  method min-value is rw {
-    self.min_value;
-  }
-
-  method max-value is rw {
-    self.max_value;
-  }
-
-  method label is rw {
-    Proxy.new:
-      FETCH => -> $           { self.^attributes[1].get_value(self)    },
-      STORE => -> $, Str() \s { self.^attributes[1].set_value(self, s) };
-  }
-
 }
+
+# PLAYER
 
 class GstPlayerVisualization is repr<CStruct>  does GLib::Roles::Pointers is export {
   has Str $!name;
@@ -631,3 +608,46 @@ class GstPushSrc             is repr<CStruct>  does GLib::Roles::Pointers is exp
 
   method srcpad { $!parent.src_pad; }
 };
+
+# VIDEO
+
+class GstVideoRectangle      is repr<CStruct>    does GLib::Roles::Pointers is export {
+  has gint                 $.x is rw;
+  has gint                 $.y is rw;
+  has gint                 $.w is rw;
+  has gint                 $.h is rw;
+}
+
+class GstVideoSink           is repr<CStruct>    does GLib::Roles::Pointers is export {
+  HAS GstBaseSink          $!element;
+  has gint                 $.width   is rw;
+  has gint                 $.height  is rw;
+
+  has Pointer              $!priv;
+  HAS GstPadding           $!padding;
+}
+
+class GstColorBalanceChannel is repr<CStruct>    does GLib::Roles::Pointers is export {
+  HAS GObjectStruct        $!parent;
+  has Str                  $!label;
+  has gint                 $.min_value is rw;
+  has gint                 $.max_value is rw;
+
+  # private
+  HAS GstPadding           $!padding;
+
+  method min-value is rw {
+    self.min_value;
+  }
+
+  method max-value is rw {
+    self.max_value;
+  }
+
+  method label is rw {
+    Proxy.new:
+      FETCH => -> $           { self.^attributes[1].get_value(self)    },
+      STORE => -> $, Str() \s { self.^attributes[1].set_value(self, s) };
+  }
+
+}
