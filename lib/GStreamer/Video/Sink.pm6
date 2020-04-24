@@ -49,7 +49,7 @@ class GStreamer::Video::Sink is GStreamer::Base::BaseSink {
     GstVideoRectangle $result,
     Int() $scaling
   ) is also<center-rect> {
-    my gboolean $s = $scaling;
+    my gboolean $s = $scaling.so.Int;
 
     # See comments below.
     # Special thanks to scovit++, whose workaround I am currently employing.
