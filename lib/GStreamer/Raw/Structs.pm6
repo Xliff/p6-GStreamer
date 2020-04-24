@@ -612,7 +612,7 @@ class GstByteReader          is repr<CStruct>  does GLib::Roles::Pointers is exp
   }
 }
 
-class GstByteWriter is repr<CStruct>  does GLib::Roles::Pointers is export {
+class GstByteWriter          is repr<CStruct>  does GLib::Roles::Pointers is export {
   # HAS does not suppport delegation via handles<> trait!
   HAS GstByteReader $.parent;
 
@@ -624,3 +624,10 @@ class GstByteWriter is repr<CStruct>  does GLib::Roles::Pointers is export {
   method size is rw { $.parent.size }
   method byte is rw { $.parent.byte }
 }
+
+class GstPushSrc             is repr<CStruct>  does GLib::Roles::Pointers is export {
+  HAS GstBaseSrc $!parent;
+  HAS GstPadding $!padding;
+
+  method srcpad { $!parent.src_pad; }
+};
