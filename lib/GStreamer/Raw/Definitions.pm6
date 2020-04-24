@@ -92,6 +92,7 @@ class GstDeviceProviderFactory  is repr('CPointer') does GLib::Roles::Pointers i
 #class GstElement                is repr('CPointer') does GLib::Roles::Pointers is export { }
 class GstElementFactory         is repr('CPointer') does GLib::Roles::Pointers is export { }
 class GstEvent                  is repr('CPointer') does GLib::Roles::Pointers is export { }
+class GstFlowCombiner           is repr('CPointer') does GLib::Roles::Pointers is export { }
 class GstGhostPad               is repr('CPointer') does GLib::Roles::Pointers is export { }
 class GstIterator               is repr('CPointer') does GLib::Roles::Pointers is export { }
 #class GstMessage                is repr('CPointer') does GLib::Roles::Pointers is export { }
