@@ -50,6 +50,54 @@ class GStreamer::Base::DataQueue {
     $queue ?? self.bless( :$queue ) !! Nil;
   }
 
+  # Type: guint
+  method current-level-bytes is rw  {
+    my $gv;
+    Proxy.new(
+      FETCH => sub ($) {
+        $gv = GLib::Value.new(
+          self.prop_get('current-level-bytes', $gv)
+        );
+        $gv.uint;
+      },
+      STORE => -> $, Int() $val is copy {
+        warn 'current-level-bytes does not allow writing'
+      }
+    );
+  }
+
+  # Type: guint64
+  method current-level-time is rw  {
+    my $gv;
+    Proxy.new(
+      FETCH => sub ($) {
+        $gv = GLib::Value.new(
+          self.prop_get('current-level-time', $gv)
+        );
+        $gv.uint64;
+      },
+      STORE => -> $, Int() $val is copy {
+        warn 'current-level-time does not allow writing'
+      }
+    );
+  }
+
+  # Type: guint
+  method current-level-visible is rw  {
+    my $gv;
+    Proxy.new(
+      FETCH => sub ($) {
+        $gv = GLib::Value.new(
+          self.prop_get('current-level-visible', $gv)
+        );
+        $gv.uint;
+      },
+      STORE => -> $, Int() $val is copy {
+        warn 'current-level-visible does not allow writing'
+      }
+    );
+  }
+
   method drop_head (Int() $type) is also<drop-head> {
     my GType $t = $type;
 
