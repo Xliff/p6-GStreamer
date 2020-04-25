@@ -43,6 +43,78 @@ class GStreamer::Base::BaseSrc is GStreamer::Element {
     $base-src ?? self.bless( :$base-src ) !! Nil;
   }
 
+  # Type: guint
+  method blocksize is rw  {
+    my $gv;
+    Proxy.new(
+      FETCH => sub ($) {
+        $gv = GLib::Value.new(
+          self.prop_get('blocksize', $gv)
+        );
+        $gv.uint;
+      },
+      STORE => -> $, Int() $val is copy {
+        $gv = GLib::Value.new( G_TYPE_UINT );
+        $gv.uint = $val;
+        self.prop_set('blocksize', $gv);
+      }
+    );
+  }
+
+  # Type: gboolean
+  method do-timestamp is rw  {
+    my $gv;
+    Proxy.new(
+      FETCH => sub ($) {
+        $gv = GLib::Value.new(
+          self.prop_get('do-timestamp', $gv)
+        );
+        $gv.boolean;
+      },
+      STORE => -> $, Int() $val is copy {
+        $gv = GLib::Value.new( G_TYPE_BOOLEAN );
+        $gv.boolean = $val;
+        self.prop_set('do-timestamp', $gv);
+      }
+    );
+  }
+
+  # Type: gint
+  method num-buffers is rw  {
+    my $gv;
+    Proxy.new(
+      FETCH => sub ($) {
+        $gv = GLib::Value.new(
+          self.prop_get('num-buffers', $gv)
+        );
+        $gv.int;
+      },
+      STORE => -> $, Int() $val is copy {
+        $gv = GLib::Value.new( G_TYPE_INT );
+        $gv.int = $val;
+        self.prop_set('num-buffers', $gv);
+      }
+    );
+  }
+
+  # Type: gboolean
+  method typefind is rw  {
+    my $gv;
+    Proxy.new(
+      FETCH => sub ($) {
+        $gv = GLib::Value.new(
+          self.prop_get('typefind', $gv)
+        );
+        $gv.boolean;
+      },
+      STORE => -> $, Int() $val is copy {
+        $gv = GLib::Value.new( G_TYPE_BOOLEAN );
+        $gv.boolean = $val;
+        self.prop_set('typefind', $gv);
+      }
+    );
+  }
+
   proto method get_allocator (|)
       is also<get-allocator>
   { * }
