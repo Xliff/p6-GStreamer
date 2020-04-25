@@ -6,6 +6,8 @@ use GStreamer::Raw::Types;
 use GStreamer::Raw::Base::BaseSink;
 
 use GStreamer::Element;
+use GStreamer::Sample;
+use GStreamer::Structure;
 
 our subset GstBaseSinkAncestry is export of Mu
   where GstBaseSink | GstElementAncestry;
@@ -40,6 +42,62 @@ class GStreamer::Base::BaseSink is GStreamer::Element {
 
   method new (GstBaseSinkAncestry $base-sink) {
     $base-sink ?? self.bless( :$base-sink ) !! Nil;
+  }
+
+  # Type: gboolean
+  method async is rw  {
+    my $gv;
+    Proxy.new(
+      FETCH => sub ($) {
+        $gv = GLib::Value.new(
+          self.prop_get('async', $gv)
+        );
+        $gv.boolean;
+      },
+      STORE => -> $, Int() $val is copy {
+        $gv = GLib::Value.new( G_TYPE_BOOLEAN );
+        $gv.boolean = $val;
+        self.prop_set('async', $gv);
+      }
+    );
+  }
+
+  # Type: gboolean
+  method enable-last-sample is rw  {
+    my $gv;
+    Proxy.new(
+      FETCH => sub ($) {
+        $gv = GLib::Value.new(
+          self.prop_get('enable-last-sample', $gv)
+        );
+        $gv.boolean;
+      },
+      STORE => -> $, Int() $val is copy {
+        $gv = GLib::Value.new( G_TYPE_BOOLEAN );
+        $gv.boolean = $val;
+        self.prop_set('enable-last-sample', $gv);
+      }
+    );
+  }
+
+  # Type: GstStructure
+  method stats (:$raw = False) is rw  {
+    my $gv;
+    Proxy.new(
+      FETCH => sub ($) {
+        $gv = GLib::Value.new(
+          self.prop_get('stats', $gv)
+        );
+
+        return Nil unless $gv.object;
+
+        my $s = cast(GstStructure, $gv.object);
+        $raw ?? $s !! GStreamer::Structure.new($s);
+      },
+      STORE => -> $,  $val is copy {
+        warn 'stats does not allow writing'
+      }
+    );
   }
 
   method do_preroll (GstMiniObject() $obj) is also<do-preroll> {
