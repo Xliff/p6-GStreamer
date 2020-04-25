@@ -43,6 +43,24 @@ class GStreamer::Video::Sink is GStreamer::Base::BaseSink {
     $video-sink ?? self.bless( :$video-sink ) !! Nil;
   }
 
+  # Type: gboolean
+  method show-preroll-frame is rw  {
+    my $gv;
+    Proxy.new(
+      FETCH => sub ($) {
+        $gv = GLib::Value.new(
+          self.prop_get('show-preroll-frame', $gv)
+        );
+        $gv.boolean;
+      },
+      STORE => -> $, Int() $val is copy {
+        $gv = GLib::Value.new( G_TYPE_BOOLEAN );
+        $gv.boolean = $val;
+        self.prop_set('show-preroll-frame', $gv);
+      }
+    );
+  }
+
   method center_rect (
     GstVideoRectangle $src,       # NON-POINTER
     GstVideoRectangle $dst,       # NON-POINTER
