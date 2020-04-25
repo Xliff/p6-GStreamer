@@ -6,12 +6,14 @@ use GStreamer::Raw::Types;
 use GStreamer::Raw::Base::DataQueue;
 
 use GLib::Roles::Object;
+use GLib::Roles::Signals::Generic;
 
 our subset GstDataQueueAncestry is export of Mu
   where GstDataQueue | GObject;
 
 class GStreamer::Base::DataQueue {
   also does GLib::Roles::Object;
+  also does GLib::Roles::Signals::Generic;
 
   has GstDataQueue $!dq is implementor;
 
@@ -96,6 +98,14 @@ class GStreamer::Base::DataQueue {
         warn 'current-level-visible does not allow writing'
       }
     );
+  }
+
+  method empty {
+    self.connect('empty');
+  }
+
+  method full {
+    self.connect('full');
   }
 
   method drop_head (Int() $type) is also<drop-head> {
