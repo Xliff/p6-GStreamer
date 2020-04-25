@@ -42,6 +42,24 @@ class GStreamer::Base::BaseParse is GStreamer::Element {
     $base-parse ?? self.bless( :$base-parse ) !! Nil;
   }
 
+  # Type: gboolean
+  method disable_passthrough is rw  {
+    my $gv;
+    Proxy.new(
+      FETCH => sub ($) {
+        $gv = GLib::Value.new(
+          self.prop_get('disable_passthrough', $gv)
+        );
+        $gv.boolean;
+      },
+      STORE => -> $, Int() $val is copy {
+        $gv = GLib::Value.new( G_TYPE_BOOLEAN );
+        $gv.boolean = $val;
+        self.prop_set('disable_passthrough', $gv);
+      }
+    );
+  }
+
   method add_index_entry (
     Int() $offset,
     Int() $ts,
