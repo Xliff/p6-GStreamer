@@ -46,6 +46,24 @@ class GStreamer::Base::Aggregator is GStreamer::Element {
     $aggregator ?? self.bless( :$aggregator ) !! Nil;
   }
 
+  # Type: gboolean
+  method emit_signals is rw  {
+    my $gv;
+    Proxy.new(
+      FETCH => sub ($) {
+        $gv = GLib::Value.new(
+          self.prop_get('emit_signals', $gv)
+        );
+        $gv.boolean;
+      },
+      STORE => -> $, Int() $val is copy {
+        $gv = GLib::Value.new( G_TYPE_BOOLEAN );
+        $gv.boolean = $val;
+        self.prop_set('emit_signals', $gv);
+      }
+    );
+  }
+
   method finish_buffer (GstBuffer() $buffer) is also<finish-buffer> {
     GstFlowReturnEnum( gst_aggregator_finish_buffer($!a, $buffer) );
   }
@@ -177,7 +195,7 @@ class GStreamer::Base::AggregatorPad is GStreamer::Pad {
       !!
       Nil;
   }
-  
+
   method pop_buffer (:$raw = False) is also<pop-buffer> {
     my $b = gst_aggregator_pad_pop_buffer($!ap);
 
