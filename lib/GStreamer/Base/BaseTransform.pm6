@@ -45,6 +45,12 @@ class GStreamer::Base::BaseTransform is GStreamer::Element {
     $base-src ?? self.bless( :$base-src ) !! Nil;
   }
 
+  method qos is rw {
+    Proxy.new:
+      FETCH => -> $           { self.is_qos_enabled },
+      STORE => -> $, Int() $e { self.set_qos_enabled($e) };
+  }
+
   proto method get_allocator (|)
       is also<get-allocator>
   { * }
