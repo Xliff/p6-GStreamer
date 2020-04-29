@@ -10,7 +10,7 @@ use GStreamer::Raw::Enums;
 
 unit package GStreamer::Raw::Structs;
 
-class GstObject            is repr<CStruct>      does GLib::Roles::Pointers is export {
+class GstObject                  is repr<CStruct>      does GLib::Roles::Pointers is export {
   HAS GObjectStruct        $.object;  # GInitiallyUnowned
   HAS GMutex               $.lock;
   has Str                  $.name;
@@ -23,7 +23,7 @@ class GstObject            is repr<CStruct>      does GLib::Roles::Pointers is e
   has gpointer             $!gst_reserved;
 }
 
-class GstMiniObject        is repr<CStruct>      does GLib::Roles::Pointers is export {
+class GstMiniObject            is repr<CStruct>      does GLib::Roles::Pointers is export {
   has GType                $.type;
 
   has gint                 $.refcount;
@@ -38,7 +38,7 @@ class GstMiniObject        is repr<CStruct>      does GLib::Roles::Pointers is e
   has gpointer             $!priv_pointer;
 }
 
-class GstAllocator         is repr<CStruct>      does GLib::Roles::Pointers is export {
+class GstAllocator               is repr<CStruct>      does GLib::Roles::Pointers is export {
   HAS GstObject            $!object;
 
   has Str                  $.mem_type;
@@ -83,13 +83,13 @@ class GstBuffer                  is repr<CStruct> does GLib::Roles::Pointers is 
 };
 
 # Cheat. This really should be considered opaque.
-class GstDateTime          is repr<CStruct>      does GLib::Roles::Pointers is export {
+class GstDateTime                is repr<CStruct>      does GLib::Roles::Pointers is export {
   HAS GstMiniObject        $.mini_object;
   has GDateTime            $!datetime;
   has GstDateTimeFields    $!fields;
 }
 
-class GstDeviceMonitor     is repr<CStruct>      does GLib::Roles::Pointers is export {
+class GstDeviceMonitor           is repr<CStruct>      does GLib::Roles::Pointers is export {
   has GstObject            $.parent;
   has Pointer              $!priv;
   has gpointer             $!gst_reserved0;
@@ -98,7 +98,7 @@ class GstDeviceMonitor     is repr<CStruct>      does GLib::Roles::Pointers is e
   has gpointer             $!gst_reserved3;
 };
 
-class GstDeviceProvider    is repr<CStruct>      does GLib::Roles::Pointers is export {
+class GstDeviceProvider          is repr<CStruct>      does GLib::Roles::Pointers is export {
   has GstObject            $!parent;
   # Protected by the Object lock
   has GList                $!devices;
@@ -109,7 +109,7 @@ class GstDeviceProvider    is repr<CStruct>      does GLib::Roles::Pointers is e
   has gpointer             $!gst_reserved3;
 };
 
-class GstElement           is repr<CStruct>      does GLib::Roles::Pointers is export {
+class GstElement                 is repr<CStruct>      does GLib::Roles::Pointers is export {
   HAS GstObject            $.object;
   HAS GRecMutex            $.state_lock;
   HAS GCond                $.state_cond;
@@ -137,7 +137,7 @@ class GstElement           is repr<CStruct>      does GLib::Roles::Pointers is e
   has gpointer             $!gst_reserved2;
 }
 
-class GstMessage           is repr<CStruct>      does GLib::Roles::Pointers is export {
+class GstMessage                 is repr<CStruct>      does GLib::Roles::Pointers is export {
   HAS GstMiniObject        $!mini_object;
   has GstMessageType       $!type;
   has guint64              $.timestamp;
@@ -155,14 +155,14 @@ class GstMessage           is repr<CStruct>      does GLib::Roles::Pointers is e
 }
 
 # Modification is currently NYI.
-class GstFormatDefinition  is repr<CStruct>      does GLib::Roles::Pointers is export {
+class GstFormatDefinition        is repr<CStruct>      does GLib::Roles::Pointers is export {
   has guint                $.value; # GstFormat
   has Str                  $.nick;
   has Str                  $.description;
   has GQuark               $.quark;
 }
 
-class GstMemory            is repr<CStruct>      does GLib::Roles::Pointers is export {
+class GstMemory                  is repr<CStruct>      does GLib::Roles::Pointers is export {
   HAS GstMiniObject        $.mini_object;
   has GstAllocator         $.allocator;
   has GstMemory            $.parent;
@@ -173,7 +173,7 @@ class GstMemory            is repr<CStruct>      does GLib::Roles::Pointers is e
 }
 
 
-class GstMetaInfo          is repr<CStruct>      does GLib::Roles::Pointers is export {
+class GstMetaInfo                is repr<CStruct>      does GLib::Roles::Pointers is export {
   has GType                $.api;
   has GType                $.type;
   has gsize                $.size;
@@ -183,7 +183,7 @@ class GstMetaInfo          is repr<CStruct>      does GLib::Roles::Pointers is e
   has gpointer             $!transform_func;
 }
 
-class GstPluginDesc        is repr<CStruct>      does GLib::Roles::Pointers is export {
+class GstPluginDesc              is repr<CStruct>      does GLib::Roles::Pointers is export {
   has gint                 $.major_version;
   has gint                 $.minor_version;
   has Str                  $.name;
@@ -203,7 +203,7 @@ class GstPluginDesc        is repr<CStruct>      does GLib::Roles::Pointers is e
   has gpointer             $!gst_reserved3;
 }
 
-class GstQuery             is repr<CStruct>      does GLib::Roles::Pointers is export {
+class GstQuery                   is repr<CStruct>      does GLib::Roles::Pointers is export {
   HAS GstMiniObject $!mini_object;
   has GstQueryType  $!type;
 
@@ -214,13 +214,13 @@ class GstQuery             is repr<CStruct>      does GLib::Roles::Pointers is e
   }
 }
 
-class GstStructure         is repr<CStruct>      does GLib::Roles::Pointers is export {
+class GstStructure               is repr<CStruct>      does GLib::Roles::Pointers is export {
   has GType                $.type;
 
   has GQuark $!name;
 }
 
-class GstSegment           is repr<CStruct>      does GLib::Roles::Pointers is export {
+class GstSegment                 is repr<CStruct>      does GLib::Roles::Pointers is export {
   has GstSegmentFlags      $.flags        is rw;
   has gdouble              $.rate         is rw;
   has gdouble              $.applied_rate is rw;
@@ -240,7 +240,7 @@ class GstSegment           is repr<CStruct>      does GLib::Roles::Pointers is e
   has gpointer             $!gst_reserved3;
 };
 
-class GstTagList           is repr<CStruct>      does GLib::Roles::Pointers is export {
+class GstTagList                 is repr<CStruct>      does GLib::Roles::Pointers is export {
   HAS GstMiniObject        $.mini_object;
 }
 
@@ -251,7 +251,7 @@ class GstTagList           is repr<CStruct>      does GLib::Roles::Pointers is e
 #         to insure we are working a supported library!!
 
 # Opaque. Grabbed from the implementation for struct-size purposes.
-class GstToc               is repr<CStruct>      does GLib::Roles::Pointers is export {
+class GstToc                     is repr<CStruct>      does GLib::Roles::Pointers is export {
   HAS GstMiniObject        $.mini_object;
 
   has GstTocScope          $!scope;
@@ -260,7 +260,7 @@ class GstToc               is repr<CStruct>      does GLib::Roles::Pointers is e
 }
 
 # Opaque. Grabbed from the implementation for struct-size purposes.
-class GstTocEntry          is repr<CStruct>      does GLib::Roles::Pointers is export {
+class GstTocEntry                is repr<CStruct>      does GLib::Roles::Pointers is export {
   HAS GstMiniObject        $.mini_object;
 
   has GstToc               $!toc;
@@ -276,30 +276,30 @@ class GstTocEntry          is repr<CStruct>      does GLib::Roles::Pointers is e
 }
 
 # BOXED! - Also Opaque.
-class GstCapsFeatures      is repr<CStruct>      does GLib::Roles::Pointers is export {
+class GstCapsFeatures            is repr<CStruct>      does GLib::Roles::Pointers is export {
   has GType                $!type;
   has CArray[gint]         $!parent_refcount;   # gint *parent_refcount
   has GArray               $!array;
   has gboolean             $!is_any;
 }
 
-class GstPadStruct_abi     is repr<CStruct> {
+class GstPadStruct_abi           is repr<CStruct> {
   has GType                $.gtype;
 }
 
-class GstPadding           is repr<CStruct>     does GLib::Roles::Pointers is export {
+class GstPadding                 is repr<CStruct>     does GLib::Roles::Pointers is export {
   has gpointer             $!r0;
   has gpointer             $!r1;
   has gpointer             $!r2;
   has gpointer             $!r3;
 }
 
-class GstPadStructABI      is repr<CUnion> {
+class GstPadStructABI            is repr<CUnion> {
   HAS GstPadding           $!reserved;
   HAS GstPadStruct_abi     $!abi;
 }
 
-class GstPadTemplate       is repr<CStruct>     does GLib::Roles::Pointers is export {
+class GstPadTemplate             is repr<CStruct>     does GLib::Roles::Pointers is export {
   has GstObject	           $!object;
   has Str                  $.name_template;
   has GstPadDirection      $.direction;
@@ -308,14 +308,14 @@ class GstPadTemplate       is repr<CStruct>     does GLib::Roles::Pointers is ex
   HAS GstPadStructABI      $!ABI;
 };
 
-class GstStaticCaps        is repr<CStruct>      does GLib::Roles::Pointers is export {
+class GstStaticCaps          is repr<CStruct>      does GLib::Roles::Pointers is export {
   has GstCaps              $.caps;
   has Str                  $.string;
   HAS GstPadding           $!padding
 }
 
 # Test assumption: If the last element is HAS, it will be interpreted as if it were a NULL pointer.
-class GstStaticPadTemplate is repr<CStruct>      does GLib::Roles::Pointers is export {
+class GstStaticPadTemplate       is repr<CStruct>      does GLib::Roles::Pointers is export {
   has Str                  $.name_template;
   has GstPadDirection      $.direction;
   has GstPadPresence       $.presence;
@@ -324,7 +324,7 @@ class GstStaticPadTemplate is repr<CStruct>      does GLib::Roles::Pointers is e
 
 # PLAYER
 
-class GstPlayerVisualization is repr<CStruct>  does GLib::Roles::Pointers is export {
+class GstPlayerVisualization     is repr<CStruct>  does GLib::Roles::Pointers is export {
   has Str $!name;
   has Str $!description;
 
@@ -343,7 +343,7 @@ class GstPlayerVisualization is repr<CStruct>  does GLib::Roles::Pointers is exp
 
 # BASE
 
-class GstBitReader           is repr<CStruct>  does GLib::Roles::Pointers is export {
+class GstBitReader               is repr<CStruct>  does GLib::Roles::Pointers is export {
   has CArray[guint8] $!data;
   has guint          $.size is rw;
   has guint          $.byte is rw;
@@ -361,7 +361,7 @@ class GstBitReader           is repr<CStruct>  does GLib::Roles::Pointers is exp
   }
 }
 
-class GstBitWriter           is repr<CStruct>  does GLib::Roles::Pointers is export {
+class GstBitWriter               is repr<CStruct>  does GLib::Roles::Pointers is export {
   has CArray[guint8] $!data;
   has guint          $!bit_size;
 
@@ -380,7 +380,7 @@ class GstBitWriter           is repr<CStruct>  does GLib::Roles::Pointers is exp
   }
 }
 
-class GstPaddingLarge        is repr<CStruct>  does GLib::Roles::Pointers is export {
+class GstPaddingLarge            is repr<CStruct>  does GLib::Roles::Pointers is export {
   HAS GstPadding      $!padding0;
   HAS GstPadding      $!padding1;
   HAS GstPadding      $!padding2;
@@ -388,7 +388,7 @@ class GstPaddingLarge        is repr<CStruct>  does GLib::Roles::Pointers is exp
   HAS GstPadding      $!padding4;
 }
 
-class GstAggregator          is repr<CStruct>  does GLib::Roles::Pointers is export {
+class GstAggregator              is repr<CStruct>  does GLib::Roles::Pointers is export {
   HAS GstElement      $.parent;
   has GstPad          $.segment;
   has gpointer        $!private;
@@ -396,7 +396,7 @@ class GstAggregator          is repr<CStruct>  does GLib::Roles::Pointers is exp
   HAS GstPaddingLarge $!padding;
 }
 
-class GstAggregatorPad       is repr<CStruct>  does GLib::Roles::Pointers is export {
+class GstAggregatorPad           is repr<CStruct>  does GLib::Roles::Pointers is export {
   HAS GstPad          $.parent;
   HAS GstSegment      $.segment;
   has gpointer        $!private;
@@ -404,7 +404,7 @@ class GstAggregatorPad       is repr<CStruct>  does GLib::Roles::Pointers is exp
   HAS GstPadding      $!padding;
 }
 
-class GstBaseParseFrame      is repr<CStruct>  does GLib::Roles::Pointers is export {
+class GstBaseParseFrame          is repr<CStruct>  does GLib::Roles::Pointers is export {
   has GstBuffer $!buffer;
   has GstBuffer $!out_buffer;
   has guint     $.flags    is rw;
@@ -431,7 +431,7 @@ class GstBaseParseFrame      is repr<CStruct>  does GLib::Roles::Pointers is exp
   }
 }
 
-class GstBaseParse           is repr<CStruct>  does GLib::Roles::Pointers is export {
+class GstBaseParse               is repr<CStruct>  does GLib::Roles::Pointers is export {
   has GstElement      $.element;
 
   # Protected
@@ -444,7 +444,7 @@ class GstBaseParse           is repr<CStruct>  does GLib::Roles::Pointers is exp
   has Pointer         $!private;
 }
 
-class GstCollectPads         is repr<CStruct>  does GLib::Roles::Pointers is export {
+class GstCollectPads             is repr<CStruct>  does GLib::Roles::Pointers is export {
   has GstObject                $!object;
   has GSList                   $.data;
   has GRecMutex                $!stream-lock;
@@ -452,7 +452,7 @@ class GstCollectPads         is repr<CStruct>  does GLib::Roles::Pointers is exp
   HAS GstPadding               $!padding;
 }
 
-class GstCollectData         is repr<CStruct>  does GLib::Roles::Pointers is export {
+class GstCollectData             is repr<CStruct>  does GLib::Roles::Pointers is export {
   has GstCollectPads           $!collect;
   has GstPad                   $!pad;
   has GstBuffer                $!buffer;
@@ -468,7 +468,7 @@ class GstCollectData         is repr<CStruct>  does GLib::Roles::Pointers is exp
   }
 }
 
-class GstBaseSink            is repr<CStruct>  does GLib::Roles::Pointers is export {
+class GstBaseSink                is repr<CStruct>  does GLib::Roles::Pointers is export {
   has GstElement       $.element;
 
   # Protected
@@ -503,7 +503,7 @@ class GstBaseSink            is repr<CStruct>  does GLib::Roles::Pointers is exp
   HAS GstPaddingLarge  $!padding;
 }
 
-class GstBaseSrc             is repr<CStruct>  does GLib::Roles::Pointers is export {
+class GstBaseSrc                 is repr<CStruct>  does GLib::Roles::Pointers is export {
   has GstElement       $.element;
 
   # Protected
@@ -542,7 +542,7 @@ class GstBaseSrc             is repr<CStruct>  does GLib::Roles::Pointers is exp
   HAS GstPaddingLarge  $!padding;
 };
 
-class GstBaseTransform       is repr<CStruct>  does GLib::Roles::Pointers is export {
+class GstBaseTransform           is repr<CStruct>  does GLib::Roles::Pointers is export {
   has GstElement          $.element;
 
   # Protected
@@ -561,7 +561,7 @@ class GstBaseTransform       is repr<CStruct>  does GLib::Roles::Pointers is exp
   HAS GstPaddingLarge     $!padding;
 }
 
-class GstDataQueueItem       is repr<CStruct>  does GLib::Roles::Pointers is export {
+class GstDataQueueItem           is repr<CStruct>  does GLib::Roles::Pointers is export {
   has GstMiniObject   $!object;
   has guint           $.size     is rw;
   has guint64         $.duration is rw;
@@ -570,13 +570,13 @@ class GstDataQueueItem       is repr<CStruct>  does GLib::Roles::Pointers is exp
   HAS GstPadding      $!padding
 };
 
-class GstDataQueueSize       is repr<CStruct>  does GLib::Roles::Pointers is export {
+class GstDataQueueSize           is repr<CStruct>  does GLib::Roles::Pointers is export {
   has guint           $.visible is rw;
   has guint           $.bytes   is rw;
   has guint64         $.time    is rw;
 };
 
-class GstByteReader          is repr<CStruct>  does GLib::Roles::Pointers is export {
+class GstByteReader              is repr<CStruct>  does GLib::Roles::Pointers is export {
   has CArray[guint8]  $!data;
   has guint           $.size    is rw;
   has guint           $.byte    is rw;
@@ -589,7 +589,7 @@ class GstByteReader          is repr<CStruct>  does GLib::Roles::Pointers is exp
   }
 }
 
-class GstByteWriter          is repr<CStruct>  does GLib::Roles::Pointers is export {
+class GstByteWriter              is repr<CStruct>  does GLib::Roles::Pointers is export {
   # HAS does not suppport delegation via handles<> trait!
   HAS GstByteReader $.parent;
 
@@ -602,7 +602,7 @@ class GstByteWriter          is repr<CStruct>  does GLib::Roles::Pointers is exp
   method byte is rw { $.parent.byte }
 }
 
-class GstPushSrc             is repr<CStruct>  does GLib::Roles::Pointers is export {
+class GstPushSrc               is repr<CStruct>  does GLib::Roles::Pointers is export {
   HAS GstBaseSrc $!parent;
   HAS GstPadding $!padding;
 
@@ -611,14 +611,14 @@ class GstPushSrc             is repr<CStruct>  does GLib::Roles::Pointers is exp
 
 # VIDEO
 
-class GstVideoRectangle      is repr<CStruct>    does GLib::Roles::Pointers is export {
+class GstVideoRectangle          is repr<CStruct>    does GLib::Roles::Pointers is export {
   has gint                 $.x is rw;
   has gint                 $.y is rw;
   has gint                 $.w is rw;
   has gint                 $.h is rw;
 }
 
-class GstVideoSink           is repr<CStruct>    does GLib::Roles::Pointers is export {
+class GstVideoSink               is repr<CStruct>    does GLib::Roles::Pointers is export {
   HAS GstBaseSink          $!element;
   has gint                 $.width   is rw;
   has gint                 $.height  is rw;
@@ -627,7 +627,7 @@ class GstVideoSink           is repr<CStruct>    does GLib::Roles::Pointers is e
   HAS GstPadding           $!padding;
 }
 
-class GstColorBalanceChannel is repr<CStruct>    does GLib::Roles::Pointers is export {
+class GstColorBalanceChannel     is repr<CStruct>    does GLib::Roles::Pointers is export {
   HAS GObjectStruct        $!parent;
   has Str                  $!label;
   has gint                 $.min_value is rw;
@@ -650,4 +650,35 @@ class GstColorBalanceChannel is repr<CStruct>    does GLib::Roles::Pointers is e
       STORE => -> $, Str() \s { self.^attributes[1].set_value(self, s) };
   }
 
+}
+
+class GstVideoTimeCodeConfig     is repr<CStruct>    does GLib::Roles::Pointers is export {
+  has guint                 $.fps_n        is rw;
+  has guint                 $.fps_d        is rw;
+  has GstVideoTimeCodeFlags $.flags        is rw;
+
+  has GDateTime             $!latest_daily_jam;
+
+  method latest_daily_jam is rw {
+    Proxy.new:
+      FETCH => -> $                 { self.^attributes[3].get_value(self)    },
+      STORE => -> $, GDateTime() \d { self.^attributes[3].set_value(self, d) };
+  }
+}
+
+class GstVideoTimeCode           is repr<CStruct>    does GLib::Roles::Pointers is export {
+  HAS GstVideoTimeCodeConfig $.config;
+
+  has guint                  $.hours       is rw;
+  has guint                  $.minutes     is rw;
+  has guint                  $.seconds     is rw;
+  has guint                  $.frames      is rw;
+  has guint                  $.field_count is rw;
+}
+
+class GstVideoTimeCodeInterval   is repr<CStruct>    does GLib::Roles::Pointers is export {
+  has guint                  $.hours       is rw;
+  has guint                  $.minutes     is rw;
+  has guint                  $.seconds     is rw;
+  has guint                  $.frames      is rw;
 }

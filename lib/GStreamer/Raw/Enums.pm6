@@ -942,40 +942,15 @@ our enum GstURITypeEnum is export <
 
 # VIDEO
 
-constant GstNavigationCommand is export := guint;
-our enum GstNavigationCommandEnum (
-  GST_NAVIGATION_COMMAND_INVALID    => 0,
-  GST_NAVIGATION_COMMAND_MENU1      => 1,
-  GST_NAVIGATION_COMMAND_MENU2      => 2,
-  GST_NAVIGATION_COMMAND_MENU3      => 3,
-  GST_NAVIGATION_COMMAND_MENU4      => 4,
-  GST_NAVIGATION_COMMAND_MENU5      => 5,
-  GST_NAVIGATION_COMMAND_MENU6      => 6,
-  GST_NAVIGATION_COMMAND_MENU7      => 7,
-  GST_NAVIGATION_COMMAND_LEFT       => 20,
-  GST_NAVIGATION_COMMAND_RIGHT      => 21,
-  GST_NAVIGATION_COMMAND_UP         => 22,
-  GST_NAVIGATION_COMMAND_DOWN       => 23,
-  GST_NAVIGATION_COMMAND_ACTIVATE   => 24,
-  GST_NAVIGATION_COMMAND_PREV_ANGLE => 30,
-  GST_NAVIGATION_COMMAND_NEXT_ANGLE => 31
-);
-
-constant GstColorBalanceType is export := guint32;
-our enum GstColorBalanceTypeEnum is export <
-    GST_COLOR_BALANCE_HARDWARE
-    GST_COLOR_BALANCE_SOFTWARE
->;
-
 constant GstNavigationEventType is export := guint32;
 our enum GstNavigationEventTypeEnum is export (
-    GST_NAVIGATION_EVENT_INVALID              => 0,
-    GST_NAVIGATION_EVENT_KEY_PRESS            => 1,
-    GST_NAVIGATION_EVENT_KEY_RELEASE          => 2,
-    GST_NAVIGATION_EVENT_MOUSE_BUTTON_PRESS   => 3,
-    GST_NAVIGATION_EVENT_MOUSE_BUTTON_RELEASE => 4,
-    GST_NAVIGATION_EVENT_MOUSE_MOVE           => 5,
-    GST_NAVIGATION_EVENT_COMMAND              => 6,
+    GST_NAVIGATION_EVENT_INVALID              =>  0,
+    GST_NAVIGATION_EVENT_KEY_PRESS            =>  1,
+    GST_NAVIGATION_EVENT_KEY_RELEASE          =>  2,
+    GST_NAVIGATION_EVENT_MOUSE_BUTTON_PRESS   =>  3,
+    GST_NAVIGATION_EVENT_MOUSE_BUTTON_RELEASE =>  4,
+    GST_NAVIGATION_EVENT_MOUSE_MOVE           =>  5,
+    GST_NAVIGATION_EVENT_COMMAND              =>  6,
 );
 
 constant GstNavigationMessageType is export := guint32;
@@ -989,12 +964,10 @@ our enum GstNavigationMessageTypeEnum is export <
 
 constant GstNavigationQueryType is export := guint32;
 our enum GstNavigationQueryTypeEnum is export (
-    GST_NAVIGATION_QUERY_INVALID  => 0,
-    GST_NAVIGATION_QUERY_COMMANDS => 1,
-    GST_NAVIGATION_QUERY_ANGLES   => 2,
+    GST_NAVIGATION_QUERY_INVALID  =>  0,
+    GST_NAVIGATION_QUERY_COMMANDS =>  1,
+    GST_NAVIGATION_QUERY_ANGLES   =>  2,
 );
-
-# VIDEO
 
 constant GstVideoAlphaMode is export := guint32;
 our enum GstVideoAlphaModeEnum is export <
@@ -1002,6 +975,12 @@ our enum GstVideoAlphaModeEnum is export <
     GST_VIDEO_ALPHA_MODE_SET
     GST_VIDEO_ALPHA_MODE_MULT
 >;
+
+constant GstVideoChromaFlags is export := guint32;
+our enum GstVideoChromaFlagsEnum is export (
+    GST_VIDEO_CHROMA_FLAG_NONE       => 0,
+    GST_VIDEO_CHROMA_FLAG_INTERLACED => 1,
+);
 
 constant GstVideoChromaMethod is export := guint32;
 our enum GstVideoChromaMethodEnum is export <
@@ -1017,6 +996,21 @@ our enum GstVideoChromaModeEnum is export <
     GST_VIDEO_CHROMA_MODE_NONE
 >;
 
+constant GstVideoCodecFrameFlags is export := guint32;
+our enum GstVideoCodecFrameFlagsEnum is export (
+    GST_VIDEO_CODEC_FRAME_FLAG_DECODE_ONLY            =>  1,
+    GST_VIDEO_CODEC_FRAME_FLAG_SYNC_POINT             =>  (1 +< 1),
+    GST_VIDEO_CODEC_FRAME_FLAG_FORCE_KEYFRAME         =>  (1 +< 2),
+    GST_VIDEO_CODEC_FRAME_FLAG_FORCE_KEYFRAME_HEADERS =>  (1 +< 3),
+);
+
+constant GstVideoDitherFlags is export := guint32;
+our enum GstVideoDitherFlagsEnum is export (
+    GST_VIDEO_DITHER_FLAG_NONE       => 0,
+    GST_VIDEO_DITHER_FLAG_INTERLACED => 1,
+    GST_VIDEO_DITHER_FLAG_QUANTIZE   => (1 +< 1),
+);
+
 constant GstVideoDitherMethod is export := guint32;
 our enum GstVideoDitherMethodEnum is export <
     GST_VIDEO_DITHER_NONE
@@ -1031,6 +1025,32 @@ our enum GstVideoFieldOrderEnum is export (
     GST_VIDEO_FIELD_ORDER_UNKNOWN            => 0,
     GST_VIDEO_FIELD_ORDER_TOP_FIELD_FIRST    => 1,
     GST_VIDEO_FIELD_ORDER_BOTTOM_FIELD_FIRST => 2,
+);
+
+constant GstVideoFlags is export := guint32;
+our enum GstVideoFlagsEnum is export (
+    GST_VIDEO_FLAG_NONE                => 0,
+    GST_VIDEO_FLAG_VARIABLE_FPS        => (1 +< 0),
+    GST_VIDEO_FLAG_PREMULTIPLIED_ALPHA => (1 +< 1),
+);
+
+constant GstVideoFormatFlags is export := guint32;
+our enum GstVideoFormatFlagsEnum is export (
+    GST_VIDEO_FORMAT_FLAG_YUV     =>  (1 +< 0),
+    GST_VIDEO_FORMAT_FLAG_RGB     =>  (1 +< 1),
+    GST_VIDEO_FORMAT_FLAG_GRAY    =>  (1 +< 2),
+    GST_VIDEO_FORMAT_FLAG_ALPHA   =>  (1 +< 3),
+    GST_VIDEO_FORMAT_FLAG_LE      =>  (1 +< 4),
+    GST_VIDEO_FORMAT_FLAG_PALETTE =>  (1 +< 5),
+    GST_VIDEO_FORMAT_FLAG_COMPLEX =>  (1 +< 6),
+    GST_VIDEO_FORMAT_FLAG_UNPACK  =>  (1 +< 7),
+    GST_VIDEO_FORMAT_FLAG_TILED   =>  (1 +< 8),
+);
+
+constant GstVideoFrameMapFlags is export := guint32;
+our enum GstVideoFrameMapFlagsEnum is export (
+    GST_VIDEO_FRAME_MAP_FLAG_NO_REF => (GST_MAP_FLAG_LAST +< 0),
+    GST_VIDEO_FRAME_MAP_FLAG_LAST   => (GST_MAP_FLAG_LAST +< 8),
 );
 
 constant GstVideoGLTextureOrientation is export := guint32;
@@ -1066,20 +1086,20 @@ our enum GstVideoMatrixModeEnum is export <
 
 constant GstVideoMultiviewFlags is export := guint32;
 our enum GstVideoMultiviewFlagsEnum is export (
-  GST_VIDEO_MULTIVIEW_FLAGS_NONE             => 0,
-  GST_VIDEO_MULTIVIEW_FLAGS_RIGHT_VIEW_FIRST => 1,
-  GST_VIDEO_MULTIVIEW_FLAGS_LEFT_FLIPPED     => (1 +< 1),
-  GST_VIDEO_MULTIVIEW_FLAGS_LEFT_FLOPPED     => (1 +< 2),
-  GST_VIDEO_MULTIVIEW_FLAGS_RIGHT_FLIPPED    => (1 +< 3),
-  GST_VIDEO_MULTIVIEW_FLAGS_RIGHT_FLOPPED    => (1 +< 4),
-  GST_VIDEO_MULTIVIEW_FLAGS_HALF_ASPECT      => (1 +< 14),
-  GST_VIDEO_MULTIVIEW_FLAGS_MIXED_MONO       => (1 +< 15)
+    GST_VIDEO_MULTIVIEW_FLAGS_NONE             => 0,
+    GST_VIDEO_MULTIVIEW_FLAGS_RIGHT_VIEW_FIRST => (1 +< 0),
+    GST_VIDEO_MULTIVIEW_FLAGS_LEFT_FLIPPED     => (1 +< 1),
+    GST_VIDEO_MULTIVIEW_FLAGS_LEFT_FLOPPED     => (1 +< 2),
+    GST_VIDEO_MULTIVIEW_FLAGS_RIGHT_FLIPPED    => (1 +< 3),
+    GST_VIDEO_MULTIVIEW_FLAGS_RIGHT_FLOPPED    => (1 +< 4),
+    GST_VIDEO_MULTIVIEW_FLAGS_HALF_ASPECT      => (1 +< 14),
+    GST_VIDEO_MULTIVIEW_FLAGS_MIXED_MONO       => (1 +< 15),
 );
 
 constant GstVideoMultiviewMode is export := gint32;
 our enum GstVideoMultiviewModeEnum is export (
-    GST_VIDEO_MULTIVIEW_MODE_NONE                        => -1,
-    GST_VIDEO_MULTIVIEW_MODE_MONO                        =>  0,
+    GST_VIDEO_MULTIVIEW_MODE_NONE                      =>  -1,
+    GST_VIDEO_MULTIVIEW_MODE_MONO                      =>  0,
     'GST_VIDEO_MULTIVIEW_MODE_LEFT',
     'GST_VIDEO_MULTIVIEW_MODE_RIGHT',
     'GST_VIDEO_MULTIVIEW_MODE_SIDE_BY_SIDE',
@@ -1088,23 +1108,23 @@ our enum GstVideoMultiviewModeEnum is export (
     'GST_VIDEO_MULTIVIEW_MODE_ROW_INTERLEAVED',
     'GST_VIDEO_MULTIVIEW_MODE_TOP_BOTTOM',
     'GST_VIDEO_MULTIVIEW_MODE_CHECKERBOARD',
-    GST_VIDEO_MULTIVIEW_MODE_FRAME_BY_FRAME              => 32,
+    GST_VIDEO_MULTIVIEW_MODE_FRAME_BY_FRAME            =>  32,
     'GST_VIDEO_MULTIVIEW_MODE_MULTIVIEW_FRAME_BY_FRAME',
     'GST_VIDEO_MULTIVIEW_MODE_SEPARATED'
 );
 
 constant GstVideoMultiviewFramePacking is export := guint32;
 our enum GstVideoMultiviewFramePackingEnum is export (
-    GST_VIDEO_MULTIVIEW_FRAME_PACKING_NONE                  => GST_VIDEO_MULTIVIEW_MODE_NONE,
-    GST_VIDEO_MULTIVIEW_FRAME_PACKING_MONO                  => GST_VIDEO_MULTIVIEW_MODE_MONO,
-    GST_VIDEO_MULTIVIEW_FRAME_PACKING_LEFT                  => GST_VIDEO_MULTIVIEW_MODE_LEFT,
-    GST_VIDEO_MULTIVIEW_FRAME_PACKING_RIGHT                 => GST_VIDEO_MULTIVIEW_MODE_RIGHT,
-    GST_VIDEO_MULTIVIEW_FRAME_PACKING_SIDE_BY_SIDE          => GST_VIDEO_MULTIVIEW_MODE_SIDE_BY_SIDE,
-    GST_VIDEO_MULTIVIEW_FRAME_PACKING_SIDE_BY_SIDE_QUINCUNX => GST_VIDEO_MULTIVIEW_MODE_SIDE_BY_SIDE_QUINCUNX,
-    GST_VIDEO_MULTIVIEW_FRAME_PACKING_COLUMN_INTERLEAVED    => GST_VIDEO_MULTIVIEW_MODE_COLUMN_INTERLEAVED,
-    GST_VIDEO_MULTIVIEW_FRAME_PACKING_ROW_INTERLEAVED       => GST_VIDEO_MULTIVIEW_MODE_ROW_INTERLEAVED,
-    GST_VIDEO_MULTIVIEW_FRAME_PACKING_TOP_BOTTOM            => GST_VIDEO_MULTIVIEW_MODE_TOP_BOTTOM,
-    GST_VIDEO_MULTIVIEW_FRAME_PACKING_CHECKERBOARD          => GST_VIDEO_MULTIVIEW_MODE_CHECKERBOARD,
+    GST_VIDEO_MULTIVIEW_FRAME_PACKING_NONE                  =>  GST_VIDEO_MULTIVIEW_MODE_NONE,
+    GST_VIDEO_MULTIVIEW_FRAME_PACKING_MONO                  =>  GST_VIDEO_MULTIVIEW_MODE_MONO,
+    GST_VIDEO_MULTIVIEW_FRAME_PACKING_LEFT                  =>  GST_VIDEO_MULTIVIEW_MODE_LEFT,
+    GST_VIDEO_MULTIVIEW_FRAME_PACKING_RIGHT                 =>  GST_VIDEO_MULTIVIEW_MODE_RIGHT,
+    GST_VIDEO_MULTIVIEW_FRAME_PACKING_SIDE_BY_SIDE          =>  GST_VIDEO_MULTIVIEW_MODE_SIDE_BY_SIDE,
+    GST_VIDEO_MULTIVIEW_FRAME_PACKING_SIDE_BY_SIDE_QUINCUNX =>  GST_VIDEO_MULTIVIEW_MODE_SIDE_BY_SIDE_QUINCUNX,
+    GST_VIDEO_MULTIVIEW_FRAME_PACKING_COLUMN_INTERLEAVED    =>  GST_VIDEO_MULTIVIEW_MODE_COLUMN_INTERLEAVED,
+    GST_VIDEO_MULTIVIEW_FRAME_PACKING_ROW_INTERLEAVED       =>  GST_VIDEO_MULTIVIEW_MODE_ROW_INTERLEAVED,
+    GST_VIDEO_MULTIVIEW_FRAME_PACKING_TOP_BOTTOM            =>  GST_VIDEO_MULTIVIEW_MODE_TOP_BOTTOM,
+    GST_VIDEO_MULTIVIEW_FRAME_PACKING_CHECKERBOARD          =>  GST_VIDEO_MULTIVIEW_MODE_CHECKERBOARD,
 );
 
 constant GstVideoMultiviewViewLabel is export := guint32;
@@ -1115,12 +1135,32 @@ our enum GstVideoMultiviewViewLabelEnum is export (
     GST_VIDEO_MULTIVIEW_VIEW_RIGHT   => 3,
 );
 
+constant GstVideoOverlayFormatFlags is export := guint32;
+our enum GstVideoOverlayFormatFlagsEnum is export (
+    GST_VIDEO_OVERLAY_FORMAT_FLAG_NONE                => 0,
+    GST_VIDEO_OVERLAY_FORMAT_FLAG_PREMULTIPLIED_ALPHA => (1 +< 0),
+    GST_VIDEO_OVERLAY_FORMAT_FLAG_GLOBAL_ALPHA        => (1 +< 1),
+);
+
+constant GstVideoPackFlags is export := guint32;
+our enum GstVideoPackFlagsEnum is export (
+    GST_VIDEO_PACK_FLAG_NONE           => 0,
+    GST_VIDEO_PACK_FLAG_TRUNCATE_RANGE => (1 +< 0),
+    GST_VIDEO_PACK_FLAG_INTERLACED     => (1 +< 1),
+);
+
 constant GstVideoPrimariesMode is export := guint32;
 our enum GstVideoPrimariesModeEnum is export <
     GST_VIDEO_PRIMARIES_MODE_NONE
     GST_VIDEO_PRIMARIES_MODE_MERGE_ONLY
     GST_VIDEO_PRIMARIES_MODE_FAST
 >;
+
+constant GstVideoResamplerFlags is export := guint32;
+our enum GstVideoResamplerFlagsEnum is export (
+    GST_VIDEO_RESAMPLER_FLAG_NONE      => 0,
+    GST_VIDEO_RESAMPLER_FLAG_HALF_TAPS => (1 +< 0),
+);
 
 constant GstVideoResamplerMethod is export := guint32;
 our enum GstVideoResamplerMethodEnum is export <
@@ -1131,9 +1171,22 @@ our enum GstVideoResamplerMethodEnum is export <
     GST_VIDEO_RESAMPLER_METHOD_LANCZOS
 >;
 
+constant GstVideoScalerFlags is export := guint32;
+our enum GstVideoScalerFlagsEnum is export (
+    GST_VIDEO_SCALER_FLAG_NONE       => 0,
+    GST_VIDEO_SCALER_FLAG_INTERLACED => 1 +< 0,
+);
+
 constant GstVideoTileType is export := guint32;
 our enum GstVideoTileTypeEnum is export (
     GST_VIDEO_TILE_TYPE_INDEXED =>  0,
+);
+
+constant GstVideoTimeCodeFlags is export := guint32;
+our enum GstVideoTimeCodeFlagsEnum is export (
+    GST_VIDEO_TIME_CODE_FLAGS_NONE       => 0,
+    GST_VIDEO_TIME_CODE_FLAGS_DROP_FRAME => (1 +< 0),
+    GST_VIDEO_TIME_CODE_FLAGS_INTERLACED => (1 +< 1),
 );
 
 constant GstVideoVBIParserResult is export := guint32;
@@ -1142,6 +1195,7 @@ our enum GstVideoVBIParserResultEnum is export (
     GST_VIDEO_VBI_PARSER_RESULT_OK    => 1,
     GST_VIDEO_VBI_PARSER_RESULT_ERROR => 2,
 );
+
 
 constant GstPlayerColorBalanceType is export := guint32;
 our enum GstPlayerColorBalanceTypeEnum is export <
