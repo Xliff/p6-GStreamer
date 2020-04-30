@@ -12,6 +12,12 @@ unit package GStreamer::Raw::Video::Decoder;
 
 ### /usr/include/gstreamer-1.0/gst/video/gstvideodecoder.h
 
+sub gst_video_decoder_get_type ()
+  returns GType
+  is native(gstreamer-video)
+  is export
+{ * }
+
 sub gst_video_decoder_add_to_frame (GstVideoDecoder $decoder, gint $n_bytes)
   is native(gstreamer-video)
   is export
