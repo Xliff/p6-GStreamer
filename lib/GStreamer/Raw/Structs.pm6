@@ -1,6 +1,7 @@
 use v6.c;
 
 use NativeCall;
+use Method::Also;
 
 use GLib::Raw::Definitions;
 use GLib::Raw::Structs;
@@ -820,6 +821,8 @@ class GstVideoCodecState         is repr<CStruct>    does GLib::Roles::Pointers 
   has GstBuffer       $!codec_data;
   has GstCaps         $!allocation_caps;
 
+  HAS GstPaddingLarge $!padding;
+
   method caps is rw {
     Proxy.new:
       FETCH => -> $                 { self.^attributes[2].get_value(self)    },
@@ -838,5 +841,21 @@ class GstVideoCodecState         is repr<CStruct>    does GLib::Roles::Pointers 
       STORE => -> $, GstCaps() \c   { self.^attributes[4].set_value(self, c) };
   }
 
-  HAS GstPaddingLarge $!padding;
+  method ref is also<upref> {
+    gst_video_codec_state_ref(self);
+  }
+
+  method unref is also<downref> {
+    gst_video_codec_state_unref(self);
+  }
+
+  sub gst_video_codec_state_ref (GstVideoCodecState $state)
+    returns GstVideoCodecState
+    is native(gstreamer-video)
+  { * }
+
+  sub gst_video_codec_state_unref (GstVideoCodecState $state)
+    returns GstVideoCodecState
+    is native(gstreamer-video)
+  { * }
 }
