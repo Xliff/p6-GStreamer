@@ -133,6 +133,7 @@ class GstPlayerSubtitleInfo     is repr('CPointer') does GLib::Roles::Pointers i
 class GstPlayerVideoInfo        is repr('CPointer') does GLib::Roles::Pointers is export { }
 class GstPlayerVideoRenderer    is repr('CPointer') does GLib::Roles::Pointers is export { }
 class GstReferenceTimestampMeta is repr('CPointer') does GLib::Roles::Pointers is export { }
+class GstVideoOrientation       is repr('CPointer') does GLib::Roles::Pointers is export { }
 class GstUri                    is repr('CPointer') does GLib::Roles::Pointers is export { }
 class GstURIHandler             is repr('CPointer') does GLib::Roles::Pointers is export { }
 
