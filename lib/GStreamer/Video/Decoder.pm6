@@ -194,6 +194,12 @@ class GStreamer::Video::Decoder is GStreamer::Element {
     gst_video_decoder_get_qos_proportion($!vd);
   }
 
+  method get_type is also<get-type> {
+    state ($n, $t);
+
+    unstable_get_type( self.^name, &gst_video_decoder_get_type, $n, $t );
+  }
+
   method have_frame is also<have-frame> {
     GstFlowReturnEnum( gst_video_decoder_have_frame($!vd) );
   }
