@@ -5,7 +5,6 @@ use NativeCall;
 use GLib::Raw::Definitions;
 use GLib::Raw::Structs;
 use GStreamer::Raw::Definitions;
-
 use GStreamer::Raw::Enums;
 
 unit package GStreamer::Raw::Structs;
@@ -681,4 +680,163 @@ class GstVideoTimeCodeInterval   is repr<CStruct>    does GLib::Roles::Pointers 
   has guint                  $.minutes     is rw;
   has guint                  $.seconds     is rw;
   has guint                  $.frames      is rw;
+}
+
+class GstVideoCodecFrame         is repr<CStruct>    does GLib::Roles::Pointers is export {
+  has gint                $!ref_count;                  #= PRIVATE
+  has guint32             $!flags;                      #= PRIVATE
+
+  has guint32             $.system_frame_number is rw;  #= ED
+
+  has guint32             $!decode_frame_number;        #= PRIVATE - ED
+  has guint32             $!presentation_frame_number;  #= PRIVATE - ED
+
+
+  has GstClockTime        $.dts                is rw;   #= ED
+  has GstClockTime        $.pts                is rw;   #= ED
+  has GstClockTime        $.duration           is rw;   #= ED
+  has gint                $.distance_from_sync is rw;   #= ED
+
+  has GstBuffer           $!input_buffer;               #= ED
+  has GstBuffer           $!output_buffer;              #= ED
+
+  has GstClockTime        $.deadline is rw;             #= D
+
+  has GList               $!events;                     #= PRIVATE - ED */
+
+  has gpointer            $!user_data;
+  has GDestroyNotify      $!user_data_destroy_notify;
+
+  method input_buffer is rw {
+    Proxy.new:
+      FETCH => -> $                 { self.^attributes[9].get_value(self)    },
+      STORE => -> $, GstBuffer() \b { self.^attributes[9].set_value(self, b) };
+  }
+
+  method output_buffer is rw {
+    Proxy.new:
+      FETCH => -> $                 { self.^attributes[10].get_value(self)    },
+      STORE => -> $, GstBuffer() \b { self.^attributes[10].set_value(self, b) };
+  }
+
+  # union {
+  #   struct {
+  #     GstClockTime ts;
+  #     GstClockTime ts2;
+  #   } ABI;
+  #   gpointer padding[GST_PADDING_LARGE];
+  # } abidata;
+
+  HAS GstPaddingLarge $!padding;
+}
+
+class GstVideoFormatInfo         is repr<CStruct>    does GLib::Roles::Pointers is export {
+  has GstVideoFormat $.format;
+  has Str                  $.name;
+  has Str                  $.description;
+  has GstVideoFormatFlags  $.flags           is rw;
+  has guint                $.bits            is rw;
+  has guint                $.n_components    is rw;
+  has guint                @.shift[GST_VIDEO_MAX_COMPONENTS]       is CArray;
+  has guint                @.depth[GST_VIDEO_MAX_COMPONENTS]       is CArray;
+  has gint                 @.pixel_stride[GST_VIDEO_MAX_COMPONENTS]is CArray;
+  has guint                $.n_planes        is rw;
+  has guint                @.plane[GST_VIDEO_MAX_COMPONENTS]       is CArray;
+  has guint                @.poffset[GST_VIDEO_MAX_COMPONENTS]     is CArray;
+  has guint                @.w_sub[GST_VIDEO_MAX_COMPONENTS]       is CArray;
+  has guint                @.h_sub[GST_VIDEO_MAX_COMPONENTS]       is CArray;
+
+  has GstVideoFormat       $.unpack_format   is rw;
+  has Pointer              $.unpack_func;             # GstVideoUnpack func
+  has gint                 $.pack_lines      is rw;
+  has Pointer              $.pack_func;               # GstVideoPack   func
+
+  has guint                $.tile_mode       is rw;   # GstVideoTileMode
+  has guint                $.tile_ws         is rw;
+  has guint                $.tile_hs         is rw;
+
+  HAS GstPadding           $!padding;
+
+  method name is rw {
+    Proxy.new:
+      FETCH => -> $            { self.^attributes[1].get_value(self)    },
+      STORE => -> $, Str() \s  { self.^attributes[1].set_value(self, s) };
+  }
+
+  method description is rw {
+    Proxy.new:
+      FETCH => -> $            { self.^attributes[2].get_value(self)    },
+      STORE => -> $, Str() \s  { self.^attributes[2].set_value(self, s) };
+  }
+
+}
+
+class GstVideoColorimetry        is repr<CStruct>    does GLib::Roles::Pointers is export {
+  has GstVideoColorRange        $.range     is rw;
+  has GstVideoColorMatrix       $.matrix    is rw;
+  has GstVideoTransferFunction  $.transfer  is rw;
+  has GstVideoColorPrimaries    $.primaries is rw;
+}
+
+class GstVideoInfo               is repr<CStruct>    does GLib::Roles::Pointers is export {
+  has GstVideoFormatInfo     $.finfo;
+
+  has GstVideoInterlaceMode  $.interlace_mode is rw;
+  has GstVideoFlags          $.flags          is rw;
+  has gint                   $.width          is rw;
+  has gint                   $.height         is rw;
+  has gsize                  $.size           is rw;
+  has gint                   $.views          is rw;
+
+  has GstVideoChromaSite     $.chroma_site    is rw;
+  has GstVideoColorimetry    $.colorimetry    is rw;
+
+  has gint                   $.par_n          is rw;
+  has gint                   $.par_d          is rw;
+  has gint                   $.fps_n          is rw;
+  has gint                   $.fps_d          is rw;
+
+  HAS gsize                  @.offset[GST_VIDEO_MAX_PLANES] is CArray;
+  HAS gint                   @.stride[GST_VIDEO_MAX_PLANES] is CArray;
+
+  # union {
+  #   struct {
+  #     GstVideoMultiviewMode     multiview_mode;
+  #     GstVideoMultiviewFlags    multiview_flags;
+  #     GstVideoFieldOrder        field_order;
+  #   } abi;
+  #   /*< private >*/
+  #   gpointer _gst_reserved[GST_PADDING];
+  # } ABI;
+
+  HAS GstPadding             $!padding;
+}
+
+class GstVideoCodecState         is repr<CStruct>    does GLib::Roles::Pointers is export {
+  has gint            $!ref_count;
+
+  HAS GstVideoInfo    $.info;
+  has GstCaps         $!caps;
+  has GstBuffer       $!codec_data;
+  has GstCaps         $!allocation_caps;
+
+  method caps is rw {
+    Proxy.new:
+      FETCH => -> $                 { self.^attributes[2].get_value(self)    },
+      STORE => -> $, GstCaps() \c   { self.^attributes[2].set_value(self, c) };
+  }
+
+  method codec_data is rw {
+    Proxy.new:
+      FETCH => -> $                 { self.^attributes[3].get_value(self)    },
+      STORE => -> $, GstBuffer() \b { self.^attributes[3].set_value(self, b) };
+  }
+
+  method allocation_caps is rw {
+    Proxy.new:
+      FETCH => -> $                 { self.^attributes[4].get_value(self)    },
+      STORE => -> $, GstCaps() \c   { self.^attributes[4].set_value(self, c) };
+  }
+
+  HAS GstPaddingLarge $!padding;
 }
