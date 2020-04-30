@@ -133,6 +133,7 @@ class GstPlayerSubtitleInfo     is repr('CPointer') does GLib::Roles::Pointers i
 class GstPlayerVideoInfo        is repr('CPointer') does GLib::Roles::Pointers is export { }
 class GstPlayerVideoRenderer    is repr('CPointer') does GLib::Roles::Pointers is export { }
 class GstReferenceTimestampMeta is repr('CPointer') does GLib::Roles::Pointers is export { }
+class GstVideoEncoder           is repr('CPointer') does GLib::Roles::Pointers is export { }
 class GstVideoOrientation       is repr('CPointer') does GLib::Roles::Pointers is export { }
 class GstUri                    is repr('CPointer') does GLib::Roles::Pointers is export { }
 class GstURIHandler             is repr('CPointer') does GLib::Roles::Pointers is export { }
@@ -161,3 +162,6 @@ constant GST_ELEMENT_METADATA_ICON_NAME   is export = 'icon-name';
 constant GST_ELEMENT_METADATA_KLASS       is export = 'klass';
 
 constant GST_PADDING = 4;
+
+constant GST_VIDEO_MAX_PLANES is export = 4;
+constant GST_VIDEO_MAX_COMPONENTS is export = 4;
