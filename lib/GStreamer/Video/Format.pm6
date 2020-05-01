@@ -24,7 +24,9 @@ class GStreamer::Video::Format {
     Int() $green_mask,
     Int() $blue_mask,
     Int() $alpha_mask
-  ) is also<from-masks> {
+  )
+    is also<from-masks>
+  {
     my gint ($d, $b, $e) = ($depth, $bpp, $endianness);
     my guint ($rm, $gm, $bm, $am) =
       ($red_mask, $green_mask, $blue_mask, $alpha_mask);
