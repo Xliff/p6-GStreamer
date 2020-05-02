@@ -751,28 +751,28 @@ class GstVideoCodecFrame         is repr<CStruct>    does GLib::Roles::Pointers 
 
 class GstVideoFormatInfo         is repr<CStruct>    does GLib::Roles::Pointers is export {
   has GstVideoFormat $.format;
-  has Str                  $.name;
-  has Str                  $.description;
-  has GstVideoFormatFlags  $.flags           is rw;
-  has guint                $.bits            is rw;
-  has guint                $.n_components    is rw;
-  has guint                @.shift[GST_VIDEO_MAX_COMPONENTS]       is CArray;
-  has guint                @.depth[GST_VIDEO_MAX_COMPONENTS]       is CArray;
-  has gint                 @.pixel_stride[GST_VIDEO_MAX_COMPONENTS]is CArray;
-  has guint                $.n_planes        is rw;
-  has guint                @.plane[GST_VIDEO_MAX_COMPONENTS]       is CArray;
-  has guint                @.poffset[GST_VIDEO_MAX_COMPONENTS]     is CArray;
-  has guint                @.w_sub[GST_VIDEO_MAX_COMPONENTS]       is CArray;
-  has guint                @.h_sub[GST_VIDEO_MAX_COMPONENTS]       is CArray;
+  has Str                  $!name;
+  has Str                  $!description;
+  has GstVideoFormatFlags  $.flags                                  is rw;
+  has guint                $.bits                                   is rw;
+  has guint                $.n_components                           is rw;
+  has guint                @.shift[GST_VIDEO_MAX_COMPONENTS]        is CArray;
+  has guint                @.depth[GST_VIDEO_MAX_COMPONENTS]        is CArray;
+  has gint                 @.pixel_stride[GST_VIDEO_MAX_COMPONENTS] is CArray;
+  has guint                $.n_planes                               is rw;
+  has guint                @.plane[GST_VIDEO_MAX_COMPONENTS]        is CArray;
+  has guint                @.poffset[GST_VIDEO_MAX_COMPONENTS]      is CArray;
+  has guint                @.w_sub[GST_VIDEO_MAX_COMPONENTS]        is CArray;
+  has guint                @.h_sub[GST_VIDEO_MAX_COMPONENTS]        is CArray;
 
-  has GstVideoFormat       $.unpack_format   is rw;
-  has Pointer              $.unpack_func;             # GstVideoUnpack func
-  has gint                 $.pack_lines      is rw;
-  has Pointer              $.pack_func;               # GstVideoPack   func
+  has GstVideoFormat       $.unpack_format                          is rw;
+  has Pointer              $.unpack_func;                           # GstVideoUnpack func
+  has gint                 $.pack_lines                             is rw;
+  has Pointer              $.pack_func;                             # GstVideoPack   func
 
-  has guint                $.tile_mode       is rw;   # GstVideoTileMode
-  has guint                $.tile_ws         is rw;
-  has guint                $.tile_hs         is rw;
+  has guint                $.tile_mode                              is rw;   # GstVideoTileMode
+  has guint                $.tile_ws                                is rw;
+  has guint                $.tile_hs                                is rw;
 
   HAS GstPadding           $!padding;
 
@@ -889,8 +889,67 @@ class GstMeta                    is repr<CStruct>    does GLib::Roles::Pointers 
   }
 }
 
+class GstVideoFrame              is repr<CStruct>    does GLib::Roles::Pointers is export {
+  HAS GstVideoInfo       $.info;
+  has GstVideoFrameFlags $.flags is rw;
+
+  has GstBuffer          $!buffer;
+  has gpointer           $!meta;
+  has gint               $.id is rw;
+
+  has gpointer           @.data[GST_VIDEO_MAX_PLANES] is CArray;
+  has GstMapInfo         @.map[GST_VIDEO_MAX_PLANES]  is CArray;
+
+  has GstPadding         $!padding;
+
+  method info is rw {
+    Proxy.new:
+      FETCH => -> $ { $.info },
+
+      STORE => -> $, GstVideoInfo() \i {
+        $.info."$_"() = i."$_"() for <
+          interlace_mode
+          flags
+          width
+          height
+          size
+          views
+          chroma_site
+          colorimetry
+          par_n
+          par_d
+          fps_n
+          fps_d
+        >;
+      }
+  }
+
+  method buffer is rw {
+    Proxy.new:
+      FETCH => -> $                 { self.^attributes[2].get_value(self)    },
+      STORE => -> $, GstBuffer() \b { self.^attributes[2].set_value(self, b) };
+  }
+
+  method meta is rw {
+    Proxy.new:
+      FETCH => -> $              { self.^attributes[3].get_value(self)    },
+      STORE => -> $, gpointer \p { self.^attributes[3].set_value(self, p) };
+  }
+}
+
+
+role MetaRole is export {
+  # Originally defined method meta, here. This did not work due to the fact
+  # that roles and attribute contruction of repr<CStructs> are problematic
+  #
+  # Now left for identification purposes, ala:
+  #   $obj ~~ MetaRole
+}
+
 class GstVideoMeta               is repr<CStruct>    does GLib::Roles::Pointers is export {
-  HAS GstMeta            $.meta;
+  also does MetaRole;
+
+  HAS GstMeta            $!meta;
   has GstBuffer          $!buffer;
 
   has GstVideoFrameFlags $.flags  is rw;
@@ -909,6 +968,15 @@ class GstVideoMeta               is repr<CStruct>    does GLib::Roles::Pointers 
 
   has Pointer            $!unmap;  # (GstVideoMeta *meta, guint plane,
                                    #  GstMapInfo *info);
+
+  method meta is rw {
+    Proxy.new:
+      FETCH => -> $ { $!meta },
+      STORE => -> $, GstMeta() $m {
+        $!meta.flags = $m.flags;
+        $!meta.info  = $m.info;
+      };
+  }
 
   method buffer is rw {
     Proxy.new:
@@ -1002,6 +1070,8 @@ class GstVideoMeta               is repr<CStruct>    does GLib::Roles::Pointers 
 }
 
 class GstVideoCropMeta           is repr<CStruct>    does GLib::Roles::Pointers is export {
+  also does MetaRole;
+
   HAS GstMeta $!meta;
   has guint   $.x      is rw;
   has guint   $.y      is rw;
@@ -1045,6 +1115,8 @@ class GstVideoMetaTransform       is repr<CStruct>    does GLib::Roles::Pointers
 }
 
 class GstVideoGLTextureUploadMeta is repr<CStruct>    does GLib::Roles::Pointers is export {
+  also does MetaRole;
+
   HAS GstMeta                      $!meta;
 
   has GstVideoGLTextureOrientation $.texture_orientation is rw;
@@ -1103,6 +1175,8 @@ class GstVideoGLTextureUploadMeta is repr<CStruct>    does GLib::Roles::Pointers
 }
 
 class GstVideoTimeCodeMeta            is repr<CStruct>    does GLib::Roles::Pointers is export {
+  also does MetaRole;
+
   HAS GstMeta          $!meta;
   has GstVideoTimeCode $.tc is rw;
 
@@ -1139,6 +1213,8 @@ class GstVideoRegionOfInterestMeta
   does GLib::Roles::Pointers
   is export
 {
+  also does MetaRole;
+
   HAS GstMeta $!meta;
 
   has GQuark $.roi_type  is rw;
@@ -1203,4 +1279,35 @@ class GstVideoRegionOfInterestMeta
     is native(gstreamer-video)
   { * }
 
+}
+
+class GstVideoOverlayCompositionMeta
+  is repr<CStruct>
+  does GLib::Roles::Pointers
+  is export
+{
+  also does MetaRole;
+
+  HAS GstMeta                    $!meta;
+  has GstVideoOverlayComposition $.overlay;
+
+  method meta is rw {
+    Proxy.new:
+      FETCH => -> $ { $!meta },
+      STORE => -> $, GstMeta() $m {
+        $!meta.flags = $m.flags;
+        $!meta.info  = $m.info;
+      };
+  }
+
+  method get_info (GstVideoOverlayRectangle:U:) {
+    gst_video_overlay_composition_meta_get_info();
+  }
+
+  ### /usr/include/gstreamer-1.0/gst/video/video-overlay-composition.h
+  sub gst_video_overlay_composition_meta_get_info ()
+    returns GstMetaInfo
+    is native(gstreamer-video)
+    is export
+  { * }
 }

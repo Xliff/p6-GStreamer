@@ -75,74 +75,76 @@ constant GstVideoGLTextureUpload           is export := Pointer;
 constant GBoxedCopyFunc                    is export := Pointer;
 constant GBoxedFreeFunc                    is export := Pointer;
 
-class GstAdapter                is repr('CPointer') does GLib::Roles::Pointers is export { }
-#class GstAllocator              is repr('CPointer') does GLib::Roles::Pointers is export { }
-class GstAllocationParams       is repr('CPointer') does GLib::Roles::Pointers is export { }
-class GstAtomicQueue            is repr('CPointer') does GLib::Roles::Pointers is export { }
-class GstBin                    is repr('CPointer') does GLib::Roles::Pointers is export { }
-#class GstBuffer                 is repr('CPointer') does GLib::Roles::Pointers is export { }
-class GstBufferList             is repr('CPointer') does GLib::Roles::Pointers is export { }
-class GstBufferPool             is repr('CPointer') does GLib::Roles::Pointers is export { }
-class GstBus                    is repr('CPointer') does GLib::Roles::Pointers is export { }
-class GstCaps                   is repr('CPointer') does GLib::Roles::Pointers is export { }
-class GstChildProxy             is repr('CPointer') does GLib::Roles::Pointers is export { }
-class GstClock                  is repr('CPointer') does GLib::Roles::Pointers is export { }
-class GstContext                is repr('CPointer') does GLib::Roles::Pointers is export { }
-class GstControlBinding         is repr('CPointer') does GLib::Roles::Pointers is export { }
-class GstDataQueue              is repr('CPointer') does GLib::Roles::Pointers is export { }
-class GstControlSource          is repr('CPointer') does GLib::Roles::Pointers is export { }
-class GstDevice                 is repr('CPointer') does GLib::Roles::Pointers is export { }
-class GstDeviceProviderFactory  is repr('CPointer') does GLib::Roles::Pointers is export { }
-#class GstDateTime               is repr('CPointer') does GLib::Roles::Pointers is export { }
-#class GstElement                is repr('CPointer') does GLib::Roles::Pointers is export { }
-class GstElementFactory         is repr('CPointer') does GLib::Roles::Pointers is export { }
-class GstEvent                  is repr('CPointer') does GLib::Roles::Pointers is export { }
-class GstFlowCombiner           is repr('CPointer') does GLib::Roles::Pointers is export { }
-class GstGhostPad               is repr('CPointer') does GLib::Roles::Pointers is export { }
-class GstIterator               is repr('CPointer') does GLib::Roles::Pointers is export { }
-#class GstMessage                is repr('CPointer') does GLib::Roles::Pointers is export { }
-#class GstObject                 is repr('CPointer') does GLib::Roles::Pointers is export { }
-class GstNavigation             is repr('CPointer') does GLib::Roles::Pointers is export { }
-class GstPad                    is repr('CPointer') does GLib::Roles::Pointers is export { }
-class GstPadProbeInfo           is repr('CPointer') does GLib::Roles::Pointers is export { }
-#class GstPadTemplate            is repr('CPointer') does GLib::Roles::Pointers is export { }
-class GstParseContext           is repr('CPointer') does GLib::Roles::Pointers is export { }
-class GstPipeline               is repr('CPointer') does GLib::Roles::Pointers is export { }
-class GstPlayer                 is repr('CPointer') does GLib::Roles::Pointers is export { }
-class GstPlugin                 is repr('CPointer') does GLib::Roles::Pointers is export { }
-class GstPluginFeature          is repr('CPointer') does GLib::Roles::Pointers is export { }
-class GstProbeInfo              is repr('CPointer') does GLib::Roles::Pointers is export { }
-class GstProxyPad               is repr('CPointer') does GLib::Roles::Pointers is export { }
-#class GstQuery                  is repr('CPointer') does GLib::Roles::Pointers is export { }
-class GstQueueArray             is repr('CPointer') does GLib::Roles::Pointers is export { }
-class GstRegistry               is repr('CPointer') does GLib::Roles::Pointers is export { }
-class GstSample                 is repr('CPointer') does GLib::Roles::Pointers is export { }
-#class GstStaticCaps             is repr('CPointer') does GLib::Roles::Pointers is export { }
-#class GstStaticPadTemplate      is repr('CPointer') does GLib::Roles::Pointers is export { }
-class GstStream                 is repr('CPointer') does GLib::Roles::Pointers is export { }
-class GstStreamCollection       is repr('CPointer') does GLib::Roles::Pointers is export { }
-#class GstStructure              is repr('CPointer') does GLib::Roles::Pointers is export { }
-#class GstTagList                is repr('CPointer') does GLib::Roles::Pointers is export { }
-#class GstToc                    is repr('CPointer') does GLib::Roles::Pointers is export { }
-#class GstTocEntry               is repr('CPointer') does GLib::Roles::Pointers is export { }
+class GstAdapter                  is repr('CPointer') does GLib::Roles::Pointers is export { }
+#class GstAllocator                is repr('CPointer') does GLib::Roles::Pointers is export { }
+class GstAllocationParams         is repr('CPointer') does GLib::Roles::Pointers is export { }
+class GstAtomicQueue              is repr('CPointer') does GLib::Roles::Pointers is export { }
+class GstBin                      is repr('CPointer') does GLib::Roles::Pointers is export { }
+#class GstBuffer                   is repr('CPointer') does GLib::Roles::Pointers is export { }
+class GstBufferList               is repr('CPointer') does GLib::Roles::Pointers is export { }
+class GstBufferPool               is repr('CPointer') does GLib::Roles::Pointers is export { }
+class GstBus                      is repr('CPointer') does GLib::Roles::Pointers is export { }
+class GstCaps                     is repr('CPointer') does GLib::Roles::Pointers is export { }
+class GstChildProxy               is repr('CPointer') does GLib::Roles::Pointers is export { }
+class GstClock                    is repr('CPointer') does GLib::Roles::Pointers is export { }
+class GstContext                  is repr('CPointer') does GLib::Roles::Pointers is export { }
+class GstControlBinding           is repr('CPointer') does GLib::Roles::Pointers is export { }
+class GstDataQueue                is repr('CPointer') does GLib::Roles::Pointers is export { }
+class GstControlSource            is repr('CPointer') does GLib::Roles::Pointers is export { }
+class GstDevice                   is repr('CPointer') does GLib::Roles::Pointers is export { }
+class GstDeviceProviderFactory    is repr('CPointer') does GLib::Roles::Pointers is export { }
+#class GstDateTime                 is repr('CPointer') does GLib::Roles::Pointers is export { }
+#class GstElement                  is repr('CPointer') does GLib::Roles::Pointers is export { }
+class GstElementFactory           is repr('CPointer') does GLib::Roles::Pointers is export { }
+class GstEvent                    is repr('CPointer') does GLib::Roles::Pointers is export { }
+class GstFlowCombiner             is repr('CPointer') does GLib::Roles::Pointers is export { }
+class GstGhostPad                 is repr('CPointer') does GLib::Roles::Pointers is export { }
+class GstIterator                 is repr('CPointer') does GLib::Roles::Pointers is export { }
+#class GstMessage                  is repr('CPointer') does GLib::Roles::Pointers is export { }
+#class GstObject                   is repr('CPointer') does GLib::Roles::Pointers is export { }
+class GstNavigation               is repr('CPointer') does GLib::Roles::Pointers is export { }
+class GstPad                      is repr('CPointer') does GLib::Roles::Pointers is export { }
+class GstPadProbeInfo             is repr('CPointer') does GLib::Roles::Pointers is export { }
+#class GstPadTemplate              is repr('CPointer') does GLib::Roles::Pointers is export { }
+class GstParseContext             is repr('CPointer') does GLib::Roles::Pointers is export { }
+class GstPipeline                 is repr('CPointer') does GLib::Roles::Pointers is export { }
+class GstPlayer                   is repr('CPointer') does GLib::Roles::Pointers is export { }
+class GstPlugin                   is repr('CPointer') does GLib::Roles::Pointers is export { }
+class GstPluginFeature            is repr('CPointer') does GLib::Roles::Pointers is export { }
+class GstProbeInfo                is repr('CPointer') does GLib::Roles::Pointers is export { }
+class GstProxyPad                 is repr('CPointer') does GLib::Roles::Pointers is export { }
+#class GstQuery                    is repr('CPointer') does GLib::Roles::Pointers is export { }
+class GstQueueArray               is repr('CPointer') does GLib::Roles::Pointers is export { }
+class GstRegistry                 is repr('CPointer') does GLib::Roles::Pointers is export { }
+class GstSample                   is repr('CPointer') does GLib::Roles::Pointers is export { }
+#class GstStaticCaps               is repr('CPointer') does GLib::Roles::Pointers is export { }
+#class GstStaticPadTemplate        is repr('CPointer') does GLib::Roles::Pointers is export { }
+class GstStream                   is repr('CPointer') does GLib::Roles::Pointers is export { }
+class GstStreamCollection         is repr('CPointer') does GLib::Roles::Pointers is export { }
+#class GstStructure                is repr('CPointer') does GLib::Roles::Pointers is export { }
+#class GstTagList                  is repr('CPointer') does GLib::Roles::Pointers is export { }
+#class GstToc                      is repr('CPointer') does GLib::Roles::Pointers is export { }
+#class GstTocEntry                 is repr('CPointer') does GLib::Roles::Pointers is export { }
 
-#class GstMapInfo                is repr('CPointer') does GLib::Roles::Pointers is export { }
-#class GstMemory                 is repr('CPointer') does GLib::Roles::Pointers is export { }
-#class GstMeta                   is repr('CPointer') does GLib::Roles::Pointers is export { }
-class GstParentBufferMeta       is repr('CPointer') does GLib::Roles::Pointers is export { }
-class GstPlayerAudioInfo        is repr('CPointer') does GLib::Roles::Pointers is export { }
-class GstPlayerMediaInfo        is repr('CPointer') does GLib::Roles::Pointers is export { }
-class GstPlayerSignalDispatcher is repr('CPointer') does GLib::Roles::Pointers is export { }
-class GstPlayerStreamInfo       is repr('CPointer') does GLib::Roles::Pointers is export { }
-class GstPlayerSubtitleInfo     is repr('CPointer') does GLib::Roles::Pointers is export { }
-class GstPlayerVideoInfo        is repr('CPointer') does GLib::Roles::Pointers is export { }
-class GstPlayerVideoRenderer    is repr('CPointer') does GLib::Roles::Pointers is export { }
-class GstReferenceTimestampMeta is repr('CPointer') does GLib::Roles::Pointers is export { }
-class GstVideoDecoder           is repr('CPointer') does GLib::Roles::Pointers is export { }
-class GstVideoEncoder           is repr('CPointer') does GLib::Roles::Pointers is export { }
-class GstVideoOrientation       is repr('CPointer') does GLib::Roles::Pointers is export { }
-class GstUri                    is repr('CPointer') does GLib::Roles::Pointers is export { }
-class GstURIHandler             is repr('CPointer') does GLib::Roles::Pointers is export { }
+#class GstMapInfo                  is repr('CPointer') does GLib::Roles::Pointers is export { }
+#class GstMemory                   is repr('CPointer') does GLib::Roles::Pointers is export { }
+#class GstMeta                     is repr('CPointer') does GLib::Roles::Pointers is export { }
+class GstParentBufferMeta         is repr('CPointer') does GLib::Roles::Pointers is export { }
+class GstPlayerAudioInfo          is repr('CPointer') does GLib::Roles::Pointers is export { }
+class GstPlayerMediaInfo          is repr('CPointer') does GLib::Roles::Pointers is export { }
+class GstPlayerSignalDispatcher   is repr('CPointer') does GLib::Roles::Pointers is export { }
+class GstPlayerStreamInfo         is repr('CPointer') does GLib::Roles::Pointers is export { }
+class GstPlayerSubtitleInfo       is repr('CPointer') does GLib::Roles::Pointers is export { }
+class GstPlayerVideoInfo          is repr('CPointer') does GLib::Roles::Pointers is export { }
+class GstPlayerVideoRenderer      is repr('CPointer') does GLib::Roles::Pointers is export { }
+class GstReferenceTimestampMeta   is repr('CPointer') does GLib::Roles::Pointers is export { }
+class GstVideoDecoder             is repr('CPointer') does GLib::Roles::Pointers is export { }
+class GstVideoEncoder             is repr('CPointer') does GLib::Roles::Pointers is export { }
+class GstVideoOrientation         is repr('CPointer') does GLib::Roles::Pointers is export { }
+class GstVideoOverlayComposition  is repr('CPointer') does GLib::Roles::Pointers is export { }
+class GstVideoOverlayRectangle    is repr('CPointer') does GLib::Roles::Pointers is export { }
+class GstUri                      is repr('CPointer') does GLib::Roles::Pointers is export { }
+class GstURIHandler               is repr('CPointer') does GLib::Roles::Pointers is export { }
 
 class GstPlayerVideoOverlayVideoRenderer   is repr('CPointer') does GLib::Roles::Pointers is export { }
 class GstPlayerMainContextSignalDispatcher is repr('CPointer') does GLib::Roles::Pointers is export { }
@@ -169,8 +171,15 @@ constant GST_ELEMENT_METADATA_KLASS       is export = 'klass';
 
 constant GST_PADDING = 4;
 
-constant GST_VIDEO_MAX_PLANES is export = 4;
-constant GST_VIDEO_MAX_COMPONENTS is export = 4;
+constant GST_VIDEO_MAX_PLANES         is export = 4;
+constant GST_VIDEO_MAX_COMPONENTS     is export = 4;
 constant GST_VIDEO_DECODER_MAX_ERRORS is export = 10;
-constant GST_VIDEO_DECODER_SINK_NAME is export = 'sink';
-constant GST_VIDEO_DECODER_SRC_NAME is export = 'src';
+constant GST_VIDEO_DECODER_SINK_NAME  is export = 'sink';
+constant GST_VIDEO_DECODER_SRC_NAME   is export = 'src';
+
+constant GST_CAPS_FEATURE_META_GST_VIDEO_OVERLAY_COMPOSITION is export = 'meta:GstVideoOverlayComposition';
+
+constant GST_VIDEO_OVERLAY_COMPOSITION_BLEND_FORMATS is export =
+  "\{ BGRx, RGBx, xRGB, xBGR, RGBA, BGRA, ARGB, ABGR, RGB, BGR, {''
+  }I420, YV12, AYUV, YUY2, UYVY, v308, Y41B, Y42B, Y444, {''
+  }NV12, NV21, A420, YUV9, YVU9, IYU1, GRAY8 \}";
