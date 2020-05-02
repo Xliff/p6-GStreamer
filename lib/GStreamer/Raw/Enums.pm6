@@ -365,16 +365,25 @@ our enum GstMemoryFlagsEnum is export (
   GST_MEMORY_FLAG_LAST                  => (GST_MINI_OBJECT_FLAG_LAST +< 16)
 );
 
+constant GstMetaFlags is export := guint32;
+our enum GstMetaFlagsEnum is export (
+  GST_META_FLAG_NONE        => 0,
+  GST_META_FLAG_READONLY    => (1 +< 0),
+  GST_META_FLAG_POOLED      => (1 +< 1),
+  GST_META_FLAG_LOCKED      => (1 +< 2),
+  GST_META_FLAG_LAST        => (1 +< 16)
+);
+
 constant GstMIKEYType is export := gint32;
 our enum GstMIKEYTypeEnum is export (
-    GST_MIKEY_TYPE_INVALID    =>  -1,
-    GST_MIKEY_TYPE_PSK_INIT   =>   0,
-    GST_MIKEY_TYPE_PSK_VERIFY =>   1,
-    GST_MIKEY_TYPE_PK_INIT    =>   2,
-    GST_MIKEY_TYPE_PK_VERIFY  =>   3,
-    GST_MIKEY_TYPE_DH_INIT    =>   4,
-    GST_MIKEY_TYPE_DH_RESP    =>   5,
-    GST_MIKEY_TYPE_ERROR      =>   6,
+  GST_MIKEY_TYPE_INVALID    => -1,
+  GST_MIKEY_TYPE_PSK_INIT   =>  0,
+  GST_MIKEY_TYPE_PSK_VERIFY =>  1,
+  GST_MIKEY_TYPE_PK_INIT    =>  2,
+  GST_MIKEY_TYPE_PK_VERIFY  =>  3,
+  GST_MIKEY_TYPE_DH_INIT    =>  4,
+  GST_MIKEY_TYPE_DH_RESP    =>  5,
+  GST_MIKEY_TYPE_ERROR      =>  6,
 );
 
 # C wants gint, but Perl might get confused. At the time of this writing,
@@ -1047,6 +1056,19 @@ our enum GstVideoFormatFlagsEnum is export (
     GST_VIDEO_FORMAT_FLAG_TILED   =>  (1 +< 8),
 );
 
+constant GstVideoFrameFlags is export := guint32;
+our enum GstVideoFrameFlagsEnum is export (
+  GST_VIDEO_FRAME_FLAG_NONE            => 0,
+  GST_VIDEO_FRAME_FLAG_INTERLACED      => (1 +< 0),
+  GST_VIDEO_FRAME_FLAG_TFF             => (1 +< 1),
+  GST_VIDEO_FRAME_FLAG_RFF             => (1 +< 2),
+  GST_VIDEO_FRAME_FLAG_ONEFIELD        => (1 +< 3),
+  GST_VIDEO_FRAME_FLAG_MULTIPLE_VIEW   => (1 +< 4),
+  GST_VIDEO_FRAME_FLAG_FIRST_IN_BUNDLE => (1 +< 5),
+  GST_VIDEO_FRAME_FLAG_TOP_FIELD       => (1 +< 1) +| (1 +< 3), #= GST_VIDEO_FRAME_FLAG_TFF | GST_VIDEO_FRAME_FLAG_ONEFIELD
+  GST_VIDEO_FRAME_FLAG_BOTTOM_FIELD    => (1 +< 3)              #= GST_VIDEO_FRAME_FLAG_ONEFIELD
+);
+
 constant GstVideoFrameMapFlags is export := guint32;
 our enum GstVideoFrameMapFlagsEnum is export (
     GST_VIDEO_FRAME_MAP_FLAG_NO_REF => (GST_MAP_FLAG_LAST +< 0),
@@ -1059,6 +1081,17 @@ our enum GstVideoGLTextureOrientationEnum is export <
     GST_VIDEO_GL_TEXTURE_ORIENTATION_X_NORMAL_Y_FLIP
     GST_VIDEO_GL_TEXTURE_ORIENTATION_X_FLIP_Y_NORMAL
     GST_VIDEO_GL_TEXTURE_ORIENTATION_X_FLIP_Y_FLIP
+>;
+
+constant GstVideoGLTextureType is export := guint32;
+our enum GstVideoGLTextureTypeEnum is export <
+  GST_VIDEO_GL_TEXTURE_TYPE_LUMINANCE
+  GST_VIDEO_GL_TEXTURE_TYPE_LUMINANCE_ALPHA
+  GST_VIDEO_GL_TEXTURE_TYPE_RGB16
+  GST_VIDEO_GL_TEXTURE_TYPE_RGB
+  GST_VIDEO_GL_TEXTURE_TYPE_RGBA
+  GST_VIDEO_GL_TEXTURE_TYPE_R
+  GST_VIDEO_GL_TEXTURE_TYPE_RG
 >;
 
 constant GstVideoGammaMode is export := guint32;

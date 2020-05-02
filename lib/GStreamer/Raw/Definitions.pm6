@@ -69,6 +69,11 @@ constant GstBufferForeachMetaFunc          is export := Pointer;
 constant GstCapsFilterMapFunc              is export := Pointer;
 constant GstCapsForeachFunc                is export := Pointer;
 constant GstCapsMapFunc                    is export := Pointer;
+constant GstVideoGLTextureUpload           is export := Pointer;
+
+# Move to GLib::Raw::Definitions!
+constant GBoxedCopyFunc                    is export := Pointer;
+constant GBoxedFreeFunc                    is export := Pointer;
 
 class GstAdapter                is repr('CPointer') does GLib::Roles::Pointers is export { }
 #class GstAllocator              is repr('CPointer') does GLib::Roles::Pointers is export { }
@@ -121,9 +126,9 @@ class GstStreamCollection       is repr('CPointer') does GLib::Roles::Pointers i
 #class GstToc                    is repr('CPointer') does GLib::Roles::Pointers is export { }
 #class GstTocEntry               is repr('CPointer') does GLib::Roles::Pointers is export { }
 
-class GstMapInfo                is repr('CPointer') does GLib::Roles::Pointers is export { }
+#class GstMapInfo                is repr('CPointer') does GLib::Roles::Pointers is export { }
 #class GstMemory                 is repr('CPointer') does GLib::Roles::Pointers is export { }
-class GstMeta                   is repr('CPointer') does GLib::Roles::Pointers is export { }
+#class GstMeta                   is repr('CPointer') does GLib::Roles::Pointers is export { }
 class GstParentBufferMeta       is repr('CPointer') does GLib::Roles::Pointers is export { }
 class GstPlayerAudioInfo        is repr('CPointer') does GLib::Roles::Pointers is export { }
 class GstPlayerMediaInfo        is repr('CPointer') does GLib::Roles::Pointers is export { }
