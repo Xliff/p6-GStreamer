@@ -5,6 +5,7 @@ use Method::Also;
 
 use GLib::Raw::Definitions;
 use GLib::Raw::Structs;
+use GLib::Raw::Subs;
 use GLib::Raw::Struct_Subs;
 use GStreamer::Raw::Definitions;
 use GStreamer::Raw::Enums;
@@ -726,6 +727,8 @@ class GstVideoCodecFrame         is repr<CStruct>    does GLib::Roles::Pointers 
   has gpointer            $!user_data;
   has GDestroyNotify      $!user_data_destroy_notify;
 
+  HAS GstPaddingLarge $!padding;
+
   method input_buffer is rw {
     Proxy.new:
       FETCH => -> $                 { self.^attributes[9].get_value(self)    },
@@ -738,6 +741,23 @@ class GstVideoCodecFrame         is repr<CStruct>    does GLib::Roles::Pointers 
       STORE => -> $, GstBuffer() \b { self.^attributes[10].set_value(self, b) };
   }
 
+  method get_type (GstVideoCodecFrame:U:) {
+    state ($n, $t);
+
+    unstable_get_type( self.^name, &gst_video_codec_frame_get_type, $n, $t );
+  }
+
+  method get_user_data {
+    gst_video_codec_frame_get_user_data(self);
+  }
+
+  method set_user_data (
+    gpointer $user_data,
+    GDestroyNotify $notify = Pointer
+  ) {
+    gst_video_codec_frame_set_user_data(self, $user_data, $notify);
+  }
+
   # union {
   #   struct {
   #     GstClockTime ts;
@@ -746,7 +766,35 @@ class GstVideoCodecFrame         is repr<CStruct>    does GLib::Roles::Pointers 
   #   gpointer padding[GST_PADDING_LARGE];
   # } abidata;
 
-  HAS GstPaddingLarge $!padding;
+  ### /usr/include/gstreamer-1.0/gst/video/gstvideoutils.h
+
+  sub gst_video_codec_frame_get_user_data (GstVideoCodecFrame $frame)
+    returns Pointer
+    is native(gstreamer-video)
+  { * }
+
+  sub gst_video_codec_frame_set_user_data (
+    GstVideoCodecFrame $frame,
+    gpointer $user_data,
+    GDestroyNotify $notify
+  )
+    is native(gstreamer-video)
+  { * }
+
+  sub gst_video_codec_frame_get_type ()
+    returns GType
+    is native(gstreamer-video)
+  { * }
+
+  sub gst_video_codec_frame_ref (GstVideoCodecFrame $frame)
+    returns GstVideoCodecFrame
+    is native(gstreamer-video)
+  { * }
+
+  sub gst_video_codec_frame_unref (GstVideoCodecFrame $frame)
+    is native(gstreamer-video)
+  { * }
+
 }
 
 class GstVideoFormatInfo         is repr<CStruct>    does GLib::Roles::Pointers is export {
