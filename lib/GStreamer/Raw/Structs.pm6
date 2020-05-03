@@ -341,6 +341,57 @@ class GstStaticPadTemplate       is repr<CStruct>      does GLib::Roles::Pointer
   HAS GstStaticCaps        $.static_caps;
 }
 
+class GstTask                    is repr<CStruct>      does GLib::Roles::Pointers is export {
+  HAS GstObject      $.object;
+
+  # with LOCK
+  has GstTaskState    $.state     is rw;
+  has GCond           $.cond;
+  has GRecMutex       $!lock;
+  has Pointer         $!func;     #= (gpointer $user_data);
+  has gpointer        $.user_data is rw;
+  has GDestroyNotify  $.notify;
+  has gboolean        $.running   is rw;
+  has GThread         $.thread;
+  has Pointer         $!priv;     #= GstTaskPrivate
+
+  HAS GstPadding      $!padding;
+
+  method getLock {
+    $!lock;
+  }
+
+  method lock is rw {
+    Proxy.new:
+      FETCH => -> $                  { self.^attributes[3].get_value(self)     },
+      STORE => -> $, GRecMutex() \mm { self.^attributes[3].set_value(self, mm) };
+  }
+
+  multi method func is rw {
+    Proxy.new:
+      FETCH => -> $ { $!func },
+      STORE => -> $, &func {
+        $!func := set_func_pointer( &func, &sprintf-P);
+      };
+  }
+
+  method user_data is rw {
+    Proxy.new:
+      FETCH => -> $             { self.^attributes[5].get_value(self)    },
+      STORE => -> $, Pointer \p { self.^attributes[5].set_value(self, p) };
+  }
+
+}
+
+class GstTaskPool                is repr<CStruct>      does GLib::Roles::Pointers is export {
+  HAS GstObject   $.object;
+
+  has GThreadPool $!pool;
+  
+  HAS GstPadding  $!padding;
+}
+
+
 # PLAYER
 
 class GstPlayerVisualization     is repr<CStruct>  does GLib::Roles::Pointers is export {
