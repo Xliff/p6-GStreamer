@@ -421,7 +421,56 @@ class GstControlBinding          is repr<CStruct>      does GLib::Roles::Pointer
 
 }
 
+class GstTimedValue              is repr<CStruct>      does GLib::Roles::Pointers is export {
+  has GstClockTime $.timestamp is rw;
+  has gdouble      $.value     is rw
+}
 
+class GstControlSource           is repr<CStruct>      does GLib::Roles::Pointers is export {
+  HAS GstObject $.parent;
+
+  has Pointer $!get_value;
+  has Pointer $!get_value_array;
+
+  HAS GstPadding $!padding;
+
+  multi method get_value is rw {
+    Proxy.new:
+      FETCH => -> $ { $!get_value },
+      STORE => -> $, &func {
+        $!get_value := set_func_pointer( &func, &sprintf-GetValueFunc);
+      };
+  }
+
+  multi method get_value is rw {
+    Proxy.new:
+      FETCH => -> $ { $!get_value_array },
+      STORE => -> $, &func {
+        $!get_value_array := set_func_pointer( &func, &sprintf-GetValueArrayFunc);
+      };
+  }
+
+  sub sprintf-GetValueFunc (
+    Blob,
+    Str,
+    & (GstControlSource, GstClockTime, gdouble is rw --> gboolean),
+  )
+    returns int64
+    is native
+    is symbol('sprintf')
+  { * }
+
+  sub sprintf-GetValueArrayFunc (
+    Blob,
+    Str,
+    & (GstControlSource, GstClockTime, GstClockTime, guint, CArray[gdouble] --> gboolean),
+  )
+    returns int64
+    is native
+    is symbol('sprintf')
+  { * }
+
+}
 
 # PLAYER
 

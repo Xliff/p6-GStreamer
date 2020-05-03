@@ -35,6 +35,10 @@ class GStreamer::ControlSource is GStreamer::Object {
     self.setGstObject($to-parent);
   }
 
+  method GStreamer::Raw::Structs::GstControlSource
+    is also<GstControlSource>
+  { * }
+
   method get_type is also<get-type> {
     state ($n, $t);
 
@@ -77,7 +81,8 @@ class GStreamer::ControlSource is GStreamer::Object {
     Int() $interval,
     Int() $n_values,
     $values is rw,
-    :$all = False
+    :$all = False,
+    :$raw = True
   ) {
     my GstClockTime ($t, $i) = ($timestamp, $interval);
     my guint $n = $n_values;
@@ -85,8 +90,11 @@ class GStreamer::ControlSource is GStreamer::Object {
     my $v = CArray[gdouble].new;
     $v[0] = 0e0;
 
+    # :$raw here should return the CArray. Otherwise copy into Raku array.
+
     my $rv = so gst_control_source_get_value_array($!cs, $t, $i, $n, $v);
     $values = $v;
+    $values = CArrayToArray($values, $n_values) unless $raw;
     $all.not ?? $rv.so !! ($rv, $values);
   }
 
@@ -103,7 +111,7 @@ sub gst_control_source_get_type ()
 sub gst_control_source_get_value (
   GstControlSource $self,
   GstClockTime $timestamp,
-  gdouble $value
+  gdouble $value is rw
 )
   returns uint32
   is native(gstreamer)
@@ -115,7 +123,7 @@ sub gst_control_source_get_value_array (
   GstClockTime $timestamp,
   GstClockTime $interval,
   guint $n_values,
-  gdouble $values
+  CArray[gdouble] $values
 )
   returns uint32
   is native(gstreamer)
