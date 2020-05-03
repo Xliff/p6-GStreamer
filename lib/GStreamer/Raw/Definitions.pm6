@@ -112,6 +112,7 @@ class GstPipeline                 is repr('CPointer') does GLib::Roles::Pointers
 class GstPlayer                   is repr('CPointer') does GLib::Roles::Pointers is export { }
 class GstPlugin                   is repr('CPointer') does GLib::Roles::Pointers is export { }
 class GstPluginFeature            is repr('CPointer') does GLib::Roles::Pointers is export { }
+class GstPoll                     is repr('CPointer') does GLib::Roles::Pointers is export { }
 class GstProbeInfo                is repr('CPointer') does GLib::Roles::Pointers is export { }
 class GstProxyPad                 is repr('CPointer') does GLib::Roles::Pointers is export { }
 #class GstQuery                    is repr('CPointer') does GLib::Roles::Pointers is export { }

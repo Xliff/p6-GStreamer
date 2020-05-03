@@ -12,6 +12,11 @@ use GStreamer::Raw::Enums;
 
 unit package GStreamer::Raw::Structs;
 
+class GstPollFD                  is repr<CStruct>     does GLib::Roles::Pointers is export {
+  has gint $.fd  is rw;
+  has gint $!idx;
+}
+
 class GstPadding                 is repr<CStruct>     does GLib::Roles::Pointers is export {
   has gpointer             $!r0;
   has gpointer             $!r1;
