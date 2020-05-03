@@ -387,9 +387,40 @@ class GstTaskPool                is repr<CStruct>      does GLib::Roles::Pointer
   HAS GstObject   $.object;
 
   has GThreadPool $!pool;
-  
+
   HAS GstPadding  $!padding;
 }
+
+class GstControlBinding          is repr<CStruct>      does GLib::Roles::Pointers is export {
+  HAS GstObject   $.parent;
+
+  has Str         $!name;
+  has GParamSpec  $!pspec;
+
+#ifndef GST_DISABLE_DEPRECATED
+#  GstObject *object;            /* GstObject owning the property                                 * (== parent when bound) */
+#else
+  has gpointer    $!object;
+#endif
+
+  has gboolean    $.disabled is rw;
+
+  HAS GstPadding  $!padding;
+
+  method name is rw {
+    Proxy.new:
+      FETCH => -> $           { self.^attributes[1].get_value(self)    },
+      STORE => -> $, Str() \s { self.^attributes[1].set_value(self, s) };
+  }
+
+  method pspec is rw {
+    Proxy.new:
+      FETCH => -> $                   { self.^attributes[2].get_value(self)     },
+      STORE => -> $, GParamSpec() \ps { self.^attributes[2].set_value(self, ps) };
+  }
+
+}
+
 
 
 # PLAYER
