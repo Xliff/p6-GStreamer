@@ -211,16 +211,6 @@ class GstMapInfo                 is repr<CStruct>      does GLib::Roles::Pointer
 
 }
 
-class GstMetaInfo                is repr<CStruct>      does GLib::Roles::Pointers is export {
-  has GType                $.api;
-  has GType                $.type;
-  has gsize                $.size;
-
-  has gpointer             $!init_func;
-  has gpointer             $!free_func;
-  has gpointer             $!transform_func;
-}
-
 class GstPluginDesc              is repr<CStruct>      does GLib::Roles::Pointers is export {
   has gint                 $.major_version;
   has gint                 $.minor_version;
@@ -482,6 +472,90 @@ class GstControlSource           is repr<CStruct>      does GLib::Roles::Pointer
     is symbol('sprintf')
   { * }
 
+}
+
+class GstMetaTransformCopy       is repr<CStruct>    does GLib::Roles::Pointers is export {
+  has gboolean $.region is rw;
+  has gsize    $.offset is rw;
+  has gsize    $.size   is rw;
+}
+
+# Prececlare
+class GstMetaInfo                is repr<CStruct>      does GLib::Roles::Pointers is export { ... }
+
+class GstMeta                    is repr<CStruct>    does GLib::Roles::Pointers is export {
+  has GstMetaFlags  $.flags is rw;
+  has GstMetaInfo   $!info;
+
+  method info is rw {
+    Proxy.new:
+      FETCH => -> $                   { self.^attributes[1].get_value(self)    },
+      STORE => -> $, GstMetaInfo() \i { self.^attributes[1].set_value(self, i) };
+  }
+}
+
+class GstMetaInfo{
+  has GType                $.api;
+  has GType                $.type;
+  has gsize                $.size;
+
+  has gpointer             $!init_func;
+  has gpointer             $!free_func;
+  has gpointer             $!transform_func;
+
+  multi method init_func is rw {
+    Proxy.new:
+      FETCH => -> $ { $!init_func },
+      STORE => -> $, &func {
+        $!init_func := set_func_pointer( &func, &sprintf-InitFunc );
+      };
+  }
+
+  multi method init_func is rw {
+    Proxy.new:
+      FETCH => -> $ { $!free_func },
+      STORE => -> $, &func {
+        $!free_func := set_func_pointer( &func, &sprintf-FreeFunc );
+      };
+  }
+
+  multi method transform_func is rw {
+    Proxy.new:
+      FETCH => -> $ { $!transform_func },
+      STORE => -> $, &func {
+        $!transform_func := set_func_pointer( &func, &sprintf-TransformFunc );
+      };
+  }
+
+  sub sprintf-InitFunc (
+    Blob,
+    Str,
+    & (GstMeta, gpointer, GstBuffer --> gboolean),
+  )
+    returns int64
+    is native
+    is symbol('sprintf')
+  { * }
+
+  sub sprintf-FreeFunc (
+    Blob,
+    Str,
+    & (GstMeta, GstBuffer),
+  )
+    returns int64
+    is native
+    is symbol('sprintf')
+  { * }
+
+  sub sprintf-TransformFunc (
+    Blob,
+    Str,
+    & (GstMeta, GstMeta, GstBuffer, GQuark, gpointer --> gboolean),
+  )
+    returns int64
+    is native
+    is symbol('sprintf')
+  { * }
 }
 
 # PLAYER
@@ -769,7 +843,7 @@ class GstPushSrc               is repr<CStruct>  does GLib::Roles::Pointers is e
   HAS GstPadding $!padding;
 
   method srcpad { $!parent.src_pad; }
-};
+}
 
 # VIDEO
 
@@ -1067,17 +1141,6 @@ class GstVideoCodecState         is repr<CStruct>    does GLib::Roles::Pointers 
     returns GstVideoCodecState
     is native(gstreamer-video)
   { * }
-}
-
-class GstMeta                    is repr<CStruct>    does GLib::Roles::Pointers is export {
-  has GstMetaFlags  $.flags is rw;
-  has GstMetaInfo   $!info;
-
-  method info is rw {
-    Proxy.new:
-      FETCH => -> $                   { self.^attributes[1].get_value(self)    },
-      STORE => -> $, GstMetaInfo() \i { self.^attributes[1].set_value(self, i) };
-  }
 }
 
 class GstVideoFrame              is repr<CStruct>    does GLib::Roles::Pointers is export {
