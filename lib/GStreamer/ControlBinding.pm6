@@ -95,14 +95,24 @@ class GStreamer::ControlBinding is GStreamer::Object {
       Nil;
   }
 
-  method get_value_array (
+  proto method get_value_array (|)
+    is also<get-value-array>
+  { * }
+
+  multi method get_value_array (
+    Int() $timestamp,
+    Int() $interval,
+    Int() $n_values,
+    Buf() $values
+  ) {
+    samewith( $timestamp, $interval, $n_values, cast(gpointer, $values) )
+  }
+  multi method get_value_array (
     Int() $timestamp,
     Int() $interval,
     Int() $n_values,
     gpointer $values
-  )
-    is also<get-value-array>
-  {
+  ) {
     my GstClockTime ($t, $i) = ($timestamp, $interval);
     my guint $n = $n_values;
 
