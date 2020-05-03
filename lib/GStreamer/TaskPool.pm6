@@ -35,7 +35,7 @@ class GStreamer::TaskPool is GStreamer::Object {
     self.setGstObject($to-parent);
   }
 
-  method GStreamer::Raw::Types::GstTaskPool
+  method GStreamer::Raw::Definitions::GstTaskPool
     is also<GstBuffer>
   { $!tp }
 
