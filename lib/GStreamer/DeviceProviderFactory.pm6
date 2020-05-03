@@ -32,7 +32,7 @@ class GStreamer::DeviceProviderFactory is GStreamer::PluginFeature {
         cast(GstDeviceProviderFactory, $_);
       }
     }
-    self.setPluginFeature($to-parent);
+    self.setGstPluginFeature($to-parent);
   }
 
   method new (GstDeviceProviderFactoryAncestry $factory) {

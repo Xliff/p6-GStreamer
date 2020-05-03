@@ -36,7 +36,7 @@ class GStreamer::ElementFactory is GStreamer::PluginFeature {
         cast(GstElementFactory, $_);
       }
     }
-    self.setPluginFeature($to-parent);
+    self.setGstPluginFeature($to-parent);
   }
 
   method GStreamer::Raw::Definitions::GstElementFactory
