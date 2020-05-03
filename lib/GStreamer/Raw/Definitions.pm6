@@ -93,6 +93,7 @@ class GstDataQueue                is repr('CPointer') does GLib::Roles::Pointers
 #class GstControlSource            is repr('CPointer') does GLib::Roles::Pointers is export { }
 class GstDevice                   is repr('CPointer') does GLib::Roles::Pointers is export { }
 class GstDeviceProviderFactory    is repr('CPointer') does GLib::Roles::Pointers is export { }
+class GstDynamicTypeFactory       is repr('CPointer') does GLib::Roles::Pointers is export { }
 #class GstDateTime                 is repr('CPointer') does GLib::Roles::Pointers is export { }
 #class GstElement                  is repr('CPointer') does GLib::Roles::Pointers is export { }
 class GstElementFactory           is repr('CPointer') does GLib::Roles::Pointers is export { }
