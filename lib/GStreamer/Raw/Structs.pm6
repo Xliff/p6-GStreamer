@@ -173,12 +173,24 @@ class GstFormatDefinition        is repr<CStruct>      does GLib::Roles::Pointer
 
 class GstMemory                  is repr<CStruct>      does GLib::Roles::Pointers is export {
   HAS GstMiniObject        $.mini_object;
-  has GstAllocator         $.allocator;
-  has GstMemory            $.parent;
-  has gsize                $.maxsize;
-  has gsize                $.align;
-  has gsize                $.offset;
-  has gsize                $.size;
+  has GstAllocator         $!allocator;
+  has GstMemory            $!parent;
+  has gsize                $.maxsize   is rw;
+  has gsize                $.align     is rw;
+  has gsize                $.offset    is rw;
+  has gsize                $.size      is rw;
+
+  method allocator is rw {
+    Proxy.new:
+      FETCH => -> $                    { self.^attributes[1].get_value(self)    },
+      STORE => -> $, GstAllocator() \a { self.^attributes[1].set_value(self, a) };
+  }
+
+  method parent is rw {
+    Proxy.new:
+      FETCH => -> $                  { self.^attributes[2].get_value(self)     },
+      STORE => -> $, GstMemory() \mm { self.^attributes[2].set_value(self, mm) };
+  }
 }
 
 class GstMapInfo                 is repr<CStruct>      does GLib::Roles::Pointers is export {

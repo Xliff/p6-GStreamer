@@ -88,11 +88,6 @@ class GStreamer::Allocator is GStreamer::Object {
   #   gst_allocation_params_init($!a);
   # }
 
-  # Move this to GStreamer::Memory
-  # method gst_memory_new_wrapped (gpointer $data, gsize $maxsize, gsize $offset, gsize $size, gpointer $user_data, GDestroyNotify $notify) {
-  #   gst_memory_new_wrapped($!a, $data, $maxsize, $offset, $size, $user_data, $notify);
-  # }
-
   method register (
     GStreamer::Allocator:U:
     Str() $name,
