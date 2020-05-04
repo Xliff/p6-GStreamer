@@ -19,7 +19,7 @@ sub gst_control_binding_get_g_value_array (
   Pointer $values
 )
   returns uint32
-  is native(gstreamer-video)
+  is native(gstreamer)
   is export
 { * }
 
@@ -28,7 +28,7 @@ sub gst_control_binding_get_value (
   GstClockTime $timestamp
 )
   returns GValue
-  is native(gstreamer-video)
+  is native(gstreamer)
   is export
 { * }
 
@@ -40,13 +40,13 @@ sub gst_control_binding_get_value_array (
   gpointer $values
 )
   returns uint32
-  is native(gstreamer-video)
+  is native(gstreamer)
   is export
 { * }
 
 sub gst_control_binding_is_disabled (GstControlBinding $binding)
   returns uint32
-  is native(gstreamer-video)
+  is native(gstreamer)
   is export
 { * }
 
@@ -54,7 +54,7 @@ sub gst_control_binding_set_disabled (
   GstControlBinding $binding,
   gboolean $disabled
 )
-  is native(gstreamer-video)
+  is native(gstreamer)
   is export
 { * }
 
@@ -65,6 +65,6 @@ sub gst_control_binding_sync_values (
   GstClockTime $last_sync
 )
   returns uint32
-  is native(gstreamer-video)
+  is native(gstreamer)
   is export
 { * }

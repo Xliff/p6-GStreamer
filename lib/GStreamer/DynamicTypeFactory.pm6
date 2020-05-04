@@ -65,12 +65,12 @@ class GStreamer::DynamicTypeFactory is GStreamer::PluginFeature {
 
 sub gst_dynamic_type_factory_load (Str $factoryname)
   returns GType
-  is native(gstreamer-video)
+  is native(gstreamer)
   is export
 { * }
 
 sub gst_dynamic_type_register (GstPlugin $plugin, GType $type)
   returns uint32
-  is native(gstreamer-video)
+  is native(gstreamer)
   is export
 { * }

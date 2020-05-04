@@ -76,24 +76,24 @@ class GStreamer::ParamSpec::Fraction {
 
 sub gst_param_spec_array (Str $name, Str $nick, Str $blurb, GParamSpec $element_spec, GParamFlags $flags)
   returns GParamSpec
-  is native(gstreamer-video)
+  is native(gstreamer)
   is export
 { * }
 
 sub gst_param_spec_array_get_type ()
   returns GType
-  is native(gstreamer-video)
+  is native(gstreamer)
   is export
 { * }
 
 sub gst_param_spec_fraction (Str $name, Str $nick, Str $blurb, gint $min_num, gint $min_denom, gint $max_num, gint $max_denom, gint $default_num, gint $default_denom, GParamFlags $flags)
   returns GParamSpec
-  is native(gstreamer-video)
+  is native(gstreamer)
   is export
 { * }
 
 sub gst_param_spec_fraction_get_type ()
   returns GType
-  is native(gstreamer-video)
+  is native(gstreamer)
   is export
 { * }

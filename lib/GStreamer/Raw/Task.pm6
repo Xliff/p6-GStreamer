@@ -13,31 +13,31 @@ unit package GStreamer::Raw::Task;
 ### /usr/include/gstreamer-1.0/gst/gsttask.h
 
 sub gst_task_cleanup_all ()
-  is native(gstreamer-video)
+  is native(gstreamer)
   is export
 { * }
 
 sub gst_task_get_pool (GstTask $task)
   returns GstTaskPool
-  is native(gstreamer-video)
+  is native(gstreamer)
   is export
 { * }
 
 sub gst_task_get_state (GstTask $task)
   returns GstTaskState
-  is native(gstreamer-video)
+  is native(gstreamer)
   is export
 { * }
 
 sub gst_task_get_type ()
   returns GType
-  is native(gstreamer-video)
+  is native(gstreamer)
   is export
 { * }
 
 sub gst_task_join (GstTask $task)
   returns uint32
-  is native(gstreamer-video)
+  is native(gstreamer)
   is export
 { * }
 
@@ -47,13 +47,13 @@ sub gst_task_new (
   GDestroyNotify $notify
 )
   returns GstTask
-  is native(gstreamer-video)
+  is native(gstreamer)
   is export
 { * }
 
 sub gst_task_pause (GstTask $task)
   returns uint32
-  is native(gstreamer-video)
+  is native(gstreamer)
   is export
 { * }
 
@@ -63,7 +63,7 @@ sub gst_task_set_enter_callback (
   gpointer $user_data,
   GDestroyNotify $notify
 )
-  is native(gstreamer-video)
+  is native(gstreamer)
   is export
 { * }
 
@@ -73,34 +73,34 @@ sub gst_task_set_leave_callback (
   gpointer $user_data,
   GDestroyNotify $notify
 )
-  is native(gstreamer-video)
+  is native(gstreamer)
   is export
 { * }
 
 sub gst_task_set_lock (GstTask $task, GRecMutex $mutex)
-  is native(gstreamer-video)
+  is native(gstreamer)
   is export
 { * }
 
 sub gst_task_set_pool (GstTask $task, GstTaskPool $pool)
-  is native(gstreamer-video)
+  is native(gstreamer)
   is export
 { * }
 
 sub gst_task_set_state (GstTask $task, GstTaskState $state)
   returns uint32
-  is native(gstreamer-video)
+  is native(gstreamer)
   is export
 { * }
 
 sub gst_task_start (GstTask $task)
   returns uint32
-  is native(gstreamer-video)
+  is native(gstreamer)
   is export
 { * }
 
 sub gst_task_stop (GstTask $task)
   returns uint32
-  is native(gstreamer-video)
+  is native(gstreamer)
   is export
 { * }
