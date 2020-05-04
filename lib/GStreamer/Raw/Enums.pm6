@@ -957,6 +957,28 @@ enum GstColorBalanceTypeEnum is export <
   GST_COLOR_BALANCE_SOFTWARE
 >;
 
+constant GstNavigationCommand is export := guint32;
+our enum GstNavigationCommandEnum is export (
+  GST_NAVIGATION_COMMAND_INVALID    => 0,
+
+  GST_NAVIGATION_COMMAND_MENU1      => 1,
+  GST_NAVIGATION_COMMAND_MENU2      => 2,
+  GST_NAVIGATION_COMMAND_MENU3      => 3,
+  GST_NAVIGATION_COMMAND_MENU4      => 4,
+  GST_NAVIGATION_COMMAND_MENU5      => 5,
+  GST_NAVIGATION_COMMAND_MENU6      => 6,
+  GST_NAVIGATION_COMMAND_MENU7      => 7,
+
+  GST_NAVIGATION_COMMAND_LEFT       => 20,
+  GST_NAVIGATION_COMMAND_RIGHT      => 21,
+  GST_NAVIGATION_COMMAND_UP         => 22,
+  GST_NAVIGATION_COMMAND_DOWN       => 23,
+  GST_NAVIGATION_COMMAND_ACTIVATE   => 24,
+
+  GST_NAVIGATION_COMMAND_PREV_ANGLE => 30,
+  GST_NAVIGATION_COMMAND_NEXT_ANGLE => 31
+);
+
 constant GstNavigationEventType is export := guint32;
 our enum GstNavigationEventTypeEnum is export (
     GST_NAVIGATION_EVENT_INVALID              =>  0,
