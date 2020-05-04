@@ -582,6 +582,10 @@ class GstPlayerVisualization     is repr<CStruct>  does GLib::Roles::Pointers is
   }
 }
 
+class GstPromise                 is repr<CStruct>  does GLib::Roles::Pointers is export {
+  HAS GstMiniObject $.parent;
+}
+
 # BASE
 
 class GstBitReader               is repr<CStruct>  does GLib::Roles::Pointers is export {
