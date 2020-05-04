@@ -20,7 +20,7 @@ class GStreamer::PluginFeature is GStreamer::Object {
     self.setPluginFeature($plugin-feature) if $plugin-feature;
   }
 
-  method setPluginFeature (GstPluginFeatureAncestry $_) {
+  method setGstPluginFeature (GstPluginFeatureAncestry $_) {
     my $to-parent;
 
     $!pf = do {

@@ -2,6 +2,7 @@ use v6.c;
 
 use NativeCall;
 
+use GLib::Raw::Definitions;
 use GLib::Raw::Structs;
 use GStreamer::Raw::Definitions;
 
@@ -34,6 +35,13 @@ sub postfix:<sec> ($s) is export {
   $s * GST_SECOND;
 }
 
+sub postfix:<μsec> ($us) is export {
+  $us * GST_USECOND;
+}
+sub postfix:<usec> ($us) is export {
+  $us * GST_USECOND;
+}
+
 # Method::Also does not work for subs.
 sub time-args ($d) is export {
   time_args($d);
@@ -48,10 +56,45 @@ sub time_args ($d) is export {
 }
 
 sub timeval-to-time (GTimeVal $tv) {
-  $tv.tv_sec * GST_SECOND + $tv.tv_usec * GST_USECOND;
+  $tv.tv_sec * GST_SECOND + $tv.tv_usec * GST_USECOND
 }
 
 # Consider moving to GLibs!
 sub getEndian is export {
   ( $*KERNEL.endian == BigEndian, $*KERNEL.endian == LittleEndian );
 }
+
+sub gst_error_get_message (GQuark $domain, gint $code)
+  returns Str
+  is export
+  is native(gstreamer)
+{ * }
+
+sub gst_stream_error_quark ()
+  returns GQuark
+  is export
+  is native(gstreamer)
+{ * }
+
+sub gst_core_error_quark ()
+  returns GQuark
+  is export
+  is native(gstreamer)
+{ * }
+
+sub gst_resource_error_quark ()
+  returns GQuark
+  is export
+  is native(gstreamer)
+{ * }
+
+sub gst_library_error_quark ()
+  returns GQuark
+  is export
+  is native(gstreamer)
+{ * }
+
+constant GST_CORE_ERROR     is export = gst_core_error_quark();
+constant GST_LIBRARY_ERROR  is export = gst_library_error_quark();
+constant GST_RESOURCE_ERROR is export = gst_resource_error_quark();
+constant GST_STREAM_ERROR   is export = gst_stream_error_quark();

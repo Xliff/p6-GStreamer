@@ -5,12 +5,12 @@ use NativeCall;
 use GStreamer::Raw::Types;
 
 role GStreamer::Player::Roles::SignalDispatcher {
-  has GstPlayerSignalDispatcher $!sd
+  has GstPlayerSignalDispatcher $!sd;
 
   method roleInit-SignalDispatcher {
     my \i = findProperImplementor(self.^attributes);
 
-    $!sd = cast(GstSignalDispatcher, i.get_value(self) );
+    $!sd = cast(GstPlayerSignalDispatcher, i.get_value(self) );
   }
 
   method GStreamer::Raw::Definitions::GstPlayerSignalDispatcher

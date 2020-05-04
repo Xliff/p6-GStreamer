@@ -5,10 +5,24 @@ use Method::Also;
 
 use GLib::Raw::Definitions;
 use GLib::Raw::Structs;
+use GLib::Raw::Subs;
+use GLib::Raw::Struct_Subs;
 use GStreamer::Raw::Definitions;
 use GStreamer::Raw::Enums;
 
 unit package GStreamer::Raw::Structs;
+
+class GstPollFD                  is repr<CStruct>     does GLib::Roles::Pointers is export {
+  has gint $.fd  is rw;
+  has gint $!idx;
+}
+
+class GstPadding                 is repr<CStruct>     does GLib::Roles::Pointers is export {
+  has gpointer             $!r0;
+  has gpointer             $!r1;
+  has gpointer             $!r2;
+  has gpointer             $!r3;
+}
 
 class GstObject                  is repr<CStruct>      does GLib::Roles::Pointers is export {
   HAS GObjectStruct        $.object;  # GInitiallyUnowned
@@ -56,7 +70,7 @@ class GstAllocator               is repr<CStruct>      does GLib::Roles::Pointer
   has gpointer             $!gst_reserved0;
   has gpointer             $!gst_reserved1;
   has gpointer             $!priv;
-};
+}
 
 class GstBufferPoolAcquireParams is repr<CStruct> does GLib::Roles::Pointers is export {
   has GstFormat                  $.format is rw;
@@ -69,7 +83,7 @@ class GstBufferPoolAcquireParams is repr<CStruct> does GLib::Roles::Pointers is 
   has gpointer                   $!gst_reserved1;
   has gpointer                   $!gst_reserved2;
   has gpointer                   $!gst_reserved3;
-};
+}
 
 
 class GstBuffer                  is repr<CStruct> does GLib::Roles::Pointers is export {
@@ -80,7 +94,7 @@ class GstBuffer                  is repr<CStruct> does GLib::Roles::Pointers is 
   has GstClockTime         $.duration    is rw;
   has guint64              $.offset      is rw;
   has guint64              $.offset_end  is rw;
-};
+}
 
 # Cheat. This really should be considered opaque.
 class GstDateTime                is repr<CStruct>      does GLib::Roles::Pointers is export {
@@ -96,7 +110,7 @@ class GstDeviceMonitor           is repr<CStruct>      does GLib::Roles::Pointer
   has gpointer             $!gst_reserved1;
   has gpointer             $!gst_reserved2;
   has gpointer             $!gst_reserved3;
-};
+}
 
 class GstDeviceProvider          is repr<CStruct>      does GLib::Roles::Pointers is export {
   has GstObject            $!parent;
@@ -107,7 +121,7 @@ class GstDeviceProvider          is repr<CStruct>      does GLib::Roles::Pointer
   has gpointer             $!gst_reserved1;
   has gpointer             $!gst_reserved2;
   has gpointer             $!gst_reserved3;
-};
+}
 
 class GstElement                 is repr<CStruct>      does GLib::Roles::Pointers is export {
   HAS GstObject            $.object;
@@ -164,23 +178,42 @@ class GstFormatDefinition        is repr<CStruct>      does GLib::Roles::Pointer
 
 class GstMemory                  is repr<CStruct>      does GLib::Roles::Pointers is export {
   HAS GstMiniObject        $.mini_object;
-  has GstAllocator         $.allocator;
-  has GstMemory            $.parent;
-  has gsize                $.maxsize;
-  has gsize                $.align;
-  has gsize                $.offset;
-  has gsize                $.size;
+  has GstAllocator         $!allocator;
+  has GstMemory            $!parent;
+  has gsize                $.maxsize   is rw;
+  has gsize                $.align     is rw;
+  has gsize                $.offset    is rw;
+  has gsize                $.size      is rw;
+
+  method allocator is rw {
+    Proxy.new:
+      FETCH => -> $                    { self.^attributes[1].get_value(self)    },
+      STORE => -> $, GstAllocator() \a { self.^attributes[1].set_value(self, a) };
+  }
+
+  method parent is rw {
+    Proxy.new:
+      FETCH => -> $                  { self.^attributes[2].get_value(self)     },
+      STORE => -> $, GstMemory() \mm { self.^attributes[2].set_value(self, mm) };
+  }
 }
 
+class GstMapInfo                 is repr<CStruct>      does GLib::Roles::Pointers is export {
+  has GstMemory    $!memory;
+  has GstMapFlags  $.flags;
+  has guint8       $.data;
+  has gsize        $.size;
+  has gsize        $.maxsize;
 
-class GstMetaInfo                is repr<CStruct>      does GLib::Roles::Pointers is export {
-  has GType                $.api;
-  has GType                $.type;
-  has gsize                $.size;
+  HAS gpointer     @!user_data[4] is CArray;
+  HAS GstPadding   $!padding;
 
-  has gpointer             $!init_func;
-  has gpointer             $!free_func;
-  has gpointer             $!transform_func;
+  method memory is rw {
+    Proxy.new:
+      FETCH => -> $                  { self.^attributes[0].get_value(self)    },
+      STORE => -> $, GstMemory() \mm { self.^attributes[0].set_value(self, mm) };
+  }
+
 }
 
 class GstPluginDesc              is repr<CStruct>      does GLib::Roles::Pointers is export {
@@ -287,13 +320,6 @@ class GstPadStruct_abi           is repr<CStruct> {
   has GType                $.gtype;
 }
 
-class GstPadding                 is repr<CStruct>     does GLib::Roles::Pointers is export {
-  has gpointer             $!r0;
-  has gpointer             $!r1;
-  has gpointer             $!r2;
-  has gpointer             $!r3;
-}
-
 class GstPadStructABI            is repr<CUnion> {
   HAS GstPadding           $!reserved;
   HAS GstPadStruct_abi     $!abi;
@@ -320,6 +346,221 @@ class GstStaticPadTemplate       is repr<CStruct>      does GLib::Roles::Pointer
   has GstPadDirection      $.direction;
   has GstPadPresence       $.presence;
   HAS GstStaticCaps        $.static_caps;
+}
+
+class GstTask                    is repr<CStruct>      does GLib::Roles::Pointers is export {
+  HAS GstObject      $.object;
+
+  # with LOCK
+  has GstTaskState    $.state     is rw;
+  has GCond           $.cond;
+  has GRecMutex       $!lock;
+  has Pointer         $!func;     #= (gpointer $user_data);
+  has gpointer        $.user_data is rw;
+  has GDestroyNotify  $.notify;
+  has gboolean        $.running   is rw;
+  has GThread         $.thread;
+  has Pointer         $!priv;     #= GstTaskPrivate
+
+  HAS GstPadding      $!padding;
+
+  method getLock {
+    $!lock;
+  }
+
+  method lock is rw {
+    Proxy.new:
+      FETCH => -> $                  { self.^attributes[3].get_value(self)     },
+      STORE => -> $, GRecMutex() \mm { self.^attributes[3].set_value(self, mm) };
+  }
+
+  multi method func is rw {
+    Proxy.new:
+      FETCH => -> $ { $!func },
+      STORE => -> $, &func {
+        $!func := set_func_pointer( &func, &sprintf-P);
+      };
+  }
+
+  method user_data is rw {
+    Proxy.new:
+      FETCH => -> $             { self.^attributes[5].get_value(self)    },
+      STORE => -> $, Pointer \p { self.^attributes[5].set_value(self, p) };
+  }
+
+}
+
+class GstTaskPool                is repr<CStruct>      does GLib::Roles::Pointers is export {
+  HAS GstObject   $.object;
+
+  has GThreadPool $!pool;
+
+  HAS GstPadding  $!padding;
+}
+
+class GstControlBinding          is repr<CStruct>      does GLib::Roles::Pointers is export {
+  HAS GstObject   $.parent;
+
+  has Str         $!name;
+  has GParamSpec  $!pspec;
+
+#ifndef GST_DISABLE_DEPRECATED
+#  GstObject *object;            /* GstObject owning the property                                 * (== parent when bound) */
+#else
+  has gpointer    $!object;
+#endif
+
+  has gboolean    $.disabled is rw;
+
+  HAS GstPadding  $!padding;
+
+  method name is rw {
+    Proxy.new:
+      FETCH => -> $           { self.^attributes[1].get_value(self)    },
+      STORE => -> $, Str() \s { self.^attributes[1].set_value(self, s) };
+  }
+
+  method pspec is rw {
+    Proxy.new:
+      FETCH => -> $                   { self.^attributes[2].get_value(self)     },
+      STORE => -> $, GParamSpec() \ps { self.^attributes[2].set_value(self, ps) };
+  }
+
+}
+
+class GstTimedValue              is repr<CStruct>      does GLib::Roles::Pointers is export {
+  has GstClockTime $.timestamp is rw;
+  has gdouble      $.value     is rw
+}
+
+class GstControlSource           is repr<CStruct>      does GLib::Roles::Pointers is export {
+  HAS GstObject $.parent;
+
+  has Pointer $!get_value;
+  has Pointer $!get_value_array;
+
+  HAS GstPadding $!padding;
+
+  multi method get_value is rw {
+    Proxy.new:
+      FETCH => -> $ { $!get_value },
+      STORE => -> $, &func {
+        $!get_value := set_func_pointer( &func, &sprintf-GetValueFunc);
+      };
+  }
+
+  multi method get_value is rw {
+    Proxy.new:
+      FETCH => -> $ { $!get_value_array },
+      STORE => -> $, &func {
+        $!get_value_array := set_func_pointer( &func, &sprintf-GetValueArrayFunc);
+      };
+  }
+
+  sub sprintf-GetValueFunc (
+    Blob,
+    Str,
+    & (GstControlSource, GstClockTime, gdouble is rw --> gboolean),
+  )
+    returns int64
+    is native
+    is symbol('sprintf')
+  { * }
+
+  sub sprintf-GetValueArrayFunc (
+    Blob,
+    Str,
+    & (GstControlSource, GstClockTime, GstClockTime, guint, CArray[gdouble] --> gboolean),
+  )
+    returns int64
+    is native
+    is symbol('sprintf')
+  { * }
+
+}
+
+class GstMetaTransformCopy       is repr<CStruct>    does GLib::Roles::Pointers is export {
+  has gboolean $.region is rw;
+  has gsize    $.offset is rw;
+  has gsize    $.size   is rw;
+}
+
+# Prececlare
+class GstMetaInfo                is repr<CStruct>      does GLib::Roles::Pointers is export { ... }
+
+class GstMeta                    is repr<CStruct>    does GLib::Roles::Pointers is export {
+  has GstMetaFlags  $.flags is rw;
+  has GstMetaInfo   $!info;
+
+  method info is rw {
+    Proxy.new:
+      FETCH => -> $                   { self.^attributes[1].get_value(self)    },
+      STORE => -> $, GstMetaInfo() \i { self.^attributes[1].set_value(self, i) };
+  }
+}
+
+class GstMetaInfo{
+  has GType                $.api;
+  has GType                $.type;
+  has gsize                $.size;
+
+  has gpointer             $!init_func;
+  has gpointer             $!free_func;
+  has gpointer             $!transform_func;
+
+  multi method init_func is rw {
+    Proxy.new:
+      FETCH => -> $ { $!init_func },
+      STORE => -> $, &func {
+        $!init_func := set_func_pointer( &func, &sprintf-InitFunc );
+      };
+  }
+
+  multi method init_func is rw {
+    Proxy.new:
+      FETCH => -> $ { $!free_func },
+      STORE => -> $, &func {
+        $!free_func := set_func_pointer( &func, &sprintf-FreeFunc );
+      };
+  }
+
+  multi method transform_func is rw {
+    Proxy.new:
+      FETCH => -> $ { $!transform_func },
+      STORE => -> $, &func {
+        $!transform_func := set_func_pointer( &func, &sprintf-TransformFunc );
+      };
+  }
+
+  sub sprintf-InitFunc (
+    Blob,
+    Str,
+    & (GstMeta, gpointer, GstBuffer --> gboolean),
+  )
+    returns int64
+    is native
+    is symbol('sprintf')
+  { * }
+
+  sub sprintf-FreeFunc (
+    Blob,
+    Str,
+    & (GstMeta, GstBuffer),
+  )
+    returns int64
+    is native
+    is symbol('sprintf')
+  { * }
+
+  sub sprintf-TransformFunc (
+    Blob,
+    Str,
+    & (GstMeta, GstMeta, GstBuffer, GQuark, gpointer --> gboolean),
+  )
+    returns int64
+    is native
+    is symbol('sprintf')
+  { * }
 }
 
 # PLAYER
@@ -607,7 +848,7 @@ class GstPushSrc               is repr<CStruct>  does GLib::Roles::Pointers is e
   HAS GstPadding $!padding;
 
   method srcpad { $!parent.src_pad; }
-};
+}
 
 # VIDEO
 
@@ -708,6 +949,8 @@ class GstVideoCodecFrame         is repr<CStruct>    does GLib::Roles::Pointers 
   has gpointer            $!user_data;
   has GDestroyNotify      $!user_data_destroy_notify;
 
+  HAS GstPaddingLarge $!padding;
+
   method input_buffer is rw {
     Proxy.new:
       FETCH => -> $                 { self.^attributes[9].get_value(self)    },
@@ -720,6 +963,23 @@ class GstVideoCodecFrame         is repr<CStruct>    does GLib::Roles::Pointers 
       STORE => -> $, GstBuffer() \b { self.^attributes[10].set_value(self, b) };
   }
 
+  method get_type (GstVideoCodecFrame:U:) {
+    state ($n, $t);
+
+    unstable_get_type( self.^name, &gst_video_codec_frame_get_type, $n, $t );
+  }
+
+  method get_user_data {
+    gst_video_codec_frame_get_user_data(self);
+  }
+
+  method set_user_data (
+    gpointer $user_data,
+    GDestroyNotify $notify = Pointer
+  ) {
+    gst_video_codec_frame_set_user_data(self, $user_data, $notify);
+  }
+
   # union {
   #   struct {
   #     GstClockTime ts;
@@ -728,33 +988,61 @@ class GstVideoCodecFrame         is repr<CStruct>    does GLib::Roles::Pointers 
   #   gpointer padding[GST_PADDING_LARGE];
   # } abidata;
 
-  HAS GstPaddingLarge $!padding;
+  ### /usr/include/gstreamer-1.0/gst/video/gstvideoutils.h
+
+  sub gst_video_codec_frame_get_user_data (GstVideoCodecFrame $frame)
+    returns Pointer
+    is native(gstreamer-video)
+  { * }
+
+  sub gst_video_codec_frame_set_user_data (
+    GstVideoCodecFrame $frame,
+    gpointer $user_data,
+    GDestroyNotify $notify
+  )
+    is native(gstreamer-video)
+  { * }
+
+  sub gst_video_codec_frame_get_type ()
+    returns GType
+    is native(gstreamer-video)
+  { * }
+
+  sub gst_video_codec_frame_ref (GstVideoCodecFrame $frame)
+    returns GstVideoCodecFrame
+    is native(gstreamer-video)
+  { * }
+
+  sub gst_video_codec_frame_unref (GstVideoCodecFrame $frame)
+    is native(gstreamer-video)
+  { * }
+
 }
 
 class GstVideoFormatInfo         is repr<CStruct>    does GLib::Roles::Pointers is export {
   has GstVideoFormat $.format;
-  has Str                  $.name;
-  has Str                  $.description;
-  has GstVideoFormatFlags  $.flags           is rw;
-  has guint                $.bits            is rw;
-  has guint                $.n_components    is rw;
-  has guint                @.shift[GST_VIDEO_MAX_COMPONENTS]       is CArray;
-  has guint                @.depth[GST_VIDEO_MAX_COMPONENTS]       is CArray;
-  has gint                 @.pixel_stride[GST_VIDEO_MAX_COMPONENTS]is CArray;
-  has guint                $.n_planes        is rw;
-  has guint                @.plane[GST_VIDEO_MAX_COMPONENTS]       is CArray;
-  has guint                @.poffset[GST_VIDEO_MAX_COMPONENTS]     is CArray;
-  has guint                @.w_sub[GST_VIDEO_MAX_COMPONENTS]       is CArray;
-  has guint                @.h_sub[GST_VIDEO_MAX_COMPONENTS]       is CArray;
+  has Str                  $!name;
+  has Str                  $!description;
+  has GstVideoFormatFlags  $.flags                                  is rw;
+  has guint                $.bits                                   is rw;
+  has guint                $.n_components                           is rw;
+  has guint                @.shift[GST_VIDEO_MAX_COMPONENTS]        is CArray;
+  has guint                @.depth[GST_VIDEO_MAX_COMPONENTS]        is CArray;
+  has gint                 @.pixel_stride[GST_VIDEO_MAX_COMPONENTS] is CArray;
+  has guint                $.n_planes                               is rw;
+  has guint                @.plane[GST_VIDEO_MAX_COMPONENTS]        is CArray;
+  has guint                @.poffset[GST_VIDEO_MAX_COMPONENTS]      is CArray;
+  has guint                @.w_sub[GST_VIDEO_MAX_COMPONENTS]        is CArray;
+  has guint                @.h_sub[GST_VIDEO_MAX_COMPONENTS]        is CArray;
 
-  has GstVideoFormat       $.unpack_format   is rw;
-  has Pointer              $.unpack_func;             # GstVideoUnpack func
-  has gint                 $.pack_lines      is rw;
-  has Pointer              $.pack_func;               # GstVideoPack   func
+  has GstVideoFormat       $.unpack_format                          is rw;
+  has Pointer              $.unpack_func;                           # GstVideoUnpack func
+  has gint                 $.pack_lines                             is rw;
+  has Pointer              $.pack_func;                             # GstVideoPack   func
 
-  has guint                $.tile_mode       is rw;   # GstVideoTileMode
-  has guint                $.tile_ws         is rw;
-  has guint                $.tile_hs         is rw;
+  has guint                $.tile_mode                              is rw;   # GstVideoTileMode
+  has guint                $.tile_ws                                is rw;
+  has guint                $.tile_hs                                is rw;
 
   HAS GstPadding           $!padding;
 
@@ -857,5 +1145,428 @@ class GstVideoCodecState         is repr<CStruct>    does GLib::Roles::Pointers 
   sub gst_video_codec_state_unref (GstVideoCodecState $state)
     returns GstVideoCodecState
     is native(gstreamer-video)
+  { * }
+}
+
+class GstVideoFrame              is repr<CStruct>    does GLib::Roles::Pointers is export {
+  HAS GstVideoInfo       $.info;
+  has GstVideoFrameFlags $.flags is rw;
+
+  has GstBuffer          $!buffer;
+  has gpointer           $!meta;
+  has gint               $.id is rw;
+
+  has gpointer           @.data[GST_VIDEO_MAX_PLANES] is CArray;
+  has GstMapInfo         @.map[GST_VIDEO_MAX_PLANES]  is CArray;
+
+  has GstPadding         $!padding;
+
+  method info is rw {
+    Proxy.new:
+      FETCH => -> $ { $.info },
+
+      STORE => -> $, GstVideoInfo() \i {
+        $.info."$_"() = i."$_"() for <
+          interlace_mode
+          flags
+          width
+          height
+          size
+          views
+          chroma_site
+          colorimetry
+          par_n
+          par_d
+          fps_n
+          fps_d
+        >;
+      }
+  }
+
+  method buffer is rw {
+    Proxy.new:
+      FETCH => -> $                 { self.^attributes[2].get_value(self)    },
+      STORE => -> $, GstBuffer() \b { self.^attributes[2].set_value(self, b) };
+  }
+
+  method meta is rw {
+    Proxy.new:
+      FETCH => -> $              { self.^attributes[3].get_value(self)    },
+      STORE => -> $, gpointer \p { self.^attributes[3].set_value(self, p) };
+  }
+}
+
+
+role MetaRole is export {
+  # Originally defined method meta, here. This did not work due to the fact
+  # that roles and attribute contruction of repr<CStructs> are problematic
+  #
+  # Now left for identification purposes, ala:
+  #   $obj ~~ MetaRole
+}
+
+class GstVideoMeta               is repr<CStruct>    does GLib::Roles::Pointers is export {
+  also does MetaRole;
+
+  HAS GstMeta            $!meta;
+  has GstBuffer          $!buffer;
+
+  has GstVideoFrameFlags $.flags  is rw;
+  has GstVideoFormat     $.format is rw;
+  has gint               $.id     is rw;
+  has guint              $.width  is rw;
+  has guint              $.height is rw;
+
+  has guint              $.n_planes;
+  has gsize              @.offset[GST_VIDEO_MAX_PLANES] is CArray;
+  has gint               @.stride[GST_VIDEO_MAX_PLANES] is CArray;
+
+  has Pointer            $!map;    # (GstVideoMeta *meta, guint plane,
+                                   #  GstMapInfo *info, gpointer *data,
+                                   #  gint *stride, GstMapFlags flags --> gboolean);
+
+  has Pointer            $!unmap;  # (GstVideoMeta *meta, guint plane,
+                                   #  GstMapInfo *info);
+
+  method meta is rw {
+    Proxy.new:
+      FETCH => -> $ { $!meta },
+      STORE => -> $, GstMeta() $m {
+        $!meta.flags = $m.flags;
+        $!meta.info  = $m.info;
+      };
+  }
+
+  method buffer is rw {
+    Proxy.new:
+      FETCH => -> $                 { self.^attributes[1].get_value(self)    },
+      STORE => -> $, GstBuffer() \b { self.^attributes[1].set_value(self, b) };
+  }
+
+  method get_info (GstVideoMeta:U:) {
+    gst_video_meta_get_info();
+  }
+
+  multi method map is rw {
+    Proxy.new:
+      FETCH => -> $ { $!map },
+      STORE => -> $, \func {
+        $!map := set_func_pointer( &(func), &sprintf-GstMapFunc);
+      };
+  }
+  multi method map (
+    GstVideoMeta $meta,
+    guint $plane,
+    GstMapInfo $info,
+    gpointer $data,
+    gint $stride is rw,
+    GstMapFlags $flags
+  ) {
+    gst_video_meta_map($meta, $plane, $info, $data, $stride, $flags);
+  }
+
+  multi method unmap is rw {
+    Proxy.new:
+      FETCH => -> $ { $!map },
+      STORE => -> $, \func {
+        $!map := set_func_pointer( &(func), &sprintf-GstUnmapFunc);
+      };
+  }
+  multi method unmap (Int() $plane, GstMapInfo $info) {
+    my guint $p = $plane;
+
+    gst_video_meta_unmap(self, $p, $info);
+  }
+
+  ### /usr/include/gstreamer-1.0/gst/video/gstvideometa.h
+
+  sub gst_video_meta_get_info ()
+    returns GstMetaInfo
+    is native(gstreamer-video)
+  { * }
+
+  sub gst_video_meta_map (
+    GstVideoMeta $meta,
+    guint $plane,
+    GstMapInfo $info,
+    gpointer $data,
+    gint $stride is rw,
+    GstMapFlags $flags
+  )
+    returns uint32
+    is native(gstreamer-video)
+  { * }
+
+  sub gst_video_meta_unmap (
+    GstVideoMeta $meta,
+    guint $plane,
+    GstMapInfo $info
+  )
+    returns uint32
+    is native(gstreamer-video)
+  { * }
+
+  sub sprintf-GstMapFunc (
+    Blob,
+    Str,
+    & (Pointer, guint, Pointer, Pointer, gint is rw, GstMapFlags --> gboolean),
+  )
+    returns int64
+    is native
+    is symbol('sprintf')
+  { * }
+
+  sub sprintf-GstUnmapFunc (
+    Blob,
+    Str,
+    & (Pointer, guint, Pointer --> gboolean),
+  )
+    returns int64
+    is native
+    is symbol('sprintf')
+  { * }
+
+}
+
+class GstVideoCropMeta           is repr<CStruct>    does GLib::Roles::Pointers is export {
+  also does MetaRole;
+
+  HAS GstMeta $!meta;
+  has guint   $.x      is rw;
+  has guint   $.y      is rw;
+  has guint   $.width  is rw;
+  has guint   $.height is rw;
+
+  method meta is rw {
+    Proxy.new:
+      FETCH => -> $ { $!meta },
+      STORE => -> $, GstMeta() $m {
+        $!meta.flags = $m.flags;
+        $!meta.info  = $m.info;
+      };
+  }
+
+  method api_get_type (GstVideoCropMeta:U:) {
+    gst_video_crop_meta_api_get_type();
+  }
+
+  method get_info (GstVideoCropMeta:U:) {
+    gst_video_crop_meta_get_info();
+  }
+
+  ### /usr/include/gstreamer-1.0/gst/video/gstvideometa.h
+
+  sub gst_video_crop_meta_api_get_type ()
+    returns GType
+    is native(gstreamer-video)
+  { * }
+
+  sub gst_video_crop_meta_get_info ()
+    returns GstMetaInfo
+    is native(gstreamer-video)
+  { * }
+
+}
+
+class GstVideoMetaTransform       is repr<CStruct>    does GLib::Roles::Pointers is export {
+  has GstVideoInfo $.in_info;
+  has GstVideoInfo $.out_info;
+}
+
+class GstVideoGLTextureUploadMeta is repr<CStruct>    does GLib::Roles::Pointers is export {
+  also does MetaRole;
+
+  HAS GstMeta                      $!meta;
+
+  has GstVideoGLTextureOrientation $.texture_orientation is rw;
+  has guint                        $.n_textures          is rw;
+  HAS GstVideoGLTextureType        @.texture_type[4]     is CArray;
+
+  has GstBuffer                    $!buffer;
+  has GstVideoGLTextureUpload      $!upload;
+  has Pointer                      $!user_data;
+  has Pointer                      $!user_data_copy;
+  has Pointer                      $!user_data_free;
+
+  method meta is rw {
+    Proxy.new:
+      FETCH => -> $ { $!meta },
+      STORE => -> $, GstMeta() $m {
+        $!meta.flags = $m.flags;
+        $!meta.info  = $m.info;
+      };
+  }
+
+  method api_get_type (GstVideoGLTextureUploadMeta:U:) is also<api-get-type> {
+    gst_video_gl_texture_upload_meta_api_get_type();
+  }
+
+  method get_info (GstVideoGLTextureUploadMeta:U:) is also<get-info> {
+    gst_video_gl_texture_upload_meta_get_info();
+  }
+
+  method upload (Int() $texture_id) {
+    my guint $t = $texture_id;
+
+    gst_video_gl_texture_upload_meta_upload(self, $t);
+  }
+
+  ### /usr/include/gstreamer-1.0/gst/video/gstvideometa.h
+
+  sub gst_video_gl_texture_upload_meta_api_get_type ()
+    returns GType
+    is native(gstreamer-video)
+  { * }
+
+  sub gst_video_gl_texture_upload_meta_get_info ()
+    returns GstMetaInfo
+    is native(gstreamer-video)
+  { * }
+
+  sub gst_video_gl_texture_upload_meta_upload (
+    GstVideoGLTextureUploadMeta $meta,
+    guint $texture_id
+  )
+    returns uint32
+    is native(gstreamer-video)
+  { * }
+
+}
+
+class GstVideoTimeCodeMeta            is repr<CStruct>    does GLib::Roles::Pointers is export {
+  also does MetaRole;
+
+  HAS GstMeta          $!meta;
+  has GstVideoTimeCode $.tc is rw;
+
+  method meta is rw {
+    Proxy.new:
+      FETCH => -> $ { $!meta },
+      STORE => -> $, GstMeta() $m {
+        $!meta.flags = $m.flags;
+        $!meta.info  = $m.info;
+      };
+  }
+
+  method api_get_type (GstVideoTimeCodeMeta:U:) {
+    gst_video_time_code_meta_api_get_type();
+  }
+
+  method get_info (GstVideoTimeCodeMeta:U:) {
+    gst_video_time_code_meta_get_info();
+  }
+
+  sub gst_video_time_code_meta_api_get_type ()
+    returns GType
+    is native(gstreamer-video)
+  { * }
+
+  sub gst_video_time_code_meta_get_info ()
+    returns GstMetaInfo
+    is native(gstreamer-video)
+  { * }
+}
+
+class GstVideoRegionOfInterestMeta
+  is repr<CStruct>
+  does GLib::Roles::Pointers
+  is export
+{
+  also does MetaRole;
+
+  HAS GstMeta $!meta;
+
+  has GQuark $.roi_type  is rw;
+  has gint   $.id        is rw;
+  has gint   $.parent_id is rw;
+  has guint  $.x         is rw;
+  has guint  $.y         is rw;
+  has guint  $.w         is rw;
+  has guint  $.h         is rw;
+
+  has GList  $.params;
+
+  method meta is rw {
+    Proxy.new:
+      FETCH => -> $ { $!meta },
+      STORE => -> $, GstMeta() $m {
+        $!meta.flags = $m.flags;
+        $!meta.info  = $m.info;
+      };
+  }
+
+  method add_param (GstStructure() $s) {
+    gst_video_region_of_interest_meta_add_param(self, $s);
+  }
+
+  method api_get_type (GstVideoRegionOfInterestMeta:U:) {
+    gst_video_region_of_interest_meta_api_get_type();
+  }
+
+  method get_info (GstVideoRegionOfInterestMeta:U:) {
+    gst_video_region_of_interest_meta_get_info();
+  }
+
+  method get_param (Str() $name) {
+    gst_video_region_of_interest_meta_get_param(self, $name);
+  }
+
+  ### /usr/include/gstreamer-1.0/gst/video/gstvideometa.h
+
+  sub gst_video_region_of_interest_meta_add_param (
+    GstVideoRegionOfInterestMeta $meta,
+    GstStructure $s
+  )
+    is native(gstreamer-video)
+  { * }
+
+  sub gst_video_region_of_interest_meta_api_get_type ()
+    returns GType
+    is native(gstreamer-video)
+  { * }
+
+  sub gst_video_region_of_interest_meta_get_info ()
+    returns GstMetaInfo
+    is native(gstreamer-video)
+  { * }
+
+  sub gst_video_region_of_interest_meta_get_param (
+    GstVideoRegionOfInterestMeta $meta,
+    Str $name
+  )
+    returns GstStructure
+    is native(gstreamer-video)
+  { * }
+
+}
+
+class GstVideoOverlayCompositionMeta
+  is repr<CStruct>
+  does GLib::Roles::Pointers
+  is export
+{
+  also does MetaRole;
+
+  HAS GstMeta                    $!meta;
+  has GstVideoOverlayComposition $.overlay;
+
+  method meta is rw {
+    Proxy.new:
+      FETCH => -> $ { $!meta },
+      STORE => -> $, GstMeta() $m {
+        $!meta.flags = $m.flags;
+        $!meta.info  = $m.info;
+      };
+  }
+
+  method get_info (GstVideoOverlayRectangle:U:) {
+    gst_video_overlay_composition_meta_get_info();
+  }
+
+  ### /usr/include/gstreamer-1.0/gst/video/video-overlay-composition.h
+  sub gst_video_overlay_composition_meta_get_info ()
+    returns GstMetaInfo
+    is native(gstreamer-video)
+    is export
   { * }
 }

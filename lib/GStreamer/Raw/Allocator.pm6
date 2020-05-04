@@ -6,6 +6,8 @@ use GStreamer::Raw::Types;
 
 unit package GStreamer::Raw::Allocator;
 
+### /usr/include/gstreamer-1.0/gst/gstallocator.h
+
 sub gst_allocator_alloc (
   GstAllocator $allocator,
   gsize $size,
@@ -51,20 +53,6 @@ sub gst_allocation_params_get_type ()
 { * }
 
 sub gst_allocation_params_init (GstAllocationParams $params)
-  is native(gstreamer)
-  is export
-{ * }
-
-sub gst_memory_new_wrapped (
-  GstMemoryFlags $flags,
-  gpointer $data,
-  gsize $maxsize,
-  gsize $offset,
-  gsize $size,
-  gpointer $user_data,
-  GDestroyNotify $notify
-)
-  returns GstMemory
   is native(gstreamer)
   is export
 { * }

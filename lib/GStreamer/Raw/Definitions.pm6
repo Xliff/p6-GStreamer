@@ -9,7 +9,7 @@ use GLib::Roles::Pointers;
 unit package GStreamer::Raw::Definitions;
 
 # Number of forced compiles made.
-constant forced = 2;
+constant forced = 8;
 
 constant GstClockTime              is export := int64;
 constant GstClockTimeDiff          is export := int64;
@@ -69,6 +69,7 @@ constant GstBufferForeachMetaFunc          is export := Pointer;
 constant GstCapsFilterMapFunc              is export := Pointer;
 constant GstCapsForeachFunc                is export := Pointer;
 constant GstCapsMapFunc                    is export := Pointer;
+constant GstVideoGLTextureUpload           is export := Pointer;
 
 class GstAdapter                is repr('CPointer') does GLib::Roles::Pointers is export { }
 #class GstAllocator              is repr('CPointer') does GLib::Roles::Pointers is export { }
@@ -164,8 +165,15 @@ constant GST_ELEMENT_METADATA_KLASS       is export = 'klass';
 
 constant GST_PADDING = 4;
 
-constant GST_VIDEO_MAX_PLANES is export = 4;
-constant GST_VIDEO_MAX_COMPONENTS is export = 4;
+constant GST_VIDEO_MAX_PLANES         is export = 4;
+constant GST_VIDEO_MAX_COMPONENTS     is export = 4;
 constant GST_VIDEO_DECODER_MAX_ERRORS is export = 10;
-constant GST_VIDEO_DECODER_SINK_NAME is export = 'sink';
-constant GST_VIDEO_DECODER_SRC_NAME is export = 'src';
+constant GST_VIDEO_DECODER_SINK_NAME  is export = 'sink';
+constant GST_VIDEO_DECODER_SRC_NAME   is export = 'src';
+
+constant GST_CAPS_FEATURE_META_GST_VIDEO_OVERLAY_COMPOSITION is export = 'meta:GstVideoOverlayComposition';
+
+constant GST_VIDEO_OVERLAY_COMPOSITION_BLEND_FORMATS is export =
+  "\{ BGRx, RGBx, xRGB, xBGR, RGBA, BGRA, ARGB, ABGR, RGB, BGR, {''
+  }I420, YV12, AYUV, YUY2, UYVY, v308, Y41B, Y42B, Y444, {''
+  }NV12, NV21, A420, YUV9, YVU9, IYU1, GRAY8 \}";
