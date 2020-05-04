@@ -120,6 +120,7 @@ class GstSample                   is repr<CPointer> does GLib::Roles::Pointers i
 #class GstStaticPadTemplate        is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GstStream                   is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GstStreamCollection         is repr<CPointer> does GLib::Roles::Pointers is export { }
+class GstTracerFactory            is repr<CPointer> does GLib::Roles::Pointers is export { }
 #class GstStructure                is repr<CPointer> does GLib::Roles::Pointers is export { }
 #class GstTagList                  is repr<CPointer> does GLib::Roles::Pointers is export { }
 #class GstToc                      is repr<CPointer> does GLib::Roles::Pointers is export { }
