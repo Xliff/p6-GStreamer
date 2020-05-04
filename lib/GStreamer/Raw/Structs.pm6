@@ -588,6 +588,13 @@ class GstProtectionMeta          is repr<CStruct>  does GLib::Roles::Pointers is
   { * }
 }
 
+class GstTracer                  is repr<CStruct>  does GLib::Roles::Pointers is export {
+  HAS GstObject   $.parent;
+
+  has Pointer     $!priv;
+  HAS GstPadding  $!padding;
+}
+
 # PLAYER
 
 class GstPlayerVisualization     is repr<CStruct>  does GLib::Roles::Pointers is export {
