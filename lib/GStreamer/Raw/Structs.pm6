@@ -485,7 +485,7 @@ class GstMetaTransformCopy       is repr<CStruct>    does GLib::Roles::Pointers 
   has gsize    $.size   is rw;
 }
 
-# Prececlare
+# Predeclare
 class GstMetaInfo                is repr<CStruct>      does GLib::Roles::Pointers is export { ... }
 
 class GstMeta                    is repr<CStruct>    does GLib::Roles::Pointers is export {
@@ -560,6 +560,31 @@ class GstMetaInfo{
     returns int64
     is native
     is symbol('sprintf')
+  { * }
+}
+
+class GstProtectionMeta          is repr<CStruct>  does GLib::Roles::Pointers is export {
+  HAS GstMeta      $.meta;
+
+  has GstStructure $.info;
+
+  method info is rw {
+    Proxy.new:
+      FETCH => -> $                    { self.^attributes[1].get_value(self)    },
+      STORE => -> $, GstStructure() \s { self.^attributes[1].set_value(self, s) };
+  }
+
+  method api_get_type {
+    state ($n, $t);
+
+    unstable_get_type( self.^name, &gst_protection_meta_api_get_type, $n, $t );
+  }
+
+  ### /usr/include/gstreamer-1.0/gst/gstprotection.h
+
+  sub gst_protection_meta_api_get_type ()
+    returns GType
+    is native(gstreamer)
   { * }
 }
 
