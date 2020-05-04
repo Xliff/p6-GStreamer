@@ -1,12 +1,13 @@
 use v6.c;
 
+use NativeCall;
 use Method::Also;
 
 use GStreamer::Raw::Types;
 use GStreamer::Player::Raw::Visualization;
 
 class GStreamer::Player::Visualization {
-  has GstPlayerVisualization $!v handles <name description>
+  has GstPlayerVisualization $!v handles <name description>;
 
   submethod BUILD (:$vis) {
     $!v = $vis;
@@ -44,14 +45,13 @@ class GStreamer::Player::Visualization {
 
 }
 
-
 use GLib::Roles::StaticClass;
 
 class GStreamer::Player::Visualizations {
   also does GLib::Roles::StaticClass;
 
   method get (:$list = False, :$raw = False) {
-    my $vl = $gst_player_visualizations_get();
+    my $vl = gst_player_visualizations_get();
 
     return Nil unless $vl;
     return $vl if $list;
@@ -65,7 +65,7 @@ class GStreamer::Player::Visualizations {
   }
 
   method !free (
-    CArray[Pointer[GstPlayerVisualizations]] $vizlist
+    CArray[Pointer[GstPlayerVisualization]] $vizlist
   ) {
     gst_player_visualizations_free($vizlist);
   }

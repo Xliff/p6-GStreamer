@@ -1,6 +1,7 @@
 use v6.c;
 
 use GStreamer::Raw::Types;
+use GStreamer::Raw::Enums;
 
 unit package GStreamer::Raw::Video::ColorBalance;
 

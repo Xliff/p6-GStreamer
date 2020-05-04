@@ -951,6 +951,12 @@ our enum GstURITypeEnum is export <
 
 # VIDEO
 
+constant GstColorBalanceType is export := guint32;
+enum GstColorBalanceTypeEnum is export <
+  GST_COLOR_BALANCE_HARDWARE
+  GST_COLOR_BALANCE_SOFTWARE
+>;
+
 constant GstNavigationEventType is export := guint32;
 our enum GstNavigationEventTypeEnum is export (
     GST_NAVIGATION_EVENT_INVALID              =>  0,

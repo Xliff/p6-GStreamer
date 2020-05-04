@@ -2,7 +2,10 @@ use v6.c;
 
 use NativeCall;
 
-use GStreamer::Raw::Types;
+use GLib::Raw::Definitions;
+use GStreamer::Raw::Definitions;
+use GStreamer::Raw::Enums;
+use GStreamer::Raw::Structs;
 
 unit package GStreamer::Player::Raw::Visualization;
 
@@ -14,7 +17,7 @@ sub gst_player_visualization_copy (GstPlayerVisualization $vis)
   is export
 { * }
 
-sub gst_player_visualization_free (GstPlayerVisualization $vis)
+sub gst_player_visualization_free (Pointer $vis)
   is native(gstreamer-player)
   is export
 { * }
@@ -25,7 +28,9 @@ sub gst_player_visualization_get_type ()
   is export
 { * }
 
-sub gst_player_visualizations_free (GstPlayerVisualization $viss)
+sub gst_player_visualizations_free (
+  CArray[Pointer[GstPlayerVisualization]] $viss
+)
   is native(gstreamer-player)
   is export
 { * }

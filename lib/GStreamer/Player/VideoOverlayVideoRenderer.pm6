@@ -8,7 +8,7 @@ use GStreamer::Player::Raw::VideoOverlayVideoRenderer;
 use GLib::Roles::Object;
 
 our subset GstPlayerVideoOverlayVideoRendererAncestry is export of Mu
-  where GstPlayerVideoOverlayVideoRenderer | GstVideoRenderer | GObject;
+  where GstPlayerVideoOverlayVideoRenderer | GstPlayerVideoRenderer | GObject;
 
 class GStreamer::Player::VideoOverlayVideoRenderer {
   also does GLib::Roles::Object;
@@ -34,7 +34,7 @@ class GStreamer::Player::VideoOverlayVideoRenderer {
         $_;
       }
 
-      when GstVideoRenderer {
+      when GstPlayerVideoRenderer {
         $to-parent = cast(GObject, $_);
         cast(GstPlayerVideoOverlayVideoRenderer, $_);
       }
