@@ -35,6 +35,13 @@ sub postfix:<sec> ($s) is export {
   $s * GST_SECOND;
 }
 
+sub postfix:<μsec> ($us) is export {
+  $us * GST_USECOND;
+}
+sub postfix:<usec> ($us) is export {
+  $us * GST_USECOND;
+}
+
 # Method::Also does not work for subs.
 sub time-args ($d) is export {
   time_args($d);
@@ -49,7 +56,7 @@ sub time_args ($d) is export {
 }
 
 sub timeval-to-time (GTimeVal $tv) {
-  $tv.tv_sec * GST_SECOND + $tv.tv_usec * GST_USECOND;
+  $tv.tv_sec * GST_SECOND + $tv.tv_usec * GST_USECOND
 }
 
 # Consider moving to GLibs!
