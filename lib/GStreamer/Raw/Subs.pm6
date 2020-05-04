@@ -59,11 +59,6 @@ sub timeval-to-time (GTimeVal $tv) {
   $tv.tv_sec * GST_SECOND + $tv.tv_usec * GST_USECOND
 }
 
-# Consider moving to GLibs!
-sub getEndian is export {
-  ( $*KERNEL.endian == BigEndian, $*KERNEL.endian == LittleEndian );
-}
-
 sub gst_error_get_message (GQuark $domain, gint $code)
   returns Str
   is export
