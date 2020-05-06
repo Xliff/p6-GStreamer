@@ -21,6 +21,7 @@ constant gstreamer         is export = 'gstreamer-1.0',v0;
 constant gstreamer-video   is export = 'gstvideo-1.0',v0;
 constant gstreamer-player  is export = 'gstplayer-1.0',v0;
 constant gstreamer-base    is export = 'gstbase-1.0',v0;
+constant gstreamer-sdp     is export = 'gstsdp-1.0',v0;
 
 constant GstBufferListFunc                 is export := Pointer;
 constant GstBusSyncHandler                 is export := Pointer;
@@ -146,6 +147,9 @@ class GstVideoOverlayComposition  is repr<CPointer> does GLib::Roles::Pointers i
 class GstVideoOverlayRectangle    is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GstUri                      is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GstURIHandler               is repr<CPointer> does GLib::Roles::Pointers is export { }
+
+class GstMIKEYDecryptInfo         is repr<CPointer> does GLib::Roles::Pointers is export { }
+class GstMIKEYEncryptInfo         is repr<CPointer> does GLib::Roles::Pointers is export { }
 
 class GstPlayerVideoOverlayVideoRenderer   is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GstPlayerMainContextSignalDispatcher is repr<CPointer> does GLib::Roles::Pointers is export { }

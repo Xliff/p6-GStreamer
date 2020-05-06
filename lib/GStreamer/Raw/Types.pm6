@@ -23,6 +23,7 @@ need GIO::DBus::Raw::Types;
 need GStreamer::Raw::Definitions;
 need GStreamer::Raw::Enums;
 need GStreamer::Raw::Structs;
+need GStreamer::Raw::SDP::Structs;
 need GStreamer::Raw::Subs;
 
 

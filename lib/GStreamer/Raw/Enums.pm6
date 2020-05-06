@@ -374,18 +374,6 @@ our enum GstMetaFlagsEnum is export (
   GST_META_FLAG_LAST        => (1 +< 16)
 );
 
-constant GstMIKEYType is export := gint32;
-our enum GstMIKEYTypeEnum is export (
-  GST_MIKEY_TYPE_INVALID    => -1,
-  GST_MIKEY_TYPE_PSK_INIT   =>  0,
-  GST_MIKEY_TYPE_PSK_VERIFY =>  1,
-  GST_MIKEY_TYPE_PK_INIT    =>  2,
-  GST_MIKEY_TYPE_PK_VERIFY  =>  3,
-  GST_MIKEY_TYPE_DH_INIT    =>  4,
-  GST_MIKEY_TYPE_DH_RESP    =>  5,
-  GST_MIKEY_TYPE_ERROR      =>  6,
-);
-
 # C wants gint, but Perl might get confused. At the time of this writing,
 # there are issues with NativeCall and unsigned integers. For now, will
 # treat as UINT32, and will adjust as needed.
@@ -687,12 +675,6 @@ our enum GstRTSPResultEnum is export (
     GST_RTSP_ETGET       =>  -15,
     GST_RTSP_ETPOST      =>  -16,
     GST_RTSP_ELAST       =>  -17,
-);
-
-constant GstSDPResult is export := gint32;
-our enum GstSDPResultEnum is export (
-    GST_SDP_OK =>  0,
-    GST_SDP_EINVAL =>  -1,
 );
 
 constant GstSearchMode is export := guint;
@@ -1464,4 +1446,117 @@ our enum GstBaseParseFrameFlagsEnum is export (
   GST_BASE_PARSE_FRAME_FLAG_CLIP         => 1 +< 2,
   GST_BASE_PARSE_FRAME_FLAG_DROP         => 1 +< 3,
   GST_BASE_PARSE_FRAME_FLAG_QUEUE        => 1 +< 4
+);
+
+# SDP
+
+constant GstMIKEYCacheType is export := guint32;
+our enum GstMIKEYCacheTypeEnum is export (
+  GST_MIKEY_CACHE_NONE    => 0,
+  GST_MIKEY_CACHE_ALWAYS  => 1,
+  GST_MIKEY_CACHE_FOR_CSB => 2,
+);
+
+constant GstMIKEYEncAlg is export := guint32;
+our enum GstMIKEYEncAlgEnum is export (
+  GST_MIKEY_ENC_NULL        => 0,
+  GST_MIKEY_ENC_AES_CM_128  => 1,
+  GST_MIKEY_ENC_AES_KW_128  => 2,
+  GST_MIKEY_ENC_AES_GCM_128 => 6
+);
+
+constant GstMIKEYMacAlg is export := guint32;
+our enum GstMIKEYMacAlgEnum is export (
+  GST_MIKEY_MAC_NULL            => 0,
+  GST_MIKEY_MAC_HMAC_SHA_1_160  => 1
+);
+
+constant GstMIKEYKVType is export := guint32;
+our enum GstMIKEYKVTypeEnum is export (
+  GST_MIKEY_KV_NULL     => 0,
+  GST_MIKEY_KV_SPI      => 1,
+  GST_MIKEY_KV_INTERVAL => 2,
+);
+
+constant GstMIKEYKeyDataType is export := guint32;
+our enum GstMIKEYKeyDataTypeEnum is export (
+  GST_MIKEY_KD_TGK  => 0,
+  GST_MIKEY_KD_TEK  => 2,
+);
+
+constant GstMIKEYMapType is export := guint32;
+our enum GstMIKEYMapTypeEnum is export (
+  GST_MIKEY_MAP_TYPE_SRTP =>  0,
+);
+
+constant GstMIKEYPayloadType is export := guint32;
+our enum GstMIKEYPayloadTypeEnum is export (
+  GST_MIKEY_PT_LAST     => 0,
+  GST_MIKEY_PT_KEMAC    => 1,
+  GST_MIKEY_PT_PKE      => 2,
+  GST_MIKEY_PT_DH       => 3,
+  GST_MIKEY_PT_SIGN     => 4,
+  GST_MIKEY_PT_T        => 5,
+  GST_MIKEY_PT_ID       => 6,
+  GST_MIKEY_PT_CERT     => 7,
+  GST_MIKEY_PT_CHASH    => 8,
+  GST_MIKEY_PT_V        => 9,
+  GST_MIKEY_PT_SP       => 10,
+  GST_MIKEY_PT_RAND     => 11,
+  GST_MIKEY_PT_ERR      => 12,
+  GST_MIKEY_PT_KEY_DATA => 20,
+  GST_MIKEY_PT_GEN_EXT  => 21,
+);
+
+constant GstMIKEYPRFFunc is export := guint32;
+our enum GstMIKEYPRFFuncEnum is export (
+  GST_MIKEY_PRF_MIKEY_1  => 0
+);
+
+constant GstMIKEYSecProto is export := guint32;
+our enum GstMIKEYSecProtoEnum is export (
+  GST_MIKEY_SEC_PROTO_SRTP =>  0,
+);
+
+constant GstMIKEYSecSRTP is export := guint32;
+our enum GstMIKEYSecSRTPEnum is export (
+  GST_MIKEY_SP_SRTP_ENC_ALG           =>  0,
+  GST_MIKEY_SP_SRTP_ENC_KEY_LEN       =>  1,
+  GST_MIKEY_SP_SRTP_AUTH_ALG          =>  2,
+  GST_MIKEY_SP_SRTP_AUTH_KEY_LEN      =>  3,
+  GST_MIKEY_SP_SRTP_SALT_KEY_LEN      =>  4,
+  GST_MIKEY_SP_SRTP_PRF               =>  5,
+  GST_MIKEY_SP_SRTP_KEY_DERIV_RATE    =>  6,
+  GST_MIKEY_SP_SRTP_SRTP_ENC          =>  7,
+  GST_MIKEY_SP_SRTP_SRTCP_ENC         =>  8,
+  GST_MIKEY_SP_SRTP_FEC_ORDER         =>  9,
+  GST_MIKEY_SP_SRTP_SRTP_AUTH         => 10,
+  GST_MIKEY_SP_SRTP_AUTH_TAG_LEN      => 11,
+  GST_MIKEY_SP_SRTP_SRTP_PREFIX_LEN   => 12,
+  GST_MIKEY_SP_SRTP_AEAD_AUTH_TAG_LEN => 20,
+);
+
+constant GstMIKEYTSType is export := guint32;
+our enum GstMIKEYTSTypeEnum is export (
+  GST_MIKEY_TS_TYPE_NTP_UTC => 0,
+  GST_MIKEY_TS_TYPE_NTP     => 1,
+  GST_MIKEY_TS_TYPE_COUNTER => 2,
+);
+
+constant GstMIKEYType is export := gint32;
+our enum GstMIKEYTypeEnum is export (
+  GST_MIKEY_TYPE_INVALID    => -1,
+  GST_MIKEY_TYPE_PSK_INIT   =>  0,
+  GST_MIKEY_TYPE_PSK_VERIFY =>  1,
+  GST_MIKEY_TYPE_PK_INIT    =>  2,
+  GST_MIKEY_TYPE_PK_VERIFY  =>  3,
+  GST_MIKEY_TYPE_DH_INIT    =>  4,
+  GST_MIKEY_TYPE_DH_RESP    =>  5,
+  GST_MIKEY_TYPE_ERROR      =>  6,
+);
+
+constant GstSDPResult is export := gint32;
+our enum GstSDPResultEnum is export (
+    GST_SDP_OK     =>  0,
+    GST_SDP_EINVAL => -1,
 );

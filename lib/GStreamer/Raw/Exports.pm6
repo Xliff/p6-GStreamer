@@ -9,6 +9,7 @@ BEGIN {
     GStreamer::Raw::Definitions
     GStreamer::Raw::Enums
     GStreamer::Raw::Structs
+    GStreamer::Raw::SDP::Structs
     GStreamer::Raw::Subs
   >;
 }
