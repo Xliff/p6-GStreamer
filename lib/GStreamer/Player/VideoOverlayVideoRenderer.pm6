@@ -3,7 +3,9 @@ use v6.c;
 use Method::Also;
 
 use GStreamer::Raw::Types;
-use GStreamer::Player::Raw::VideoOverlayVideoRenderer;
+use GStreamer::Raw::Player::VideoOverlayVideoRenderer;
+
+use GStreamer::Element;
 
 use GLib::Roles::Object;
 

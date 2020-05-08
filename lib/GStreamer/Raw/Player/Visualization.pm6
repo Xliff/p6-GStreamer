@@ -7,7 +7,7 @@ use GStreamer::Raw::Definitions;
 use GStreamer::Raw::Enums;
 use GStreamer::Raw::Structs;
 
-unit package GStreamer::Player::Raw::Visualization;
+unit package GStreamer::Raw::Player::Visualization;
 
 ### /usr/include/gstreamer-1.0/gst/player/gstplayer-visualization.h
 

@@ -4,7 +4,7 @@ use NativeCall;
 use Method::Also;
 
 use GStreamer::Raw::Types;
-use GStreamer::Player::Raw::Visualization;
+use GStreamer::Raw::Player::Visualization;
 
 class GStreamer::Player::Visualization {
   has GstPlayerVisualization $!v handles <name description>;
