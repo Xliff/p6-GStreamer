@@ -210,7 +210,7 @@ class GStreamer::Video::Navigation::Message {
 
     my $rv = gst_navigation_message_parse_event($message, $e);
     $event = ppr($e);
-    $event = GStreamer::Event.new($event) if $event && $raw.not;
+    $event = GStreamer::Video::Navigation::Event.new($event) if $event && $raw.not;
     $all.not ?? $rv !! ($rv, $event)
   }
 

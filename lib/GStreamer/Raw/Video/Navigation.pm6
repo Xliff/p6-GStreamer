@@ -2,7 +2,10 @@ use v6.c;
 
 use NativeCall;
 
-use GStreamer::Raw::Types;
+use GLib::Raw::Definitions;
+use GStreamer::Raw::Definitions;
+use GStreamer::Raw::Enums;
+use GStreamer::Raw::Structs;
 
 unit package GStreamer::Raw::Video::Navigation;
 
