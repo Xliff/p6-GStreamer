@@ -159,9 +159,9 @@ class GStreamer::StaticPadTemplate {
     GstPadPresenceEnum( $!spt.presence );
   }
 
-  method static_caps (:$raw = False) is also<static-caps> {
-    $raw ?? $!spt.static_caps.defined !!
-            GStreamer::StaticCaps.new($!spt.static_caps);
-  }
+  # method static_caps (:$raw = False) is also<static-caps> {
+  #   $raw ?? $!spt.static_caps.defined !!
+  #           GStreamer::StaticCaps.new($!spt.static_caps);
+  # }
 
 }

@@ -10,6 +10,7 @@ use GStreamer::Element;
 use GStreamer::Object;
 use GStreamer::Player::AudioInfo;
 use GStreamer::Player::MainContextSignalDispatcher;
+use GStreamer::Player::MediaInfo;
 use GStreamer::Player::SubtitleInfo;
 use GStreamer::Player::VideoInfo;
 use GStreamer::Sample;
@@ -76,7 +77,7 @@ class GStreamer::Player is GStreamer::Object {
         return Nil unless $gv.object;
 
         my $ai = cast(GstPlayerAudioInfo, $gv.object);
-        $raw ?? $ai !! GStreamer::AudioInfo.new($ai);
+        $raw ?? $ai !! GStreamer::Player::AudioInfo.new($ai);
       },
       STORE => -> $,  $val is copy {
         warn 'current-audio-track does not allow writing'
@@ -94,7 +95,7 @@ class GStreamer::Player is GStreamer::Object {
         return Nil unless $gv.object;
 
         my $si = cast(GstPlayerAudioInfo, $gv.object);
-        $raw ?? $si !! GStreamer::AudioInfo.new($si);
+        $raw ?? $si !! GStreamer::Player::AudioInfo.new($si);
       },
       STORE => -> $, $val is copy {
         warn 'current-subtitle-track does not allow writing'
@@ -112,7 +113,7 @@ class GStreamer::Player is GStreamer::Object {
         return Nil unless $gv.object;
 
         my $vi = cast(GstPlayerVideoInfo, $gv.object);
-        $raw ?? $vi !! GStreamer::VideoInfo.new($vi);
+        $raw ?? $vi !! GStreamer::Player::VideoInfo.new($vi);
       },
       STORE => -> $, $val is copy {
         warn 'current-video-track does not allow writing'
@@ -144,7 +145,7 @@ class GStreamer::Player is GStreamer::Object {
         return Nil unless $gv.object;
 
         my $mi = cast(GstPlayerAudioInfo, $gv.object);
-        $raw ?? $mi !! GStreamer::MediaInfo.new($mi);
+        $raw ?? $mi !! GStreamer::Player::MediaInfo.new($mi);
       },
       STORE => -> $,  $val is copy {
         warn 'media-info does not allow writing'

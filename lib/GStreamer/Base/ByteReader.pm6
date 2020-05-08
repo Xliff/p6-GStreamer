@@ -423,7 +423,7 @@ class GStreamer::Base::ByteReader {
 
     return Nil unless $rv;
 
-    $sr = GStreamer::ByteReader.new($sr) unless $raw;
+    $sr = GStreamer::Base::ByteReader.new($sr) unless $raw;
     $sr;
   }
   multi method get_sub_reader (
@@ -942,7 +942,7 @@ class GStreamer::Base::ByteReader {
 
     return Nil unless $rv;
 
-    $sr = GStreamer::ByteReader.new($sr) unless $raw;
+    $sr = GStreamer::Base::ByteReader.new($sr) unless $raw;
     $sr;
   }
   multi method peek_sub_reader (GstByteReader() $sub_reader, Int() $size) {

@@ -115,7 +115,7 @@ class GStreamer::Base::ByteWriter is GStreamer::Base::ByteReader {
     my $b = gst_byte_writer_free_and_get_buffer($w);
 
     $b ??
-      ( $raw ?? $b !! GStreamer::Base::Buffer.new($b) )
+      ( $raw ?? $b !! GStreamer::Buffer.new($b) )
       !!
       Nil;
   }
