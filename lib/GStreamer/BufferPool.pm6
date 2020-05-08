@@ -7,6 +7,7 @@ use GStreamer::Raw::Types;
 use GStreamer::Raw::Subs;
 use GStreamer::Raw::BufferPool;
 
+use GStreamer::Allocator;
 use GStreamer::Object;
 
 our subset BufferPoolAncestry is export of Mu
@@ -42,7 +43,7 @@ class GStreamer::BufferPool is GStreamer::Object {
 
   method new {
     my $pool = gst_buffer_pool_new();
-    
+
     $pool ?? self.bless( :$pool ) !! Nil;
   }
 

@@ -5,6 +5,8 @@ use NativeCall;
 use GStreamer::Raw::Types;
 use GStreamer::Raw::Base::BitWriter;
 
+use GStreamer::Buffer;
+
 class GStreamer::Base::BitWriter {
   has GstBitWriter $!bw;
 

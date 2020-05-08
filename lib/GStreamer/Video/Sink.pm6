@@ -5,13 +5,12 @@ use Method::Also;
 use NativeCall;
 
 use GStreamer::Raw::Types;
-
-use GStreamer::Base::BaseSink;
+use GStreamer::Base::Sink;
 
 our subset GstVideoSinkAncestry is export of Mu
   where GstVideoSink | GstBaseSinkAncestry;
 
-class GStreamer::Video::Sink is GStreamer::Base::BaseSink {
+class GStreamer::Video::Sink is GStreamer::Base::Sink {
   has GstVideoSink $!vs;
 
   submethod BUILD (:$video-sink) {

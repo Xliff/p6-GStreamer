@@ -5,6 +5,7 @@ use NativeCall;
 use GStreamer::Raw::Types;
 use GStreamer::Raw::Base::CollectPads;
 
+use GStreamer::Buffer;
 use GStreamer::Object;
 
 our subset GstCollectPadsAncestry is export of Mu
@@ -63,16 +64,11 @@ class GStreamer::Base::CollectPads is GStreamer::Object {
     Int() $size,
     gpointer $destroy_notify,
     Int() $lock,
-    :$raw = False
   ) {
     my gboolean $l = $lock.so.Int;
     my guint $s = $size,
-    my $cd = gst_collect_pads_add_pad($!cp, $pad, $s, $destroy_notify, $l);
 
-    $cd ??
-      ( $raw ?? $cd !! GStreamer::CollectData.new($cd) )
-      !!
-      Nil;
+    gst_collect_pads_add_pad($!cp, $pad, $s, $destroy_notify, $l);
   }
 
   method available {

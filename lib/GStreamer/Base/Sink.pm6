@@ -3,7 +3,7 @@ use v6.c;
 use Method::Also;
 
 use GStreamer::Raw::Types;
-use GStreamer::Raw::Base::BaseSink;
+use GStreamer::Raw::Base::Sink;
 
 use GStreamer::Element;
 use GStreamer::Sample;
@@ -12,7 +12,7 @@ use GStreamer::Structure;
 our subset GstBaseSinkAncestry is export of Mu
   where GstBaseSink | GstElementAncestry;
 
-class GStreamer::Base::BaseSink is GStreamer::Element {
+class GStreamer::Base::Sink is GStreamer::Element {
   has GstBaseSink $!bs;
 
   submethod BUILD (:$base-sink) {

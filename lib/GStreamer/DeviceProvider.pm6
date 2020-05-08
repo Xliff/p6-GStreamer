@@ -5,8 +5,9 @@ use Method::Also;
 use GStreamer::Raw::Types;
 use GStreamer::Raw::DeviceProvider;
 
-use GStreamer::Object;
 use GStreamer::Bus;
+use GStreamer::Device;
+use GStreamer::Object;
 
 our subset GstDeviceProviderAncestry is export of Mu
   where GstDeviceProvider | GstObject;

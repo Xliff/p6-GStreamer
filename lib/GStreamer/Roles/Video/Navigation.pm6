@@ -3,6 +3,8 @@ use v6.c;
 use GStreamer::Raw::Types;
 use GStreamer::Raw::Video::Navigation;
 
+use GStreamer::Event;
+
 role GStreamer::Roles::Video::Navigation {
   has GstNavigation $!n;
 

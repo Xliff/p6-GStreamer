@@ -6,6 +6,8 @@ use GLib::Raw::Definitions;
 use GStreamer::Raw::Definitions;
 use GStreamer::Raw::Structs;
 
+unit package GStreamer::Raw::Base::Transform;
+
 ### /usr/include/gstreamer-1.0/gst/base/gstbasetransform.h
 
 sub gst_base_transform_get_allocator (

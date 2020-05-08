@@ -7,7 +7,9 @@ use NativeCall;
 use GStreamer::Raw::Types;
 use GStreamer::Raw::Base::Aggregator;
 
+use GStreamer::Allocator;
 use GStreamer::Buffer;
+use GStreamer::BufferPool;
 use GStreamer::Element;
 use GStreamer::Pad;
 

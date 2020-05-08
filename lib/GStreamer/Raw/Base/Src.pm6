@@ -7,7 +7,7 @@ use GStreamer::Raw::Definitions;
 use GStreamer::Raw::Enums;
 use GStreamer::Raw::Structs;
 
-unit package GStreamer::Base::BaseSrc;
+unit package GStreamer::Base::Src;
 
 ### /usr/include/gstreamer-1.0/gst/base/gstbasesrc.h
 

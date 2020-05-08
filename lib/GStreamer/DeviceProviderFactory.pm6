@@ -6,6 +6,7 @@ use Method::Also;
 use GStreamer::Raw::Types;
 use GStreamer::Raw::DeviceProviderFactory;
 
+use GStreamer::DeviceProvider;
 use GStreamer::PluginFeature;
 
 our subset GstDeviceProviderFactoryAncestry is export of Mu

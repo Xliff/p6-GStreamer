@@ -1557,6 +1557,15 @@ our enum GstMIKEYTypeEnum is export (
 
 constant GstSDPResult is export := gint32;
 our enum GstSDPResultEnum is export (
-    GST_SDP_OK     =>  0,
-    GST_SDP_EINVAL => -1,
+  GST_SDP_OK     =>  0,
+  GST_SDP_EINVAL => -1,
 );
+
+# APP
+
+constant GstAppStreamType is export := guint32;
+our enum GstAppStreamTypeEnum is export <
+  GST_APP_STREAM_TYPE_STREAM
+  GST_APP_STREAM_TYPE_SEEKABLE
+  GST_APP_STREAM_TYPE_RANDOM_ACCESS
+>;

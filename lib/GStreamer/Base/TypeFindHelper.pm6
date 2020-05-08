@@ -5,6 +5,8 @@ use NativeCall;
 use GStreamer::Raw::Types;
 use GStreamer::Raw::Base::TypeFindHelper;
 
+use GStreamer::Caps;
+
 use GLib::Roles::StaticClass;
 
 class GStreamer::Base::TypeFindHelper {

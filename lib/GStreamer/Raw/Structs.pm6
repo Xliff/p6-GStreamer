@@ -595,30 +595,19 @@ class GstTracer                  is repr<CStruct>  does GLib::Roles::Pointers is
   HAS GstPadding  $!padding;
 }
 
-# PLAYER
-
-class GstPlayerVisualization     is repr<CStruct>  does GLib::Roles::Pointers is export {
-  has Str $!name;
-  has Str $!description;
-
-  method name is rw {
-    Proxy.new:
-      FETCH => -> $           { self.^attributes[0].get_value(self)    },
-      STORE => -> $, Str() \s { self.^attributes[0].set_value(self, s) };
-  }
-
-  method description is rw {
-    Proxy.new:
-      FETCH => -> $           { self.^attributes[1].get_value(self)    },
-      STORE => -> $, Str() \s { self.^attributes[1].set_value(self, s) };
-  }
-}
-
-class GstPromise                 is repr<CStruct>  does GLib::Roles::Pointers is export {
-  HAS GstMiniObject $.parent;
-}
-
 # BASE
+
+class GstCollectPads             is repr<CStruct>  does GLib::Roles::Pointers is export {
+  HAS GstObject     $.object;
+
+  # with LOCK and/or STREAM_LOCK
+  has GSList        $.data;                 #= list of CollectData items
+  HAS GRecMutex     $!stream_lock;          #= used to serialize collection among several streams
+
+  has Pointer       $!priv;
+
+  HAS GstPadding    $!padding;
+};
 
 class GstBitReader               is repr<CStruct>  does GLib::Roles::Pointers is export {
   has CArray[guint8] $!data;
@@ -664,6 +653,34 @@ class GstPaddingLarge            is repr<CStruct>  does GLib::Roles::Pointers is
   HAS GstPadding      $!padding3;
   HAS GstPadding      $!padding4;
 }
+
+class GstCollectData             is repr<CStruct>  does GLib::Roles::Pointers is export {
+  # with STREAM_LOCK of @collect
+  has GstCollectPads            $.collect;
+
+  has GstPad                    $!pad;
+  has GstBuffer                 $!buffer;
+  has guint                     $.pos     is rw;
+  HAS GstSegment                $.segment;
+
+  # Private
+  has GstCollectPadsStateFlags  $!state;
+  has Pointer                   $!priv;
+
+  HAS GstPaddingLarge           $!padding;
+
+  method pad is rw {
+    Proxy.new:
+      FETCH => -> $              { self.^attributes[1].get_value(self)    },
+      STORE => -> $, GstPad() \p { self.^attributes[1].set_value(self, p) };
+  }
+
+  method buffer is rw {
+    Proxy.new:
+      FETCH => -> $                 { self.^attributes[2].get_value(self)    },
+      STORE => -> $, GstBuffer() \b { self.^attributes[2].set_value(self, b) };
+  }
+};
 
 class GstAggregator              is repr<CStruct>  does GLib::Roles::Pointers is export {
   HAS GstElement      $.parent;
@@ -719,30 +736,6 @@ class GstBaseParse               is repr<CStruct>  does GLib::Roles::Pointers is
 
   HAS GstPaddingLarge $!padding;
   has Pointer         $!private;
-}
-
-class GstCollectPads             is repr<CStruct>  does GLib::Roles::Pointers is export {
-  has GstObject                $!object;
-  has GSList                   $.data;
-  has GRecMutex                $!stream-lock;
-  has Pointer                  $!private;
-  HAS GstPadding               $!padding;
-}
-
-class GstCollectData             is repr<CStruct>  does GLib::Roles::Pointers is export {
-  has GstCollectPads           $!collect;
-  has GstPad                   $!pad;
-  has GstBuffer                $!buffer;
-  has guint                    $!pos;
-  has GstSegment               $!segment;
-
-  has GstCollectPadsStateFlags $!state;
-  has gpointer                 $!private;
-  HAS GstPadding               $!padding;
-
-  method ABI-abi-dts {
-    +$!padding[0];
-  }
 }
 
 class GstBaseSink                is repr<CStruct>  does GLib::Roles::Pointers is export {
@@ -1605,4 +1598,27 @@ class GstVideoOverlayCompositionMeta
     is native(gstreamer-video)
     is export
   { * }
+}
+
+# PLAYER
+
+class GstPlayerVisualization     is repr<CStruct>  does GLib::Roles::Pointers is export {
+  has Str $!name;
+  has Str $!description;
+
+  method name is rw {
+    Proxy.new:
+      FETCH => -> $           { self.^attributes[0].get_value(self)    },
+      STORE => -> $, Str() \s { self.^attributes[0].set_value(self, s) };
+  }
+
+  method description is rw {
+    Proxy.new:
+      FETCH => -> $           { self.^attributes[1].get_value(self)    },
+      STORE => -> $, Str() \s { self.^attributes[1].set_value(self, s) };
+  }
+}
+
+class GstPromise                 is repr<CStruct>  does GLib::Roles::Pointers is export {
+  HAS GstMiniObject $.parent;
 }

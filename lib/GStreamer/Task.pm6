@@ -6,6 +6,7 @@ use GStreamer::Raw::Types;
 use GStreamer::Raw::Task;
 
 use GStreamer::Object;
+use GStreamer::TaskPool;
 
 our subset GstTaskAncestry is export of Mu
   where GstTask | GstObject;

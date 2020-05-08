@@ -6,12 +6,12 @@ use NativeCall;
 
 use GStreamer::Raw::Types;
 
-use GStreamer::Base::BaseSrc;
+use GStreamer::Base::Src;
 
 our subset GstPushSrcAncestry is export of Mu
   where GstPushSrc | GstBaseSrcAncestry;
 
-class GStreamer::Base::PushSrc is GStreamer::Base::BaseSrc {
+class GStreamer::Base::PushSrc is GStreamer::Base::Src {
   has GstPushSrc $!ps handles <src_pad>;
 
   submethod BUILD (:$push-src) {

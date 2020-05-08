@@ -6,6 +6,7 @@ use GStreamer::Raw::Types;
 use GStreamer::Raw::Promise;
 
 use GStreamer::MiniObject;
+use GStreamer::Structure;
 
 our subset GstPromiseAncestry is export of Mu
   where GstPromise | GstMiniObject;

@@ -3,14 +3,14 @@ use v6.c;
 use Method::Also;
 
 use GStreamer::Raw::Types;
-use GStreamer::Raw::Base::BaseParse;
+use GStreamer::Raw::Base::Parse;
 
 use GStreamer::Element;
 
 our subset GstBaseParseAncestry is export of Mu
   where GstBaseParse | GstElementAncestry;
 
-class GStreamer::Base::BaseParse is GStreamer::Element {
+class GStreamer::Base::Parse is GStreamer::Element {
   has GstBaseParse $!bp;
 
   submethod BUILD (:$aggregator-pad) {
@@ -216,12 +216,13 @@ class GStreamer::Base::BaseParse is GStreamer::Element {
   method set_ts_at_offset (Int() $offset) is also<set-ts-at-offset> {
     my gsize $o = $offset;
 
-    gst_base_parse_set_ts_at_offset($!bp, $o);  }
+    gst_base_parse_set_ts_at_offset($!bp, $o);
+  }
 
 }
 
 
-class GStreamer::Base::BaseParseFrame {
+class GStreamer::Base::ParseFrame {
   has GstBaseParseFrame $!bpf;
 
   method GStreamer::Raw::Structs::GstBaseParseFrame
@@ -243,7 +244,7 @@ class GStreamer::Base::BaseParseFrame {
     my $c = gst_base_parse_frame_copy($!bpf);
 
     $c ??
-      ( $raw ?? $c !! GStreamer::Base::BaseParseFrame.new($c) )
+      ( $raw ?? $c !! GStreamer::Base::ParseFrame.new($c) )
       !!
       Nil;
   }
@@ -258,7 +259,7 @@ class GStreamer::Base::BaseParseFrame {
     unstable_get_type( self.^name, &gst_base_parse_frame_get_type, $n, $t );
   }
 
-  method init (GStreamer::Base::BaseParseFrame:U: GstBaseParseFrame $f) {
+  method init (GStreamer::Base::ParseFrame:U: GstBaseParseFrame $f) {
     gst_base_parse_frame_init($f);
   }
 

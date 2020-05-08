@@ -6,6 +6,7 @@ use GStreamer::Raw::Types;
 use GStreamer::Raw::Allocator;
 
 use GStreamer::Object;
+use GStreamer::Memory;
 
 our subset GstAllocatorAncestry is export of Mu
   where GstAllocator | GstObject;

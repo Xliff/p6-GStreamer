@@ -7,7 +7,7 @@ use GStreamer::Raw::Definitions;
 use GStreamer::Raw::Enums;
 use GStreamer::Raw::Structs;
 
-unit package GStreamer::Raw::Base::BaseSink;
+unit package GStreamer::Raw::Base::Sink;
 
 ### /usr/include/gstreamer-1.0/gst/base/gstbasesink.h
 

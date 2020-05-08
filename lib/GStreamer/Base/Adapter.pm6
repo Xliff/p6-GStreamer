@@ -5,6 +5,9 @@ use NativeCall;
 use GStreamer::Raw::Types;
 use GStreamer::Raw::Base::Adapter;
 
+use GStreamer::Buffer;
+use GStreamer::BufferList;
+
 use GLib::Roles::Object;
 
 our subset GstAdapterAncestry is export of Mu

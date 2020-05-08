@@ -4,14 +4,16 @@ use NativeCall;
 use Method::Also;
 
 use GStreamer::Raw::Types;
-use GStreamer::Raw::Base::BaseSrc;
+use GStreamer::Raw::Base::Src;
 
+use GStreamer::Allocator;
+use GStreamer::BufferPool;
 use GStreamer::Element;
 
 our subset GstBaseSrcAncestry is export of Mu
   where GstBaseSrc | GstElementAncestry;
 
-class GStreamer::Base::BaseSrc is GStreamer::Element {
+class GStreamer::Base::Src is GStreamer::Element {
   has GstBaseSrc $!bs;
 
   submethod BUILD (:$base-src) {

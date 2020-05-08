@@ -8,6 +8,8 @@ use NativeCall;
 use GStreamer::Raw::Types;
 use GStreamer::Raw::SDP::Message;
 
+use GStreamer::Caps;
+
 class GStreamer::SDP::Message {
   has GstSDPMessage $!sm;
   has $!init;
