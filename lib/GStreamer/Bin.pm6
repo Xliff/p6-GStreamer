@@ -71,6 +71,48 @@ class GStreamer::Bin is GStreamer::Element {
     );
   }
 
+  # Is originally:
+  # GstBin, GstBin, GstElement, gpointer
+  method deep-element-added {
+    self.connect-deep-element($!b, 'deep-element-added');
+  }
+
+  # Is originally:
+  # GstBin, GstBin, GstElement, gpointer
+  method deep-element-removed {
+    self.connect-deep-element($!b, 'deep-element-removed');
+  }
+
+  # Is originally:
+  # GstBin, gpointer --> gboolean
+  method do-latency {
+    self.connect-rbool($!b, 'do-latency');
+  }
+
+  # Is originally:
+  # GstBin, GstElement, gpointer
+  method element-added {
+    self.connect-element($!b, 'element-added');
+  }
+
+  # Is originally:
+  # GstBin, GstElement, gpointer
+  method element-removed {
+    self.connect-element($!b, 'element-removed');
+  }
+
+  # Is originally:
+  # GstBin, GstMessage
+  method handle-message {
+    self.connect-handle-message($!b);
+  }
+
+  # Is originally:
+  # GstBin, GstMessage --> gboolean
+  method remove-element {
+    self.connect-remove-element($!b);
+  }
+
   method add (GstElement() $element) {
     gst_bin_add($!b, $element);
   }
