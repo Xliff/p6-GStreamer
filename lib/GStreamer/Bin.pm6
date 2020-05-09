@@ -5,6 +5,7 @@ use Method::Also;
 use GStreamer::Raw::Types;
 use GStreamer::Raw::Bin;
 
+use GLib::Value;
 use GStreamer::Element;
 use GStreamer::Iterator;
 
@@ -67,6 +68,42 @@ class GStreamer::Bin is GStreamer::Element {
       },
       STORE => sub ($, Int() $flags is copy) {
         gst_bin_set_suppressed_flags($!b, $flags);
+      }
+    );
+  }
+
+  # Type: gboolean
+  method async-handling is rw  {
+    my $gv;
+    Proxy.new(
+      FETCH => sub ($) {
+        $gv = GLib::Value.new(
+          self.prop_get('async-handling', $gv)
+        );
+        $gv.boolean;
+      },
+      STORE => -> $, Int() $val is copy {
+        $gv = GLib::Value.new( G_TYPE_BOOLEAN );
+        $gv.boolean = $val;
+        self.prop_set('async-handling', $gv);
+      }
+    );
+  }
+
+  # Type: gboolean
+  method message-forward is rw  {
+    my $gv;
+    Proxy.new(
+      FETCH => sub ($) {
+        $gv = GLib::Value.new(
+          self.prop_get('message-forward', $gv)
+        );
+        $gv.boolean;
+      },
+      STORE => -> $, Int() $val is copy {
+        $gv = GLib::Value.new( G_TYPE_BOOLEAN );
+        $gv.boolean = $val;
+        self.prop_set('message-forward', $gv);
       }
     );
   }
