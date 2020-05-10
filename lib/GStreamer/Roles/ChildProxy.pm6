@@ -7,7 +7,11 @@ use NativeCall;
 use GStreamer::Raw::Types;
 use GStreamer::Raw::ChildProxy;
 
+use GStreamer::Roles::Signals::ChildProxy;
+
 role GStreamer::Roles::ChildProxy {
+  also does GStreamer::Roles::Signals::ChildProxy;
+
   has GstChildProxy $!cp;
 
   method roleInit-ChildProxy {
@@ -20,6 +24,18 @@ role GStreamer::Roles::ChildProxy {
   method GStreamer::Raw::Types::GstChildProxy
     is also<GstChildProxy>
   { $!cp }
+
+  # Is originally:
+  # GstChildProxy, GObject, gchar, gpointer
+  method child-added {
+    self.connect-child-added($!cp, 'child-added');
+  }
+
+  # Is originally:
+  # GstChildProxy, GObject, gchar, gpointer
+  method child-removed {
+    self.connect-child-removed($!cp, 'child-child-removed');
+  }
 
   method emit_child_added (GObject() $child, Str() $name)
     is also<emit-child-added>
