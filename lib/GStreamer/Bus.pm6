@@ -8,10 +8,14 @@ use GStreamer::Raw::Bus;
 use GLib::Source;
 use GStreamer::Object;
 
+use GStreamer::Roles::Signals::Bus;
+
 our subset BusAncestry is export of Mu
   where GstBus | GstObject;
 
 class GStreamer::Bus is GStreamer::Object {
+  also does GStreamer::Roles::Signals::Bus;
+
   has GstBus $!b;
 
   submethod BUILD (:$bus) {
@@ -46,6 +50,18 @@ class GStreamer::Bus is GStreamer::Object {
     my $bus = gst_bus_new();
 
     $bus ?? self.bless( :$bus ) !! Nil;
+  }
+
+  # Is originally:
+  # GstBus, GstMessage, gpointer
+  method message {
+    self.connect-message($!b);
+  }
+
+  # Is originally:
+  # GstBus, GstMessage, gpointer
+  method sync-message {
+    self.connect-message($!b, 'sync-message');
   }
 
   method add_signal_watch is also<add-signal-watch> {
