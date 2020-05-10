@@ -657,3 +657,49 @@ class GStreamer::Buffer is GStreamer::MiniObject {
   }
 
 }
+
+
+
+augment class GStreamer::Value {
+
+  method get_buffer (:$raw = False) {
+    my $b = cast(GstBuffer, self.boxed);
+
+    $b = GStreamer::Buffer.new($b) unless $raw;
+    $b;
+  }
+
+  method set_buffer (GstBuffer() $b) {
+    self.boxed = $b;
+  }
+
+  method new_with_buffer (
+    GStreamer::Value:U:
+    GstBuffer() $b
+  ) {
+    my $v = GLib::Value( GStreamer::Buffer.get_type );
+
+    $v.boxed = $b;
+    $v;
+  }
+
+  multi method new (GstBuffer() $b, :$buffer is required) {
+    GStreamer::Value.new_with_buffer($b);
+  }
+
+  proto method take_buffer (|)
+  { * }
+
+  multi method take_buffer (:$raw = False) {
+    my $b = GstBuffer.new;
+
+    samewith($b, :$raw);
+  }
+  multi method take_buffer ($buffer is rw, :$raw) {
+    self.take_boxed($buffer);
+
+    $b = GStreamer::Buffer.new($b) unless $raw;
+    $b;
+  }
+
+}
