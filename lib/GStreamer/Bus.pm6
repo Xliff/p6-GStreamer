@@ -52,6 +52,24 @@ class GStreamer::Bus is GStreamer::Object {
     $bus ?? self.bless( :$bus ) !! Nil;
   }
 
+  # Type: gboolean
+  method enable-async is rw  {
+    my $gv;
+    Proxy.new(
+      FETCH => sub ($) {
+        $gv = GLib::Value.new(
+          self.prop_get('enable-async', $gv)
+        );
+        $gv.boolean;
+      },
+      STORE => -> $, Int() $val is copy {
+        $gv = GLib::Value.new( G_TYPE_BOOLEAN );
+        $gv.boolean = $val;
+        self.prop_set('enable-async', $gv);
+      }
+    );
+  }
+
   # Is originally:
   # GstBus, GstMessage, gpointer
   method message {
