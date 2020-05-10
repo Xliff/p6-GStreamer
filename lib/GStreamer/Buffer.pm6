@@ -658,7 +658,8 @@ class GStreamer::Buffer is GStreamer::MiniObject {
 
 }
 
-
+use MONKEY-TYPING;
+use GStreamer::Value;
 
 augment class GStreamer::Value {
 
@@ -695,11 +696,11 @@ augment class GStreamer::Value {
 
     samewith($b, :$raw);
   }
-  multi method take_buffer ($buffer is rw, :$raw) {
+  multi method take_buffer ($buffer is rw, :$raw = False) {
     self.take_boxed($buffer);
 
-    $b = GStreamer::Buffer.new($b) unless $raw;
-    $b;
+    $buffer = GStreamer::Buffer.new($buffer) unless $raw;
+    $buffer;
   }
 
 }
