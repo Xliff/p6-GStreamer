@@ -45,6 +45,46 @@ class GStreamer::ControlBinding is GStreamer::Object {
     $control-binding ?? self.bless( :$control-binding ) !! Nil;
   }
 
+  # Type: gchar
+  method name is rw  {
+    my $gv;
+    Proxy.new(
+      FETCH => sub ($) {
+        $gv = GLib::Value.new(
+          self.prop_get('name', $gv)
+        );
+        $gv.string;
+      },
+      STORE => -> $, Str() $val is copy {
+        $gv = GLib::Value.new( G_TYPE_STRING );
+        $gv.string = $val;
+        self.prop_set('name', $gv);
+      }
+    );
+  }
+
+  # Type: GstObject
+  method object (:$raw = False) is rw  {
+    my $gv;
+    Proxy.new(
+      FETCH => sub ($) {
+        $gv = GLib::Value.new(
+          self.prop_get('object', $gv)
+        );
+
+        my $go = cast(GstObject, $gv.object);
+        return Nil unless $go;
+        $go = GStreamer::Object.new($go) unless $raw;
+        $go;
+      },
+      STORE => -> $, GstObject() $val is copy {
+        $gv = GLib::Value.new( GStreamer::Object.get_type );
+        $gv.object = $val;
+        self.prop_set('object', $gv);
+      }
+    );
+  }
+
   proto method get_g_value_array (|)
       is also<get-g-value-array>
   { * }
