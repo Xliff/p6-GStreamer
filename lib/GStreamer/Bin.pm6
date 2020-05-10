@@ -10,12 +10,14 @@ use GStreamer::Element;
 use GStreamer::Iterator;
 
 use GStreamer::Roles::ChildProxy;
+use GStreamer::Roles::Signals::Bin;
 
 our subset GstBinAncestry is export of Mu
   where GstBin | GstChildProxy | GstElementAncestry;
 
 class GStreamer::Bin is GStreamer::Element {
   also does GStreamer::Roles::ChildProxy;
+  also does GStreamer::Roles::Signals::Bin;
 
   has GstBin $!b;
 
