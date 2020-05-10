@@ -17,6 +17,8 @@ our subset GstDeviceAncestry is export of Mu
   where GstDevice | GstObject;
 
 class GStreamer::Device is GStreamer::Object {
+  use GLib::Roles::Signals::Generic;
+
   has GstDevice $!d;
 
   submethod BUILD (:$device) {
@@ -46,6 +48,12 @@ class GStreamer::Device is GStreamer::Object {
 
   method new (GstDeviceAncestry $device) {
     $device ?? self.bless( :$device ) !! Nil;
+  }
+
+  # Is originally:
+  # GstDevice, gpointer
+  method removed {
+    self.connect($!d, 'removed');
   }
 
   method create_element (Str $name, :$raw = False) is also<create-element> {
