@@ -16,13 +16,13 @@ role GStreamer::Roles::Signals::ChildProxy {
     my $hid;
     %!signals-cp{$signal} //= do {
       my \𝒮 = Supplier.new;
-      $hid = g-connect-child-added($obj, $signal,
-        -> $, $g, $gr, $gr   {
+      $hid = g-connect-child($obj, $signal,
+        -> $, $g, $gr1, $gr2   {
           CATCH {
             default { 𝒮.note($_) }
           }
 
-          𝒮.emit( [self, $g, $gr, $gr ] );
+          𝒮.emit( [self, $g, $gr1, $gr2 ] );
         },
         Pointer, 0
       );
