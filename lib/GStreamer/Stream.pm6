@@ -115,7 +115,13 @@ class GStreamer::Stream is GStreamer::Object {
     );
   }
 
-  method get_stream_id is also<get-stream-id> {
+  method get_stream_id
+    is also<
+      get-stream-id
+      stream_id
+      stream-id
+    >
+  {
     gst_stream_get_stream_id($!s);
   }
 
@@ -128,7 +134,9 @@ class GStreamer::Stream is GStreamer::Object {
   method type_get_name (
     GStreamer::Stream:U:
     Int() $type
-  ) is also<type-get-name> {
+  )
+    is also<type-get-name>
+  {
     my GstStreamType $t = $type;
 
     gst_stream_type_get_name($t);
