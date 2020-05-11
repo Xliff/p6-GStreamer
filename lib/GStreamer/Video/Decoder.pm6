@@ -49,6 +49,24 @@ class GStreamer::Video::Decoder is GStreamer::Element {
     $decoder ?? self.bless( :$decoder ) !! Nil;
   }
 
+  # Type: gboolean
+  method qos is rw  {
+    my $gv;
+    Proxy.new(
+      FETCH => sub ($) {
+        $gv = GLib::Value.new(
+          self.prop_get('qos', $gv)
+        );
+        $gv.boolean;
+      },
+      STORE => -> $, Int() $val is copy {
+        $gv = GLib::Value.new( G_TYPE_BOOLEAN );
+        $gv.boolean = $val;
+        self.prop_set('qos', $gv);
+      }
+    );
+  }
+
   method add_to_frame (Int() $n_bytes) is also<add-to-frame> {
     my gint $n = $n_bytes;
 
