@@ -12,10 +12,14 @@ use GLib::GList;
 use GStreamer::Bus;
 use GStreamer::Device;
 
+use GLib::Roles::Signals::Generic;
+
 our subset GstDeviceMonitorAncestry is export of Mu
   where GstDeviceMonitor | GstObject;
 
 class GStreamer::DeviceMonitor is GStreamer::Object {
+  also does GLib::Roles::Signals::Generic;
+  
   has GstDeviceMonitor $!dm;
 
   submethod BUILD (:$monitor) {
@@ -48,7 +52,25 @@ class GStreamer::DeviceMonitor is GStreamer::Object {
     $monitor ?? self.bless( :$monitor ) !! Nil;
   }
 
-  method show_all_devices is rw is also<show-all-devices> {
+  # Is originally:
+  # GstDeviceProvider, gchar, gpointer
+  method provider-hidden {
+    self.connect-string($!dm, 'provider-hidden');
+  }
+
+  # Is originally:
+  # GstDeviceProvider, gchar, gpointer
+  method provider-unhidden {
+    self.connect-provider-unhidden($!dm, 'provider-unhidden');
+  }
+
+  method show_all_devices is rw
+    is also<
+      show-all-devices
+      show_all
+      show-all
+    >
+  {
     Proxy.new(
       FETCH => sub ($) {
         so gst_device_monitor_get_show_all_devices($!dm);
