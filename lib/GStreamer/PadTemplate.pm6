@@ -2,17 +2,20 @@ use v6.c;
 
 use Method::Also;
 
-
 use GStreamer::Raw::Types;
 use GStreamer::Raw::PadTemplate;
 
 use GStreamer::Caps;
 use GStreamer::Object;
 
+use GStreamer::Roles::Signals::Generic;
+
 our subset PadTemplateAncestry is export of Mu
   where GstPadTemplate | GstObject;
 
 class GStreamer::PadTemplate is GStreamer::Object {
+  also does GStreamer::Roles::Signals::Generic;
+
   has GstPadTemplate $!pt;
 
   submethod BUILD (:$template) {
@@ -41,7 +44,7 @@ class GStreamer::PadTemplate is GStreamer::Object {
   { $!pt }
 
   multi method new (GstPadTemplate $template) {
-    self.bless( :$template );
+    $template ?? self.bless( :$template ) !! Nil;
   }
   multi method new (
     Str() $name,
@@ -51,10 +54,9 @@ class GStreamer::PadTemplate is GStreamer::Object {
   ) {
     my GstPadDirection $d = $direction;
     my GstPadPresence $p = $presence;
+    my $template = gst_pad_template_new($name, $d, $p, $caps);
 
-    self.bless(
-      template => gst_pad_template_new($name, $d, $p, $caps)
-    );
+    $template ?? self.bless( :$template ) !! Nil;
   }
 
   method new_from_static_pad_template_with_gtype (
@@ -64,13 +66,12 @@ class GStreamer::PadTemplate is GStreamer::Object {
     is also<new-from-static-pad-template-with-gtype>
   {
     my GType $pt = $pad_type;
-
-    self.bless(
-      template => gst_pad_template_new_from_static_pad_template_with_gtype(
-        $pad_template,
-        $pt
-      )
+    my $template = gst_pad_template_new_from_static_pad_template_with_gtype(
+      $pad_template,
+      $pt
     );
+
+    $template ?? self.bless( :$template ) !! Nil;
   }
 
   method new_with_gtype (
@@ -85,10 +86,15 @@ class GStreamer::PadTemplate is GStreamer::Object {
     my GstPadDirection $d = $direction;
     my GstPadPresence $p = $presence;
     my GType $pt = $pad_type;
+    my $template = gst_pad_template_new_with_gtype($name, $d, $p, $caps, $pt);
 
-    self.bless(
-      template => gst_pad_template_new_with_gtype($name, $d, $p, $caps, $pt);
-    );
+    $template ?? self.bless( :$template ) !! Nil;
+  }
+
+  # Is originally:
+  # GstPadTemplate, GstPad, gpointer
+  method pad-created {
+    self.connect-pad($!pt, 'pad-created');
   }
 
   method get_caps (:$raw = False) is also<get-caps> {
@@ -120,7 +126,7 @@ class GStreamer::StaticPadTemplate {
   }
 
   method new (GstStaticPadTemplate $static-template) {
-    self.bless( :$static-template );
+    $static-template ?? self.bless( :$static-template ) !! Nil;
   }
 
   method direction {
