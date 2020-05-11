@@ -47,6 +47,12 @@ class GStreamer::StreamCollection is GStreamer::Object {
     $collection ?? self.bless( :$collection ) !! Nil;
   }
 
+  # Is originally:
+  # GstStreamCollection, GstStream, GParamSpec, gpointer
+  method stream-notify {
+    self.connect-stream-notify($!sc);
+  }
+
   method add_stream (GstStream() $stream) is also<add-stream> {
     so gst_stream_collection_add_stream($!sc, $stream);
   }
@@ -71,7 +77,13 @@ class GStreamer::StreamCollection is GStreamer::Object {
     unstable_get_type( self.^name, &gst_stream_collection_get_type, $n, $t );
   }
 
-  method get_upstream_id is also<get-upstream-id> {
+  method get_upstream_id
+    is also<
+      get-upstream-id
+      upstream_id
+      upstream-id
+    >
+  {
     gst_stream_collection_get_upstream_id($!sc);
   }
 
