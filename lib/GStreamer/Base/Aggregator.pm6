@@ -13,6 +13,8 @@ use GStreamer::BufferPool;
 use GStreamer::Element;
 use GStreamer::Pad;
 
+use GStreamer::Roles::Signals::Generic;
+
 our subset GstAggregatorAncestry is export of Mu
   where GstAggregator | GstElementAncestry;
 
@@ -112,24 +114,6 @@ class GStreamer::Base::Aggregator is GStreamer::Element {
     );
   }
 
-  # Type: gboolean
-  method emit_signals is rw  {
-    my $gv;
-    Proxy.new(
-      FETCH => sub ($) {
-        $gv = GLib::Value.new(
-          self.prop_get('emit_signals', $gv)
-        );
-        $gv.boolean;
-      },
-      STORE => -> $, Int() $val is copy {
-        $gv = GLib::Value.new( G_TYPE_BOOLEAN );
-        $gv.boolean = $val;
-        self.prop_set('emit_signals', $gv);
-      }
-    );
-  }
-
   method finish_buffer (GstBuffer() $buffer) is also<finish-buffer> {
     GstFlowReturnEnum( gst_aggregator_finish_buffer($!a, $buffer) );
   }
@@ -204,6 +188,8 @@ our subset GstAggregatorPadAncestry is export of Mu
   where GstAggregatorPad | GstPad;
 
 class GStreamer::Base::AggregatorPad is GStreamer::Pad {
+  also does GStreamer::Roles::Signals::Generic;
+
   has GstAggregatorPad $!ap;
 
   submethod BUILD (:$aggregator-pad) {
@@ -233,6 +219,30 @@ class GStreamer::Base::AggregatorPad is GStreamer::Pad {
 
   method new (GstAggregatorPadAncestry $aggregator-pad ) {
     $aggregator-pad ?? self.bless( :$aggregator-pad ) !! Nil;
+  }
+
+  # Type: gboolean
+  method emit-signals is rw  {
+    my $gv;
+    Proxy.new(
+      FETCH => sub ($) {
+        $gv = GLib::Value.new(
+          self.prop_get('emit-signals', $gv)
+        );
+        $gv.boolean;
+      },
+      STORE => -> $, Int() $val is copy {
+        $gv = GLib::Value.new( G_TYPE_BOOLEAN );
+        $gv.boolean = $val;
+        self.prop_set('emit-signals', $gv);
+      }
+    );
+  }
+
+  # Is originally:i
+  # GstAggregatorPad, GstBuffer, gpointer
+  method buffer-consumed {
+    self.connect-buffer($!ap, 'buffer-consumed');
   }
 
   method drop_buffer is also<drop-buffer> {
