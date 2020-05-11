@@ -51,6 +51,18 @@ class GStreamer::Registry is GStreamer::Object {
     self.get;
   }
 
+  # Is originally:
+  # GstRegistry, GstPluginFeature, gpointer
+  method feature-added {
+    self.connect-plugin-feature($!r, 'feature-added');
+  }
+
+  # Is originally:
+  # GstRegistry, GstPlugin, gpointer
+  method plugin-added {
+    self.connect-plugin-feature($!r, 'plugin-added');
+  }
+
   method get {
     my $registry = gst_registry_get();
 
@@ -97,7 +109,7 @@ class GStreamer::Registry is GStreamer::Object {
 
     # Free list AFTER return array is created.
     gst_plugin_feature_list_free($fl);
-    
+
     @r
   }
 
