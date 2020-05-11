@@ -48,6 +48,70 @@ class GStreamer::Base::Aggregator is GStreamer::Element {
     $aggregator ?? self.bless( :$aggregator ) !! Nil;
   }
 
+  # Type: guint64
+  method latency is rw  {
+    Proxy.new:
+      FETCH => -> $           { self.get_latency },
+      STORE => -> $, Int() \i { self.set_latency(i) }
+  }
+
+  # Type: guint64
+  method min-upstream-latency is rw  {
+    my $gv;
+    Proxy.new(
+      FETCH => sub ($) {
+        $gv = GLib::Value.new(
+          self.prop_get('min-upstream-latency', $gv)
+        );
+        $gv.uint64;
+      },
+      STORE => -> $, Int() $val is copy {
+        $gv = GLib::Value.new( G_TYPE_UINT64 );
+        $gv.uint64 = $val;
+        self.prop_set('min-upstream-latency', $gv);
+      }
+    );
+  }
+
+  # Type: guint64
+  method start-time is rw  {
+    my $gv;
+    Proxy.new(
+      FETCH => sub ($) {
+        $gv = GLib::Value.new(
+          self.prop_get('start-time', $gv)
+        );
+        $gv.uint64;
+      },
+      STORE => -> $, Int() $val is copy {
+        $gv = GLib::Value.new( G_TYPE_UINT64 );
+        $gv.uint64 = $val;
+        self.prop_set('start-time', $gv);
+      }
+    );
+  }
+
+  # Type: GObject
+  method start-time-selection (:$raw = False) is rw  {
+    my $gv;
+    Proxy.new(
+      FETCH => sub ($) {
+        $gv = GLib::Value.new(
+          self.prop_get('start-time-selection', $gv)
+        );
+
+        my $v = cast(GObject, $gv.object);
+        $v = GLib::Object.new($v) unless $v.not || $raw;
+        $v;
+      },
+      STORE => -> $, GObject() $val is copy {
+        $gv = GLib::Value.new( G_TYPE_OBJECT );
+        $gv.object = $val;
+        self.prop_set('start-time-selection', $gv);
+      }
+    );
+  }
+
   # Type: gboolean
   method emit_signals is rw  {
     my $gv;
