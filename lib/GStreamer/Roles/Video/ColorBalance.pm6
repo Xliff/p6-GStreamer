@@ -9,8 +9,11 @@ use GLib::GList;
 use GStreamer::Video::ColorBalanceChannel;
 
 use GLib::Roles::ListData;
+use GStreamer::Roles::Signals::Video::ColorBalance;
 
 role GStreamer::Roles::Video::ColorBalance {
+  also does GStreamer::Roles::Signals::Video::ColorBalance
+;
   has GstColorBalance $!cb;
 
   method roleInit-ColorBalance {
@@ -22,6 +25,12 @@ role GStreamer::Roles::Video::ColorBalance {
   method GStreamer::Raw::Definitions::GstColorBalance
     is also<GstColorBalance>
   { $!cb }
+
+  # Is originally:
+  # GstColorBalance, GstColorBalanceChannel, gint, gpointer
+  method value-changed {
+    self.connect-value-changed($!cb);
+  }
 
   method get_balance_type {
     GstColorBalanceTypeEnum( gst_color_balance_get_balance_type($!cb) )
