@@ -41,6 +41,12 @@ class GStreamer::Object {
     die $dieMsg;
   }
 
+  # Is originally:
+  # GstObject, GstObject, GParamSpec, gpointer
+  method deep-notify {
+    self.connect-deep-notify($!gst-o);
+  }
+
   method control_rate is rw is also<control-rate> {
     Proxy.new(
       FETCH => sub ($) {
