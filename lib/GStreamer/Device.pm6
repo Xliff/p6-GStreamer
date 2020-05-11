@@ -65,7 +65,12 @@ class GStreamer::Device is GStreamer::Object {
       Nil;
   }
 
-  method get_caps (:$raw = False) is also<get-caps> {
+  method get_caps (:$raw = False)
+    is also<
+      get-caps
+      caps
+    >
+  {
     my $c = gst_device_get_caps($!d);
 
     $c ??
