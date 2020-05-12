@@ -1600,6 +1600,59 @@ class GstVideoOverlayCompositionMeta
   { * }
 }
 
+class GstVideoResampler          is repr<CStruct> does GLib::Roles::Pointers is export {
+  has gint            $.in_size    is rw;
+  has gint            $.out_size   is rw;
+  has guint           $.max_taps   is rw;
+  has guint           $.n_phases   is rw;
+  has CArray[guint32] $.offset;
+  has CArray[guint32] $.phase;
+  has CArray[guint32] $.n_taps;
+  has CArray[gdouble] $.taps;
+
+  HAS GstPadding      $!padding;
+
+  method clear {
+    gst_video_resampler_clear(self);
+  }
+
+  method init (
+    GstVideoResamplerMethod $method,
+    GstVideoResamplerFlags  $flags,
+    guint                   $n_phases,
+    guint                   $n_taps,
+    gdouble                 $shift,
+    guint                   $in_size,
+    guint                   $out_size,
+    GstStructure            $options
+  ) {
+    gst_video_resampler_init(
+      self,
+      $method,
+      $flags,
+      $n_phases,
+      $n_taps,
+      $shift,
+      $in_size,
+      $out_size,
+      $options
+    );
+  }
+
+  ### /usr/include/gstreamer-1.0/gst/video/video-resampler.h
+
+  sub gst_video_resampler_clear (GstVideoResampler $resampler)
+    is native(gstreamer-video)
+    is export
+  { * }
+
+  sub gst_video_resampler_init (GstVideoResampler $resampler, GstVideoResamplerMethod $method, GstVideoResamplerFlags $flags, guint $n_phases, guint $n_taps, gdouble $shift, guint $in_size, guint $out_size, GstStructure $options)
+    returns uint32
+    is native(gstreamer-video)
+    is export
+  { * }
+}
+
 # PLAYER
 
 class GstPlayerVisualization     is repr<CStruct>  does GLib::Roles::Pointers is export {
