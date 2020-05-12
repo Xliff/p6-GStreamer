@@ -145,6 +145,7 @@ class GstVideoEncoder             is repr<CPointer> does GLib::Roles::Pointers i
 class GstVideoOrientation         is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GstVideoOverlayComposition  is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GstVideoOverlayRectangle    is repr<CPointer> does GLib::Roles::Pointers is export { }
+class GstVideoScaler              is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GstUri                      is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GstURIHandler               is repr<CPointer> does GLib::Roles::Pointers is export { }
 
@@ -188,3 +189,5 @@ constant GST_VIDEO_OVERLAY_COMPOSITION_BLEND_FORMATS is export =
   "\{ BGRx, RGBx, xRGB, xBGR, RGBA, BGRA, ARGB, ABGR, RGB, BGR, {''
   }I420, YV12, AYUV, YUY2, UYVY, v308, Y41B, Y42B, Y444, {''
   }NV12, NV21, A420, YUV9, YVU9, IYU1, GRAY8 \}";
+
+constant GST_VIDEO_SCALER_OPT_DITHER_METHOD is export = 'GstVideoScaler.dither-method';
