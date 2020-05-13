@@ -1296,9 +1296,9 @@ class GstVideoMeta               is repr<CStruct>    does GLib::Roles::Pointers 
 
   multi method unmap is rw {
     Proxy.new:
-      FETCH => -> $ { $!map },
+      FETCH => -> $ { $!unmap },
       STORE => -> $, \func {
-        $!map := set_func_pointer( &(func), &sprintf-GstUnmapFunc);
+        $!unmap := set_func_pointer( &(func), &sprintf-GstUnmapFunc);
       };
   }
   multi method unmap (Int() $plane, GstMapInfo $info) {
@@ -1674,4 +1674,63 @@ class GstPlayerVisualization     is repr<CStruct>  does GLib::Roles::Pointers is
 
 class GstPromise                 is repr<CStruct>  does GLib::Roles::Pointers is export {
   HAS GstMiniObject $.parent;
+}
+
+class GstAppSink                 is repr<CStruct>  does GLib::Roles::Pointers is export {
+  HAS GstBaseSink $.basesink;
+
+  has Pointer     $!priv;
+  HAS GstPadding  $!padding;
+}
+
+class GstAppSinkCallbacks        is repr<CStruct>  does GLib::Roles::Pointers is export {
+  has Pointer     $.eos;             #= (GstAppSink, gpointer)
+  has Pointer     $.new_preroll;     #= (GstAppSink, gpointer --> GstFlowReturn)
+  has Pointer     $.new_sample;      #= (GstAppSink, gpointer --> GstFlowReturn)
+
+  HAS GstPadding  $!padding;
+
+  multi method eos is rw {
+    Proxy.new:
+      FETCH => -> $ { $!eos },
+      STORE => -> $, \func {
+        $!eos := set_func_pointer( &(func), &sprintf-eos);
+      };
+  }
+
+  multi method new_preroll is rw {
+    Proxy.new:
+      FETCH => -> $ { $!new_preroll },
+      STORE => -> $, \func {
+        $!new_preroll := set_func_pointer( &(func), &sprintf-rGstFlowReturn);
+      };
+  }
+
+  multi method new_sample is rw {
+    Proxy.new:
+      FETCH => -> $ { $!new_sample },
+      STORE => -> $, \func {
+        $!new_sample := set_func_pointer( &(func), &sprintf-rGstFlowReturn);
+      };
+  }
+
+  sub sprintf-eos (
+    Blob,
+    Str,
+    & (GstAppSink, gpointer --> gboolean),
+  )
+    returns int64
+    is native
+    is symbol('sprintf')
+  { * }
+
+  sub sprintf-rGstFlowReturn (
+    Blob,
+    Str,
+    & (GstAppSink, gpointer --> gboolean),
+  )
+    returns int64
+    is native
+    is symbol('sprintf')
+  { * }
 }
