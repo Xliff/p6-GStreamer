@@ -11,5 +11,7 @@ BEGIN {
     GStreamer::Raw::Structs
     GStreamer::Raw::SDP::Structs
     GStreamer::Raw::Subs
+    GStreamer::Raw::Audio::Enums
+    GStreamer::Raw::Audio::Structs
   >;
 }
