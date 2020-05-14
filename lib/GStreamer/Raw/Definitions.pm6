@@ -77,6 +77,7 @@ class GstAdapter                  is repr<CPointer> does GLib::Roles::Pointers i
 #class GstAllocator                is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GstAllocationParams         is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GstAtomicQueue              is repr<CPointer> does GLib::Roles::Pointers is export { }
+class GstAudioConverter           is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GstBin                      is repr<CPointer> does GLib::Roles::Pointers is export { }
 #class GstBuffer                   is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GstBufferList               is repr<CPointer> does GLib::Roles::Pointers is export { }
@@ -191,4 +192,9 @@ constant GST_VIDEO_OVERLAY_COMPOSITION_BLEND_FORMATS is export =
   }I420, YV12, AYUV, YUY2, UYVY, v308, Y41B, Y42B, Y444, {''
   }NV12, NV21, A420, YUV9, YVU9, IYU1, GRAY8 \}";
 
-constant GST_VIDEO_SCALER_OPT_DITHER_METHOD is export = 'GstVideoScaler.dither-method';
+constant GST_VIDEO_SCALER_OPT_DITHER_METHOD           is export = 'GstVideoScaler.dither-method';
+constant GST_AUDIO_CONVERTER_OPT_RESAMPLER_METHOD     is export = 'GstAudioConverter.resampler-method';
+constant GST_AUDIO_CONVERTER_OPT_DITHER_METHOD        is export = 'GstAudioConverter.dither-method';
+constant GST_AUDIO_CONVERTER_OPT_NOISE_SHAPING_METHOD is export = 'GstAudioConverter.noise-shaping-method';
+constant GST_AUDIO_CONVERTER_OPT_QUANTIZATION         is export = 'GstAudioConverter.quantization';
+constant GST_AUDIO_CONVERTER_OPT_MIX_MATRIX           is export = 'GstAudioConverter.mix-matrix';
