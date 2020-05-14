@@ -78,6 +78,7 @@ class GstAdapter                  is repr<CPointer> does GLib::Roles::Pointers i
 class GstAllocationParams         is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GstAtomicQueue              is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GstAudioConverter           is repr<CPointer> does GLib::Roles::Pointers is export { }
+class GstAudioStreamAlign         is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GstBin                      is repr<CPointer> does GLib::Roles::Pointers is export { }
 #class GstBuffer                   is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GstBufferList               is repr<CPointer> does GLib::Roles::Pointers is export { }
