@@ -1,5 +1,7 @@
 use v6.c;
 
+use NativeCall;
+
 use GLib::Raw::Definitions;
 use GStreamer::Raw::Definitions;
 use GStreamer::Raw::Enums;
@@ -14,7 +16,7 @@ sub gst_audio_info_convert (
   GstFormat $src_fmt,
   gint64 $src_val,
   GstFormat $dest_fmt,
-  gint64 $dest_val is rw
+  CArray[gint64] $dest_val
 )
   returns uint32
   is native(gstreamer-audio)
@@ -66,7 +68,7 @@ sub gst_audio_info_set_format (
   GstAudioFormat $format,
   gint $rate,
   gint $channels,
-  GstAudioChannelPosition $position
+  CArray[GstAudioChannelPosition] $position
 )
   is native(gstreamer-audio)
   is export
