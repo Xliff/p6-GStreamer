@@ -5,6 +5,7 @@ use Method::Also;
 use GStreamer::Raw::Types;
 use GStreamer::Raw::Audio::BaseSrc;
 
+use GLib::Value;
 use GStreamer::Base::PushSrc;
 
 use GStreamer::Audio::RingBuffer;
@@ -42,6 +43,88 @@ class GStreamer::Audio::BaseSrc is GStreamer::Base::PushSrc {
 
   method new (GstAudioBaseSrcAncestry $audio-base-src) {
     $audio-base-src ?? self.bless( :$audio-base-src ) !! Nil;
+  }
+
+  # Type: gint64
+  method actual-buffer-time is rw  {
+    my $gv;
+    Proxy.new(
+      FETCH => sub ($) {
+        $gv = GLib::Value.new(
+          self.prop_get('actual-buffer-time', $gv)
+        );
+        $gv.int64;
+      },
+      STORE => -> $, Int() $val is copy {
+        warn 'actual-buffer-time does not allow writing'
+      }
+    );
+  }
+
+  # Type: gint64
+  method actual-latency-time is rw  {
+    my $gv;
+    Proxy.new(
+      FETCH => sub ($) {
+        $gv = GLib::Value.new(
+          self.prop_get('actual-latency-time', $gv)
+        );
+        $gv.int64;
+      },
+      STORE => -> $, Int() $val is copy {
+        warn 'actual-latency-time does not allow writing'
+      }
+    );
+  }
+
+  # Type: gint64
+  method buffer-time is rw  {
+    my $gv;
+    Proxy.new(
+      FETCH => sub ($) {
+        $gv = GLib::Value.new(
+          self.prop_get('buffer-time', $gv)
+        );
+        $gv.int64;
+      },
+      STORE => -> $, Int() $val is copy {
+        $gv = GLib::Value.new( G_TYPE_INT64 );
+        $gv.int64 = $val;
+        self.prop_set('buffer-time', $gv);
+      }
+    );
+  }
+
+  # Type: gint64
+  method latency-time is rw  {
+    my $gv;
+    Proxy.new(
+      FETCH => sub ($) {
+        $gv = GLib::Value.new(
+          self.prop_get('latency-time', $gv)
+        );
+        $gv.int64;
+      },
+      STORE => -> $, Int() $val is copy {
+        $gv = GLib::Value.new( G_TYPE_INT64 );
+        $gv.int64 = $val;
+        self.prop_set('latency-time', $gv);
+      }
+    );
+  }
+
+  # Type: gboolean
+  method provide-clock is rw  {
+    Proxy.new:
+      FETCH => -> $           { self.get_provide_clock    }
+      STORE => -> $, Int() \i { self.set_provide_clock(i) };
+  }
+
+  # Type: GstAudioBaseSrcSlaveMethod
+  method slave-method is rw  {
+    Proxy.new:
+      FETCH => -> $           { self.get_slave_method    }
+      STORE => -> $, Int() \i { self.set_slave_method(i) };
   }
 
   method create_ringbuffer (:$raw = False) is also<create-ringbuffer> {
