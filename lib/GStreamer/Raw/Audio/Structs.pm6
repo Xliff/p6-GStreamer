@@ -206,3 +206,25 @@ class GstAudioBaseSrc            is repr<CStruct>     does GLib::Roles::Pointers
       STORE => -> $, GstClock() \c { self.^attributes[5].set_value(self, c) };
   }
 }
+
+class GstAudioCdSrcTrack         is repr<CStruct>     does GLib::Roles::Pointers is export {
+  has gboolean    $.is_audio is rw;  #= TRUE if this is an audio track
+  has guint       $.num      is rw;  #= real track number (usually starts from 1)
+  has guint       $.start    is rw;  #= first sector of track (LBA, not LSN!)
+  has guint       $.end      is rw;  #= last sector of track  (LBA, not LSN!)
+  has GstTagList  $.tags     is rw;  #= NULL or tags for track (e.g. from cd-text)
+
+  # guint       _gst_reserved1[GST_PADDING/2];
+  # gpointer    _gst_reserved2[GST_PADDING/2];
+  HAS GstPadding  $!padding;
+}
+
+class GstAudioCdSrc              is repr<CStruct>     does GLib::Roles::Pointers is export {
+  HAS GstPushSrc      $.pushsrc;
+
+  has GstTagList      $!tags;
+  has Pointer         $!priv;
+  # guint                 _gst_reserved1[GST_PADDING/2];
+  # gpointer              _gst_reserved2[GST_PADDING/2];
+  has GstPadding      $!padding;
+};
