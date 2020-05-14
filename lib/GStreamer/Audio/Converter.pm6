@@ -55,6 +55,9 @@ class GStreamer::Audio::Converter {
 
     $rv[0] ?? $rv.skip(1) !! Nil;
   }
+  # cw: THIS IS WRONG! -- $out cannot be "is rw" since this expects a
+  #     preallocated buffer, even though the number of bytes writte is
+  #     an output parameter.
   multi method convert (
     Int() $flags,
     gpointer $in,
