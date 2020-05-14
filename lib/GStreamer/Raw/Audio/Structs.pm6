@@ -182,3 +182,27 @@ class GstAudioBaseSink           is repr<CStruct>     does GLib::Roles::Pointers
   has gpointer           $!priv;            #= GstAudioBaseSinkPrivate
   has GstPadding         $!padding
 }
+
+class GstAudioBaseSrc            is repr<CStruct>     does GLib::Roles::Pointers is export {
+  HAS GstPushSrc         $.element;             #= Parent
+  has GstAudioRingBuffer $!ringbuffer;          #= protected, with LOCK
+  has GstClockTime       $.buffer_time  is rw;  #= Required buffer
+  has GstClockTime       $.latency_time is rw;  #= Required latency
+  has guint64            $.next_sample  is rw;  #= The next sample to write.
+  has GstClock           $!clock;               #= Clock
+  # Private
+  has Pointer            $!priv;
+  HAS GstPadding         $!padding;
+
+  method ringbuffer is rw {
+    Proxy.new:
+      FETCH => -> $                          { self.^attributes[1].get_value(self)    },
+      STORE => -> $, GstAudioRingBuffer() \r { self.^attributes[1].set_value(self, r) };
+  }
+
+  method clock is rw {
+    Proxy.new:
+      FETCH => -> $                { self.^attributes[5].get_value(self)    },
+      STORE => -> $, GstClock() \c { self.^attributes[5].set_value(self, c) };
+  }
+}
