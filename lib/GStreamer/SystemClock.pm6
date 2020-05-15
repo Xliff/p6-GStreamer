@@ -11,6 +11,10 @@ use GStreamer::Clock;
 class GStreamer::SystemClock is GStreamer::Clock {
 
   submethod BUILD (:$sclock) {
+    self.setSystemClock($sclock);
+  }
+
+  method setSystemClock ($sclock) {
     self.setClock($sclock);
   }
 
