@@ -228,3 +228,16 @@ class GstAudioCdSrc              is repr<CStruct>     does GLib::Roles::Pointers
   # gpointer              _gst_reserved2[GST_PADDING/2];
   has GstPadding      $!padding;
 };
+
+
+class GstAudioClock is repr<CStruct>     does GLib::Roles::Pointers is export {
+  HAS GstClock                 $.clock;
+  # Protected
+  has Pointer                  $!func;
+  has gpointer                 $!user_data;
+  has GDestroyNotify           $!destroy_notify;
+  # Private
+  has GstClockTime             $!last_time;
+  has GstClockTimeDiff         $!time_offset;
+  HAS GstPadding               $!padding;
+};
