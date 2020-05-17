@@ -29,7 +29,7 @@ class GStreamer::Element is GStreamer::Object {
     self.setElement($element) if $element;
   }
 
-  method setElement(GstElementAncestry $_) {
+  method setElement(GstElementAncestry $_) is also<setGstElement> {
     my $to-parent;
 
     $!e = do  {
