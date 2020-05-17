@@ -27,6 +27,7 @@ need GStreamer::Raw::SDP::Structs;
 need GStreamer::Raw::Subs;
 need GStreamer::Raw::Audio::Enums;
 need GStreamer::Raw::Audio::Structs;
+need GStreamer::Raw::Audio::Subs;
 
 
 BEGIN {
