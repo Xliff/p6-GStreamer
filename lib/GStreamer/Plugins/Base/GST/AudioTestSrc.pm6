@@ -158,6 +158,10 @@ class GStreamer::Plugins::Base::GST::AudioTestSrc is GStreamer::Base::Src {
     is also<GstAudioTestSrc>
   { $!ats }
 
+  method new (GstAudioTestSrcAncestry $audio-test-src) {
+    $audio-test-src ?? self.bless( :$audio-test-src ) !! Nil;
+  }
+
   # Type: gboolean
   method apply-tick-ramp is rw  is also<apply_tick_ramp> {
     my $gv;
