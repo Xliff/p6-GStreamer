@@ -5,6 +5,7 @@ use Method::Also;
 use GStreamer::Raw::Types;
 use GStreamer::Raw::Audio::BaseSink;
 
+use GStreamer::Audio::RingBuffer;
 use GStreamer::Base::Sink;
 
 our subset GstAudioBaseSinkAncestry is export of Mu

@@ -8,6 +8,7 @@ use GStreamer::Raw::Types;
 
 use GStreamer::Element;
 use GStreamer::Object;
+use GStreamer::Pad;
 
 use GLib::Roles::Pointers;
 

@@ -7,6 +7,8 @@ use NativeCall;
 use GStreamer::Raw::Types;
 use GStreamer::Raw::Audio::Converter;
 
+use GStreamer::Structure;
+
 class GStreamer::Audio::Converter {
   has GstAudioConverter $!ac;
 
@@ -97,7 +99,7 @@ class GStreamer::Audio::Converter {
 
     ($in_rate, $out_rate) = ($i, $o);
     $s = $s ??
-      ( $raw ?? $s !! GStreamer::Sturcture.new($s) )
+      ( $raw ?? $s !! GStreamer::Structure.new($s) )
       !!
       Nil;
     $all.not ?? $s !! ($s, $in_rate, $out_rate);
