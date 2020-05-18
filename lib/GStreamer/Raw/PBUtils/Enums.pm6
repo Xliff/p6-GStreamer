@@ -4,6 +4,7 @@ use GLib::Raw::Definitions;
 
 unit package GStreamer::Raw::PBUtils::Enums;
 
+constant GstAudioVisualizerShader is export := guint32;
 our enum GstAudioVisualizerShaderEnum is export <
   GST_AUDIO_VISUALIZER_SHADER_NONE
   GST_AUDIO_VISUALIZER_SHADER_FADE
