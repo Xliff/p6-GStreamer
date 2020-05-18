@@ -143,6 +143,7 @@ class GstPlayerSubtitleInfo       is repr<CPointer> does GLib::Roles::Pointers i
 class GstPlayerVideoInfo          is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GstPlayerVideoRenderer      is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GstReferenceTimestampMeta   is repr<CPointer> does GLib::Roles::Pointers is export { }
+class GstVideoConverter           is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GstVideoDecoder             is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GstVideoDither              is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GstVideoEncoder             is repr<CPointer> does GLib::Roles::Pointers is export { }
@@ -194,9 +195,32 @@ constant GST_VIDEO_OVERLAY_COMPOSITION_BLEND_FORMATS is export =
   }I420, YV12, AYUV, YUY2, UYVY, v308, Y41B, Y42B, Y444, {''
   }NV12, NV21, A420, YUV9, YVU9, IYU1, GRAY8 \}";
 
-constant GST_VIDEO_SCALER_OPT_DITHER_METHOD           is export = 'GstVideoScaler.dither-method';
-constant GST_AUDIO_CONVERTER_OPT_RESAMPLER_METHOD     is export = 'GstAudioConverter.resampler-method';
-constant GST_AUDIO_CONVERTER_OPT_DITHER_METHOD        is export = 'GstAudioConverter.dither-method';
-constant GST_AUDIO_CONVERTER_OPT_NOISE_SHAPING_METHOD is export = 'GstAudioConverter.noise-shaping-method';
-constant GST_AUDIO_CONVERTER_OPT_QUANTIZATION         is export = 'GstAudioConverter.quantization';
-constant GST_AUDIO_CONVERTER_OPT_MIX_MATRIX           is export = 'GstAudioConverter.mix-matrix';
+constant GST_AUDIO_CONVERTER_OPT_RESAMPLER_METHOD        is export = 'GstAudioConverter.resampler-method';
+constant GST_AUDIO_CONVERTER_OPT_DITHER_METHOD           is export = 'GstAudioConverter.dither-method';
+constant GST_AUDIO_CONVERTER_OPT_NOISE_SHAPING_METHOD    is export = 'GstAudioConverter.noise-shaping-method';
+constant GST_AUDIO_CONVERTER_OPT_QUANTIZATION            is export = 'GstAudioConverter.quantization';
+constant GST_AUDIO_CONVERTER_OPT_MIX_MATRIX              is export = 'GstAudioConverter.mix-matrix';
+
+constant GST_VIDEO_SCALER_OPT_DITHER_METHOD              is export = 'GstVideoScaler.dither-method';
+constant GST_VIDEO_CONVERTER_OPT_RESAMPLER_METHOD        is export = 'GstVideoConverter.resampler-method';
+constant GST_VIDEO_CONVERTER_OPT_CHROMA_RESAMPLER_METHOD is export = 'GstVideoConverter.chroma-resampler-method';
+constant GST_VIDEO_CONVERTER_OPT_RESAMPLER_TAPS          is export = 'GstVideoConverter.resampler-taps';
+constant GST_VIDEO_CONVERTER_OPT_DITHER_METHOD           is export = 'GstVideoConverter.dither-method';
+constant GST_VIDEO_CONVERTER_OPT_DITHER_QUANTIZATION     is export = 'GstVideoConverter.dither-quantization';
+constant GST_VIDEO_CONVERTER_OPT_SRC_X                   is export = 'GstVideoConverter.src-x';
+constant GST_VIDEO_CONVERTER_OPT_SRC_Y                   is export = 'GstVideoConverter.src-y';
+constant GST_VIDEO_CONVERTER_OPT_SRC_WIDTH               is export = 'GstVideoConverter.src-width';
+constant GST_VIDEO_CONVERTER_OPT_SRC_HEIGHT              is export = 'GstVideoConverter.src-height';
+constant GST_VIDEO_CONVERTER_OPT_DEST_X                  is export = 'GstVideoConverter.dest-x';
+constant GST_VIDEO_CONVERTER_OPT_DEST_Y                  is export = 'GstVideoConverter.dest-y';
+constant GST_VIDEO_CONVERTER_OPT_DEST_WIDTH              is export = 'GstVideoConverter.dest-width';
+constant GST_VIDEO_CONVERTER_OPT_DEST_HEIGHT             is export = 'GstVideoConverter.dest-height';
+constant GST_VIDEO_CONVERTER_OPT_FILL_BORDER             is export = 'GstVideoConverter.fill-border';
+constant GST_VIDEO_CONVERTER_OPT_ALPHA_VALUE             is export = 'GstVideoConverter.alpha-value';
+constant GST_VIDEO_CONVERTER_OPT_ALPHA_MODE              is export = 'GstVideoConverter.alpha-mode';
+constant GST_VIDEO_CONVERTER_OPT_BORDER_ARGB             is export = 'GstVideoConverter.border-argb';
+constant GST_VIDEO_CONVERTER_OPT_CHROMA_MODE             is export = 'GstVideoConverter.chroma-mode';
+constant GST_VIDEO_CONVERTER_OPT_MATRIX_MODE             is export = 'GstVideoConverter.matrix-mode';
+constant GST_VIDEO_CONVERTER_OPT_GAMMA_MODE              is export = 'GstVideoConverter.gamma-mode';
+constant GST_VIDEO_CONVERTER_OPT_PRIMARIES_MODE          is export = 'GstVideoConverter.primaries-mode';
+constant GST_VIDEO_CONVERTER_OPT_THREADS                 is export = 'GstVideoConverter.threads';
