@@ -1653,6 +1653,16 @@ class GstVideoResampler          is repr<CStruct> does GLib::Roles::Pointers is 
   { * }
 }
 
+class GstVideoFilter             is repr<CStruct>  does GLib::Roles::Pointers is export {
+  HAS GstBaseTransform $.element;
+
+  has gboolean         $.negotiated is rw;
+  has GstVideoInfo     $.in_info;
+  has GstVideoInfo     $.out_info;
+
+  HAS GstPadding       $!padding;
+}
+
 # PLAYER
 
 class GstPlayerVisualization     is repr<CStruct>  does GLib::Roles::Pointers is export {
