@@ -78,10 +78,10 @@ class GStreamer::Plugins::Core::Queue is GStreamer::Element {
   has GstQueue $!q;
 
   submethod BUILD (:$queue) {
-    self.setElement($queue) if $queue;
+    self.setGstQueue($queue) if $queue;
   }
 
-  method setElement(GstQueueAncestry $_) {
+  method setGstQueue(GstQueueAncestry $_) {
     my $to-parent;
 
     $!q = do  {
