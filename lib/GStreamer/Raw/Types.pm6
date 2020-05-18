@@ -28,7 +28,8 @@ need GStreamer::Raw::Subs;
 need GStreamer::Raw::Audio::Enums;
 need GStreamer::Raw::Audio::Structs;
 need GStreamer::Raw::Audio::Subs;
-
+need GStreamer::Raw::PBUtils::Enums;
+need GStreamer::Raw::PBUtils::Structs;
 
 BEGIN {
   re-export($_) for |@glib-exports,
