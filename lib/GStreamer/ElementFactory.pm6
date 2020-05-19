@@ -240,7 +240,7 @@ class GStreamer::ElementFactory is GStreamer::PluginFeature {
     so gst_element_factory_list_is_type($!ef, $type);
   }
 
-  method make (Str() $fname, Str() $name, :$raw = False) {
+  method make (Str() $fname, Str() $name = Str, :$raw = False) {
     my $e = gst_element_factory_make($fname, $name);
 
     $e ??
