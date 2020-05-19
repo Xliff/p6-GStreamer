@@ -1,0 +1,110 @@
+use v6.c;
+
+use GStreamer::Raw::Types;
+
+use GLib::Value;
+use GLib::IOChannel;
+use GLib::MainLoop;
+
+use GStreamer::Element;
+use GStreamer::ElementFactory;
+use GStreamer::Main;
+use GStreamer::Message;
+use GStreamer::Pipeline;
+
+use GStreamer::Plugins::AudioTestSrc;
+
+sub MAIN (
+  :$freq!,          #= Frequency of the tone, in Hz
+  :$volume = 0.5,   #= Volume: 0..1 (floating point)
+  :$wave = 0        #= Wave pattern number
+) {
+  my %data;
+
+  GStreamer::Main.init;
+
+  my $pipeline     = GStreamer::Pipeline.new('test-pipeline');
+
+  my @elements = (
+    (  my $source       = GStreamer::ElementFactory.make('audiotestsrc', 'source') ),
+    (  my $tee          = GStreamer::ElementFactory.make('tee') ),
+    |( my ($q1, $q2)    = GStreamer::ElementFactory.make('queue') xx 2 ),
+    |( my ($ac1, $ac2)  = GStreamer::ElementFactory.make('audioconvert') xx 2 ),
+    (  my $libv-lv      = GStreamer::ElementFactory.make('libvisual_lv_scope') ),
+    (  my $vc           = GStreamer::ElementFactory.make('videoconvert') ),
+    (  my $asink        = GStreamer::ElementFactory.make('autoaudiosink', 'asink') ),
+    (  my $vsink        = GStreamer::ElementFactory.make('autovideosink', 'vsink') )
+  );
+
+  if @elements.grep( *.defined.not ) {
+    say 'All required elements could not be created';
+    $pipeline.unref;
+    exit 1;
+  }
+  $pipeline.add-many( |@elements );
+
+  unless $source 🔗 $tee 🔗 $q1 🔗 $ac1 🔗 $asink {
+    say 'Required audio elements could not be linked.';
+    $pipeline.unref;
+    exit 1;
+  }
+
+  unless $tee 🔗 $q2 🔗 $ac2 🔗 $libv-lv 🔗 $vc 🔗 $vsink {
+    say 'Required video elements could not be linked.';
+    $pipeline.unref;
+    exit 1;
+  }
+
+  my $test-src = GStreamer::Plugins::AudioTestSrc.new( $source.GstElement );
+  $test-src.freq   = $freq;
+  $test-src.wave   = $wave;
+  $test-src.volume = $volume;
+
+  if $pipeline.set-state(GST_STATE_PLAYING) == GST_STATE_CHANGE_FAILURE {
+    say 'Unable to set the pipeline to the playing state.';
+    $pipeline.unref;
+    exit 1;
+  }
+
+  %data<stdin> = GLib::IOChannel.unix_new($*IN.native-descriptor);
+  %data<stdin>.add_watch(G_IO_IN, -> *@a --> gboolean {
+    my ($rs, $in) = %data<stdin>.read_line;
+
+    return unless $rs == G_IO_STATUS_NORMAL;
+
+    given $in.substr(0, 1) {
+      # Attempting to modify test source while playing will segfault.
+      #
+      # when 'f'        { $test-src.freq -= 100   if $test-src.freq   > 100;   }
+      # when 'F'        { $test-src.freq += 100   if $test-src.freq   < 11000; }
+      # when 'w'        { $test-src.wav--         if $test-src.wav    > 0;     }
+      # when 'W'        { $test-src.wav++         if $test-src.wav    < 12;    }
+      # when 'v'        { $test-src.volume -= 0.1 if $test-src.volume > 0      }
+      # when 'V'        { $test-src.volume += 0.1 if $test-src.volume < 1      }
+
+      when 'q'  | 'Q' { %data<loop>.quit }
+    }
+    1
+  });
+
+  # say q:to/INSTRUCTIONS/;
+  #   USAGE: Choose one of the following options, then press enter:
+  #     'F' Increase frequency by 100 / 'f' Decrease frequency by 100
+  #     'W' Increase wave      by 1   / 'w' Decrease wave      by 1
+  #     'V' Increase volume    by 0.1 / 'v' Decrease volume    by 0.1
+  #     'Q' to quit
+  #   INSTRUCTIONS
+    say q:to/INSTRUCTIONS/;
+      USAGE: Choose one of the following options, then press enter:
+        'Q' to quit
+      INSTRUCTIONS
+
+  ( %data<loop> = GLib::MainLoop.new ).run;
+
+  LEAVE {
+    $pipeline.set-state(GST_STATE_NULL) if $pipeline.defined;
+    for <stdin loop> {
+      %data{$_}.unref if %data{$_};
+    }
+  }
+}
