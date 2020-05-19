@@ -32,7 +32,7 @@ class GStreamer::Element is GStreamer::Object {
   method setElement(GstElementAncestry $_) is also<setGstElement> {
     my $to-parent;
 
-    $!e = do  {
+    $!e = do {
       when GstElement {
         $to-parent = cast(GstObject, $_);
         $_;
@@ -756,10 +756,18 @@ class GStreamer::Element is GStreamer::Object {
 
 subset GstElementOrObject where GStreamer::Element | GstElement;
 
-sub infix:«>>» (GStreamer::Element $a, GstElementOrObject $b) {
-  $a.link($b);
+multi sub infix:<🔗> (GStreamer::Element $a, GstElementOrObject $b) is export {
+  $a.link($b) ?? $b !! False;
 }
 
-sub infix:<»> (GStreamer::Element $a, GstElementOrObject $b) {
-  $a.link($b);
+multi sub infix:<🔗> (False, GstElementOrObject $b) is export {
+  False
+}
+
+multi sub infix:<[+]> (GStreamer::Element $a, GstElementOrObject $b) is export {
+  $a.link($b) ?? $b !! False;
+}
+
+multi sub infix:<[+]> (False, GstElementOrObject $b) is export {
+  False
 }
