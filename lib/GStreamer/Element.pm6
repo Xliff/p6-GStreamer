@@ -749,3 +749,17 @@ class GStreamer::Element is GStreamer::Object {
   }
 
 }
+
+# Shortcut for linking, ala Ruby. -- Would this be better in a higher level
+# level module (as in one loadable after everything else) -- maybe
+# GStreamer::Ops? Could be and additional module-space addon if it gets large.
+
+subset GstElementOrObject where GStreamer::Element | GstElement;
+
+sub infix:«>>» (GStreamer::Element $a, GstElementOrObject $b) {
+  $a.link($b);
+}
+
+sub infix:<»> (GStreamer::Element $a, GstElementOrObject $b) {
+  $a.link($b);
+}
