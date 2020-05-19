@@ -17,7 +17,7 @@ class GStreamer::Base::Src is GStreamer::Element {
   has GstBaseSrc $!bs;
 
   submethod BUILD (:$base-src) {
-    self.setGstBaseSrc($base-src);
+    self.setGstBaseSrc($base-src) if $base-src;
   }
 
   method setGstBaseSrc (GstBaseSrcAncestry $_) {
