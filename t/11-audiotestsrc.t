@@ -2,14 +2,12 @@ use v6.c;
 
 use GStreamer::Raw::Types;
 
-use GLib::Value;
 use GLib::IOChannel;
 use GLib::MainLoop;
 
 use GStreamer::Element;
 use GStreamer::ElementFactory;
 use GStreamer::Main;
-use GStreamer::Message;
 use GStreamer::Pipeline;
 
 use GStreamer::Plugins::AudioTestSrc;
@@ -60,11 +58,18 @@ sub MAIN (
   $test-src.wave   = $wave;
   $test-src.volume = $volume;
 
-  if $pipeline.set-state(GST_STATE_PLAYING) == GST_STATE_CHANGE_FAILURE {
-    say 'Unable to set the pipeline to the playing state.';
-    $pipeline.unref;
-    exit 1;
+  sub set-state ($s) {
+    if $pipeline.set-state($s) == GST_STATE_CHANGE_FAILURE {
+      say "Unable to set the pipeline to the $s state.";
+      $pipeline.unref;
+      exit 1;
+    }
   }
+
+  sub play  { set-state(GST_STATE_PLAYING) }
+  sub pause { set-state(GST_STATE_PAUSED)  }
+
+  play;
 
   %data<stdin> = GLib::IOChannel.unix_new($*IN.native-descriptor);
   %data<stdin>.add_watch(G_IO_IN, -> *@a --> gboolean {
@@ -72,17 +77,24 @@ sub MAIN (
 
     return unless $rs == G_IO_STATUS_NORMAL;
 
-    given $in.substr(0, 1) {
-      # Attempting to modify test source while playing will segfault.
-      #
-      # when 'f'        { $test-src.freq -= 100   if $test-src.freq   > 100;   }
-      # when 'F'        { $test-src.freq += 100   if $test-src.freq   < 11000; }
-      # when 'w'        { $test-src.wav--         if $test-src.wav    > 0;     }
-      # when 'W'        { $test-src.wav++         if $test-src.wav    < 12;    }
-      # when 'v'        { $test-src.volume -= 0.1 if $test-src.volume > 0      }
-      # when 'V'        { $test-src.volume += 0.1 if $test-src.volume < 1      }
+    $in .= substr(0, 1);
 
-      when 'q'  | 'Q' { %data<loop>.quit }
+    if $in.lc eq <f w v q>.any {
+      pause;
+      given $in {
+        # Attempting to modify test source in this manner will result in a
+        # segfault.
+        #
+        # when 'f'        { $test-src.freq -= 100   if $test-src.freq   > 100;   }
+        # when 'F'        { $test-src.freq += 100   if $test-src.freq   < 11000; }
+        # when 'w'        { $test-src.wav--         if $test-src.wav    > 0;     }
+        # when 'W'        { $test-src.wav++         if $test-src.wav    < 12;    }
+        # when 'v'        { $test-src.volume -= 0.1 if $test-src.volume > 0      }
+        # when 'V'        { $test-src.volume += 0.1 if $test-src.volume < 1      }
+
+        when 'q'  | 'Q' { %data<loop>.quit }
+      }
+      play;
     }
     1
   });

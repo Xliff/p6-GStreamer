@@ -756,18 +756,19 @@ class GStreamer::Element is GStreamer::Object {
 
 subset GstElementOrObject where GStreamer::Element | GstElement;
 
-multi sub infix:<🔗> (GStreamer::Element $a, GstElementOrObject $b) is export {
+# Making this multi will trigger an internal segfault in Rakudo!
+sub infix:<🔗> (GStreamer::Element $a, GstElementOrObject $b) is export {
   $a.link($b) ?? $b !! False;
 }
 
-multi sub infix:<🔗> (False, GstElementOrObject $b) is export {
-  False
-}
+# multi sub infix:<🔗> ($a where * == False, GstElementOrObject $b) is export {
+#   False
+# }
 
-multi sub infix:<[+]> (GStreamer::Element $a, GstElementOrObject $b) is export {
-  $a.link($b) ?? $b !! False;
-}
+# multi sub infix:<[+]> (GStreamer::Element $a, GstElementOrObject $b) is export {
+#   $a.link($b) ?? $b !! False;
+# }
 
-multi sub infix:<[+]> (False, GstElementOrObject $b) is export {
-  False
-}
+# multi sub infix:<[+]> ($a where * == False, GstElementOrObject $b) is export {
+#   False
+# }
