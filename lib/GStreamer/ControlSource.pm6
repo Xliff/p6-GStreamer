@@ -14,10 +14,10 @@ class GStreamer::ControlSource is GStreamer::Object {
   has GstControlSource $!cs;
 
   submethod BUILD (:$control) {
-    self.setControlSource($control);
+    self.setGstControlSource($control) if $control;
   }
 
-  method setControlSource(GstControlSourceAncestry $_) {
+  method setGstControlSource(GstControlSourceAncestry $_) {
     my $to-parent;
 
     $!cs = do {

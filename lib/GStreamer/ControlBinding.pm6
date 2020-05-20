@@ -17,7 +17,7 @@ class GStreamer::ControlBinding is GStreamer::Object {
   has GstControlBinding $!cb;
 
   submethod BUILD (:$control-binding) {
-    self.setGstControlBinding($control-binding);
+    self.setGstControlBinding($control-binding) if $control-binding;
   }
 
   method setGstControlBinding (GstControlBindingAncestry $_) {
