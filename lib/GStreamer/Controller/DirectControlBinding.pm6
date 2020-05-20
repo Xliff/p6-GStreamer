@@ -11,7 +11,9 @@ use GStreamer::ControlBinding;
 our subset GstDirectControlBindingAncestry is export of Mu
   where GstDirectControlBinding | GstControlBinding;
 
-class GStreamer::DirectControlBinding is GStreamer::ControlBinding {
+class GStreamer::Controller::DirectControlBinding
+  is GStreamer::ControlBinding
+{
   has GstDirectControlBinding $!dcb;
 
   submethod BUILD (:$direct-binding) {
