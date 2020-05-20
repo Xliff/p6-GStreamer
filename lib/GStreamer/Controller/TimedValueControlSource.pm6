@@ -21,10 +21,10 @@ class GStreamer::Controller::TimedValueControlSource
   has GstTimedValueControlSource $!tvcs;
 
   submethod BUILD (:$timed-source) {
-    self.setTimedValueControlSource($timed-source);
+    self.setGstTimedValueControlSource($timed-source) if $timed-source;
   }
 
-  method setTimedValueControlSource(GstTimedValueControlSourceAncestry $_) {
+  method setGstTimedValueControlSource(GstTimedValueControlSourceAncestry $_) {
     my $to-parent;
 
     $!tvcs = do {

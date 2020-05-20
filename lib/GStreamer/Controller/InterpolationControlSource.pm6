@@ -17,10 +17,10 @@ class GStreamer::Controller::InterpolationControlSource
   has GstInterpolationControlSource $!tvcs;
 
   submethod BUILD (:$interpolation-source) {
-    self.setTimedValueControlSource($interpolation-source);
+    self.setGstInterpolationSource($interpolation-source);
   }
 
-  method setTimedValueControlSource(GstInterpolationControlSourceAncestry $_) {
+  method setGstInterpolationSource(GstInterpolationControlSourceAncestry $_) {
     my $to-parent;
 
     $!tvcs = do {
@@ -86,7 +86,7 @@ class GStreamer::Controller::InterpolationControlSource
 ### /usr/include/gstreamer-1.0/gst/controller/gstinterpolationcontrolsource.h
 
 sub gst_interpolation_control_source_new ()
-  returns GstControlSource
+  returns GstInterpolationControlSource
   is native(gstreamer-controller)
   is export
 { * }
