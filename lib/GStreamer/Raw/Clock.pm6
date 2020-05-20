@@ -121,18 +121,18 @@ sub gst_clock_id_uses_clock (GstClockID $id, GstClock $clock)
 { * }
 
 sub gst_clock_id_wait (GstClockID $id, GstClockTimeDiff $jitter)
-  returns guint # GstClockReturn
+  returns GstClockReturn
   is native(gstreamer)
   is export
 { * }
 
 sub gst_clock_id_wait_async (
   GstClockID $id,
-  GstClockCallback $func,
+  &func (GstClock, GstClockTime, GstClockID, gpointer --> gboolean),
   gpointer $user_data,
   GDestroyNotify $destroy_data
 )
-  returns guint # GstClockReturn
+  returns GstClockReturn
   is native(gstreamer)
   is export
 { * }

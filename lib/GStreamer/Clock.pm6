@@ -253,61 +253,9 @@ class GStreamer::Clock is GStreamer::Object {
     unstable_get_type( self.^name, &gst_clock_get_type, $n, $t );
   }
 
-  # method id_compare_func (gconstpointer $id2) {
-  #   gst_clock_id_compare_func($!c, $id2);
-  # }
-  #
-  # method id_get_clock {
-  #   gst_clock_id_get_clock($!c);
-  # }
-  #
-  # method id_get_time {
-  #   gst_clock_id_get_time($!c);
-  # }
-  #
-  # method id_ref {
-  #   gst_clock_id_ref($!c);
-  # }
-  #
-  # method id_unref {
-  #   gst_clock_id_unref($!c);
-  # }
-  #
-  # method id_unschedule {
-  #   gst_clock_id_unschedule($!c);
-  # }
-  #
-  # method id_uses_clock (GstClock $clock) {
-  #   gst_clock_id_uses_clock($!c, $clock);
-  # }
-  #
-  # method id_wait ($jitter is rw) {
-  #   gst_clock_id_wait($!c, $jitter);
-  # }
-  #
-  # method id_wait_async (GstClockCallback $func, gpointer $user_data, GDestroyNotify $destroy_data) {
-  #   gst_clock_id_wait_async($!c, $func, $user_data, $destroy_data);
-  # }
-
   method is_synced is also<is-synced> {
     so gst_clock_is_synced($!c);
   }
-
-  # method new_periodic_id (GstClockTime $start_time, GstClockTime $interval) {
-  #   gst_clock_new_periodic_id($!c, $start_time, $interval);
-  # }
-
-  # method new_single_shot_id (GstClockTime $time) {
-  #   gst_clock_new_single_shot_id($!c, $time);
-  # }
-  #
-  # method periodic_id_reinit (
-  #   GstClockID $id,
-  #   GstClockTime $start_time,
-  #   GstClockTime $interval
-  # ) {
-  #   gst_clock_periodic_id_reinit($!c, $id, $start_time, $interval);
-  # }
 
   multi method set_calibration (
     Int() $internal,
@@ -328,10 +276,6 @@ class GStreamer::Clock is GStreamer::Object {
 
     gst_clock_set_synced($!c, $s);
   }
-
-  # method single_shot_id_reinit (GstClockID $id, GstClockTime $time) {
-  #   gst_clock_single_shot_id_reinit($!c, $id, $time);
-  # }
 
   method unadjust_unlocked (Int() $external) is also<unadjust-unlocked> {
     my uint64 $e = $external;
@@ -358,6 +302,150 @@ class GStreamer::Clock is GStreamer::Object {
     my uint64 $t = $timeout;
 
     gst_clock_wait_for_sync($!c, $t);
+  }
+
+}
+
+class GStreamer::Clock::ID {
+  has GstClockID $!cid;
+  has $!periodic = False;
+
+  submethod BUILD (:$clock-id, :$periodic = False) {
+    $!cid = $clock-id;
+    $!periodic = $periodic;
+  }
+
+  method GStreamer::Raw::Definitions::GstClockID
+    is also<GstClockID>
+  { $!cid }
+
+  method new (GstClockID $clock-id, :$periodic = Nil) {
+    $clock-id ?? self.bless( :$clock-id, :$periodic ) !! Nil;
+  }
+
+  method new_periodic_id (
+    GstClock() $clock,
+    Int() $start_time,
+    Int() $interval
+  )
+    is also<new-periodic-id>
+  {
+    my GstClockTime ($st, $i) = ($start_time, $interval);
+    my $clock-id = gst_clock_new_periodic_id($clock, $st, $i);
+
+    $clock-id ?? self.bless( :$clock-id, :periodic ) !! Nil;
+  }
+
+  method new_single_shot_id (GstClock() $clock, Int() $time)
+    is also<new-single-shot-id>
+  {
+    my GstClockTime $t = $time;
+    my $clock-id = gst_clock_new_single_shot_id($clock, $t);
+
+    $clock-id ?? self.bless( :$clock-id ) !! Nil;
+  }
+
+  method periodic_id_reinit (
+    Int() $start_time,
+    Int() $interval
+  )
+    is also<periodic-id-reinit>
+  {
+    unless $!periodic {
+      warn 'ClockID is not periodic. Skipping...';
+      return;
+    }
+
+    my GstClockTime ($st, $i) = ($start_time, $interval);
+
+    so gst_clock_periodic_id_reinit(
+      self.get_clock(:raw),
+      $!cid,
+      $start_time,
+      $interval
+    );
+  }
+
+  method single_shot_id_reinit (GstClockID $id, Int() $time)
+    is also<single-shot-id-reinit>
+  {
+    if $!periodic {
+      warn 'ClockID is periodic. Skipping...';
+      return;
+    }
+    my GstClockTime $t = $time;
+
+    so gst_clock_single_shot_id_reinit(
+      self.get_clock(:raw),
+      $!cid,
+      $time
+    );
+  }
+
+  method compare_func (GstClockID $id2) is also<compare-func> {
+    gst_clock_id_compare_func($!cid, $id2);
+  }
+
+  method get_clock (:$raw = False)
+    is also<
+      get-clock
+      clock
+    >
+  {
+    my $c = gst_clock_id_get_clock($!cid);
+
+    $c ??
+      ( $raw ?? $c !! GStreamer::Clock.new($c) )
+      !!
+      Nil;
+  }
+
+  method get_time
+    is also<
+      get-time
+      time
+    >
+  {
+    gst_clock_id_get_time($!cid);
+  }
+
+  method ref {
+    gst_clock_id_ref($!cid);
+    self
+  }
+
+  method unref {
+    gst_clock_id_unref($!cid);
+  }
+
+  method unschedule {
+    gst_clock_id_unschedule($!cid);
+  }
+
+  method uses_clock (GstClock() $clock) is also<uses-clock> {
+    so gst_clock_id_uses_clock($!cid, $clock);
+  }
+
+  multi method wait {
+    samewith($);
+  }
+  multi method wait ($jitter is rw) {
+    my GstClockTimeDiff $j = 0;
+    my $wr = gst_clock_id_wait($!cid, $j);
+
+    ($wr, $jitter = $j);
+  }
+
+  method wait_async (
+    &func,
+    gpointer $user_data          = gpointer,
+    GDestroyNotify $destroy_data = gpointer
+  )
+    is also<wait-async>
+  {
+    GstClockReturnEnum(
+      gst_clock_id_wait_async($!cid, &func, $user_data, $destroy_data)
+    )
   }
 
 }
