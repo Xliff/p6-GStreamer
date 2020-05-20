@@ -55,3 +55,15 @@ class GstInterpolationControlSource  is repr<CStruct>     does GLib::Roles::Poin
   has Pointer                    $!priv;
   HAS GstPadding                 $!padding
 }
+
+class GstDirectControlBinding        is repr<CStruct>     does GLib::Roles::Pointers is export {
+  HAS GstControlBinding $.parent;
+  # Private
+  has GstControlSource  $!cs;                 #= GstControlSource for this property
+  HAS GValue            $!cur_value;
+  has gdouble           $!last_value;
+  has gint              $!byte_size;
+  has Pointer           $!convert_value;
+  has Pointer           $!convert_g_value;
+  HAS GstPadding        $!padding
+};
