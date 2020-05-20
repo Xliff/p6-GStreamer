@@ -29,7 +29,7 @@ class GstVideoConvert            is repr<CStruct>     does GLib::Roles::Pointers
 our subset GstVideoConvertAncestry is export of Mu
   where GstVideoConvert | GstVideoFilterAncestry;
 
-class GStreamer::Plugins::Base::GST::VideoConvert is GStreamer::Video::Filter {
+class GStreamer::Plugins::VideoConvert is GStreamer::Video::Filter {
   has GstVideoConvert $!vf;
 
   submethod BUILD (:$video-convert) {

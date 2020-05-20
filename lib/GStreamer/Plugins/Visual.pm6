@@ -10,7 +10,7 @@ use GStreamer::PBUtils::AudioVisualizer;
 
 use GLib::Roles::Pointers;
 
-unit package GStreamer::Plugins::Ext::Visual;
+unit package GStreamer::Plugins::Visual;
 
 class GstVisual                  is repr<CStruct>     does GLib::Roles::Pointers is export {
   HAS GstAudioVisualizer   $.AudioVisualizer;
@@ -23,7 +23,7 @@ class GstVisual                  is repr<CStruct>     does GLib::Roles::Pointers
 our subset GstVisualAncestry is export of Mu
   where GstVisual | GstAudioVisualizerAncestry;
 
-class GStreamer::Plugins::Ext::Visual is GStreamer::PBUtils::AudioVisualizer {
+class GStreamer::Plugins::Visual is GStreamer::PBUtils::AudioVisualizer {
   has GstVisual $!v;
 
   submethod BUILD (:$visualizer) {

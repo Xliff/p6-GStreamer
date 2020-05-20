@@ -11,7 +11,7 @@ use GStreamer::Object;
 
 use GLib::Roles::Signals::Generic;
 
-unit package GStreamer::Plugins::Core::Queue;
+unit package GStreamer::Plugins::Queue;
 
 constant GstQueueLeaky is export := guint32;
 our enum GstQueueLeakyEnum is export (
@@ -72,7 +72,7 @@ class GstQueue                   is repr<CStruct>     does GLib::Roles::Pointers
 our subset GstQueueAncestry is export of Mu
   where GstQueue | GstElementAncestry;
 
-class GStreamer::Plugins::Core::Queue is GStreamer::Element {
+class GStreamer::Plugins::Queue is GStreamer::Element {
   also does GLib::Roles::Signals::Generic;
 
   has GstQueue $!q;

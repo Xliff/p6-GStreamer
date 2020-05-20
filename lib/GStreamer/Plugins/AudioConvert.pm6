@@ -13,7 +13,7 @@ use GStreamer::Audio::Converter;
 
 use GLib::Roles::Pointers;
 
-unit package GStreamer::Plugins::Base::GST::AudioConvert;
+unit package GStreamer::Plugins::AudioConvert;
 
 class GstAudioConvert            is repr<CStruct>     does GLib::Roles::Pointers is export {
   HAS GstBaseTransform           $.element;
@@ -44,7 +44,7 @@ class GstAudioConvert            is repr<CStruct>     does GLib::Roles::Pointers
 our subset GstAudioConvertAncestry is export of Mu
   where GstAudioConvert | GstElementAncestry;
 
-class GStreamer::Plugins::Base::GST::AudioConvert is GStreamer::Element {
+class GStreamer::Plugins::AudioConvert is GStreamer::Element {
   has GstAudioConvert $!ac;
 
   submethod BUILD (:$audio-convert) {

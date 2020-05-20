@@ -12,7 +12,7 @@ use GStreamer::Pad;
 
 use GLib::Roles::Pointers;
 
-unit package GStreamer::Plugins::Core::Tee;
+unit package GStreamer::Plugins::Tee;
 
 constant GstTeePullMode is export := guint32;
 our enum GstTeePullModeEnum is export <
@@ -39,7 +39,7 @@ class GstTee                     is repr<CStruct>     does GLib::Roles::Pointers
 our subset GstTeeAncestry is export of Mu
   where GstTee | GstElementAncestry;
 
-class GStreamer::Plugins::Core::Tee is GStreamer::Element {
+class GStreamer::Plugins::Tee is GStreamer::Element {
   has GstTee $!t;
 
   submethod BUILD (:$tee) {
