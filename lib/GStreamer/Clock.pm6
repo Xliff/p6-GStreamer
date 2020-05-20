@@ -12,6 +12,8 @@ use GLib::Roles::Signals::Generic;
 our subset GstClockAncestry is export of Mu
   where GstClock | GstObject;
 
+class GStreamer::Clock::ID { ... }
+
 class GStreamer::Clock is GStreamer::Object {
   also does GLib::Roles::Signals::Generic;
 
@@ -304,6 +306,37 @@ class GStreamer::Clock is GStreamer::Object {
     gst_clock_wait_for_sync($!c, $t);
   }
 
+  # cw: This interface is not yet fixed
+  multi method create_single_shot_id (:$in is required, :$raw = False) {
+    self.creater_single_shot_id($in, :$raw, :delta);
+  }
+  multi method create_single_shot_id (
+    Int() $time is copy,
+    :$raw = False,
+    :$delta = False
+  )
+    is also<create-single-shot-id>
+  {
+    $time += self.time unless $delta;
+    my $cid = GStreamer::Clock::ID.new_single_shot_id($!c, $time);
+
+    $cid ??
+      ( $raw ?? $cid.GstClockID !! $cid )
+      !!
+      Nil;
+  }
+
+  method create_periodic_id (Int() $start_time, Int() $interval, :$raw = False)
+    is also<create-periodic-id>
+  {
+    my $cid = GStreamer::Clock::ID.new_periodic_id($!c, $start_time, $interval);
+
+    $cid ??
+      ( $raw ?? $cid.GstClockID !! $cid )
+      !!
+      Nil;
+  }
+
 }
 
 class GStreamer::Clock::ID {
@@ -433,7 +466,7 @@ class GStreamer::Clock::ID {
     my GstClockTimeDiff $j = 0;
     my $wr = gst_clock_id_wait($!cid, $j);
 
-    ($wr, $jitter = $j);
+    ( GstClockReturnEnum($wr), $jitter = $j );
   }
 
   method wait_async (
