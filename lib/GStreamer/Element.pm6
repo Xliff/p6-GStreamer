@@ -761,12 +761,12 @@ sub infix:<🔗> (GStreamer::Element $a, GstElementOrObject $b) is export {
   $a.link($b) ?? $b !! False;
 }
 
+sub infix:<[+]> (GStreamer::Element $a, GstElementOrObject $b) is export {
+  $a.link($b) ?? $b !! False;
+}
+
 # multi sub infix:<🔗> ($a where * == False, GstElementOrObject $b) is export {
 #   False
-# }
-
-# multi sub infix:<[+]> (GStreamer::Element $a, GstElementOrObject $b) is export {
-#   $a.link($b) ?? $b !! False;
 # }
 
 # multi sub infix:<[+]> ($a where * == False, GstElementOrObject $b) is export {
