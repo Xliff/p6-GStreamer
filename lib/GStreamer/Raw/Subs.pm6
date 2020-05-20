@@ -34,6 +34,13 @@ sub ppr (*@a) is export {
 sub postfix:<sec> ($s) is export {
   $s * GST_SECOND;
 }
+# Might cause problems because of min()
+sub postfix:<min> ($m) is export {
+  $m * 60 * GST_SECOND;
+}
+sub postfix:<hr> ($m) is export {
+  $m * 3600 * GST_SECOND;
+}
 
 sub postfix:<μsec> ($us) is export {
   $us * GST_USECOND;
