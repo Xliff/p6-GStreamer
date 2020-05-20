@@ -25,7 +25,7 @@ class GStreamer::Object {
     self!setObject( cast(GObject, $!gst-o = $object) )
   }
 
-  method GStreamer::Raw::Types::GstObject
+  method GStreamer::Raw::Structs::GstObject
     is also<GstObject>
   { $!gst-o }
 
