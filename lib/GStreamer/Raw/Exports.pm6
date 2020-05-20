@@ -16,5 +16,6 @@ BEGIN {
     GStreamer::Raw::Audio::Subs
     GStreamer::Raw::PBUtils::Enums
     GStreamer::Raw::PBUtils::Structs
+    GStreamer::Raw::Controller::Structs
   >;
 }

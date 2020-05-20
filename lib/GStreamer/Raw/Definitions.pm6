@@ -17,13 +17,14 @@ constant GstElementFactoryListType is export := uint64;
 
 # cw: I now realize, that at some point, ALL of these will have to be functions
 #     to account for the various distributions and OSes out there.
-constant gstreamer         is export = 'gstreamer-1.0',v0;
-constant gstreamer-video   is export = 'gstvideo-1.0',v0;
-constant gstreamer-player  is export = 'gstplayer-1.0',v0;
-constant gstreamer-base    is export = 'gstbase-1.0',v0;
-constant gstreamer-sdp     is export = 'gstsdp-1.0',v0;
-constant gstreamer-audio   is export = 'gstaudio-1.0',v0;
-constant gstreamer-pbutils is export = 'gstpbutils-1.0',v0;
+constant gstreamer            is export = 'gstreamer-1.0',v0;
+constant gstreamer-video      is export = 'gstvideo-1.0',v0;
+constant gstreamer-player     is export = 'gstplayer-1.0',v0;
+constant gstreamer-base       is export = 'gstbase-1.0',v0;
+constant gstreamer-sdp        is export = 'gstsdp-1.0',v0;
+constant gstreamer-audio      is export = 'gstaudio-1.0',v0;
+constant gstreamer-pbutils    is export = 'gstpbutils-1.0',v0;
+constant gstreamer-controller is export = 'gstcontroller-1.0',v0;
 
 constant GstBufferListFunc                 is export := Pointer;
 constant GstBusSyncHandler                 is export := Pointer;
