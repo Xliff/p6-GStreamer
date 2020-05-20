@@ -23,7 +23,7 @@ class GStreamer::Clock is GStreamer::Object {
     self.setClock($clock) if $clock.defined;
   }
 
-  method setClock(GstClockAncestry $clock) {
+  method setClock(GstClockAncestry $_) {
     my $to-parent;
     $!c = do {
       when GstClock {
@@ -306,18 +306,14 @@ class GStreamer::Clock is GStreamer::Object {
     gst_clock_wait_for_sync($!c, $t);
   }
 
-  # cw: This interface is not yet fixed
-  multi method create_single_shot_id (:$in is required, :$raw = False) {
-    self.creater_single_shot_id($in, :$raw, :delta);
-  }
   multi method create_single_shot_id (
     Int() $time is copy,
     :$raw = False,
-    :$delta = False
+    :$relative = False
   )
     is also<create-single-shot-id>
   {
-    $time += self.time unless $delta;
+    $time += self.time if $relative;
     my $cid = GStreamer::Clock::ID.new_single_shot_id($!c, $time);
 
     $cid ??
