@@ -38,7 +38,7 @@ class GstControlPoint            is repr<CStruct>     does GLib::Roles::Pointers
 
 }
 
-class GstTimedValueControlSource is repr<CStruct>     does GLib::Roles::Pointers is export {
+class GstTimedValueControlSource     is repr<CStruct>     does GLib::Roles::Pointers is export {
   HAS GstControlSource $.parent;
   # Protected
   HAS GMutex           $.lock;
@@ -48,4 +48,10 @@ class GstTimedValueControlSource is repr<CStruct>     does GLib::Roles::Pointers
   # Private
   has Pointer          $!priv;           #= GstTimedValueControlSourcePrivate
   HAS GstPadding       $!padding
+}
+
+class GstInterpolationControlSource  is repr<CStruct>     does GLib::Roles::Pointers is export {
+  HAS GstTimedValueControlSource $.parent;
+  has Pointer                    $!priv;
+  HAS GstPadding                 $!padding
 }
