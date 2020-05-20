@@ -37,7 +37,7 @@ class GStreamer::ControlSource is GStreamer::Object {
 
   method GStreamer::Raw::Structs::GstControlSource
     is also<GstControlSource>
-  { * }
+  { $!cs }
 
   method get_type is also<get-type> {
     state ($n, $t);
