@@ -1,7 +1,6 @@
 use v6.c;
 
 use Method::Also;
-
 use NativeCall;
 
 use GStreamer::Raw::Types;
