@@ -39,7 +39,7 @@ sub gst_element_add_property_notify_watch (
 
 sub gst_element_call_async (
   GstElement $element,
-  GstElementCallAsyncFunc $func,
+  &func (GstElement, gpointer),
   gpointer $user_data,
   GDestroyNotify $destroy_notify
 )
@@ -158,7 +158,7 @@ sub gst_element_continue_state (
 
 sub gst_element_foreach_pad (
   GstElement $element,
-  GstElementForeachPadFunc $func,
+  &func (GstElement, GstPad, gpointer --> gboolean),
   gpointer $user_data
 )
   returns uint32
@@ -168,7 +168,7 @@ sub gst_element_foreach_pad (
 
 sub gst_element_foreach_sink_pad (
   GstElement $element,
-  GstElementForeachPadFunc $func,
+  &func (GstElement, GstPad, gpointer --> gboolean),
   gpointer $user_data
 )
   returns uint32
@@ -178,7 +178,7 @@ sub gst_element_foreach_sink_pad (
 
 sub gst_element_foreach_src_pad (
   GstElement $element,
-  GstElementForeachPadFunc $func,
+  &func (GstElement, GstPad, gpointer --> gboolean),
   gpointer $user_data
 )
   returns uint32

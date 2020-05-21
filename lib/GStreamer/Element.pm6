@@ -87,11 +87,9 @@ class GStreamer::Element is GStreamer::Object {
   )
     is also<add-property-deep-notify-watch>
   {
-    gst_element_add_property_deep_notify_watch(
-      $!e,
-      $property_name,
-      $include_value
-    );
+    my gboolean $i = $include_value.so.Int;
+
+    gst_element_add_property_deep_notify_watch($!e, $property_name, $i);
   }
 
   method add_property_notify_watch (
@@ -100,17 +98,19 @@ class GStreamer::Element is GStreamer::Object {
   )
     is also<add-property-notify-watch>
   {
-    gst_element_add_property_notify_watch($!e, $property_name, $include_value);
+    my gboolean $i = $include_value.so.Int;
+
+    gst_element_add_property_notify_watch($!e, $property_name, $i);
   }
 
   method call_async (
-    GstElementCallAsyncFunc $func,
-    gpointer $user_data,
-    GDestroyNotify $destroy_notify
+    &func,
+    gpointer $user_data            = gpointer,
+    GDestroyNotify $destroy_notify = gpointer
   )
     is also<call-async>
   {
-    gst_element_call_async($!e, $func, $user_data, $destroy_notify);
+    gst_element_call_async($!e, &func, $user_data, $destroy_notify);
   }
 
   method change_state (
@@ -118,7 +118,9 @@ class GStreamer::Element is GStreamer::Object {
   )
     is also<change-state>
   {
-    gst_element_change_state($!e, $transition);
+    my GstStateChangeReturn $t = $transition;
+
+    gst_element_change_state($!e, $t);
   }
 
   method continue_state (
@@ -126,34 +128,36 @@ class GStreamer::Element is GStreamer::Object {
   )
     is also<continue-state>
   {
-    gst_element_continue_state($!e, $ret);
+    my GstStateChangeReturn $r = $ret;
+
+    gst_element_continue_state($!e, $r);
   }
 
   method foreach_pad (
-    GstElementForeachPadFunc $func,
+    &func,
     gpointer $user_data = gpointer
   )
     is also<foreach-pad>
   {
-    gst_element_foreach_pad($!e, $func, $user_data);
+    gst_element_foreach_pad($!e, &func, $user_data);
   }
 
   method foreach_sink_pad (
-    GstElementForeachPadFunc $func,
+    &func,
     gpointer $user_data = gpointer
   )
     is also<foreach-sink-pad>
   {
-    gst_element_foreach_sink_pad($!e, $func, $user_data);
+    gst_element_foreach_sink_pad($!e, &func, $user_data);
   }
 
   method foreach_src_pad (
-    GstElementForeachPadFunc $func,
+    &func,
     gpointer $user_data = gpointer
   )
     is also<foreach-src-pad>
   {
-    gst_element_foreach_src_pad($!e, $func, $user_data);
+    gst_element_foreach_src_pad($!e, &func, $user_data);
   }
 
   method get_base_time
@@ -301,7 +305,10 @@ class GStreamer::Element is GStreamer::Object {
   )
     is also<get-state>
   {
-    gst_element_get_state($!e, $state, $pending, $timeout);
+    my GstState ($s, $p) = ($state, $pending);
+    my GstClockTime $t = $timeout;
+
+    gst_element_get_state($!e, $s, $p, $t);
   }
 
   method get_static_pad (Str() $name, :$raw = False) is also<get-static-pad> {
@@ -388,16 +395,18 @@ class GStreamer::Element is GStreamer::Object {
   )
     is also<message-full>
   {
+    my gint ($c, $l) = ($code, $line);
+
     gst_element_message_full(
       $!e,
       $type,
       $domain,
-      $code,
+      $c,
       $text,
       $debug,
       $file,
       $function,
-      $line
+      $l
     );
   }
 
@@ -414,6 +423,8 @@ class GStreamer::Element is GStreamer::Object {
   )
     is also<message-full-with-details>
   {
+    my gint ($c, $l) = ($code, $line);
+
     gst_element_message_full_with_details(
       $!e,
       $type,
@@ -423,7 +434,7 @@ class GStreamer::Element is GStreamer::Object {
       $debug,
       $file,
       $function,
-      $line,
+      $l,
       $structure
     );
   }
@@ -462,7 +473,9 @@ class GStreamer::Element is GStreamer::Object {
   )
     is also<remove-property-notify-watch>
   {
-    gst_element_remove_property_notify_watch($!e, $watch_id);
+    my gulong $w = $watch_id;
+
+    gst_element_remove_property_notify_watch($!e, $w);
   }
 
   method request_pad (
@@ -490,16 +503,12 @@ class GStreamer::Element is GStreamer::Object {
     Int() $stop_type,  # GstSeekType $stop_type,
     Int() $stop        # uint64
   ) {
-    so gst_element_seek(
-      $!e,
-      $rate,
-      $format,
-      $flags,
-      $start_type,
-      $start,
-      $stop_type,
-      $stop
-    );
+    my gdouble $r = $rate;
+    my GstSeekFlags $f = $flags;
+    my GstSeekType ($stt, $spt) = ($start_type, $stop_type);
+    my uint64 ($st, $sp) = ($start, $stop);
+
+    so gst_element_seek($!e, $r, $format, $f, $stt, $st, $spt, $sp);
   }
 
   method send_event (GstEvent() $event) is also<send-event> {
@@ -535,7 +544,9 @@ class GStreamer::Element is GStreamer::Object {
   )
     is also<set-start-time>
   {
-    gst_element_set_start_time($!e, $time);
+    my GstClockTime $t = $time;
+
+    gst_element_set_start_time($!e, $t);
   }
 
   method set_state (
@@ -543,7 +554,9 @@ class GStreamer::Element is GStreamer::Object {
   )
     is also<set-state>
   {
-    GstStateChangeReturnEnum( gst_element_set_state($!e, $state) );
+    my GstState $s = $state;
+
+    GstStateChangeReturnEnum( gst_element_set_state($!e, $s) );
   }
 
   method sync_state_with_parent is also<sync-state-with-parent> {
@@ -590,9 +603,11 @@ class GStreamer::Element is GStreamer::Object {
 
     die $dieMsg unless @e.all ~~ (GStreamer::Element, GstElement).any;
 
-    my $aok = True;
+    my ($last, $aok) = (self);
     for @e {
-      $aok = False unless self.link($_);
+      last unless $aok = $last.link($_);
+      $last = $_;
+      $last = GStreamer::Element.new($last) unless $last ~~ GStreamer::Element;
     }
     $aok;
   }
