@@ -85,9 +85,7 @@ class GStreamer::ControlSource is GStreamer::Object {
   ) {
     my GstClockTime ($t, $i) = ($timestamp, $interval);
     my guint $n = $n_values;
-
-    my $v = CArray[gdouble].new;
-    $v[0] = 0e0;
+    my $v = CArray[gdouble].allocate($n_values);
 
     # :$raw here should return the CArray. Otherwise copy into Raku array.
 
