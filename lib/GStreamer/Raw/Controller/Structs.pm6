@@ -42,11 +42,11 @@ class GstTimedValueControlSource     is repr<CStruct>     does GLib::Roles::Poin
   HAS GstControlSource $.parent;
   # Protected
   HAS GMutex           $.lock;
-  has GSequence        $.values;         #= List of GstControlPoint
-  has gint             $.nvalues;        #= Number of control points
+  has GSequence        $.values;               #= List of GstControlPoint
+  has gint             $.nvalues;              #= Number of control points
   has gboolean         $.valid_cache;
   # Private
-  has Pointer          $!priv;           #= GstTimedValueControlSourcePrivate
+  has Pointer          $!priv;                 #= GstTimedValueControlSourcePrivate
   HAS GstPadding       $!padding
 }
 
@@ -59,7 +59,7 @@ class GstInterpolationControlSource  is repr<CStruct>     does GLib::Roles::Poin
 class GstDirectControlBinding        is repr<CStruct>     does GLib::Roles::Pointers is export {
   HAS GstControlBinding $.parent;
   # Private
-  has GstControlSource  $!cs;                 #= GstControlSource for this property
+  has GstControlSource  $!cs;                  #= GstControlSource for this property
   HAS GValue            $!cur_value;
   has gdouble           $!last_value;
   has gint              $!byte_size;
@@ -75,3 +75,15 @@ class GstLFOControlSource            is repr<CStruct>     does GLib::Roles::Poin
   HAS GMutex           $!lock;
   HAS GstPadding       $!padding;
 }
+
+class GstARGBControlBinding          is repr<CStruct>     does GLib::Roles::Pointers is export {
+  HAS GstControlBinding $.parent;
+  # Private
+  has GstControlSource  $!cs_a;                #= GstControlSources for this property
+  has GstControlSource  $!cs_r;
+  has GstControlSource  $!cs_g;
+  has GstControlSource  $!cs_b;
+  HAS GValue            $!cur_value;
+  has guint32           $!last_value;
+  HAS GstPadding        $!padding;
+};
