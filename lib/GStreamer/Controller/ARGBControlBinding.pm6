@@ -5,6 +5,7 @@ use NativeCall;
 
 use GStreamer::Raw::Types;
 
+use GLib::Value;
 use GStreamer::ControlBinding;
 
 our subset GstARGBControlBindingAncestry is export of Mu
@@ -44,12 +45,14 @@ class GStreamer::Controller::ARGBControlBinding
     $argb-binding ?? self.bless( :$argb-binding ) !! Nil;
   }
   multi method new (
+    GstObject() $object,
     Str() $property_name,
     GstControlSource() $cs_r,
     GstControlSource() $cs_g,
     GstControlSource() $cs_b
   ) {
     my $argb-binding = gst_argb_control_binding_new(
+      $object,
       $property_name,
       GstControlSource,
       $cs_r,
@@ -58,6 +61,7 @@ class GStreamer::Controller::ARGBControlBinding
     );
   }
   multi method new (
+    GstObject() $object,
     Str() $property_name,
     GstControlSource() $cs_a,
     GstControlSource() $cs_r,
@@ -65,6 +69,7 @@ class GStreamer::Controller::ARGBControlBinding
     GstControlSource() $cs_b
   ) {
     my $argb-binding = gst_argb_control_binding_new(
+      $object,
       $property_name,
       $cs_a,
       $cs_r,

@@ -5,6 +5,7 @@ use Method::Also;
 
 use GStreamer::Raw::Types;
 
+use GLib::Value;
 use GStreamer::ControlSource;
 
 our subset GstLFOControlSourceAncestry is export of Mu

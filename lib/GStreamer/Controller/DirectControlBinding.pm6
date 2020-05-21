@@ -6,6 +6,7 @@ use NativeCall;
 
 use GStreamer::Raw::Types;
 
+use GLib::Value;
 use GStreamer::ControlBinding;
 
 our subset GstDirectControlBindingAncestry is export of Mu
