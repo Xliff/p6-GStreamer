@@ -66,4 +66,12 @@ class GstDirectControlBinding        is repr<CStruct>     does GLib::Roles::Poin
   has Pointer           $!convert_value;
   has Pointer           $!convert_g_value;
   HAS GstPadding        $!padding
-};
+}
+
+class GstLFOControlSource            is repr<CStruct>     does GLib::Roles::Pointers is export {
+  HAS GstControlSource $.parent;
+  # Private
+  has Pointer          $!priv;
+  HAS GMutex           $!lock;
+  HAS GstPadding       $!padding;
+}
