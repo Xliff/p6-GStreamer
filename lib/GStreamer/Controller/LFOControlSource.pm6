@@ -51,7 +51,7 @@ class GStreamer::Controller::LFOControlSource
 
   # Type: gdouble
   method amplitude is rw  {
-    my $gv;
+    my $gv = GLib::Value.new( G_TYPE_DOUBLE );
     Proxy.new(
       FETCH => sub ($) {
         $gv = GLib::Value.new(
@@ -60,7 +60,6 @@ class GStreamer::Controller::LFOControlSource
         $gv.double;
       },
       STORE => -> $, Num() $val is copy {
-        $gv = GLib::Value.new( G_TYPE_DOUBLE );
         $gv.double = $val;
         self.prop_set('amplitude', $gv);
       }
@@ -69,7 +68,7 @@ class GStreamer::Controller::LFOControlSource
 
   # Type: gdouble
   method frequency is rw  {
-    my $gv;
+    my $gv = GLib::Value.new( G_TYPE_DOUBLE );
     Proxy.new(
       FETCH => sub ($) {
         $gv = GLib::Value.new(
@@ -78,7 +77,6 @@ class GStreamer::Controller::LFOControlSource
         $gv.double;
       },
       STORE => -> $, Num() $val is copy {
-        $gv = GLib::Value.new( G_TYPE_DOUBLE );
         $gv.double = $val;
         self.prop_set('frequency', $gv);
       }
@@ -87,7 +85,7 @@ class GStreamer::Controller::LFOControlSource
 
   # Type: gdouble
   method offset is rw  {
-    my $gv;
+    my $gv = GLib::Value.new( G_TYPE_DOUBLE );
     Proxy.new(
       FETCH => sub ($) {
         $gv = GLib::Value.new(
@@ -96,7 +94,6 @@ class GStreamer::Controller::LFOControlSource
         $gv.double;
       },
       STORE => -> $, Num() $val is copy {
-        $gv = GLib::Value.new( G_TYPE_DOUBLE );
         $gv.double = $val;
         self.prop_set('offset', $gv);
       }
@@ -105,7 +102,7 @@ class GStreamer::Controller::LFOControlSource
 
   # Type: guint64
   method timeshift is rw  {
-    my $gv;
+    my $gv = GLib::Value.new( G_TYPE_UINT64 );
     Proxy.new(
       FETCH => sub ($) {
         $gv = GLib::Value.new(
@@ -114,7 +111,6 @@ class GStreamer::Controller::LFOControlSource
         $gv.uint64;
       },
       STORE => -> $, Int() $val is copy {
-        $gv = GLib::Value.new( G_TYPE_UINT64 );
         $gv.uint64 = $val;
         self.prop_set('timeshift', $gv);
       }
@@ -123,7 +119,7 @@ class GStreamer::Controller::LFOControlSource
 
   # Type: GstLFOWaveform
   method waveform is rw  {
-    my $gv;
+    my $gv = GLib::Value.new( GLib::Value.typeFromEnum(GstLFOWaveform) );
     Proxy.new(
       FETCH => sub ($) {
         $gv = GLib::Value.new(
@@ -132,7 +128,6 @@ class GStreamer::Controller::LFOControlSource
         GstLFOWaveformEnum( $gv.enum );
       },
       STORE => -> $, Int() $val is copy {
-        $gv = GLib::Value.new( GLib::Value.typeFromEnum(GstLFOWaveform) );
         $gv.valueFromEnum(GstLFOWaveform) = $val;
         self.prop_set('waveform', $gv);
       }
