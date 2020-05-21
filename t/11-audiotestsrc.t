@@ -73,6 +73,8 @@ sub MAIN (
 
   %data<stdin> = GLib::IOChannel.unix_new($*IN.native-descriptor);
   %data<stdin>.add_watch(G_IO_IN, -> *@a --> gboolean {
+    CATCH { default { .message.say } }
+
     my ($rs, $in) = %data<stdin>.read_line;
 
     return unless $rs == G_IO_STATUS_NORMAL;
@@ -80,36 +82,38 @@ sub MAIN (
     $in .= substr(0, 1);
 
     if $in.lc eq <f w v q>.any {
-      pause;
+      #pause;
       given $in {
         # Attempting to modify test source in this manner will result in a
         # segfault.
         #
-        # when 'f'        { $test-src.freq -= 100   if $test-src.freq   > 100;   }
-        # when 'F'        { $test-src.freq += 100   if $test-src.freq   < 11000; }
-        # when 'w'        { $test-src.wav--         if $test-src.wav    > 0;     }
-        # when 'W'        { $test-src.wav++         if $test-src.wav    < 12;    }
-        # when 'v'        { $test-src.volume -= 0.1 if $test-src.volume > 0      }
-        # when 'V'        { $test-src.volume += 0.1 if $test-src.volume < 1      }
+        when 'f'        { $test-src.freq -= 100
+                            if $test-src.freq     > 100;       }
+        when 'F'        { $test-src.freq += 100
+                            if $test-src.freq     < 11000;     }
+        when 'w'        { $test-src.wave = $test-src.wave.pred
+                            if $test-src.wave.Int > 0;         }
+        when 'W'        { $test-src.wave = $test-src.wave.succ
+                            if $test-src.wave.Int < 12;        }
+        when 'v'        { $test-src.volume -= 0.1
+                            if   $test-src.volume > 0          }
+        when 'V'        { $test-src.volume += 0.1
+                            if   $test-src.volume < 1          }
 
         when 'q'  | 'Q' { %data<loop>.quit }
       }
-      play;
+      #play;
     }
     1
   });
 
-  # say q:to/INSTRUCTIONS/;
-  #   USAGE: Choose one of the following options, then press enter:
-  #     'F' Increase frequency by 100 / 'f' Decrease frequency by 100
-  #     'W' Increase wave      by 1   / 'w' Decrease wave      by 1
-  #     'V' Increase volume    by 0.1 / 'v' Decrease volume    by 0.1
-  #     'Q' to quit
-  #   INSTRUCTIONS
-    say q:to/INSTRUCTIONS/;
-      USAGE: Choose one of the following options, then press enter:
-        'Q' to quit
-      INSTRUCTIONS
+  say q:to/INSTRUCTIONS/;
+    USAGE: Choose one of the following options, then press enter:
+      'F' Increase frequency by 100 / 'f' Decrease frequency by 100
+      'W' Increase wave      by 1   / 'w' Decrease wave      by 1
+      'V' Increase volume    by 0.1 / 'v' Decrease volume    by 0.1
+      'Q' to quit
+    INSTRUCTIONS
 
   ( %data<loop> = GLib::MainLoop.new ).run;
 
