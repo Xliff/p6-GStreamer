@@ -559,6 +559,11 @@ class GStreamer::Element is GStreamer::Object {
     GstStateChangeReturnEnum( gst_element_set_state($!e, $s) );
   }
 
+  method play  is also<start> { self.set_state(GST_STATE_PLAYING) }
+  method stop                 { self.set_state(GST_STATE_NULL)    }
+  method pause                { self.set_state(GST_STATE_PAUSED)  }
+  method ready                { self.set_state(GST_STATE_READY)   }
+
   method sync_state_with_parent is also<sync-state-with-parent> {
     so gst_element_sync_state_with_parent($!e);
   }
