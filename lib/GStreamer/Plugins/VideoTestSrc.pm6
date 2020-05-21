@@ -6,6 +6,7 @@ use NativeCall;
 
 use GStreamer::Raw::Types;
 
+use GLib::Value;
 use GStreamer::Base::PushSrc;
 
 use GLib::Roles::Pointers;
@@ -139,7 +140,7 @@ class GStreamer::Plugins::VideoTestSrc is GStreamer::Base::PushSrc {
         cast(GstVideoTestSrc, $_);
       }
     }
-    self.setGstElement($to-parent);
+    self.setGstPushSrc($to-parent);
   }
 
   method GStreamer::Raw::Structs::GstVideoTestSrc
@@ -548,7 +549,7 @@ class GStreamer::Plugins::VideoTestSrc is GStreamer::Base::PushSrc {
         GstVideoTestSrcPatternEnum( $gv.enum );
       },
       STORE => -> $, Int() $val is copy {
-        $gv.typeFromEnum(GstVideoTestSrcPattern) = $val;
+        $gv.valueFromEnum(GstVideoTestSrcPattern) = $val;
         self.prop_set('pattern', $gv);
       }
     );
