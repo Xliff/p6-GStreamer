@@ -144,6 +144,7 @@ class GstPlayerSubtitleInfo       is repr<CPointer> does GLib::Roles::Pointers i
 class GstPlayerVideoInfo          is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GstPlayerVideoRenderer      is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GstReferenceTimestampMeta   is repr<CPointer> does GLib::Roles::Pointers is export { }
+class GstVideoChromaResample      is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GstVideoConverter           is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GstVideoDecoder             is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GstVideoDither              is repr<CPointer> does GLib::Roles::Pointers is export { }
