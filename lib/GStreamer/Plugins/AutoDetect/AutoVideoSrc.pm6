@@ -3,7 +3,7 @@ use v6.c;
 use Method::Also;
 
 use GStreamer::Raw::Types;
-use GStreamer::Plugins::GST::AutoDetect::Raw;
+use GStreamer::Plugins::AutoDetect::Raw;
 
 use GStreamer::Bin;
 

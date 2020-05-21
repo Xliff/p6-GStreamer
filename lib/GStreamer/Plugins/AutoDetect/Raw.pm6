@@ -6,7 +6,7 @@ use GStreamer::Raw::Types;
 
 use GLib::Roles::Pointers;
 
-unit package GStreamer::Plugins::GST::AutoDetect::Raw;
+unit package GStreamer::Plugins::AutoDetect::Raw;
 
 class GstAutoDetect              is repr<CStruct>     does GLib::Roles::Pointers is export {
   HAS GstBin          $.parent;
