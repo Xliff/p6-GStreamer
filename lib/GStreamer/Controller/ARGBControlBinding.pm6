@@ -1,8 +1,11 @@
 use v6.c;
 
+use Method::Also;
 use NativeCall;
 
 use GStreamer::Raw::Types;
+
+use GStreamer::ControlBinding;
 
 our subset GstARGBControlBindingAncestry is export of Mu
   where GstARGBControlBinding | GstControlBinding;
@@ -19,7 +22,7 @@ class GStreamer::Controller::ARGBControlBinding
   method setGstARGBControlBinding (GstARGBControlBindingAncestry $_) {
     my $to-parent;
 
-    $argb-b = do {
+    $!argb-b = do {
       when GstARGBControlBinding {
         $to-parent = cast(GstControlBinding, $_);
         $_;
@@ -35,10 +38,24 @@ class GStreamer::Controller::ARGBControlBinding
 
   method GStreamer::Raw::Structs::GstARGBControlBinding
     is also<GstARGBControlBinding>
-  { $argb-b }
+  { $!argb-b }
 
   multi method new (GstARGBControlBindingAncestry $argb-binding) {
     $argb-binding ?? self.bless( :$argb-binding ) !! Nil;
+  }
+  multi method new (
+    Str() $property_name,
+    GstControlSource() $cs_r,
+    GstControlSource() $cs_g,
+    GstControlSource() $cs_b
+  ) {
+    my $argb-binding = gst_argb_control_binding_new(
+      $property_name,
+      GstControlSource,
+      $cs_r,
+      $cs_g,
+      $cs_b
+    );
   }
   multi method new (
     Str() $property_name,
@@ -57,7 +74,7 @@ class GStreamer::Controller::ARGBControlBinding
   }
 
     # Type: GstControlSource
-  method control-source-a is rw  {
+  method control-source-a (:$raw = False) is rw  is also<control_source_a> {
     my $gv = GLib::Value.new( GStreamer::ControlSource.get-type );
     Proxy.new(
       FETCH => sub ($) {
@@ -81,7 +98,7 @@ class GStreamer::Controller::ARGBControlBinding
   }
 
   # Type: GstControlSource
-  method control-source-b is rw  {
+  method control-source-b (:$raw = False) is rw  is also<control_source_b> {
     my $gv = GLib::Value.new( GStreamer::ControlSource.get-type );
     Proxy.new(
       FETCH => sub ($) {
@@ -105,7 +122,7 @@ class GStreamer::Controller::ARGBControlBinding
   }
 
   # Type: GstControlSource
-  method control-source-g is rw  {
+  method control-source-g (:$raw = False) is rw  is also<control_source_g> {
     my $gv = GLib::Value.new( GStreamer::ControlSource.get-type );
     Proxy.new(
       FETCH => sub ($) {
@@ -129,7 +146,7 @@ class GStreamer::Controller::ARGBControlBinding
   }
 
   # Type: GstControlSource
-  method control-source-r is rw  {
+  method control-source-r (:$raw = False) is rw  is also<control_source_r> {
     my $gv = GLib::Value.new( GStreamer::ControlSource.get-type );
     Proxy.new(
       FETCH => sub ($) {
