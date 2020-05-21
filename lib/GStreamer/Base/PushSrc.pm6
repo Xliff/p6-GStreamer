@@ -15,7 +15,7 @@ class GStreamer::Base::PushSrc is GStreamer::Base::Src {
   has GstPushSrc $!ps handles <src_pad>;
 
   submethod BUILD (:$push-src) {
-    self.setGstPushSrc($push-src);
+    self.setGstPushSrc($push-src) if $push-src;
   }
 
   method setGstPushSrc (GstPushSrcAncestry $_) {
