@@ -164,7 +164,7 @@ class GStreamer::Plugins::AudioTestSrc is GStreamer::Base::Src {
 
   # Type: gboolean
   method apply-tick-ramp is rw  is also<apply_tick_ramp> {
-    my $gv;
+    my $gv = GLib::Value.new( G_TYPE_BOOLEAN );
     Proxy.new(
       FETCH => sub ($) {
         $gv = GLib::Value.new(
@@ -173,7 +173,6 @@ class GStreamer::Plugins::AudioTestSrc is GStreamer::Base::Src {
         $gv.boolean;
       },
       STORE => -> $, Int() $val is copy {
-        $gv = GLib::Value.new( G_TYPE_BOOLEAN );
         $gv.boolean = $val;
         self.prop_set('apply-tick-ramp', $gv);
       }
@@ -182,7 +181,7 @@ class GStreamer::Plugins::AudioTestSrc is GStreamer::Base::Src {
 
   # Type: guint
   method blocksize is rw  {
-    my $gv;
+    my $gv = GLib::Value.new( G_TYPE_UINT );
     Proxy.new(
       FETCH => sub ($) {
         $gv = GLib::Value.new(
@@ -191,7 +190,6 @@ class GStreamer::Plugins::AudioTestSrc is GStreamer::Base::Src {
         $gv.uint;
       },
       STORE => -> $, Int() $val is copy {
-        $gv = GLib::Value.new( G_TYPE_UINT );
         $gv.uint = $val;
         self.prop_set('blocksize', $gv);
       }
@@ -200,7 +198,7 @@ class GStreamer::Plugins::AudioTestSrc is GStreamer::Base::Src {
 
   # Type: gboolean
   method can-activate-pull is rw  is also<can_activate_pull> {
-    my $gv;
+    my $gv = GLib::Value.new( G_TYPE_BOOLEAN );
     Proxy.new(
       FETCH => sub ($) {
         $gv = GLib::Value.new(
@@ -209,7 +207,6 @@ class GStreamer::Plugins::AudioTestSrc is GStreamer::Base::Src {
         $gv.boolean;
       },
       STORE => -> $, Int() $val is copy {
-        $gv = GLib::Value.new( G_TYPE_BOOLEAN );
         $gv.boolean = $val;
         self.prop_set('can-activate-pull', $gv);
       }
@@ -218,7 +215,7 @@ class GStreamer::Plugins::AudioTestSrc is GStreamer::Base::Src {
 
   # Type: gboolean
   method can-activate-push is rw  is also<can_activate_push> {
-    my $gv;
+    my $gv = GLib::Value.new( G_TYPE_BOOLEAN );
     Proxy.new(
       FETCH => sub ($) {
         $gv = GLib::Value.new(
@@ -227,7 +224,6 @@ class GStreamer::Plugins::AudioTestSrc is GStreamer::Base::Src {
         $gv.boolean;
       },
       STORE => -> $, Int() $val is copy {
-        $gv = GLib::Value.new( G_TYPE_BOOLEAN );
         $gv.boolean = $val;
         self.prop_set('can-activate-push', $gv);
       }
@@ -236,7 +232,7 @@ class GStreamer::Plugins::AudioTestSrc is GStreamer::Base::Src {
 
   # Type: gboolean
   method do-timestamp is rw  is also<do_timestamp> {
-    my $gv;
+    my $gv = GLib::Value.new( G_TYPE_BOOLEAN );
     Proxy.new(
       FETCH => sub ($) {
         $gv = GLib::Value.new(
@@ -245,7 +241,6 @@ class GStreamer::Plugins::AudioTestSrc is GStreamer::Base::Src {
         $gv.boolean;
       },
       STORE => -> $, Int() $val is copy {
-        $gv = GLib::Value.new( G_TYPE_BOOLEAN );
         $gv.boolean = $val;
         self.prop_set('do-timestamp', $gv);
       }
@@ -254,7 +249,7 @@ class GStreamer::Plugins::AudioTestSrc is GStreamer::Base::Src {
 
   # Type: gdouble
   method freq is rw  {
-    my $gv;
+    my $gv = GLib::Value.new( G_TYPE_DOUBLE );
     Proxy.new(
       FETCH => sub ($) {
         $gv = GLib::Value.new(
@@ -263,7 +258,6 @@ class GStreamer::Plugins::AudioTestSrc is GStreamer::Base::Src {
         $gv.double;
       },
       STORE => -> $, Num() $val is copy {
-        $gv = GLib::Value.new( G_TYPE_DOUBLE );
         $gv.double = $val;
         self.prop_set('freq', $gv);
       }
@@ -272,7 +266,7 @@ class GStreamer::Plugins::AudioTestSrc is GStreamer::Base::Src {
 
   # Type: gboolean
   method is-live is rw  is also<is_live> {
-    my $gv;
+    my $gv =  GLib::Value.new( G_TYPE_BOOLEAN );
     Proxy.new(
       FETCH => sub ($) {
         $gv = GLib::Value.new(
@@ -281,7 +275,6 @@ class GStreamer::Plugins::AudioTestSrc is GStreamer::Base::Src {
         $gv.boolean;
       },
       STORE => -> $, Int() $val is copy {
-        $gv = GLib::Value.new( G_TYPE_BOOLEAN );
         $gv.boolean = $val;
         self.prop_set('is-live', $gv);
       }
@@ -290,7 +283,7 @@ class GStreamer::Plugins::AudioTestSrc is GStreamer::Base::Src {
 
   # Type: guint
   method marker-tick-period is rw  is also<marker_tick_period> {
-    my $gv;
+    my $gv = GLib::Value.new( G_TYPE_UINT );
     Proxy.new(
       FETCH => sub ($) {
         $gv = GLib::Value.new(
@@ -299,7 +292,6 @@ class GStreamer::Plugins::AudioTestSrc is GStreamer::Base::Src {
         $gv.uint;
       },
       STORE => -> $, Int() $val is copy {
-        $gv = GLib::Value.new( G_TYPE_UINT );
         $gv.uint = $val;
         self.prop_set('marker-tick-period', $gv);
       }
@@ -308,7 +300,7 @@ class GStreamer::Plugins::AudioTestSrc is GStreamer::Base::Src {
 
   # Type: gdouble
   method marker-tick-volume is rw  is also<marker_tick_volume> {
-    my $gv;
+    my $gv = GLib::Value.new( G_TYPE_DOUBLE );
     Proxy.new(
       FETCH => sub ($) {
         $gv = GLib::Value.new(
@@ -317,7 +309,6 @@ class GStreamer::Plugins::AudioTestSrc is GStreamer::Base::Src {
         $gv.double;
       },
       STORE => -> $, Num() $val is copy {
-        $gv = GLib::Value.new( G_TYPE_DOUBLE );
         $gv.double = $val;
         self.prop_set('marker-tick-volume', $gv);
       }
@@ -326,7 +317,7 @@ class GStreamer::Plugins::AudioTestSrc is GStreamer::Base::Src {
 
   # Type: Str (gchararray)
   method name is rw  {
-    my $gv;
+    my $gv = GLib::Value.new( G_TYPE_STRING );
     Proxy.new(
       FETCH => sub ($) {
         $gv = GLib::Value.new(
@@ -335,7 +326,6 @@ class GStreamer::Plugins::AudioTestSrc is GStreamer::Base::Src {
         $gv.string
       },
       STORE => -> $, Str() $val is copy {
-        $gv = GLib::Value.new( G_TYPE_STRING );
         $gv.string = $val;
         self.prop_set('name', $gv);
       }
@@ -344,7 +334,7 @@ class GStreamer::Plugins::AudioTestSrc is GStreamer::Base::Src {
 
   # Type: gint
   method num-buffers is rw  is also<num_buffers> {
-    my $gv;
+    my $gv = GLib::Value.new( G_TYPE_INT );
     Proxy.new(
       FETCH => sub ($) {
         $gv = GLib::Value.new(
@@ -353,7 +343,6 @@ class GStreamer::Plugins::AudioTestSrc is GStreamer::Base::Src {
         $gv.int;
       },
       STORE => -> $, Int() $val is copy {
-        $gv = GLib::Value.new( G_TYPE_INT );
         $gv.int = $val;
         self.prop_set('num-buffers', $gv);
       }
@@ -362,7 +351,7 @@ class GStreamer::Plugins::AudioTestSrc is GStreamer::Base::Src {
 
   # Type: GstObject
   method parent (:$raw = False) is rw  {
-    my $gv;
+    my $gv = GLib::Value.new( G_TYPE_OBJECT );
     Proxy.new(
       FETCH => sub ($) {
         $gv = GLib::Value.new(
@@ -377,7 +366,6 @@ class GStreamer::Plugins::AudioTestSrc is GStreamer::Base::Src {
         GLib::Roles::Object.new-object-obj($o);
       },
       STORE => -> $, GObject() $val is copy {
-        $gv = GLib::Value.new( G_TYPE_OBJECT );
         $gv.object = $val;
         self.prop_set('parent', $gv);
       }
@@ -386,7 +374,7 @@ class GStreamer::Plugins::AudioTestSrc is GStreamer::Base::Src {
 
   # Type: gint
   method samplesperbuffer is rw  {
-    my $gv;
+    my $gv = GLib::Value.new( G_TYPE_INT );
     Proxy.new(
       FETCH => sub ($) {
         $gv = GLib::Value.new(
@@ -395,7 +383,6 @@ class GStreamer::Plugins::AudioTestSrc is GStreamer::Base::Src {
         $gv.int;
       },
       STORE => -> $, Int() $val is copy {
-        $gv = GLib::Value.new( G_TYPE_INT );
         $gv.int = $val;
         self.prop_set('samplesperbuffer', $gv);
       }
@@ -404,7 +391,7 @@ class GStreamer::Plugins::AudioTestSrc is GStreamer::Base::Src {
 
   # Type: guint
   method sine-periods-per-tick is rw  is also<sine_periods_per_tick> {
-    my $gv;
+    my $gv = GLib::Value.new( G_TYPE_UINT );
     Proxy.new(
       FETCH => sub ($) {
         $gv = GLib::Value.new(
@@ -413,7 +400,6 @@ class GStreamer::Plugins::AudioTestSrc is GStreamer::Base::Src {
         $gv.uint;
       },
       STORE => -> $, Int() $val is copy {
-        $gv = GLib::Value.new( G_TYPE_UINT );
         $gv.uint = $val;
         self.prop_set('sine-periods-per-tick', $gv);
       }
@@ -422,7 +408,7 @@ class GStreamer::Plugins::AudioTestSrc is GStreamer::Base::Src {
 
   # Type: guint64
   method tick-interval is rw  is also<tick_interval> {
-    my $gv;
+    my $gv = GLib::Value.new( G_TYPE_UINT64 );
     Proxy.new(
       FETCH => sub ($) {
         $gv = GLib::Value.new(
@@ -431,7 +417,6 @@ class GStreamer::Plugins::AudioTestSrc is GStreamer::Base::Src {
         $gv.uint64;
       },
       STORE => -> $, Int() $val is copy {
-        $gv = GLib::Value.new( G_TYPE_UINT64 );
         $gv.uint64 = $val;
         self.prop_set('tick-interval', $gv);
       }
@@ -440,7 +425,7 @@ class GStreamer::Plugins::AudioTestSrc is GStreamer::Base::Src {
 
   # Type: gint64
   method timestamp-offset is rw  is also<timestamp_offset> {
-    my $gv;
+    my $gv = GLib::Value.new( G_TYPE_INT64 );
     Proxy.new(
       FETCH => sub ($) {
         $gv = GLib::Value.new(
@@ -449,7 +434,6 @@ class GStreamer::Plugins::AudioTestSrc is GStreamer::Base::Src {
         $gv.int64;
       },
       STORE => -> $, Int() $val is copy {
-        $gv = GLib::Value.new( G_TYPE_INT64 );
         $gv.int64 = $val;
         self.prop_set('timestamp-offset', $gv);
       }
@@ -458,7 +442,7 @@ class GStreamer::Plugins::AudioTestSrc is GStreamer::Base::Src {
 
   # Type: gboolean
   method typefind is rw  {
-    my $gv;
+    my $gv = GLib::Value.new( G_TYPE_BOOLEAN );
     Proxy.new(
       FETCH => sub ($) {
         $gv = GLib::Value.new(
@@ -467,7 +451,6 @@ class GStreamer::Plugins::AudioTestSrc is GStreamer::Base::Src {
         $gv.boolean;
       },
       STORE => -> $, Int() $val is copy {
-        $gv = GLib::Value.new( G_TYPE_BOOLEAN );
         $gv.boolean = $val;
         self.prop_set('typefind', $gv);
       }
@@ -476,7 +459,7 @@ class GStreamer::Plugins::AudioTestSrc is GStreamer::Base::Src {
 
   # Type: gdouble
   method volume is rw  {
-    my $gv;
+    my $gv = GLib::Value.new( G_TYPE_DOUBLE );
     Proxy.new(
       FETCH => sub ($) {
         $gv = GLib::Value.new(
@@ -485,7 +468,6 @@ class GStreamer::Plugins::AudioTestSrc is GStreamer::Base::Src {
         $gv.double;
       },
       STORE => -> $, Num() $val is copy {
-        $gv = GLib::Value.new( G_TYPE_DOUBLE );
         $gv.double = $val;
         self.prop_set('volume', $gv);
       }
@@ -494,16 +476,15 @@ class GStreamer::Plugins::AudioTestSrc is GStreamer::Base::Src {
 
   # Type: Audio-test-src-wave
   method wave is rw  {
-    my $gv;
+    my $gv = GLib::Value.new( G_TYPE_UINT );
     Proxy.new(
       FETCH => sub ($) {
         $gv = GLib::Value.new(
           self.prop_get('wave', $gv)
         );
-        GstAudioTestSrcWaveEnum( $gv.enum )
+        GstAudioTestSrcWaveEnum( $gv.enum );
       },
       STORE => -> $, Int() $val is copy {
-        $gv = GLib::Value.new( G_TYPE_UINT );
         $gv.uint = $val;
         self.prop_set('wave', $gv);
       }
