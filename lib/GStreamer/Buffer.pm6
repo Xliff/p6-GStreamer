@@ -71,6 +71,10 @@ class GStreamer::Buffer is GStreamer::MiniObject {
     $buffer ?? self.bless( :$buffer ) !! Nil;
   }
 
+  method new_and_alloc (Int() $size) is also<new-and-alloc> {
+    self.new_allocate(GstAllocator, $size, GstAllocationParams);
+  }
+
   multi method new (
     gpointer $data,
     Int() $size,
