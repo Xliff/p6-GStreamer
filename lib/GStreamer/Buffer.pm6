@@ -53,7 +53,7 @@ class GStreamer::Buffer is GStreamer::MiniObject {
   multi method new (
     GstAllocator() $alloc,
     Int() $size,
-    GstAllocationParams() $params,
+    GstAllocationParams() $params = GstAllocationParams,
     :$allocator is required
   ) {
     GStreamer::Buffer.new_allocate($alloc, $size, $params);
@@ -61,7 +61,7 @@ class GStreamer::Buffer is GStreamer::MiniObject {
   method new_allocate (
     GstAllocator() $allocator,
     Int() $size,
-    GstAllocationParams() $params
+    GstAllocationParams() $params = GstAllocationParams
   )
     is also<new-allocate>
   {
@@ -69,10 +69,6 @@ class GStreamer::Buffer is GStreamer::MiniObject {
     my $buffer = gst_buffer_new_allocate($allocator, $s, $params);
 
     $buffer ?? self.bless( :$buffer ) !! Nil;
-  }
-
-  method new_and_alloc (Int() $size) is also<new-and-alloc> {
-    self.new_allocate(GstAllocator, $size, GstAllocationParams);
   }
 
   multi method new (
