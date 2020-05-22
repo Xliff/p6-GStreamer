@@ -96,6 +96,12 @@ class GstBuffer                  is repr<CStruct> does GLib::Roles::Pointers is 
   has guint64              $.offset_end  is rw;
 }
 
+class GstClock                   is repr<CStruct> does GLib::Roles::Pointers is export {
+  HAS GstObject  $.object;
+  has Pointer    $!priv;
+  HAS GstPadding $!padding;
+}
+
 # Cheat. This really should be considered opaque.
 class GstDateTime                is repr<CStruct>      does GLib::Roles::Pointers is export {
   HAS GstMiniObject        $.mini_object;
@@ -271,7 +277,14 @@ class GstSegment                 is repr<CStruct>      does GLib::Roles::Pointer
   has gpointer             $!gst_reserved1;
   has gpointer             $!gst_reserved2;
   has gpointer             $!gst_reserved3;
+}
+
+class GstSystemClock           is repr<CStruct>      does GLib::Roles::Pointers is export {
+  HAS GstClock       $.clock;
+  has Pointer        $!private;
+  HAS GstPadding     $!padding;
 };
+
 
 class GstTagList                 is repr<CStruct>      does GLib::Roles::Pointers is export {
   HAS GstMiniObject        $.mini_object;
@@ -1743,4 +1756,14 @@ class GstAppSinkCallbacks        is repr<CStruct>  does GLib::Roles::Pointers is
     is native
     is symbol('sprintf')
   { * }
+}
+
+
+# NET
+
+class GstNetClientClock         is repr<CStruct>  does GLib::Roles::Pointers is export {
+  HAS GstSystemClock $.clock;
+  # Private
+  has Pointer        $!priv;
+  HAS GstPadding     $!padding;
 }

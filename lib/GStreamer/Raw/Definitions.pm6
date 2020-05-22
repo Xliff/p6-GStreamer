@@ -88,7 +88,7 @@ class GstBufferPool               is repr<CPointer> does GLib::Roles::Pointers i
 class GstBus                      is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GstCaps                     is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GstChildProxy               is repr<CPointer> does GLib::Roles::Pointers is export { }
-class GstClock                    is repr<CPointer> does GLib::Roles::Pointers is export { }
+#class GstClock                    is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GstContext                  is repr<CPointer> does GLib::Roles::Pointers is export { }
 #class GstControlBinding           is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GstDataQueue                is repr<CPointer> does GLib::Roles::Pointers is export { }
