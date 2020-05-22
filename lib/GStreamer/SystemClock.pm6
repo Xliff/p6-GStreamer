@@ -8,13 +8,16 @@ use GStreamer::Raw::Clock;
 
 use GStreamer::Clock;
 
+our subset GstSystemClockAncestry is export of Mu
+  where GstSystemClock | GstClock;
+
 class GStreamer::SystemClock is GStreamer::Clock {
 
   submethod BUILD (:$sclock) {
-    self.setSystemClock($sclock);
+    self.setGstSystemClock($sclock) if $sclock;
   }
 
-  method setSystemClock ($sclock) {
+  method setGstSystemClock ($sclock) {
     self.setClock($sclock);
   }
 
