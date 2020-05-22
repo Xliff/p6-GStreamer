@@ -65,6 +65,8 @@ class GStreamer::Buffer is GStreamer::MiniObject {
   )
     is also<new-allocate>
   {
+    die '$allocator must be defined!' unless $allocator;
+
     my gsize $s = $size;
     my $buffer = gst_buffer_new_allocate($allocator, $s, $params);
 
@@ -79,6 +81,8 @@ class GStreamer::Buffer is GStreamer::MiniObject {
     GStreamer::Buffer.new_wrapped($data, $size);
   }
   method new_wrapped (gpointer $data, Int() $size) is also<new-wrapped> {
+    die '$data must be defined!' unless $data;
+
     my gsize $s = $size;
     my $buffer = gst_buffer_new_wrapped($data, $size);
 
@@ -92,6 +96,8 @@ class GStreamer::Buffer is GStreamer::MiniObject {
     GStreamer::Buffer.new_wrapped_bytes($bytes);
   }
   method new_wrapped_bytes (GBytes() $bytes) is also<new-wrapped-bytes> {
+    die '$bytes must be defined!' unless $bytes;
+
     gst_buffer_new_wrapped_bytes($bytes);
   }
 
@@ -124,6 +130,8 @@ class GStreamer::Buffer is GStreamer::MiniObject {
   )
     is also<new-wrapped-full>
   {
+    die '$data must be defined!' unless $data;
+
     my GstMemoryFlags $f = $flags;
     my gsize ($m, $o, $s) = 0 xx 3;
     my $buffer = gst_buffer_new_wrapped_full(
