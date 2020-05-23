@@ -1761,9 +1761,16 @@ class GstAppSinkCallbacks        is repr<CStruct>  does GLib::Roles::Pointers is
 
 # NET
 
-class GstNetClientClock         is repr<CStruct>  does GLib::Roles::Pointers is export {
+class GstNetClientClock          is repr<CStruct>  does GLib::Roles::Pointers is export {
   HAS GstSystemClock $.clock;
   # Private
   has Pointer        $!priv;
   HAS GstPadding     $!padding;
 }
+
+class GstNetTimeProvider         is repr<CStruct>  does GLib::Roles::Pointers is export {
+  HAS GstObject   $.parent;
+  # Private
+  has Pointer     $!priv;
+  HAS GstPadding  $!padding;
+};
