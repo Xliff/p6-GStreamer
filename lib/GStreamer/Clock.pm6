@@ -23,7 +23,7 @@ class GStreamer::Clock is GStreamer::Object {
     self.setClock($clock) if $clock.defined;
   }
 
-  method setClock(GstClockAncestry $_) {
+  method setClock(GstClockAncestry $_) is also<setGstClock> {
     my $to-parent;
     $!c = do {
       when GstClock {
@@ -39,7 +39,7 @@ class GStreamer::Clock is GStreamer::Object {
     self.setGstObject($to-parent);
   }
 
-  method GStreamer::Raw::Types::GstClock
+  method GStreamer::Raw::Structs::GstClock
     is also<GstClock>
   { $!c }
 
