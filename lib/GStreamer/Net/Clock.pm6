@@ -4,11 +4,14 @@ use NativeCall;
 
 use GStreamer::Raw::Types;
 
+use GLib::Value;
 use GStreamer::Bus;
+use GStreamer::Clock;
 use GStreamer::SystemClock;
 
+# Remember, there is no GstSystemClock!
 our subset GstNetClientClockAncestry is export of Mu
-  where GstNetClientClock | GstSystemClockAncestry;
+  where GstNetClientClock | GstClockAncestry;
 
 class GStreamer::Net::ClientClock is GStreamer::SystemClock {
   has GstNetClientClock $!nc;
@@ -22,7 +25,7 @@ class GStreamer::Net::ClientClock is GStreamer::SystemClock {
 
     $!nc = do {
       when GstNetClientClock {
-        $to-parent = cast(GstSystemClock, $_);
+        $to-parent = cast(GstClock, $_);
         $_;
       }
 
@@ -31,7 +34,7 @@ class GStreamer::Net::ClientClock is GStreamer::SystemClock {
         cast(GstNetClientClock, $_);
       }
     }
-    self.setGstSystemClock($to-parent);
+    self.setGstClock($to-parent);
   }
 
 
@@ -69,8 +72,7 @@ class GStreamer::Net::ClientClock is GStreamer::SystemClock {
         $gv.string;
       },
       STORE => -> $, Str() $val is copy {
-        $gv.string = $val;
-        self.prop_set('address', $gv);
+        warn 'address is a construct-only attribute!';
       }
     );
   }
@@ -86,8 +88,7 @@ class GStreamer::Net::ClientClock is GStreamer::SystemClock {
         $gv.uint64;
       },
       STORE => -> $, Int() $val is copy {
-        $gv.uint64 = $val;
-        self.prop_set('base-time', $gv);
+        warn 'base-time is a construct-only attribute!';
       }
     );
   }
@@ -167,8 +168,7 @@ class GStreamer::Net::ClientClock is GStreamer::SystemClock {
         $gv.int;
       },
       STORE => -> $, Int() $val is copy {
-        $gv.int = $val;
-        self.prop_set('port', $gv);
+        warn 'port is a construct-only attribute!';
       }
     );
   }
@@ -237,7 +237,7 @@ class GStreamer::Net::NTPClock is GStreamer::Net::ClientClock {
 our subset GstNetTimeProviderAncestry is export of Mu
   where GstNetTimeProvider | GstObject;
 
-class GStreamer::Net::Provider is GStreamer::Object {
+class GStreamer::Net::TimeProvider is GStreamer::Object {
   has GstNetTimeProvider $!ntp;
 
   submethod BUILD (:$time-provider) {
@@ -269,8 +269,9 @@ class GStreamer::Net::Provider is GStreamer::Object {
   }
   multi method new (GstClock() $clock, Str() $address, Int() $port) {
     my gint $p = $port;
+    my $time-provider = gst_net_time_provider_new($clock, $address, $p);
 
-    gst_net_time_provider_new($clock, $address, $p);
+    $time-provider ?? self.bless( :$time-provider ) !! Nil;
   }
 
   # Type: gboolean
@@ -301,8 +302,7 @@ class GStreamer::Net::Provider is GStreamer::Object {
         $gv.string;
       },
       STORE => -> $, Str() $val is copy {
-        $gv.string = $val;
-        self.prop_set('address', $gv);
+        warn 'address is a construct-only attribute!';
       }
     );
   }
@@ -325,8 +325,7 @@ class GStreamer::Net::Provider is GStreamer::Object {
         GStreamer::Clock.new($o);
       },
       STORE => -> $, GstClock() $val is copy {
-        $gv.object = $val;
-        self.prop_set('clock', $gv);
+        warn 'clock is a construct-only attribute!';
       }
     );
   }
@@ -342,8 +341,7 @@ class GStreamer::Net::Provider is GStreamer::Object {
         $gv.int;
       },
       STORE => -> $, Int() $val is copy {
-        $gv.int = $val;
-        self.prop_set('port', $gv);
+        warn 'port is a construct-only attribute!';
       }
     );
   }
