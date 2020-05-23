@@ -935,11 +935,24 @@ class GStreamer::Message is GStreamer::MiniObject {
     gst_message_add_redirect_entry($!m, $location, $tag_list, $entry_struct);
   }
 
-  method get_num_redirect_entries is also<get-num-redirect-entries> {
+  method get_num_redirect_entries
+    is also<
+      get-num-redirect-entries
+      num_redirect_entries
+      num-redirect-entries
+      redirect_entries
+      redirect-entries
+    >
+  {
     gst_message_get_num_redirect_entries($!m);
   }
 
-  method get_structure (:$raw = False) is also<get-structure> {
+  method get_structure (:$raw = False)
+    is also<
+      get-structure
+      structure
+    >
+  {
     my $s = gst_message_get_structure($!m);
 
     $s ??
