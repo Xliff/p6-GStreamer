@@ -39,7 +39,7 @@ class GStreamer::Bus is GStreamer::Object {
     self.setGstObject($to-parent);
   }
 
-  method GStreamer::Raw::Types::GstBus
+  method GStreamer::Raw::Definitions::GstBus
     is also<GstBus>
   { $!b }
 
