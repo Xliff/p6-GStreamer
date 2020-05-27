@@ -107,7 +107,7 @@ class GstIterator                 is repr<CPointer> does GLib::Roles::Pointers i
 #class GstMessage                  is repr<CPointer> does GLib::Roles::Pointers is export { }
 #class GstObject                   is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GstNavigation               is repr<CPointer> does GLib::Roles::Pointers is export { }
-class GstPad                      is repr<CPointer> does GLib::Roles::Pointers is export { }
+#class GstPad                      is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GstPadProbeInfo             is repr<CPointer> does GLib::Roles::Pointers is export { }
 #class GstPadTemplate              is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GstParseContext             is repr<CPointer> does GLib::Roles::Pointers is export { }
@@ -132,6 +132,7 @@ class GstTracerFactory            is repr<CPointer> does GLib::Roles::Pointers i
 #class GstTagList                  is repr<CPointer> does GLib::Roles::Pointers is export { }
 #class GstToc                      is repr<CPointer> does GLib::Roles::Pointers is export { }
 #class GstTocEntry                 is repr<CPointer> does GLib::Roles::Pointers is export { }
+class GstTypeFindFactory          is repr<CPointer> does GLib::Roles::Pointers is export { }
 
 #class GstMapInfo                  is repr<CPointer> does GLib::Roles::Pointers is export { }
 #class GstMemory                   is repr<CPointer> does GLib::Roles::Pointers is export { }
