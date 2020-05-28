@@ -4,6 +4,7 @@ use NativeCall;
 use Method::Also;
 
 use GLib::Raw::Definitions;
+use GLib::Raw::Object;
 use GLib::Raw::Structs;
 use GLib::Raw::Subs;
 use GLib::Raw::Struct_Subs;
@@ -25,7 +26,7 @@ class GstPadding                 is repr<CStruct>     does GLib::Roles::Pointers
 }
 
 class GstObject                  is repr<CStruct>      does GLib::Roles::Pointers is export {
-  HAS GObjectStruct        $.object;  # GInitiallyUnowned
+  HAS GObject              $.object;  # GInitiallyUnowned
   HAS GMutex               $.lock;
   has Str                  $.name;
   has GstObject            $.parent;
@@ -156,6 +157,28 @@ class GstElement                 is repr<CStruct>      does GLib::Roles::Pointer
   has gpointer             $!gst_reserved1;
   has gpointer             $!gst_reserved2;
 }
+
+class GstBin                     is repr<CStruct>      does GLib::Roles::Pointers is export {
+  HAS GstElement $.element;
+
+  # Public, with LOCK
+  has gint       $.numchildren;
+  has GList      $.children;
+  has guint32    $.children_cookie;
+
+  has GstBus     $.child_bus;
+  has GList      $.messages;
+
+  has gboolean   $.polling;
+  has gboolean   $.state_dirty;
+
+  has gboolean   $.clock_dirty;
+  has GstClock   $.provided_clock;
+  has GstElement $.clock_provider;
+  # Private
+  has Pointer    $!priv;
+  HAS GstPadding $!padding;
+};
 
 class GstMessage                 is repr<CStruct>      does GLib::Roles::Pointers is export {
   HAS GstMiniObject        $!mini_object;
@@ -350,7 +373,9 @@ class GstPadTemplate             is repr<CStruct>     does GLib::Roles::Pointers
 class GstStaticCaps          is repr<CStruct>      does GLib::Roles::Pointers is export {
   has GstCaps              $.caps;
   has Str                  $.string;
-  HAS GstPadding           $!padding
+  HAS GstPadding           $!padding;
+
+  method Str { self.string }
 }
 
 # Test assumption: If the last element is HAS, it will be interpreted as if it were a NULL pointer.
@@ -667,6 +692,62 @@ class GstPaddingLarge            is repr<CStruct>  does GLib::Roles::Pointers is
   HAS GstPadding      $!padding4;
 }
 
+class GstPad                     is repr<CStruct>  does GLib::Roles::Pointers is export {
+  HAS GstObject                  $.object;
+  # Public
+  has gpointer                   $.element_private;
+  has GstPadTemplate             $.padtemplate;
+  has GstPadDirection            $.direction;
+  # Private
+  has GRecMutex                  $!stream_rec_lock;
+  has GstTask                    $!task;
+  has GCond                      $!block_cond;
+  has GHookList                  $!probes;
+  has GstPadMode                 $!mode;
+  has Pointer                    $!activatefunc;        #= GstPadActivateFunction
+  has gpointer                   $!activatedata;
+  has Pointer                    $!activatenotify;      #= GDestroyNotify
+  has Pointer                    $!activatemodefunc;    #= GstPadActivateModeFunction
+  has gpointer                   $!activatemodedata;
+  has Pointer                    $!activatemodenotify;  #= GDestroyNotify
+  # Pad Link
+  has GstPad                     $!peer;
+  has Pointer                    $!linkfunc;            #= GstPadLinkFunction
+  has gpointer                   $!linkdata;
+  has Pointer                    $!linknotify;          #= GDestroyNotify
+  has Pointer                    $!unlinkfunc;          #= GstPadUnlinkFunction
+  has gpointer                   $!unlinkdata;
+  has Pointer                    $!unlinknotify;        #= GDestroyNotify
+  # data transport functions
+  has Pointer                    $!chainfunc;           #= GstPadChainFunction
+  has gpointer                   $!chaindata;
+  has Pointer                    $!chainnotify;         #= GDestroyNotify
+  has Pointer                    $!chainlistfunc;       #= GstPadChainListFunction
+  has gpointer                   $!chainlistdata;
+  has Pointer                    $!chainlistnotify;     #= GDestroyNotify
+  has Pointer                    $!getrangefunc;        #= GstPadGetRangeFunction
+  has gpointer                   $!getrangedata;
+  has Pointer                    $!getrangenotify;      #= GDestroyNotify
+  has Pointer                    $!eventfunc;           #= GstPadEventFunction
+  has gpointer                   $!eventdata;
+  has Pointer                    $!eventnotify;         #= GDestroyNotify
+  # pad offset
+  has gint64                     $!offset;
+  # generic query method
+  has Pointer                    $!queryfunc;           #= GstPadQueryFunction
+  has gpointer                   $!querydata;
+  has Pointer                    $!querynotify;         #= GDestroyNotify
+  # internal links
+  has gpointer                   $!iterintlinkfunc;     #= GstPadIterIntLinkFunction
+  has gpointer                   $!iterintlinkdata;
+  has Pointer                    $!iterintlinknotify;   #= GDestroyNotify
+  # counts number of probes attached
+  has gint                       $!num_probes;
+  has gint                       $!num_blocked;
+  has Pointer                    $!priv;
+  HAS GstPadding                 $!padding;
+}
+
 class GstCollectData             is repr<CStruct>  does GLib::Roles::Pointers is export {
   # with STREAM_LOCK of @collect
   has GstCollectPads            $.collect;
@@ -911,7 +992,7 @@ class GstVideoSink               is repr<CStruct>    does GLib::Roles::Pointers 
 }
 
 class GstColorBalanceChannel     is repr<CStruct>    does GLib::Roles::Pointers is export {
-  HAS GObjectStruct        $!parent;
+  HAS GObject              $!parent;
   has Str                  $!label;
   has gint                 $.min_value is rw;
   has gint                 $.max_value is rw;
@@ -1774,3 +1855,16 @@ class GstNetTimeProvider         is repr<CStruct>  does GLib::Roles::Pointers is
   has Pointer     $!priv;
   HAS GstPadding  $!padding;
 };
+
+class GstTypeFind                is repr<CStruct>  does GLib::Roles::Pointers is export {
+  has Pointer     $!peek;       #= (gpointer         data,
+                                #=  gint64           offset,
+                                #=  guint            size --> CArray[guint8])
+  has Pointer     $!suggest;    #= (gpointer         data,
+                                #=  guint            probability,
+                                #=  GstCaps         *caps)
+  has gpointer    $!data;
+  # Optional
+  has Pointer     $!get_length; #= (gpointer data --> guint64);
+  HAS GstPadding  $!padding;
+}
