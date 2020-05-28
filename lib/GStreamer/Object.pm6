@@ -13,7 +13,7 @@ use GLib::Roles::Object;
 class GStreamer::Object {
   also does GLib::Roles::Object;
 
-  has GstObject $!gst-o;
+  has GstObject $!gst-o handles <flags>;
 
   submethod BUILD (:$object) {
     self.setGstObject($object) if $object;
@@ -46,6 +46,9 @@ class GStreamer::Object {
   method deep-notify {
     self.connect-deep-notify($!gst-o);
   }
+
+  method flag_set($f) { (self.flags +& $f).so }
+  method flag-set($f) {  self.flag_set($f)    }
 
   method control_rate is rw is also<control-rate> {
     Proxy.new(
