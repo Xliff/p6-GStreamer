@@ -500,6 +500,15 @@ our enum GstPadProbeTypeEnum is export (
   GST_PAD_PROBE_TYPE_SCHEDULING       => (1 +< 12) +| (1 +< 13)
 );
 
+constant GstParamSpec is export := gint32;
+our enum GstParamSpecEnum is export (
+  GST_PARAM_CONTROLLABLE    => 1 +< (G_PARAM_USER_SHIFT + 1),
+  GST_PARAM_MUTABLE_READY   => 1 +< (G_PARAM_USER_SHIFT + 2),
+  GST_PARAM_MUTABLE_PAUSED  => 1 +< (G_PARAM_USER_SHIFT + 3),
+  GST_PARAM_MUTABLE_PLAYING => 1 +< (G_PARAM_USER_SHIFT + 4),
+  GST_PARAM_USER_SHIFT      => 1 +< (G_PARAM_USER_SHIFT + 8)
+);
+
 constant GstParseError is export := guint;
 our enum GstParseErrorEnum is export <
   GST_PARSE_ERROR_SYNTAX
@@ -1582,18 +1591,18 @@ our enum GstTagDemuxResultEnum is export <
 
 constant GstTagLicenseFlags is export := guint32;
 our enum GstTagLicenseFlagsEnum is export (
-  GST_TAG_LICENSE_PERMITS_REPRODUCTION             =>  (1 +< 0),
-  GST_TAG_LICENSE_PERMITS_DISTRIBUTION             =>  (1 +< 1),
-  GST_TAG_LICENSE_PERMITS_DERIVATIVE_WORKS         =>  (1 +< 2),
-  GST_TAG_LICENSE_PERMITS_SHARING                  =>  (1 +< 3),
-  GST_TAG_LICENSE_REQUIRES_NOTICE                  =>  (1 +< 8),
-  GST_TAG_LICENSE_REQUIRES_ATTRIBUTION             =>  (1 +< 9),
-  GST_TAG_LICENSE_REQUIRES_SHARE_ALIKE             => (1 +< 10),
-  GST_TAG_LICENSE_REQUIRES_SOURCE_CODE             => (1 +< 11),
-  GST_TAG_LICENSE_REQUIRES_COPYLEFT                => (1 +< 12),
-  GST_TAG_LICENSE_REQUIRES_LESSER_COPYLEFT         => (1 +< 13),
-  GST_TAG_LICENSE_PROHIBITS_COMMERCIAL_USE         => (1 +< 16),
-  GST_TAG_LICENSE_PROHIBITS_HIGH_INCOME_NATION_USE => (1 +< 17),
-  GST_TAG_LICENSE_CREATIVE_COMMONS_LICENSE         => (1 +< 24),
-  GST_TAG_LICENSE_FREE_SOFTWARE_FOUNDATION_LICENSE => (1 +< 25),
+  GST_TAG_LICENSE_PERMITS_REPRODUCTION             => 1 +<  0,
+  GST_TAG_LICENSE_PERMITS_DISTRIBUTION             => 1 +<  1,
+  GST_TAG_LICENSE_PERMITS_DERIVATIVE_WORKS         => 1 +<  2,
+  GST_TAG_LICENSE_PERMITS_SHARING                  => 1 +<  3,
+  GST_TAG_LICENSE_REQUIRES_NOTICE                  => 1 +<  8,
+  GST_TAG_LICENSE_REQUIRES_ATTRIBUTION             => 1 +<  9,
+  GST_TAG_LICENSE_REQUIRES_SHARE_ALIKE             => 1 +< 10,
+  GST_TAG_LICENSE_REQUIRES_SOURCE_CODE             => 1 +< 11,
+  GST_TAG_LICENSE_REQUIRES_COPYLEFT                => 1 +< 12,
+  GST_TAG_LICENSE_REQUIRES_LESSER_COPYLEFT         => 1 +< 13,
+  GST_TAG_LICENSE_PROHIBITS_COMMERCIAL_USE         => 1 +< 16,
+  GST_TAG_LICENSE_PROHIBITS_HIGH_INCOME_NATION_USE => 1 +< 17,
+  GST_TAG_LICENSE_CREATIVE_COMMONS_LICENSE         => 1 +< 24,
+  GST_TAG_LICENSE_FREE_SOFTWARE_FOUNDATION_LICENSE => 1 +< 25,
 );
