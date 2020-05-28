@@ -82,7 +82,7 @@ class GstAllocationParams         is repr<CPointer> does GLib::Roles::Pointers i
 class GstAtomicQueue              is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GstAudioConverter           is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GstAudioStreamAlign         is repr<CPointer> does GLib::Roles::Pointers is export { }
-class GstBin                      is repr<CPointer> does GLib::Roles::Pointers is export { }
+#class GstBin                      is repr<CPointer> does GLib::Roles::Pointers is export { }
 #class GstBuffer                   is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GstBufferList               is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GstBufferPool               is repr<CPointer> does GLib::Roles::Pointers is export { }
@@ -184,7 +184,8 @@ constant GST_ELEMENT_METADATA_DOC_URI     is export = 'doc-uri';
 constant GST_ELEMENT_METADATA_ICON_NAME   is export = 'icon-name';
 constant GST_ELEMENT_METADATA_KLASS       is export = 'klass';
 
-constant GST_PADDING = 4;
+constant GST_PADDING       = 4;
+constant GST_PADDING_LARGE = 20;
 
 constant GST_VIDEO_MAX_PLANES         is export = 4;
 constant GST_VIDEO_MAX_COMPONENTS     is export = 4;
