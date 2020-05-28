@@ -47,6 +47,7 @@ sub gst_element_call_async (
   is export
 { * }
 
+# Will need STATE lock!
 sub gst_element_change_state (
   GstElement $element,
   guint $transition # GstStateChange $transition
@@ -55,97 +56,6 @@ sub gst_element_change_state (
   is native(gstreamer)
   is export
 { * }
-
-# sub gst_element_class_add_metadata (
-#   GstElementClass $klass,
-#   Str $key,
-#   Str $value
-# )
-#   is native(gstreamer)
-#   is export
-# { * }
-#
-# sub gst_element_class_add_pad_template (
-#   GstElementClass $klass,
-#   GstPadTemplate $templ
-# )
-#   is native(gstreamer)
-#   is export
-# { * }
-#
-# sub gst_element_class_add_static_metadata (
-#   GstElementClass $klass,
-#   Str $key,
-#   Str $value
-# )
-#   is native(gstreamer)
-#   is export
-# { * }
-#
-# sub gst_element_class_add_static_pad_template (
-#   GstElementClass $klass,
-#   GstStaticPadTemplate $static_templ
-# )
-#   is native(gstreamer)
-#   is export
-# { * }
-#
-# sub gst_element_class_add_static_pad_template_with_gtype (
-#   GstElementClass $klass,
-#   GstStaticPadTemplate $static_templ,
-#   GType $pad_type
-# )
-#   is native(gstreamer)
-#   is export
-# { * }
-#
-# sub gst_element_class_get_metadata (
-#   GstElementClass $klass,
-#   Str $key
-# )
-#   returns Str
-#   is native(gstreamer)
-#   is export
-# { * }
-#
-# sub gst_element_class_get_pad_template (
-#   GstElementClass $element_class,
-#   Str $name
-# )
-#   returns GstPadTemplate
-#   is native(gstreamer)
-#   is export
-# { * }
-#
-# sub gst_element_class_get_pad_template_list (
-#   GstElementClass $element_class
-# )
-#   returns GList
-#   is native(gstreamer)
-#   is export
-# { * }
-#
-# sub gst_element_class_set_metadata (
-#   GstElementClass $klass,
-#   Str $longname,
-#   Str $classification,
-#   Str $description,
-#   Str $author
-# )
-#   is native(gstreamer)
-#   is export
-# { * }
-#
-# sub gst_element_class_set_static_metadata (
-#   GstElementClass $klass,
-#   Str $longname,
-#   Str $classification,
-#   Str $description,
-#   Str $author
-# )
-#   is native(gstreamer)
-#   is export
-# { * }
 
 sub gst_element_continue_state (
   GstElement $element,
