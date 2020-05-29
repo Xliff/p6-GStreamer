@@ -8,6 +8,8 @@ use GStreamer::Raw::Types;
 
 use GStreamer::Object;
 
+use GLib::Roles::Object;
+
 our subset GstTracerAncestry is export of Mu
   where GstTracer | GstObject;
 
@@ -39,8 +41,32 @@ class GStreamer::Tracer is GStreamer::Object {
     is also<GstTracer>
   { $!t }
 
-  method new (GstTracerAncestry $tracer) {
+  multi method new (GstTracerAncestry $tracer) {
     $tracer ?? self.bless( :$tracer ) !! Nil;
+  }
+  multi method new {
+    my $tracer = cast(
+      GstTracer,
+      GLib::Roles::Object.new-object-ptr( GStreamer::Tracer.get-type )
+    );
+
+    $tracer ?? self.bless( :$tracer ) !! Nil;
+  }
+
+  # Type: gchar
+  method params is rw  {
+    my $gv = GLib::Value.new( G_TYPE_STRING );
+    Proxy.new(
+      FETCH => sub ($) {
+        $gv = GLib::Value.new(
+          self.prop_get('params', $gv)
+        );
+        $gv.string;
+      },
+      STORE => -> $, Str() $val is copy {
+        warn 'params is a construct-only attribute'
+      }
+    );
   }
 
   method get_type is also<get-type> {
