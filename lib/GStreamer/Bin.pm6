@@ -19,7 +19,7 @@ class GStreamer::Bin is GStreamer::Element {
   also does GStreamer::Roles::ChildProxy;
   also does GStreamer::Roles::Signals::Bin;
 
-  has GstBin $!b;
+  has GstBin $!b handles <numchildren children_cookie>;
 
   submethod BUILD (:$bin) {
     self.setBin($bin) if $bin.defined;
@@ -61,6 +61,49 @@ class GStreamer::Bin is GStreamer::Element {
     my $bin = gst_bin_new($name);
 
     $bin ?? self.bless( :$bin ) !! Nil;
+  }
+
+  method children (:$glist = False, :$raw = False) {
+    return Nil          unless $!b.children;
+    return $!b.children if     $glist && $raw;
+
+    my $cl = GLib::GList.new($!b.children)
+      but GLib::Roles::ListData[GstElement];
+    return if $glist;
+
+    $raw ?? $cl.Array
+         !! $cl.Array.map({ GStreamer::Element.new($_) });
+  }
+
+  method child-bus (:$raw = False) {
+    $!b.child-bus ??
+      ( $raw ?? $!b.child-bus !! GStreamer::Bus.new($!b.child-bus) )
+      !!
+      Nil;
+  }
+
+  method messages (:$glist = False, :$raw = False) {
+    return Nil          unless $!b.messages;
+    return $!b.messages if     $glist && $raw;
+
+    my $cl = GLib::GList.new($!b.messages)
+      but GLib::Roles::ListData[GstMessage];
+    return if $glist;
+
+    $raw ?? $cl.Array
+         !! $cl.Array.map({ GStreamer::Message.new($_) });
+  }
+
+  method polling {
+    so $!b.polling;
+  }
+
+  method state_dirty is also<state-dirty> {
+    so $!b.state_dirty;
+  }
+
+  method clock_dirty is also<clock-dirty> {
+    so $!b.clock-dirty;
   }
 
   method suppressed_flags is rw is also<suppressed-flags> {
