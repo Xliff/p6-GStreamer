@@ -23,7 +23,6 @@ class GStreamer::Plugin is GStreamer::Object {
   }
 
   method setPlugin(PluginAncestry $_) {
-    # cw[1]: ...could be used to automate/abstract this?
     my $to-parent;
 
     $!p = do {
@@ -37,13 +36,14 @@ class GStreamer::Plugin is GStreamer::Object {
         cast(GstPlugin, $_);
       }
     }
+    self.setGstObject($to-parent);
   }
 
   method new (GstPlugin $plugin) {
     $plugin ?? self.bless( :$plugin ) !! Nil;
   }
 
-  method GStreamer::Raw::Types::GstPlugin
+  method GStreamer::Raw::Definitions::GstPlugin
     is also<GstPlugin>
   { $!p }
 
