@@ -2,7 +2,7 @@ use v6.c;
 
 use NativeCall;
 
-use GLib::Object::Class::Object;
+use GLib::Class::Object;
 use GStreamer::Raw::Types;
 
 use GLib::Roles::Pointers;
