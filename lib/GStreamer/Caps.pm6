@@ -385,7 +385,7 @@ class GStreamer::Caps is GStreamer::MiniObject {
 }
 
 class GStreamer::StaticCaps {
-  has GstStaticCaps $!sc handles<string>;
+  has GstStaticCaps $!sc handles<string Str>;
 
   submethod BUILD (:$static-caps) {
     $!sc = $static-caps;
