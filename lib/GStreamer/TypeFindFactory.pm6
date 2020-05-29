@@ -9,7 +9,7 @@ use GStreamer::PluginFeature;
 
 use GLib::Roles::ListData;
 
-our GstTypeFindFactoryAncestry is export of Mu
+our subset GstTypeFindFactoryAncestry is export of Mu
   where GstTypeFindFactory | GstPluginFeatureAncestry;
 
 class GStreamer::TypeFindFactory is GStreamer::PluginFeature {
