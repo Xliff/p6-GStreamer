@@ -13,6 +13,7 @@ use GStreamer::DeviceProviderFactory;
 use GStreamer::Element;
 use GStreamer::ElementFactory;
 use GStreamer::Main;
+use GStreamer::Plugin;
 use GStreamer::Registry;
 use GStreamer::TracerFactory;
 use GStreamer::TypeFindFactory;
@@ -21,15 +22,15 @@ use GStreamer::Value;
 use GStreamer::Roles::Preset;
 use GStreamer::Roles::URIHandler;
 
-constant BLUE       = "\033[34m";
-constant BRBLUE     = "\033[94m";
-constant BRCYAN     = "\033[96m";
-constant BRMAGENTA  = "\033[95m";
-constant BRYELLOW   = "\033[33m";
-constant CYAN       = "\033[36m";
-constant GREEN      = "\033[32m";
-constant MAGENTA    = "\033[35m";
-constant YELLOW     = "\033[33m";
+constant BLUE       = "\e[34m";
+constant BRBLUE     = "\e[94m";
+constant BRCYAN     = "\e[96m";
+constant BRMAGENTA  = "\e[95m";
+constant BRYELLOW   = "\e[33m";
+constant CYAN       = "\e[36m";
+constant GREEN      = "\e[32m";
+constant MAGENTA    = "\e[35m";
+constant YELLOW     = "\e[33m";
 
 constant DEFAULT_PAGER      = 'less';
 constant DEFAULT_PAGER_OPTS = 'RXF';
@@ -43,28 +44,28 @@ constant GST_OBJECT_TYPE        = GStreamer::Object.get-type;
 constant BIN_TYPE               = GStreamer::Bin.get-type;
 constant VALUE_ARRAY_TYPE       = value-array-get-type;
 
-sub HEADING_COLOR         { $*co ?? BRYELLOW      !! ''  }
-sub RESET_COLOR           { $*co ?? "\033[0m"     !! ''  }
-sub PROP_NAME_COLOR       { $*co ?? BRBLUE        !! ''  }
-sub PROP_VALUE_COLOR      { $*co ?? RESET_COLOR() !! ''  }
-sub PROP_ATTR_NAME_COLOR  { $*co ?? BRYELLOW      !! ''  }
-sub PROP_ATTR_VALUE_COLOR { $*co ?? CYAN          !! ''  }
-sub DESC_COLOR            { $*co ?? RESET_COLOR() !! ''  }
-sub DATATYPE_COLOR        { $*co ?? GREEN         !! ''  }
-sub CHILD_LINK_COLOR      { $*co ?? BRMAGENTA     !! ''  }
-sub FIELD_NAME_COLOR      { $*co ?? CYAN          !! ''  }
-sub FIELD_VALUE_COLOR     { $*co ?? BRBLUE        !! ''  }
-sub CAPS_TYPE_COLOR       { $*co ?? YELLOW        !! ''  }
-sub STRUCT_NAME_COLOR     { $*co ?? YELLOW        !! ''  }
-sub CAPS_FEATURE_COLOR    { $*co ?? GREEN         !! ''  }
-sub PLUGIN_NAME_COLOR     { $*co ?? BRBLUE        !! ''  }
-sub ELEMENT_NAME_COLOR    { $*co ?? GREEN         !! ''  }
-sub ELEMENT_DETAIL_COLOR  { $*co ?? RESET_COLOR() !! ''  }
-sub PLUGIN_FEATURE_COLOR  { $*co ?? BRBLUE        !! ''  }
-sub FEATURE_NAME_COLOR    { $*co ?? GREEN         !! ''  }
-sub FEATURE_DIR_COLOR     { $*co ?? BRMAGENTA     !! ''  }
-sub FEATURE_RANK_COLOR    { $*co ?? CYAN          !! ''  }
-sub FEATURE_PROTO_COLOR   { $*co ?? BRYELLOW      !! ''  }
+sub HEADING_COLOR         { $*co ?? BRYELLOW       !! ''  }
+sub RESET_COLOR           { $*co ?? "\e[0m"        !! ''  }
+sub PROP_NAME_COLOR       { $*co ?? BRBLUE         !! ''  }
+sub PROP_VALUE_COLOR      { $*co ?? RESET_COLOR()  !! ''  }
+sub PROP_ATTR_NAME_COLOR  { $*co ?? BRYELLOW       !! ''  }
+sub PROP_ATTR_VALUE_COLOR { $*co ?? CYAN           !! ''  }
+sub DESC_COLOR            { $*co ?? RESET_COLOR()  !! ''  }
+sub DATATYPE_COLOR        { $*co ?? GREEN          !! ''  }
+sub CHILD_LINK_COLOR      { $*co ?? BRMAGENTA      !! ''  }
+sub FIELD_NAME_COLOR      { $*co ?? CYAN           !! ''  }
+sub FIELD_VALUE_COLOR     { $*co ?? BRBLUE         !! ''  }
+sub CAPS_TYPE_COLOR       { $*co ?? YELLOW         !! ''  }
+sub STRUCT_NAME_COLOR     { $*co ?? YELLOW         !! ''  }
+sub CAPS_FEATURE_COLOR    { $*co ?? GREEN          !! ''  }
+sub PLUGIN_NAME_COLOR     { $*co ?? BRBLUE         !! ''  }
+sub ELEMENT_NAME_COLOR    { $*co ?? GREEN          !! ''  }
+sub ELEMENT_DETAIL_COLOR  { $*co ?? RESET_COLOR()  !! ''  }
+sub PLUGIN_FEATURE_COLOR  { $*co ?? BRBLUE         !! ''  }
+sub FEATURE_NAME_COLOR    { $*co ?? GREEN          !! ''  }
+sub FEATURE_DIR_COLOR     { $*co ?? BRMAGENTA      !! ''  }
+sub FEATURE_RANK_COLOR    { $*co ?? CYAN           !! ''  }
+sub FEATURE_PROTO_COLOR   { $*co ?? BRYELLOW       !! ''  }
 
 my $pager      = %*ENV<DEFAULT_PAGER>       // DEFAULT_PAGER;
 my $pager-opts = %*ENV<DEFAULT_PAGER_OPTS>  // DEFAULT_PAGER_OPTS;
@@ -102,9 +103,12 @@ sub max (:&by = {$_}, :$all!, *@list) {
   @list[ @values.kv.map: {$^index unless $^value cmp $max} ];
 }
 
-sub n-print ($format?, *@args) {
-  print "\n" unless $format;
-  print sprintf("{ $name ?? $name !! '' }{ ' ' x $indent }$format", |@args);
+sub n-print ($format?) {
+  unless $format {
+    print "\n";
+    return;
+  }
+  print "{ $name ?? $name !! '' }{ ' ' x $indent }{ $format // '' }";
 }
 
 sub print-field ($f, $v, $pfx) {
@@ -154,24 +158,26 @@ sub get-rank-name ($r) {
 sub print-factory-details-info ($f) {
   my $rank = $f.rank;
 
-  n-print "{ HEADING_COLOR }Factory Details:{ RESET_COLOR }";
+  n-print "{ HEADING_COLOR } Factory Details:{ RESET_COLOR }\n";
   push-indent;
   n-print "{ PROP_NAME_COLOR }{ "Rank".fmt('%-25s') }{ PROP_VALUE_COLOR }{
-            get-rank-name($rank) }{ $rank }{ RESET_COLOR }";
+            get-rank-name($rank) } ({ $rank }){ RESET_COLOR }\n";
   if $f.get-metadata-keys -> $keys {
     for $keys[] {
       my $val = $f.get_metadata($_);
       n-print "{ PROP_NAME_COLOR }{ .uc.fmt('%-25s') }{ PROP_VALUE_COLOR }{ $val
-                }{  RESET_COLOR }";
+    }{  RESET_COLOR }\n";
     }
   }
   pop-indent;
   n-print;
 }
 
-sub print-hierarchy ($t, $l, $ml is rw) {
+sub print-hierarchy ($t, $l is copy, $ml is rw) {
   my $parent = $t.parent;
   $ml++ && $l++;
+
+  print '.';
 
   print-hierarchy($t, $l, $ml) if $parent;
   print "{ DATATYPE_COLOR }{ $name }{ RESET_COLOR }" if $name;
@@ -766,7 +772,7 @@ sub print-element-list ($pa, $ft) {
   @types = $ft.split('/').map( *.uc ) if $ft;
 
   my %counts;
-  for $reg.get-plugin-list[] -> $plugin {
+  for $reg.get-plugin-list -> $plugin {
     %counts<plugin>++;
     if $plugin.flag-set(GST_PLUGIN_FLAG_BLACKLISTED) {
       %counts<blacklist>++;
@@ -881,37 +887,38 @@ sub print-all-uri-handlers {
 }
 
 sub print-plugin-info ($p) {
-  n-print "{ PROP_NAME_COLOR }Plugin Details{ RESET_COLOR }:\n";
+  n-print " { HEADING_COLOR }Plugin Details{ RESET_COLOR }:\n";
   push-indent;
-  n-print "{ PROP_NAME_COLOR }Name{ RESET_COLOR }{ PROP_VALUE_COLOR }{
-              $p.name.fmt('%-25s') }{ RESET_COLOR }\n";
-  n-print "{ PROP_NAME_COLOR }Description{ RESET_COLOR }{ PROP_VALUE_COLOR }{
-              $p.description.fmt('%-25s') }{ RESET_COLOR }\n";
-  n-print "{ PROP_NAME_COLOR }Filename{ RESET_COLOR }{ PROP_VALUE_COLOR }{
-              ($p.filename // '(null)').fmt('%-25s') }{ RESET_COLOR }\n";
-  n-print "{ PROP_NAME_COLOR }Version{ RESET_COLOR }{ PROP_VALUE_COLOR }{
-              $p.version.fmt('%-25s') }{ RESET_COLOR }\n";
-  n-print "{ PROP_NAME_COLOR }License{ RESET_COLOR }{ PROP_VALUE_COLOR }{
-              $p.license.fmt('%-25s') }{ RESET_COLOR }\n";
-  n-print "{ PROP_NAME_COLOR }Source module{ RESET_COLOR }{ PROP_VALUE_COLOR }{
-              $p.source.fmt('%-25s') }{ RESET_COLOR }\n";
+  n-print "{ PROP_NAME_COLOR }{ 'Name'.fmt('%-25s') }{ RESET_COLOR }{
+             PROP_VALUE_COLOR }{ $p.name }{ RESET_COLOR }\n";
+  n-print "{ PROP_NAME_COLOR }{ 'Description'.fmt('%-25s') }{ RESET_COLOR }{
+             PROP_VALUE_COLOR }{ $p.description }{ RESET_COLOR }\n";
+  n-print "{ PROP_NAME_COLOR }{ 'Filename'.fmt('%-25s') }{ RESET_COLOR }{
+             PROP_VALUE_COLOR }{ ($p.filename // '(null)') }{ RESET_COLOR }\n";
+  n-print "{ PROP_NAME_COLOR }{ 'Version'.fmt('%-25s') }{ RESET_COLOR }{
+             PROP_VALUE_COLOR }{ $p.version }{ RESET_COLOR }\n";
+  n-print "{ PROP_NAME_COLOR }{ 'License'.fmt('%-25s') }{ RESET_COLOR }{
+             PROP_VALUE_COLOR }{ $p.license }{ RESET_COLOR }\n";
+  n-print "{ PROP_NAME_COLOR }{ 'Source module'.fmt('%-25s') }{ RESET_COLOR }{
+             PROP_VALUE_COLOR }{ $p.source }{ RESET_COLOR }\n";
 
   # may be: YYYY-MM-DD or YYYY-MM-DDTHH:MMZ
   # YYYY-MM-DDTHH:MMZ => YYYY-MM-DD HH:MM (UTC)
-  if $p.release-date -> $rd {
+  if $p.release-date-string -> $rd {
     my $tz = '(UTC)';
     if $rd.contains('T') {
       $rd ~~ tr/TZ/ /;
     } else {
       $tz = '';
     }
-    n-print "{ PROP_NAME_COLOR }Source release date{ RESET_COLOR }{
-                PROP_VALUE_COLOR }{ $rd.fmt('%-25s') }{ $tz }{ RESET_COLOR }\n";
+    n-print "{ PROP_NAME_COLOR }{ 'Source release date'.fmt('%-25s') }{
+               RESET_COLOR }{ PROP_VALUE_COLOR }{ $rd }{ $tz }{
+               RESET_COLOR }\n";
   }
-  n-print "{ PROP_NAME_COLOR }Binary package{ RESET_COLOR }{
-              PROP_VALUE_COLOR }{ $p.package.fmt('%-25s') }{ RESET_COLOR }\n";
-  n-print "{ PROP_NAME_COLOR }Origin URL{ RESET_COLOR }{ PROP_VALUE_COLOR }{
-              $p.origin.fmt('%-25s') }{ RESET_COLOR }\n";
+  n-print "{ PROP_NAME_COLOR }{ 'Binary package'.fmt('%-25s') }{ RESET_COLOR }{
+             PROP_VALUE_COLOR }{ $p.package }{ RESET_COLOR }\n";
+  n-print "{ PROP_NAME_COLOR }{ 'Origin URL'.fmt('%-25s') }{ RESET_COLOR }{
+             PROP_VALUE_COLOR }{ $p.origin }{ RESET_COLOR }\n";
   pop-indent;
   n-print;
 }
@@ -993,7 +1000,7 @@ sub print-feature-info ($fn, $pa) {
 }
 
 sub print-element-info ($f, $pn) {
-  unless ( my $pf = GStreamer::PluginFeature.load($f) ) {
+  unless ( my $pf = $f.load ) {
     die "Could not load plugin feature '{ $f }'!";
   }
 
@@ -1008,7 +1015,7 @@ sub print-element-info ($f, $pn) {
     return -1;
   }
 
-  $name = $pn ?? "{ DATATYPE_COLOR }$factory.name{ RESET_COLOR }" !! Str;
+  $name = $pn ?? "{ DATATYPE_COLOR }{ $factory.name }{ RESET_COLOR }" !! Str;
   print-factory-details-info($factory);
 
   my $maxlevel;
@@ -1237,11 +1244,12 @@ sub MAIN (
 
   my $loop;
   $no-colors //= %*ENV<GST_INSPECT_NO_COLORS>.so;
-  if isatty($*OUT.native-descriptor) {
-    $loop = GLib::MainLoop.new if redirect-stdout;
-  } else {
-    $no-colors = True;
-  }
+  # if isatty($*OUT.native-descriptor) {
+  #   $loop = GLib::MainLoop.new if redirect-stdout;
+  # } else {
+  #   $no-colors = True;
+  # }
+  $loop = GLib::MainLoop.new;
   my $*co = $no-colors.not;
 
   if $uri-handlers {
@@ -1289,7 +1297,7 @@ sub MAIN (
 
   LAST {
     if $loop {
-      for $*OUT, $*ERR { .flush; .close }
+      # for $*OUT, $*ERR { .flush; .close }
       GLib::MainLoop.child-watch-add($*child_pid, -> *@a {
         GLib::Spawn.close($*child-pid);
         $loop.quit
