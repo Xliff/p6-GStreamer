@@ -67,15 +67,36 @@ class GstElementClass is repr<CStruct> does GLib::Roles::Pointers is export {
 }
 
 use GLib::GList;
+use GLib::Class::Object;
 use GStreamer::PadTemplate;
 
 use GLib::Roles::ListData;
 
-class GStreamer::Element::Class {
+our subset GstElementClassAncestry is export of Mu
+  where GstElementClass | GObjectClass;
+
+class GStreamer::Class::Element is GLib::Class::Object {
   has GstElementClass $!ec;
 
   submethod BUILD (:$element-class) {
-    $!ec = $element-class;
+    self.setGstElementClass($element-class);
+  }
+
+  method setGstElementClass (GstElementClassAncestry $_) {
+    my $to-parent;
+
+    $!ec = do {
+      when GstElementClass {
+        $to-parent = cast(GObjectClass, $_);
+        $_;
+      }
+
+      default {
+        $to-parent = $_;
+        cast(GstElementClass, $_);
+      }
+    }
+    self.setObjectClass($to-parent);
   }
 
   method new (GstElementClass $element-class) {
