@@ -7,6 +7,7 @@ use GStreamer::Raw::Types;
 use GStreamer::Raw::Element;
 use GStreamer::Raw::Utils;
 
+use GLib::GList;
 use GStreamer::Bus;
 use GStreamer::Clock;
 use GStreamer::Context;
@@ -17,6 +18,7 @@ use GStreamer::PadTemplate;
 
 use GStreamer::Class::Element;
 
+use GLib::Roles::ListData;
 use GStreamer::Roles::Signals::Element;
 
 our subset GstElementAncestry is export of Mu
@@ -52,8 +54,8 @@ class GStreamer::Element is GStreamer::Object {
     is also<GstElement>
   { $!e }
 
-  method getClass is default {
-    nextwith(GstElementClass, GStreamer::Class::Element)
+  method getClass (:$raw = False) is default {
+    self._getClass(GstElementClass, GStreamer::Class::Element, :$raw);
   }
 
   method new (GstElementAncestry $element) {
