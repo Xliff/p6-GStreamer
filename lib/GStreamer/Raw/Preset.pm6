@@ -80,3 +80,9 @@ sub gst_preset_set_meta (GstPreset $preset, Str $name, Str $tag, Str $value)
   is native(gstreamer)
   is export
 { * }
+
+sub gst_preset_get_type ()
+  returns GType
+  is native(gstreamer)
+  is export
+{ * }

@@ -88,3 +88,12 @@ role GStreamer::Roles::Preset {
   }
 
 }
+
+sub preset_get_type is export {
+  state ($n, $t);
+  unstable_get_type( 'GstPreset', &gst_preset_get_type, $n, $t );
+}
+
+sub preset-get-type is export {
+  preset_get_type;
+}
