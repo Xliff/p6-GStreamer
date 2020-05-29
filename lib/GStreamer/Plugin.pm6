@@ -84,35 +84,76 @@ class GStreamer::Plugin is GStreamer::Object {
     gst_plugin_error_quark();
   }
 
-  method get_description is also<get-description> {
+  method get_description
+    is also<
+      get-description
+      description
+    >
+  {
     gst_plugin_get_description($!p);
   }
 
-  method get_filename is also<get-filename> {
+  method get_filename
+    is also<
+      get-filename
+      filename
+    >
+  {
     gst_plugin_get_filename($!p);
   }
 
-  method get_license is also<get-license> {
+  method get_license
+    is also<
+      get-license
+      license
+    >
+  {
     gst_plugin_get_license($!p);
   }
 
-  method get_name is also<get-name> {
+  method get_name
+    is also<
+      get-name
+      name
+    >
+  {
     gst_plugin_get_name($!p);
   }
 
-  method get_origin is also<get-origin> {
+  method get_origin
+    is also<
+      get-origin
+      origin
+    >
+  {
     gst_plugin_get_origin($!p);
   }
 
-  method get_package is also<get-package> {
+  method get_package
+    is also<
+      get-package
+      package
+    >
+  {
     gst_plugin_get_package($!p);
   }
 
-  method get_release_date_string is also<get-release-date-string> {
+  method get_release_date_string
+    is also<
+      get-release-date-string
+      release_date_string
+      release-date-string
+    >
+  {
     gst_plugin_get_release_date_string($!p);
   }
 
-  method get_source is also<get-source> {
+  method get_source
+    is also<
+      get-source
+      source
+    >
+  {
     gst_plugin_get_source($!p);
   }
 
@@ -122,7 +163,12 @@ class GStreamer::Plugin is GStreamer::Object {
     unstable_get_type( self.^name, &gst_plugin_get_type, $n, $t );
   }
 
-  method get_version is also<get-version> {
+  method get_version
+    is also<
+      get-version
+      version
+    >
+  {
     gst_plugin_get_version($!p);
   }
 
