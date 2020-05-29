@@ -16,7 +16,11 @@ our subset PadTemplateAncestry is export of Mu
 class GStreamer::PadTemplate is GStreamer::Object {
   also does GStreamer::Roles::Signals::Generic;
 
-  has GstPadTemplate $!pt;
+  has GstPadTemplate $!pt handles <
+    name_template name-template
+    direction
+    presence
+  >;
 
   submethod BUILD (:$template) {
     self.setPadTemplate($template);
@@ -97,7 +101,12 @@ class GStreamer::PadTemplate is GStreamer::Object {
     self.connect-pad($!pt, 'pad-created');
   }
 
-  method get_caps (:$raw = False) is also<get-caps> {
+  method get_caps (:$raw = False)
+    is also<
+      get-caps
+      caps
+    >
+  {
     my $c = gst_pad_template_get_caps($!pt);
 
     $c ??
@@ -119,7 +128,7 @@ class GStreamer::PadTemplate is GStreamer::Object {
 }
 
 class GStreamer::StaticPadTemplate {
-  has GstStaticPadTemplate $!spt handles <name_template>;
+  has GstStaticPadTemplate $!spt handles <name_template static_caps>;
 
   submethod BUILD (:$static-template) {
     $!spt = $static-template;
@@ -165,9 +174,9 @@ class GStreamer::StaticPadTemplate {
     GstPadPresenceEnum( $!spt.presence );
   }
 
-  # method static_caps (:$raw = False) is also<static-caps> {
-  #   $raw ?? $!spt.static_caps.defined !!
-  #           GStreamer::StaticCaps.new($!spt.static_caps);
-  # }
+  method static-caps (:$raw = False) {
+    $raw ?? self.static_caps
+         !! GStreamer::StaticCaps.new(self.static_caps);
+  }
 
 }
