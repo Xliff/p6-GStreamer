@@ -8,7 +8,7 @@ use GStreamer::Raw::PluginFeature;
 use GLib::GList;
 
 use GStreamer::Object;
-#use GStreamer::Plugin;
+use GStreamer::Plugin;
 
 our subset GstPluginFeatureAncestry is export of Mu
   where GstPluginFeature | GstObject;
@@ -17,7 +17,7 @@ class GStreamer::PluginFeature is GStreamer::Object {
   has GstPluginFeature $!pf;
 
   submethod BUILD (:$plugin-feature) {
-    self.setPluginFeature($plugin-feature) if $plugin-feature;
+    self.setGstPluginFeature($plugin-feature) if $plugin-feature;
   }
 
   method setGstPluginFeature (GstPluginFeatureAncestry $_) {
