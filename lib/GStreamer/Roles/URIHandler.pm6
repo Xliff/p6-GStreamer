@@ -19,12 +19,6 @@ role GStreamer::Roles::URIHandler {
     is also<GstURIHandler>
   { $!h }
 
-  method urihandler_get_type is also<urihandler-get-type> {
-    state ($n, $t);
-
-    unstable_get_type(self.^name, &gst_uri_handler_get_type, $n, $t)
-  }
-
   method get_uri is also<get-uri> {
     gst_uri_handler_get_uri($!h);
   }
@@ -45,4 +39,13 @@ role GStreamer::Roles::URIHandler {
     $rv;
   }
 
+}
+
+sub urihandler_get_type is export {
+  state ($n, $t);
+  unstable_get_type( 'GstURIHandler', &gst_uri_handler_get_type, $n, $t )
+}
+
+sub urihandler-get-type is export {
+  urihandler_get_type;
 }
