@@ -6,13 +6,16 @@ use GStreamer::Raw::Types;
 use GStreamer::Raw::Value;
 
 use GLib::Value;
+use GStreamer::Caps;
+use GStreamer::CapsFeatures;
+use GStreamer::Structure;
 
 class GStreamer::Value is GLib::Value {
 
   method bitmask is rw {
     Proxy.new(
       FETCH => sub ($) {
-        gst_value_get_bitmask( GStreamer::Value.bitmask_get_type );
+        gst_value_get_bitmask( self.gvalue );
       },
       STORE => sub ($, Int() $bitmask is copy) {
         my uint64 $b = $bitmask;
@@ -22,10 +25,15 @@ class GStreamer::Value is GLib::Value {
     );
   }
 
-  method caps is rw {
+  method caps (:$raw = False) is rw {
     Proxy.new(
       FETCH => sub ($) {
-        gst_value_get_caps( GStreamer::Caps.get_type );
+        my $c = gst_value_get_caps( self.gvalue );
+
+        $c ??
+          ( $raw ?? $c !! GStreamer::Caps.new($c) )
+          !!
+          Nil;
       },
       STORE => sub ($, GstCaps() $caps is copy) {
         gst_value_set_caps(self.gvalue, $caps);
@@ -33,10 +41,15 @@ class GStreamer::Value is GLib::Value {
     );
   }
 
-  method caps_features is rw is also<caps-features> {
+  method caps_features (:$raw = False) is rw is also<caps-features> {
     Proxy.new(
       FETCH => sub ($) {
-        gst_value_get_caps_features( GStreamer::CapsFeatures.get_type );
+        my $cf = gst_value_get_caps_features( self.gvalue );
+
+        $cf ??
+          ( $raw ?? $cf !! GStreamer::CapsFeatures.new($cf) )
+          !!
+          Nil;
       },
       STORE => sub ($, GstCapsFeatures() $features is copy) {
         gst_value_set_caps_features(self.gvalue, $features);
@@ -44,10 +57,15 @@ class GStreamer::Value is GLib::Value {
     );
   }
 
-  method structure is rw {
+  method structure (:$raw = False) is rw {
     Proxy.new(
       FETCH => sub ($) {
-        gst_value_get_structure( GStreamer::Structure.get_type );
+        my $s = gst_value_get_structure( self.gvalue );
+
+        $s ??
+          ( $raw ?? $s !! GStreamer::Structure.new($s) )
+          !!
+          Nil;
       },
       STORE => sub ($, GstStructure() $structure is copy) {
         gst_value_set_structure(self.gvalue, $structure);
