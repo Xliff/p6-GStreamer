@@ -1,11 +1,16 @@
 use v6.c;
 
+use Method::Also;
+
 use NativeCall;
 
 use GStreamer::Raw::Types;
 use GStreamer::Class::Object;
 
+use GLib::GList;
+
 use GLib::Roles::Pointers;
+use GLib::Roles::ListData;
 
 class GstElementClass is repr<CStruct> does GLib::Roles::Pointers is export {
   HAS GstObjectClass        $.parent_class;
@@ -77,26 +82,36 @@ class GStreamer::Element::Class {
     $element-class ?? self.bless( :$element-class ) !! Nil;
   }
 
-  method add_metadata (Str() $key, Str() $value) {
+  method add_metadata (Str() $key, Str() $value)
+    is also<add-metadata>
+  {
     gst_element_class_add_metadata($!ec, $key, $value);
   }
 
-  method add_pad_template (GstPadTemplate() $templ) {
+  method add_pad_template (GstPadTemplate() $templ)
+    is also<add-pad-template>
+  {
     gst_element_class_add_pad_template($!ec, $templ);
   }
 
-  method add_static_metadata (Str() $key, Str() $value) {
+  method add_static_metadata (Str() $key, Str() $value)
+    is also<add-static-metadata>
+  {
     gst_element_class_add_static_metadata($!ec, $key, $value);
   }
 
-  method add_static_pad_template (GstStaticPadTemplate() $static_templ) {
+  method add_static_pad_template (GstStaticPadTemplate() $static_templ)
+    is also<add-static-pad-template>
+  {
     gst_element_class_add_static_pad_template($!ec, $static_templ);
   }
 
   method add_static_pad_template_with_gtype (
     GstStaticPadTemplate() $static_templ,
     Int() $pad_type
-  ) {
+  )
+    is also<add-static-pad-template-with-gtype>
+  {
     my GType $pt = $pad_type;
 
     gst_element_class_add_static_pad_template_with_gtype(
@@ -106,11 +121,13 @@ class GStreamer::Element::Class {
     );
   }
 
-  method get_metadata (Str() $key) {
+  method get_metadata (Str() $key) is also<get-metadata> {
     gst_element_class_get_metadata($!ec, $key);
   }
 
-  method get_pad_template (Str() $name, :$raw = False) {
+  method get_pad_template (Str() $name, :$raw = False)
+    is also<get-pad-template>
+  {
     my $pt = gst_element_class_get_pad_template($!ec, $name);
 
     $pt ??
@@ -119,7 +136,15 @@ class GStreamer::Element::Class {
       Nil;
   }
 
-  method get_pad_template_list (:$glist = False, :$raw = False) {
+  method get_pad_template_list (:$glist = False, :$raw = False)
+    is also<
+      get-pad-template-list
+      pad_template_list
+      pad-template-list
+      pad_templates
+      pad-templates
+    >
+  {
     my $ptl = gst_element_class_get_pad_template_list($!ec);
 
     return Nil  unless $ptl;
@@ -136,7 +161,9 @@ class GStreamer::Element::Class {
     Str() $classification,
     Str() $description,
     Str() $author
-  ) {
+  )
+    is also<set-metadata>
+  {
     gst_element_class_set_metadata(
       $!ec,
       $longname,
@@ -151,7 +178,9 @@ class GStreamer::Element::Class {
     Str() $classification,
     Str() $description,
     Str() $author
-  ) {
+  )
+    is also<set-static-metadata>
+  {
     gst_element_class_set_static_metadata(
       $!ec,
       $longname,
