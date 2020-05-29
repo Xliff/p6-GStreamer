@@ -1870,3 +1870,18 @@ class GstTypeFind                is repr<CStruct>  does GLib::Roles::Pointers is
   has Pointer     $!get_length; #= (gpointer data --> guint64);
   HAS GstPadding  $!padding;
 }
+
+class GstParamSpecFraction       is repr<CStruct>  does GLib::Roles::Pointers is export {
+  HAS GParamSpec    $.parent_instance;
+  has gint          $.min_num,
+  has gint          $.min_den;
+  has gint          $.max_num,
+  has gint          $.max_den;
+  has gint          $.def_num,
+  has gint          $.def_den;
+}
+
+class GstParamSpecArray          is repr<CStruct>  does GLib::Roles::Pointers is export {
+  HAS GParamSpec $.parent_instance;
+  has GParamSpec $.element_spec;
+}
