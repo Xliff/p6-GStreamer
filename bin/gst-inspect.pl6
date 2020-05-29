@@ -5,10 +5,12 @@ use GStreamer::Raw::Types;
 use GLib::Class::Object;
 use GLib::Object::Type;
 use GLib::Array;
+use GLib::GList;
 use GLib::MainLoop;
 use GLib::Spawn;
 use GLib::Value;
 use GStreamer::Bin;
+use GStreamer::Class::Element;
 use GStreamer::DeviceProviderFactory;
 use GStreamer::Element;
 use GStreamer::ElementFactory;
@@ -177,16 +179,14 @@ sub print-hierarchy ($t, $l is copy, $ml is rw) {
   my $parent = $t.parent;
   $ml++ && $l++;
 
-  print '.';
-
-  print-hierarchy($t, $l, $ml) if $parent;
+  print-hierarchy($parent, $l, $ml) if $parent;
   print "{ DATATYPE_COLOR }{ $name }{ RESET_COLOR }" if $name;
   if $ml - $l -> $i {
-    print "      " x $i;
-    print " { DATATYPE_COLOR }+----{ RESET_COLOR }";
+    print "     " x $i;
+    print " { CHILD_LINK_COLOR }+----{ RESET_COLOR }";
   }
-  say "{ DATATYPE_COLOR }{ GLib::Object::Type.name($t) }{ RESET_COLOR }";
-  n-print if $l == 1;
+  say "{ DATATYPE_COLOR }{ $t.name }{ RESET_COLOR }";
+  n-print unless $l;
 }
 
 sub print-interfaces ($t) {
@@ -196,9 +196,9 @@ sub print-interfaces ($t) {
     n-print "{ HEADING_COLOR }Implemented Interfaces{ RESET_COLOR }:\n";
     push-indent;
     n-print "{ DATATYPE_COLOR }{ .name }{ RESET_COLOR }" for $ifaces;
+    pop-indent;
+    n-print;
   }
-  pop-indent;
-  n-print;
 }
 
 sub flags-to-string (\E, Int() $flags) {
@@ -217,7 +217,7 @@ multi sub print-object-properties-info (gpointer $k, $d) {
 
   print-object-properties-info(Nil, $d, $klass);
 }
-multi sub print-object-properties-info ($o, $d, $k?) {
+multi sub print-object-properties-info ($o, $d, $k? is copy) {
   $k //= $o.getClass;
 
   my @specs    = $k ?? $k.list-properties.sort( *.name )
@@ -482,7 +482,7 @@ sub print-element-properties-info ($e) {
 }
 
 sub print-pad-templates-info ($e, $ef) {
-  n-print "{ HEADING_COLOR }Pad Templates{ RESET_COLOR }:\n";
+  n-print " { HEADING_COLOR }Pad Templates{ RESET_COLOR }:\n";
   push-indent;
 
   LEAVE { pop-indent }
@@ -494,7 +494,7 @@ sub print-pad-templates-info ($e, $ef) {
   my @spts = $ef.get-static-pad-templates;
   for @spts -> $pt {
     my $dir = get-direction-name($pt.direction).uc;
-    n-print "{ PROP_NAME_COLOR }{ $dir } template{ RESET_COLOR }: {
+    n-print "{ PROP_NAME_COLOR }{ $dir.fmt('%-4s') } template{ RESET_COLOR }: {
                 PROP_VALUE_COLOR }{ $pt.name_template }{ RESET_COLOR }\n";
 
     push-indent;
@@ -520,11 +520,11 @@ sub print-pad-templates-info ($e, $ef) {
     my $klass = $e.getClass;
     if $klass.get-pad-template($pt.name-template) -> $tmpl {
       my $gt = $tmpl.objectType;
-      unless $gt.isType( G_TYPE_NONE ) || $gt.isType( PAD_TYPE ) {
+      unless $gt.is-a( G_TYPE_NONE ) || $gt.is-a( PAD_TYPE ) {
         my $pk = $gt.class-ref;
 
         n-print "{ PROP_NAME_COLOR }Type{ RESET_COLOR }: { DATATYPE_COLOR }{
-                    $pt.name }{ RESET_COLOR }\n";
+                   $gt.name }{ RESET_COLOR }\n";
         print-object-properties-info($pk, "Pad Properties");
         GLib::Object::Type.class-unref($pk);
       }
@@ -541,7 +541,7 @@ sub print-clocking-info ($e) {
 
   unless $req-clock || $prov-clock {
     n-print;
-    n-print "{ DESC_COLOR }Element has no clocking capabilities.{
+    n-print " { DESC_COLOR }Element has no clocking capabilities.{
                 RESET_COLOR }\n";
     return;
   }
@@ -568,8 +568,8 @@ sub print-clocking-info ($e) {
 }
 
 sub print-uri-handler-info ($e) {
-  unless $e.is_a( urihandler-get-type ) {
-    n-print "{ DESC_COLOR }Element has no URI handling capabilities.{
+  unless $e.isType( urihandler-get-type ) {
+    n-print " { DESC_COLOR }Element has no URI handling capabilities.{
                 RESET_COLOR }\n";
     return;
   }
@@ -580,7 +580,7 @@ sub print-uri-handler-info ($e) {
   my $uri-type = get-direction-name( $e.get_uri_type );
 
   n-print;
-  n-print "{ HEADING_COLOR }URI handling capabilities{ RESET_COLOR }:";
+  n-print " { HEADING_COLOR }URI handling capabilities{ RESET_COLOR }:";
   push-indent;
   n-print "{ DESC_COLOR }Element can act as { $uri-type }.{ RESET_COLOR }\n";
 
@@ -601,7 +601,7 @@ sub print-uri-handler-info ($e) {
 
 sub print-pad-info ($e) {
   n-print;
-  n-print "{ HEADING_COLOR }Pads{ RESET_COLOR }:\n";
+  n-print " { HEADING_COLOR }Pads{ RESET_COLOR }:\n";
 
   push-indent;
   LAST { pop-indent }
@@ -618,13 +618,13 @@ sub print-pad-info ($e) {
     n-print "{ PROP_NAME_COLOR }{ $dir }{ RESET_COLOR }: {
                 PROP_VALUE_COLOR }'{ $n }'{ RESET_COLOR }\n";
 
-    if $pad.padtemplate -> $pt {
-      push-indent;
-      n-print "{ PROP_NAME_COLOR }Pad Template{ RESET_COLOR }: {
-                  PROP_VALUE_COLOR }'{ $pt.name-template }'{ RESET_COLOR }\n";
-      pop-indent;
-    }
-
+    # if $pad.padtemplate -> $pt {
+    #   push-indent;
+    #   n-print "{ PROP_NAME_COLOR }Pad Template{ RESET_COLOR }: {
+    #               PROP_VALUE_COLOR }'{ $pt.name-template }'{ RESET_COLOR }\n";
+    #   pop-indent;
+    # }
+    #
     if $pad.get-current-caps -> $caps {
       n-print "{ PROP_NAME_COLOR }Capabilities{ RESET_COLOR }:";
       push-indent;
@@ -679,7 +679,7 @@ sub print-signal-info ($e) {
     }
 
     next unless @found-signals;
-    n-print "{ HEADING_COLOR }Element { $k ?? 'Signals' !! 'Actions' }{
+    n-print " { HEADING_COLOR }Element { $k ?? 'Signals' !! 'Actions' }{
                 RESET_COLOR }:\n";
 
     for @found-signals -> $q {
@@ -725,7 +725,7 @@ sub print-children-info ($e) {
   my $bin = GStreamer::Bin.new($e.GstElement);
   if $bin.children -> $kids {
     n-print;
-    n-print "{ HEADING_COLOR }Children{ RESET_COLOR }:";
+    n-print " { HEADING_COLOR }Children{ RESET_COLOR }:";
     n-print "  { DATATYPE_COLOR }{ .name }{ RESET_COLOR }\n" for $kids[]
   }
 }
@@ -736,7 +736,7 @@ sub print-preset-list ($e is copy) {
   $e = $e but GStreamer::Roles::Preset;
   if $e.get_preset_names -> $presets {
     n-print;
-    n-print "{ HEADING_COLOR }Presets{ RESET_COLOR }:";
+    n-print " { HEADING_COLOR }Presets{ RESET_COLOR }:";
     n-print '  "' ~ $_  ~ '"' for $presets[];
   }
 }
@@ -746,7 +746,7 @@ sub singular-or-plural ($c, $s, $p = $s ~ 's') {
 }
 
 sub print-blacklist {
-  print "{ HEADING_COLOR }Blacklisted files{ RESET_COLOR }:";
+  print " { HEADING_COLOR }Blacklisted files{ RESET_COLOR }:";
 
   my ($repo, $count) = (GStreamer::Registry.get, 0);
   for $repo.get-plugin-list[] -> $p {
@@ -1043,7 +1043,7 @@ sub print-typefind-info ($f, $pn) {
   }
 
   $name = $pn ?? "{ DATATYPE_COLOR }$factory.name{ RESET_COLOR }" !! Str;
-  n-print "{ HEADING_COLOR }Factory Details{ RESET_COLOR }:\n";
+  n-print " { HEADING_COLOR }Factory Details{ RESET_COLOR }:\n";
   n-print "  { PROP_NAME_COLOR }{ 'Rank'.fmt('%-25s') }{ PROP_VALUE_COLOR }{
                 get-rank-name($f.rank) } ({ $f.rank }){ RESET_COLOR }\n";
   n-print "  { PROP_NAME_COLOR }{ 'Name'.fmt('%-25s') }{ PROP_VALUE_COLOR }{
@@ -1079,7 +1079,7 @@ sub print-tracer-info ($f, $pn) {
   }
 
   $name = $pn ?? "{ DATATYPE_COLOR }$factory.name{ RESET_COLOR }" !! Str;
-  n-print "{ HEADING_COLOR }Factory Details{ RESET_COLOR }:\n";
+  n-print " { HEADING_COLOR }Factory Details{ RESET_COLOR }:\n";
   n-print "  { PROP_NAME_COLOR }{ 'Name'.fmt('%-25s') }{ PROP_VALUE_COLOR }{
               $f.name }{ RESET_COLOR }\n";
   n-print;
