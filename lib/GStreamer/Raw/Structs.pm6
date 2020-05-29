@@ -368,6 +368,8 @@ class GstPadTemplate             is repr<CStruct>     does GLib::Roles::Pointers
   has GstPadPresence       $.presence;
   has GstCaps	             $.caps;
   HAS GstPadStructABI      $!ABI;
+
+  method name-template { $.name_template }
 };
 
 class GstStaticCaps          is repr<CStruct>      does GLib::Roles::Pointers is export {
