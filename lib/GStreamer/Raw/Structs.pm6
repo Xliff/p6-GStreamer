@@ -18,6 +18,7 @@ class GstPollFD                  is repr<CStruct>     does GLib::Roles::Pointers
   has gint $!idx;
 }
 
+#| Opaque
 class GstPadding                 is repr<CStruct>     does GLib::Roles::Pointers is export {
   has gpointer             $!r0;
   has gpointer             $!r1;
@@ -53,6 +54,7 @@ class GstMiniObject            is repr<CStruct>      does GLib::Roles::Pointers 
   has gpointer             $!priv_pointer;
 }
 
+#| Opaque
 class GstAllocator               is repr<CStruct>      does GLib::Roles::Pointers is export {
   HAS GstObject            $!object;
 
@@ -104,6 +106,7 @@ class GstClock                   is repr<CStruct> does GLib::Roles::Pointers is 
 }
 
 # Cheat. This really should be considered opaque.
+#| Opaque
 class GstDateTime                is repr<CStruct>      does GLib::Roles::Pointers is export {
   HAS GstMiniObject        $.mini_object;
   has GDateTime            $!datetime;
@@ -320,6 +323,7 @@ class GstTagList                 is repr<CStruct>      does GLib::Roles::Pointer
 #         to insure we are working a supported library!!
 
 # Opaque. Grabbed from the implementation for struct-size purposes.
+#| Opaque
 class GstToc                     is repr<CStruct>      does GLib::Roles::Pointers is export {
   HAS GstMiniObject        $.mini_object;
 
@@ -329,6 +333,7 @@ class GstToc                     is repr<CStruct>      does GLib::Roles::Pointer
 }
 
 # Opaque. Grabbed from the implementation for struct-size purposes.
+#| Opaque
 class GstTocEntry                is repr<CStruct>      does GLib::Roles::Pointers is export {
   HAS GstMiniObject        $.mini_object;
 
@@ -344,7 +349,8 @@ class GstTocEntry                is repr<CStruct>      does GLib::Roles::Pointer
   has gint                 $!repeat_count;
 }
 
-# BOXED! - Also Opaque.
+# BOXED!
+#| Opaque
 class GstCapsFeatures            is repr<CStruct>      does GLib::Roles::Pointers is export {
   has GType                $!type;
   has CArray[gint]         $!parent_refcount;   # gint *parent_refcount
@@ -362,12 +368,12 @@ class GstPadStructABI            is repr<CUnion> {
 }
 
 class GstPadTemplate             is repr<CStruct>     does GLib::Roles::Pointers is export {
-  has GstObject	           $!object;
+  HAS GstObject	           $.object;
   has Str                  $.name_template;
   has GstPadDirection      $.direction;
   has GstPadPresence       $.presence;
   has GstCaps	             $.caps;
-  HAS GstPadStructABI      $!ABI;
+  HAS GstPadding           $!padding;
 
   method name-template { $.name_template }
 };
@@ -686,6 +692,7 @@ class GstBitWriter               is repr<CStruct>  does GLib::Roles::Pointers is
   }
 }
 
+#| Opaque
 class GstPaddingLarge            is repr<CStruct>  does GLib::Roles::Pointers is export {
   HAS GstPadding      $!padding0;
   HAS GstPadding      $!padding1;
@@ -786,6 +793,7 @@ class GstAggregator              is repr<CStruct>  does GLib::Roles::Pointers is
   HAS GstPaddingLarge $!padding;
 }
 
+#| Opaque
 class GstAggregatorPad           is repr<CStruct>  does GLib::Roles::Pointers is export {
   HAS GstPad          $.parent;
   HAS GstSegment      $.segment;
@@ -1761,6 +1769,7 @@ class GstVideoFilter             is repr<CStruct>  does GLib::Roles::Pointers is
 
 # PLAYER
 
+#| Opaque
 class GstPlayerVisualization     is repr<CStruct>  does GLib::Roles::Pointers is export {
   has Str $!name;
   has Str $!description;
