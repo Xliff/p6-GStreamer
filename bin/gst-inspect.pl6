@@ -7,6 +7,7 @@ use GLib::Object::Type;
 use GLib::Array;
 use GLib::GList;
 use GLib::MainLoop;
+use GLib::Signal;
 use GLib::Spawn;
 use GLib::Value;
 use GStreamer::Bin;
@@ -674,7 +675,8 @@ sub print-signal-info ($e) {
       }
     }
 
-    loop (my $type = $e.getType; $type; $type .= parent) {
+    my $type;
+    loop ($type = $e.getType; $type; $type .= parent) {
       last if $type == ELEMENT_TYPE || $type == GST_OBJECT_TYPE;
       next if $type == BIN_TYPE && $e.getType != BIN_TYPE;
 
@@ -693,7 +695,7 @@ sub print-signal-info ($e) {
                 RESET_COLOR }:\n";
 
     for @found-signals -> $q {
-      my $rt = GLib::Object::Type.new(.return_type);
+      my $rt = GLib::Object::Type.new($q.return_type);
       my $il = $q.signal_name.chars + $rt.name.chars + 24;
       my $pmark = do if gtype-needs-ptr-marker($rt) {
         $il += 2;
@@ -701,14 +703,15 @@ sub print-signal-info ($e) {
       } else {
         '  ';
       }
-      my $indent = ' ' x $il;
+      my $indent = ' ' x ($il + 1);
 
       n-print "  { PROP_NAME_COLOR }\"{ $q.signal_name }\" :  { RESET_COLOR }{
                     DATATYPE_COLOR }{ $rt.name }{ PROP_VALUE_COLOR }{ $pmark }{
                     RESET_COLOR }user_function{ DATATYPE_COLOR } ({
-                    $type.name }{ PROP_VALUE_COLOR }* object{ RESET_COLOR }";
+                    $type // 'GObject' }{ PROP_VALUE_COLOR }* object{
+                    RESET_COLOR }";
       for ^$q.n_params {
-        my $t  = GLib::Object::Type.new($q.param-types[$_]);
+        my $t  = GLib::Object::Type.new($q.param_types[$_]);
         my $tn = $t.name;
         my $a  = gtype-needs-ptr-marker($t) ?? '*' !! '';
 
@@ -940,7 +943,7 @@ sub print-plugin-features ($p) {
   constant ln = GST_ELEMENT_METADATA_LONGNAME;
 
   for $reg.get-feature-list-by-plugin($p.name)[] -> $feature {
-    %counts<feature>++;
+    %counts<features>++;
 
     when $feature.isType( ELEMENT_FACTORY_TYPE ) {
       my $f = GStreamer::ElementFactory.new($feature.GstPluginFeature);
@@ -990,11 +993,13 @@ sub print-plugin-features ($p) {
   }
 
   n-print;
-  n-print "  { HEADING_COLOR }{ %counts<features> }{ RESET_COLOR }:\n";
+  n-print "  { HEADING_COLOR }{
+               singular-or-plural(%counts<features> // 0, 'feature') }{
+               RESET_COLOR }:\n";
   n-print(
     "  { CHILD_LINK_COLOR }+--{ RESET_COLOR }{ PLUGIN_FEATURE_COLOR }{
          .value } { .key }{ RESET_COLOR }\n"
-  ) for %counts.pairs;
+  ) for %counts.pairs.grep(*.key ne 'features');
   n-print;
 }
 
@@ -1267,7 +1272,7 @@ sub MAIN (
 
   if $uri-handlers {
     print-all-uri-handlers;
-  } elsif @args.elems == 1 || $print-all {
+  } elsif @args.elems == 0 || $print-all {
     if $print-blacklist {
       print-blacklist;
     } else {
