@@ -138,6 +138,10 @@ class GStreamer::StaticPadTemplate {
     $static-template ?? self.bless( :$static-template ) !! Nil;
   }
 
+  method GStreamer::Raw::Structs::GstStaticPadTemplate
+    is also<GstStaticPadTemplate>
+  { $!spt }
+
   method direction {
     GstPadDirectionEnum( $!spt.direction );
   }
