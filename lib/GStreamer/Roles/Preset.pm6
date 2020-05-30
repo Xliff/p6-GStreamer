@@ -10,10 +10,6 @@ use GStreamer::Raw::Preset;
 role GStreamer::Roles::Preset {
   has GstPreset $!ps;
 
-  submethod BUILD (:$preset) {
-    $!ps = $preset;
-  }
-
   method roleInit-GstPreset is also<roleInit_GstPreset> {
     my \i = findProperImplementor(self.^attributes);
     my $o = cast( GstChildProxy, i.get_value(self) );
