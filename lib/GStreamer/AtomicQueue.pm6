@@ -14,7 +14,7 @@ class GStreamer::AtomicQueue {
     $!aq = $queue;
   }
 
-  method GStreamer::Raw::Types::GstAtomicQueue
+  method GStreamer::Raw::Definitions::GstAtomicQueue
     is also<GstAtomicQueue>
   { $!aq }
 

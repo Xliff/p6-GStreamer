@@ -118,7 +118,7 @@ class GStreamer::ParseContext {
     $!pc = $parsecontext;
   }
 
-  method GStreamer::Raw::Types::GstParseContext
+  method GStreamer::Raw::Definitions::GstParseContext
     is also<GstParseContext>
   { $!pc }
 

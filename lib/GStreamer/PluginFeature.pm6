@@ -37,7 +37,7 @@ class GStreamer::PluginFeature is GStreamer::Object {
     self.setGstObject($to-parent);
   }
 
-  method GStreamer::Raw::Types::GstPluginFeature
+  method GStreamer::Raw::Definitions::GstPluginFeature
     is also<
       GstPluginFeature
       PluginFeature

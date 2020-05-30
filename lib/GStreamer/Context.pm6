@@ -16,7 +16,7 @@ class GStreamer::Context is GStreamer::MiniObject {
     self.setMiniObject( cast(GstMiniObject, $!c = $context) );
   }
 
-  method GStreamer::Raw::Types::GstContext
+  method GStreamer::Raw::Definitions::GstContext
     is also<GstContext>
   { $!c }
 

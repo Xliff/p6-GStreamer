@@ -16,7 +16,7 @@ class GStreamer::DateTime {
     $!dt = $datetime;
   }
 
-  method GStreamer::Raw::Types::GstDateTime
+  method GStreamer::Raw::Struct::GstDateTime
     is also<GstDateTime>
   { $!dt }
 

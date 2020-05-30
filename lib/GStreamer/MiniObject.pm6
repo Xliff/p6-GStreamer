@@ -16,7 +16,7 @@ class GStreamer::MiniObject {
     $!mo = $mini-object;
   }
 
-  method GStreamer::Raw::Types::GstMiniObject
+  method GStreamer::Raw::Structs::GstMiniObject
     is also<GstMiniObject>
   { * }
 

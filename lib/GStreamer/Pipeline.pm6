@@ -36,7 +36,7 @@ class GStreamer::Pipeline is GStreamer::Bin {
     self.setBin($to-parent);
   }
 
-  method GStreamer::Raw::Types::GstPipeline
+  method GStreamer::Raw::Definitions::GstPipeline
     is also<GstPipeline>
   { $!p }
 

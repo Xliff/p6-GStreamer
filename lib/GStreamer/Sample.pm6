@@ -38,7 +38,7 @@ class GStreamer::Sample is GStreamer::MiniObject {
     self.setMiniObject($to-parent);
   }
 
-  method GStreamer::Raw::Types::GstSample
+  method GStreamer::Raw::Definitions::GstSample
     is also<GstSample>
   { $!s }
 

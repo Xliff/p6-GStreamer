@@ -43,7 +43,7 @@ class GStreamer::PadTemplate is GStreamer::Object {
     self.setGstObject($to-parent);
   }
 
-  method GStreamer::Raw::Types::GstPadTemplate
+  method GStreamer::Raw::Structs::GstPadTemplate
     is also<GstPadTemplate>
   { $!pt }
 

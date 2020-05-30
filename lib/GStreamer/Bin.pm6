@@ -50,7 +50,7 @@ class GStreamer::Bin is GStreamer::Element {
     self.roleInit-ChildProxy unless $!cp;
   }
 
-  method GStreamer::Raw::Types::GstBin
+  method GStreamer::Raw::Structs::GstBin
     is also<GstBin>
   { $!b }
 

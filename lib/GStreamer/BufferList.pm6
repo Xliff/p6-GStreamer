@@ -36,7 +36,7 @@ class GStreamer::BufferList is GStreamer::MiniObject {
     self.setMiniObject($to-parent);
   }
 
-  method GStreamer::Raw::Types::GstBufferList
+  method GStreamer::Raw::Definitions::GstBufferList
     is also<GstBufferList>
   { $!bl }
 

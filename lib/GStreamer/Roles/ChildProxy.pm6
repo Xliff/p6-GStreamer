@@ -21,7 +21,7 @@ role GStreamer::Roles::ChildProxy {
     $!cp = cast(GstChildProxy, $o);
   }
 
-  method GStreamer::Raw::Types::GstChildProxy
+  method GStreamer::Raw::Definitions::GstChildProxy
     is also<GstChildProxy>
   { $!cp }
 

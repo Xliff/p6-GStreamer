@@ -37,7 +37,7 @@ class GStreamer::Buffer is GStreamer::MiniObject {
     self.setGstMiniObject($to-parent);
   }
 
-  method GStreamer::Raw::Types::GstBuffer
+  method GStreamer::Raw::Structs::GstBuffer
     is also<GstBuffer>
   { $!b }
 

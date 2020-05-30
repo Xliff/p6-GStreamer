@@ -37,7 +37,7 @@ class GStreamer::Stream is GStreamer::Object {
     self.setGstObject($to-parent);
   }
 
-  method GStreamer::Raw::Types::GstStream
+  method GStreamer::Raw::Definitions::GstStream
     is also<GstStream>
   { $!s }
 

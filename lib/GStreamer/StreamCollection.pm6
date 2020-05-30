@@ -34,7 +34,7 @@ class GStreamer::StreamCollection is GStreamer::Object {
     self.setGstObject($to-parent);
   }
 
-  method GStreamer::Raw::Types::GstStreamCollection
+  method GStreamer::Raw::Definitions::GstStreamCollection
     is also<GstStreamCollection>
   { $!sc }
 

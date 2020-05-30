@@ -48,7 +48,7 @@ class GStreamer::TocEntry is GStreamer::MiniObject {
     $entry ?? self.bless(:$entry) !! Nil;
   }
 
-  method GStreamer::Raw::Types::GstTocEntry
+  method GStreamer::Raw::Structs::GstTocEntry
     is also<GstTocEntry>
   { $!te }
 
@@ -227,7 +227,7 @@ class GStreamer::Toc is GStreamer::MiniObject {
     self.setMiniObject($to-parent);
   }
 
-  method GStreamer::Raw::Types::GstToc
+  method GStreamer::Raw::Structs::GstToc
     is also<GstToc>
   { $!t }
 

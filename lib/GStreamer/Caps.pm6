@@ -35,7 +35,7 @@ class GStreamer::Caps is GStreamer::MiniObject {
     self.setMiniObject($to-parent);
   }
 
-  method GStreamer::Raw::Types::GstCaps
+  method GStreamer::Raw::Definitions::GstCaps
     is also<GstCaps>
   { $!c }
 
@@ -391,7 +391,7 @@ class GStreamer::StaticCaps {
     $!sc = $static-caps;
   }
 
-  method GStreamer::Raw::Types::GstStaticCaps
+  method GStreamer::Raw::Structs::GstStaticCaps
     is also<GstStaticCaps>
   { $!sc }
 
