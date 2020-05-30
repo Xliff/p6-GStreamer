@@ -117,7 +117,7 @@ sub n-print ($format?) {
     print "\n";
     return;
   }
-  print "{ $name ?? $name !! '' }{ ' ' x $indent }{ $format // '' }";
+  print "{ $indent }{ $name ?? $name !! '' }{ ' ' x $indent }{ $format // '' }";
 }
 
 sub print-field ($f, $v, $pfx) {
@@ -167,14 +167,15 @@ sub get-rank-name ($r) {
 sub print-factory-details-info ($f) {
   my $rank = $f.rank;
 
+  $indent = 0;
   n-print "{ HEADING_COLOR } Factory Details{ RESET_COLOR }:\n";
   push-indent;
-  n-print "{ PROP_NAME_COLOR }{ "Rank".fmt('%-25s') }{ PROP_VALUE_COLOR }{
+  n-print "  { PROP_NAME_COLOR }{ "Rank".fmt('%-25s') }{ PROP_VALUE_COLOR }{
             get-rank-name($rank) } ({ $rank }){ RESET_COLOR }\n";
   if $f.get-metadata-keys -> $keys {
     for $keys[] {
       my $val = $f.get_metadata($_);
-      n-print "{ PROP_NAME_COLOR }{ .uc.fmt('%-25s') }{ PROP_VALUE_COLOR }{ $val
+      n-print "  { PROP_NAME_COLOR }{ .tc.fmt('%-25s') }{ PROP_VALUE_COLOR }{ $val
     }{  RESET_COLOR }\n";
     }
   }
@@ -200,9 +201,9 @@ sub print-interfaces ($t) {
   my $ifaces = $t.interfaces;
 
   if $ifaces && $ifaces.elems {
-    n-print "{ HEADING_COLOR }Implemented Interfaces{ RESET_COLOR }:\n";
+    n-print " { HEADING_COLOR }Implemented Interfaces{ RESET_COLOR }:\n";
     push-indent;
-    n-print "{ DATATYPE_COLOR }{ .name }{ RESET_COLOR }\n" for $ifaces[];
+    n-print "  { DATATYPE_COLOR }{ .name }{ RESET_COLOR }\n" for $ifaces[];
     pop-indent;
     n-print;
   }
@@ -501,7 +502,7 @@ sub print-pad-templates-info ($e, $ef) {
   my @spts = $ef.get-static-pad-templates;
   for @spts -> $pt {
     my $dir = get-direction-name($pt.direction).uc;
-    n-print "{ PROP_NAME_COLOR }{ $dir } template{ RESET_COLOR }: {
+    n-print "  { PROP_NAME_COLOR }{ $dir } template{ RESET_COLOR }: {
                 PROP_VALUE_COLOR }{ $pt.name_template }{ RESET_COLOR }\n";
 
     push-indent;
@@ -512,12 +513,12 @@ sub print-pad-templates-info ($e, $ef) {
       when    GST_PAD_REQUEST   { 'On request' }
       default                   { 'UNKNOWN'    }
     }
-    n-print "{ PROP_NAME_COLOR }Availability{ RESET_COLOR }: {
+    n-print "    { PROP_NAME_COLOR }Availability{ RESET_COLOR }: {
                 PROP_VALUE_COLOR }{ $p }{ RESET_COLOR }\n";
 
     if $pt.static-caps -> $sc {
       if $sc.string {
-        n-print "{ PROP_NAME_COLOR }Capabilities{ RESET_COLOR }:\n";
+        n-print "    { PROP_NAME_COLOR }Capabilities{ RESET_COLOR }:\n";
         my $caps = $sc.get;
 
         push-indent;
@@ -900,17 +901,17 @@ sub print-all-uri-handlers {
 sub print-plugin-info ($p) {
   n-print " { HEADING_COLOR }Plugin Details{ RESET_COLOR }:\n";
   push-indent;
-  n-print "{ PROP_NAME_COLOR }{ 'Name'.fmt('%-25s') }{ RESET_COLOR }{
+  n-print "  { PROP_NAME_COLOR }{ 'Name'.fmt('%-25s') }{ RESET_COLOR }{
              PROP_VALUE_COLOR }{ $p.name }{ RESET_COLOR }\n";
-  n-print "{ PROP_NAME_COLOR }{ 'Description'.fmt('%-25s') }{ RESET_COLOR }{
+  n-print "  { PROP_NAME_COLOR }{ 'Description'.fmt('%-25s') }{ RESET_COLOR }{
              PROP_VALUE_COLOR }{ $p.description }{ RESET_COLOR }\n";
-  n-print "{ PROP_NAME_COLOR }{ 'Filename'.fmt('%-25s') }{ RESET_COLOR }{
+  n-print "  { PROP_NAME_COLOR }{ 'Filename'.fmt('%-25s') }{ RESET_COLOR }{
              PROP_VALUE_COLOR }{ ($p.filename // '(null)') }{ RESET_COLOR }\n";
-  n-print "{ PROP_NAME_COLOR }{ 'Version'.fmt('%-25s') }{ RESET_COLOR }{
+  n-print "  { PROP_NAME_COLOR }{ 'Version'.fmt('%-25s') }{ RESET_COLOR }{
              PROP_VALUE_COLOR }{ $p.version }{ RESET_COLOR }\n";
-  n-print "{ PROP_NAME_COLOR }{ 'License'.fmt('%-25s') }{ RESET_COLOR }{
+  n-print "  { PROP_NAME_COLOR }{ 'License'.fmt('%-25s') }{ RESET_COLOR }{
              PROP_VALUE_COLOR }{ $p.license }{ RESET_COLOR }\n";
-  n-print "{ PROP_NAME_COLOR }{ 'Source module'.fmt('%-25s') }{ RESET_COLOR }{
+  n-print "  { PROP_NAME_COLOR }{ 'Source module'.fmt('%-25s') }{ RESET_COLOR }{
              PROP_VALUE_COLOR }{ $p.source }{ RESET_COLOR }\n";
 
   # may be: YYYY-MM-DD or YYYY-MM-DDTHH:MMZ
@@ -922,13 +923,13 @@ sub print-plugin-info ($p) {
     } else {
       $tz = '';
     }
-    n-print "{ PROP_NAME_COLOR }{ 'Source release date'.fmt('%-25s') }{
+    n-print "  { PROP_NAME_COLOR }{ 'Source release date'.fmt('%-25s') }{
                RESET_COLOR }{ PROP_VALUE_COLOR }{ $rd }{ $tz }{
                RESET_COLOR }\n";
   }
-  n-print "{ PROP_NAME_COLOR }{ 'Binary package'.fmt('%-25s') }{ RESET_COLOR }{
+  n-print "  { PROP_NAME_COLOR }{ 'Binary package'.fmt('%-25s') }{ RESET_COLOR }{
              PROP_VALUE_COLOR }{ $p.package }{ RESET_COLOR }\n";
-  n-print "{ PROP_NAME_COLOR }{ 'Origin URL'.fmt('%-25s') }{ RESET_COLOR }{
+  n-print "  { PROP_NAME_COLOR }{ 'Origin URL'.fmt('%-25s') }{ RESET_COLOR }{
              PROP_VALUE_COLOR }{ $p.origin }{ RESET_COLOR }\n";
   pop-indent;
   n-print;
@@ -1054,6 +1055,7 @@ sub print-typefind-info ($f, $pn) {
   }
 
   $name = $pn ?? "{ DATATYPE_COLOR }$factory.name{ RESET_COLOR }" !! Str;
+
   n-print " { HEADING_COLOR }Factory Details{ RESET_COLOR }:\n";
   n-print "  { PROP_NAME_COLOR }{ 'Rank'.fmt('%-25s') }{ PROP_VALUE_COLOR }{
                 get-rank-name($f.rank) } ({ $f.rank }){ RESET_COLOR }\n";
