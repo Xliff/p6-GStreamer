@@ -88,11 +88,18 @@ sub push-indent       { push-indent-n(1)   }
 sub pop-indent        { push-indent-n(-1)  }
 sub pop-indent-n ($n) { push-indent-n(-$n) }
 
-sub get-direction-name ($t, :$rw = False) {
+sub get-uriType-name ($t, :$rw = False) {
   do given $t {
     when    GST_URI_SRC  { $rw ?? 'read'  !! 'src'  }
     when    GST_URI_SINK { $rw ?? 'write' !! 'sink' }
     default              { 'unknown'                }
+  }
+}
+sub get-direction-name ($t, :$rw = False) {
+  do given $t {
+    when    GST_PAD_SRC  { 'src'       }
+    when    GST_PAD_SINK { 'sink'      }
+    default              { 'unknown'   }
   }
 }
 
@@ -141,14 +148,14 @@ sub print-caps ($c, $pfx = '') {
     } else {
       n-print "{ $pfx }{ STRUCT_NAME_COLOR }{ $s.get-name }{ RESET_COLOR }";
     }
-    $s.foreach(-> *@a { print-field(|@a[0, 1], $pfx) });
+    $s.foreach(-> *@a { print-field( |@a[0, 1], $pfx ) });
   }
 }
 
 sub get-rank-name ($r) {
   return %rank-name-lookup{$r} if %rank-name-lookup{$r}:exists;
 
-  my $best-i;
+  my $best-i = 0;
   for ^GstRankEnum.enums.elems {
     $best-i = $_ if ($r - @ranks[$_]).abs < ($r - @ranks[$best-i]).abs;
   }
@@ -160,7 +167,7 @@ sub get-rank-name ($r) {
 sub print-factory-details-info ($f) {
   my $rank = $f.rank;
 
-  n-print "{ HEADING_COLOR } Factory Details:{ RESET_COLOR }\n";
+  n-print "{ HEADING_COLOR } Factory Details{ RESET_COLOR }:\n";
   push-indent;
   n-print "{ PROP_NAME_COLOR }{ "Rank".fmt('%-25s') }{ PROP_VALUE_COLOR }{
             get-rank-name($rank) } ({ $rank }){ RESET_COLOR }\n";
@@ -182,7 +189,7 @@ sub print-hierarchy ($t, $l is copy, $ml is rw) {
   print-hierarchy($parent, $l, $ml) if $parent;
   print "{ DATATYPE_COLOR }{ $name }{ RESET_COLOR }" if $name;
   if $ml - $l -> $i {
-    print "     " x $i;
+    print "      " x $i;
     print " { CHILD_LINK_COLOR }+----{ RESET_COLOR }";
   }
   say "{ DATATYPE_COLOR }{ $t.name }{ RESET_COLOR }";
@@ -195,7 +202,7 @@ sub print-interfaces ($t) {
   if $ifaces && $ifaces.elems {
     n-print "{ HEADING_COLOR }Implemented Interfaces{ RESET_COLOR }:\n";
     push-indent;
-    n-print "{ DATATYPE_COLOR }{ .name }{ RESET_COLOR }" for $ifaces;
+    n-print "{ DATATYPE_COLOR }{ .name }{ RESET_COLOR }\n" for $ifaces[];
     pop-indent;
     n-print;
   }
@@ -220,7 +227,7 @@ multi sub print-object-properties-info (gpointer $k, $d) {
 multi sub print-object-properties-info ($o, $d, $k? is copy) {
   $k //= $o.getClass;
 
-  my @specs    = $k ?? $k.list-properties.sort( *.name )
+  my @specs    = $k ?? $k.list-properties.Array.sort( *.name )
                     !! die 'ObjectClass is not defined!';
   my $long     = (  G_TYPE_LONG,  G_TYPE_ULONG ).any;
   my $unsigned = (  G_TYPE_UINT, G_TYPE_UINT64, G_TYPE_ULONG ).any;
@@ -231,7 +238,7 @@ multi sub print-object-properties-info ($o, $d, $k? is copy) {
   n-print "{ HEADING_COLOR }{ $d }{ RESET_COLOR }\n";
   push-indent;
 
-  for @specs -> $s {
+  for @specs[0] -> $s {
     my $ot = $s.owner_type;
 
     next unless $o || $ot == none(
@@ -248,12 +255,12 @@ multi sub print-object-properties-info ($o, $d, $k? is copy) {
     n-print "{ PROP_ATTR_NAME_COLOR }flags{ RESET_COLOR }: ";
 
     if $s.flag-set(G_PARAM_READABLE) && $o {
-      $o.get-property($s.name, $v);
+      $o.get_property($s.name, $v);
     } else {
       # if we can't read the property value, assume it's set to the default
       # (which might not be entirely true for sub-classes, but that's an
       # unlikely corner-case anyway)
-      $s.set-default($v);
+      $s.value-set-default($v);
     }
 
     my $known-param-flags = [+|](
@@ -276,12 +283,15 @@ multi sub print-object-properties-info ($o, $d, $k? is copy) {
       if $s.flag-set(GST_PARAM_MUTABLE_READY);
     @f.push( PAV-COLOR("0x{ $s.flags +& +^$known-param-flags }") )
       if $s.flag-set(+^$known-param-flags);
-    n-print "{ @f.join(', ') }\n";
+    print "{ @f.join(', ') }\n";
 
     my ($us, $tn, $f) = '' xx 2;
     given $v.type {
-      when $unsigned { $us = 'Unsigned '; $f = '%u'; proceed }
-      when $long     { $tn = 'Long';                 proceed }
+      when $unsigned       { $us = 'Unsigned '; $f = '%u'; proceed } # should be '%u' but raku still has signage problems.
+      when $long           { $tn = 'Long';                 proceed }
+
+      when G_TYPE_UINT64 |
+            G_TYPE_INT64   { $tn = 'Integer64';            proceed }
 
       when G_TYPE_STRING {
         n-print "{ DATATYPE_COLOR }String{ RESET_COLOR }. ";
@@ -306,10 +316,16 @@ multi sub print-object-properties-info ($o, $d, $k? is copy) {
 
       when $tn.so {
         my $pspec = $s.value-spec;
+        my $max   = $pspec.maximum;
+        # Raku still has issues with unsigned ints in structs, so we have
+        # to adjust!
+        my $is    = ($tn eq 'Long' ?? 64 !! 32);
+
+        $max += 2 ** $is if $us && ($max +& 2 ** ($is - 1));
         n-print "{ DATATYPE_COLOR }{ $us }{ $tn }{ RESET_COLOR }. ";
           print "{ PROP_ATTR_NAME_COLOR }Range{ RESET_COLOR }: ";
           print "{ PROP_ATTR_VALUE_COLOR }{ $pspec.minimum.fmt($f) } - {
-                    $pspec.maximum.fmt($f) }{ RESET_COLOR } ";
+                   $max.fmt($f)  }{ RESET_COLOR } ";
           print "{ PROP_ATTR_NAME_COLOR }Default{ RESET_COLOR }: ";
           print "{ PROP_ATTR_VALUE_COLOR }{ $v.value }{ RESET_COLOR }";
         proceed if $_ ~~ $long;
@@ -332,16 +348,15 @@ multi sub print-object-properties-info ($o, $d, $k? is copy) {
         my ($t, $pt, $pre, $vv, $vt) = (GLib::Object::Type.new($v.type), False);
 
         when $s.value_type == GStreamer::Caps.get-type {
-          if $v.get-caps -> $c {
+
+          if $v.caps -> $c {
             print-caps($c, '                           ');
           } else {
             n-print "{ DATATYPE_COLOR }Caps{ RESET_COLOR } (NULL)";
           }
         }
 
-        when $s.check_gobject_type(
-          $g-param-spec-types[G_TYPE_PARAM_ENUM_IDX]
-        ) {
+        when $s.value_type == $g-param-spec-types[G_TYPE_PARAM_ENUM_IDX] {
           use MONKEY-SEE-NO-EVAL;
 
           ($pre, $f) = ('', '%d');
@@ -352,9 +367,7 @@ multi sub print-object-properties-info ($o, $d, $k? is copy) {
                       RESET_COLOR }";
         }
 
-        when $s.check_gobject_type(
-          $g-param-spec-types[G_TYPE_PARAM_FLAGS_IDX]
-        ) {
+        when $s.value_type == $g-param-spec-types[G_TYPE_PARAM_FLAGS_IDX] {
           use MONKEY-SEE-NO-EVAL;
 
           ($pre, $f, $vt) = ('0x', '%08x', EVAL $t.name);
@@ -378,30 +391,24 @@ multi sub print-object-properties-info ($o, $d, $k? is copy) {
           $pt = False;
         }
 
-        when $s.check_gobject_type(
-          $g-param-spec-types[G_TYPE_PARAM_OBJECT_IDX]
-        ) {
+        when $s.value_type == $g-param-spec-types[G_TYPE_PARAM_OBJECT_IDX] {
           n-print "{ PROP_VALUE_COLOR }Object of type{ RESET_COLOR } {
                       DATATYPE_COLOR }\"{ $t.name }\"{ RESET_COLOR }";
         }
 
-        when $s.check_gobject_type(
-          $g-param-spec-types[G_TYPE_PARAM_BOXED_IDX]
-        ) {
+        when $s.value_type == $g-param-spec-types[G_TYPE_PARAM_BOXED_IDX] {
           n-print "{ PROP_VALUE_COLOR }Boxed pointer of type{
                       RESET_COLOR }{ DATATYPE_COLOR }\"{ $t.name }\"{
                       RESET_COLOR }";
           if $s.value_type == GStreamer:: {
-            if $v.get-structure -> $struct {
+            if $v.structure -> $struct {
               print "\n";
               $struct.foreach(-> *@a { print-field( |@a[0, 1], ' ' x 28 ) });
             }
           }
         }
 
-        when $s.check_gobject_type(
-          $g-param-spec-types[G_TYPE_PARAM_POINTER_IDX]
-        ) {
+        when $s.value_type == $g-param-spec-types[G_TYPE_PARAM_POINTER_IDX] {
           if $s.value_type !=  G_TYPE_POINTER {
             n-print "{ PROP_VALUE_COLOR }Pointer of type{ RESET_COLOR } {
                         DATATYPE_COLOR }\"{ $t.name }\"{ RESET_COLOR }"
@@ -416,21 +423,21 @@ multi sub print-object-properties-info ($o, $d, $k? is copy) {
              $s.value_type == GStreamer::Value::Array.get-type
 
         {
-          my $pspec = $s.value-spec;
+          my $pspec = cast(GParamSpecValueArray, $s.GParamSpec);
           $pre = 'GstValueArray' unless $pre;
 
           if $pspec.element_spec -> $es {
             my $pt = GLib::Object::Type.new($es.value_type);
             n-print "{ PROP_VALUE_COLOR }{ $pre } of GValues of Type{
-                       RESET_COLOR } { DATATYPE_COLOR }\"{ $pt.name }{
+                       RESET_COLOR } { DATATYPE_COLOR }\"{ $pt.name }\"{
                        RESET_COLOR }";
           } else {
             n-print "{ PROP_VALUE_COLOR }{ $pre } of GValues{ RESET_COLOR }";
           }
         }
 
-        when $s.check_gobject_type( GStreamer::Value.fraction-get-type ) {
-          my $pspec = $s.value-spec;
+        when $s.value_type == GStreamer::Value.fraction-get-type {
+          my $pspec = cast(GstParamSpecFraction, $s.GParamSpec);
 
           n-print "{ DATATYPE_COLOR }Fraction{ RESET_COLOR }. {
                       PROP_ATTR_NAME_COLOR }Range{ RESET_COLOR }: {
@@ -457,7 +464,7 @@ multi sub print-object-properties-info ($o, $d, $k? is copy) {
         }
 
         default {
-          my $ut = GLib::Object.Type.new($s.value_type);
+          my $ut = GLib::Object::Type.new($s.value_type);
 
           n-print "{ PROP_VALUE_COLOR }Unknown type { $ut.Int }{
                     RESET_COLOR }{ DATATYPE_COLOR }\"{ $ut.name }\"{
@@ -494,7 +501,7 @@ sub print-pad-templates-info ($e, $ef) {
   my @spts = $ef.get-static-pad-templates;
   for @spts -> $pt {
     my $dir = get-direction-name($pt.direction).uc;
-    n-print "{ PROP_NAME_COLOR }{ $dir.fmt('%-4s') } template{ RESET_COLOR }: {
+    n-print "{ PROP_NAME_COLOR }{ $dir } template{ RESET_COLOR }: {
                 PROP_VALUE_COLOR }{ $pt.name_template }{ RESET_COLOR }\n";
 
     push-indent;
@@ -511,6 +518,8 @@ sub print-pad-templates-info ($e, $ef) {
     if $pt.static-caps -> $sc {
       if $sc.string {
         n-print "{ PROP_NAME_COLOR }Capabilities{ RESET_COLOR }:\n";
+        my $caps = $sc.get;
+
         push-indent;
         print-caps($sc.get);
         pop-indent;
@@ -567,7 +576,7 @@ sub print-clocking-info ($e) {
   pop-indent;
 }
 
-sub print-uri-handler-info ($e) {
+sub print-uri-handler-info ($e is copy) {
   unless $e.isType( urihandler-get-type ) {
     n-print " { DESC_COLOR }Element has no URI handling capabilities.{
                 RESET_COLOR }\n";
@@ -577,10 +586,10 @@ sub print-uri-handler-info ($e) {
   $e = $e but GStreamer::Roles::URIHandler;
   # This NEVER should appear in client code, but here we are...
   $e.roleInit-URIHandler;
-  my $uri-type = get-direction-name( $e.get_uri_type );
+  my $uri-type = get-uriType-name($e.get_uri_type);
 
   n-print;
-  n-print " { HEADING_COLOR }URI handling capabilities{ RESET_COLOR }:";
+  n-print " { HEADING_COLOR }URI handling capabilities{ RESET_COLOR }:\n";
   push-indent;
   n-print "{ DESC_COLOR }Element can act as { $uri-type }.{ RESET_COLOR }\n";
 
@@ -636,7 +645,7 @@ sub print-pad-info ($e) {
 
 sub has-sometimes-template ($e) {
   for $e.getClass.pad-templates[] -> $l {
-    return True if $l.presence == GST_PAD_SOMETIMES;
+    return True if ($l.presence // 0) == GST_PAD_SOMETIMES;
   }
   False;
 }
@@ -734,10 +743,12 @@ sub print-preset-list ($e is copy) {
   return unless $e.isType( preset-get-type );
 
   $e = $e but GStreamer::Roles::Preset;
+  $e.roleInit-GstPreset;
+
   if $e.get_preset_names -> $presets {
     n-print;
-    n-print " { HEADING_COLOR }Presets{ RESET_COLOR }:";
-    n-print '  "' ~ $_  ~ '"' for $presets[];
+    n-print " { HEADING_COLOR }Presets{ RESET_COLOR }:\n";
+    n-print '  "' ~ $_  ~ '"' ~ "\n" for $presets[];
   }
 }
 
@@ -814,7 +825,7 @@ sub print-element-list ($pa, $ft) {
         print "{ PLUGIN_NAME_COLOR }{ $plugin.name }{ RESET_COLOR }: {
                   ELEMENT_NAME_COLOR }{ $feature.name }{ RESET_COLOR }: ";
 
-        if $factory.get-extensions -> $ext {
+        if $factory.get-extensions[] -> $ext {
           unless $pa {
             print-typefind-extensions($ext, ELEMENT_DETAIL_COLOR);
             n-print;
@@ -867,7 +878,7 @@ sub print-all-uri-handlers {
         if $element.is_a( urihandler-get-type ) {
           $element = $element but GStreamer::Roles::URIHandler;
           $element.roleInit-URIHandler;
-          my $dir = get-direction-name($element.uri-type, :rw);
+          my $dir = get-uriType-name($element.uri-type, :rw);
 
           print "{ FEATURE_NAME_COLOR }{ $factory.name }{ RESET_COLOR } ){
                     FEATURE_DIR_COLOR }{ $dir }{ RESET_COLOR }, {
@@ -1128,18 +1139,18 @@ sub print-plugin-automatic-install-info-codecs ($f) {
 
 sub print-plugin-automatic-install-info-protocols ($f) {
   if ( my $protocols = $f.get-uri-protocols ) && $protocols.elems {
-    my $ut = do given $f.get-uri-type {
-      when    GST_URI_SINK { 'urisink'   }
-      when    GST_URI_SRC  { 'urisource' }
-      default              { return }
-    }
+    my $ut = 'uri' ~ get-uriType-name($f.get-uri-type);
+    return if $ut eq 'uriunknown';
     print "{ $ut }-{ $_ }" for $protocols[];
   }
 }
 
 sub print-plugin-automatic-install-info ($p) {
+  say '»»» AII »»»';
+
   if $reg.get-feature-list(ELEMENT_FACTORY_TYPE) -> $features {
     for $features[] -> $pf {
+      $pf.gist.say;
       my $fp = $pf.plugin;
 
       if +$fp.GstPlugin == +$p.GstPlugin {
