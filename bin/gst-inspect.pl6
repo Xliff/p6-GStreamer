@@ -191,8 +191,8 @@ sub print-hierarchy ($t, $l is copy, $ml is rw) {
   print-hierarchy($parent, $l, $ml) if $parent;
   print "{ DATATYPE_COLOR }{ $name }{ RESET_COLOR }" if $name;
   if $ml - $l -> $i {
-    print "      " x $i;
-    print " { CHILD_LINK_COLOR }+----{ RESET_COLOR }";
+    print "      " x ($i - 1);
+    print "{ CHILD_LINK_COLOR }+----{ RESET_COLOR }";
   }
   say "{ DATATYPE_COLOR }{ $t.name }{ RESET_COLOR }";
   n-print unless $l;
