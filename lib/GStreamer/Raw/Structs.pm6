@@ -114,23 +114,17 @@ class GstDateTime                is repr<CStruct>      does GLib::Roles::Pointer
 }
 
 class GstDeviceMonitor           is repr<CStruct>      does GLib::Roles::Pointers is export {
-  has GstObject            $.parent;
+  HAS GstObject            $.parent;
   has Pointer              $!priv;
-  has gpointer             $!gst_reserved0;
-  has gpointer             $!gst_reserved1;
-  has gpointer             $!gst_reserved2;
-  has gpointer             $!gst_reserved3;
+  HAS GstPadding           $!padding;
 }
 
 class GstDeviceProvider          is repr<CStruct>      does GLib::Roles::Pointers is export {
-  has GstObject            $!parent;
+  HAS GstObject            $!parent;
   # Protected by the Object lock
   has GList                $!devices;
   has Pointer              $!priv;
-  has gpointer             $!gst_reserved0;
-  has gpointer             $!gst_reserved1;
-  has gpointer             $!gst_reserved2;
-  has gpointer             $!gst_reserved3;
+  HAS GstPadding           $!padding;
 }
 
 class GstElement                 is repr<CStruct>      does GLib::Roles::Pointers is export {
@@ -231,11 +225,11 @@ class GstMemory                  is repr<CStruct>      does GLib::Roles::Pointer
 }
 
 class GstMapInfo                 is repr<CStruct>      does GLib::Roles::Pointers is export {
-  has GstMemory    $!memory;
-  has GstMapFlags  $.flags;
-  has guint8       $.data;
-  has gsize        $.size;
-  has gsize        $.maxsize;
+  has GstMemory      $!memory;
+  has GstMapFlags    $.flags;
+  has CArray[guint8] $.data;
+  has gsize          $.size;
+  has gsize          $.maxsize;
 
   HAS gpointer     @!user_data[4] is CArray;
   HAS GstPadding   $!padding;
@@ -399,7 +393,7 @@ class GstTask                    is repr<CStruct>      does GLib::Roles::Pointer
 
   # with LOCK
   has GstTaskState    $.state     is rw;
-  has GCond           $.cond;
+  HAS GCond           $.cond;
   has GRecMutex       $!lock;
   has Pointer         $!func;     #= (gpointer $user_data);
   has gpointer        $.user_data is rw;
@@ -708,10 +702,10 @@ class GstPad                     is repr<CStruct>  does GLib::Roles::Pointers is
   has GstPadTemplate             $.padtemplate;
   has GstPadDirection            $.direction;
   # Private
-  has GRecMutex                  $!stream_rec_lock;
+  HAS GRecMutex                  $!stream_rec_lock;
   has GstTask                    $!task;
-  has GCond                      $!block_cond;
-  has GHookList                  $!probes;
+  HAS GCond                      $!block_cond;
+  HAS GHookList                  $!probes;
   has GstPadMode                 $!mode;
   has Pointer                    $!activatefunc;        #= GstPadActivateFunction
   has gpointer                   $!activatedata;
@@ -770,7 +764,7 @@ class GstCollectData             is repr<CStruct>  does GLib::Roles::Pointers is
   has GstCollectPadsStateFlags  $!state;
   has Pointer                   $!priv;
 
-  HAS GstPaddingLarge           $!padding;
+  HAS GstPadding                $!padding;
 
   method pad is rw {
     Proxy.new:
@@ -783,7 +777,7 @@ class GstCollectData             is repr<CStruct>  does GLib::Roles::Pointers is
       FETCH => -> $                 { self.^attributes[2].get_value(self)    },
       STORE => -> $, GstBuffer() \b { self.^attributes[2].set_value(self, b) };
   }
-};
+}
 
 class GstAggregator              is repr<CStruct>  does GLib::Roles::Pointers is export {
   HAS GstElement      $.parent;
@@ -830,20 +824,20 @@ class GstBaseParseFrame          is repr<CStruct>  does GLib::Roles::Pointers is
 }
 
 class GstBaseParse               is repr<CStruct>  does GLib::Roles::Pointers is export {
-  has GstElement      $.element;
+  HAS GstElement      $.element;
 
   # Protected
   has GstPad          $.sinkpad;
   has GstPad          $.srcpad;
   has guint           $.flags;
-  has GstSegment      $.segment;
+  HAS GstSegment      $.segment;
 
   HAS GstPaddingLarge $!padding;
   has Pointer         $!private;
 }
 
 class GstBaseSink                is repr<CStruct>  does GLib::Roles::Pointers is export {
-  has GstElement       $.element;
+  HAS GstElement       $.element;
 
   # Protected
   has GstPad           $.sinkpad;
@@ -855,8 +849,8 @@ class GstBaseSink                is repr<CStruct>  does GLib::Roles::Pointers is
   has gboolean         $.can_activate_push;
 
   # Protected WITH PREROLL LOCK
-  has GMutex           $.preroll_lock;
-  has GCond            $.preroll_cond;
+  HAS GMutex           $.preroll_lock;
+  HAS GCond            $.preroll_cond;
   has gboolean         $.eos;
   has gboolean         $.need_preroll;
   has gboolean         $.have_preroll;
@@ -864,7 +858,7 @@ class GstBaseSink                is repr<CStruct>  does GLib::Roles::Pointers is
 
   # Protectedf WITH STREAM LOCK
   has gboolean         $.have_newsegment;
-  has GstSegment       $.segment;
+  HAS GstSegment       $.segment;
 
   # Private
   has GstClockID       $!clock_id;
@@ -878,14 +872,14 @@ class GstBaseSink                is repr<CStruct>  does GLib::Roles::Pointers is
 }
 
 class GstBaseSrc                 is repr<CStruct>  does GLib::Roles::Pointers is export {
-  has GstElement       $.element;
+  HAS GstElement       $.element;
 
   # Protected
   has GstPad           $.srcpad;
 
   # MT-Protected with LIVE_LOCK
-  has GMutex           $!live_lock;
-  has GCond            $!live_cond;
+  HAS GMutex           $!live_lock;
+  HAS GCond            $!live_cond;
   has gboolean         $!is_live;
   has gboolean         $!live_running;
 
@@ -897,7 +891,7 @@ class GstBaseSrc                 is repr<CStruct>  does GLib::Roles::Pointers is
   has GstClockID       $!clock_id;              #= for syncing
 
   # MT-protected (with STREAM_LOCK *and* OBJECT_LOCK)
-  has GstSegment       $!segment;
+  HAS GstSegment       $!segment;
   # MT-protected (with STREAM_LOCK)
   has gboolean         $!need_newsegment;
   has gint             $!num_buffers;
@@ -917,7 +911,7 @@ class GstBaseSrc                 is repr<CStruct>  does GLib::Roles::Pointers is
 };
 
 class GstBaseTransform           is repr<CStruct>  does GLib::Roles::Pointers is export {
-  has GstElement          $.element;
+  HAS GstElement          $.element;
 
   # Protected
   has GstPad              $.sinkpad;
@@ -925,14 +919,14 @@ class GstBaseTransform           is repr<CStruct>  does GLib::Roles::Pointers is
 
   # MT-protected (with STREAM_LOCK)
   has gboolean            $.have_segment;
-  has GstSegment          $.segment;
+  HAS GstSegment          $.segment;
   # Default submit_input_buffer places the buffer here,
   # for consumption by the generate_output method:
   has GstBuffer           $.queued_buf;
 
   has Pointer             $!priv;
 
-  HAS GstPaddingLarge     $!padding;
+  HAS Pointer             @!padding[GST_PADDING_LARGE - 1] is CArray;
 }
 
 class GstDataQueueItem           is repr<CStruct>  does GLib::Roles::Pointers is export {
@@ -967,9 +961,11 @@ class GstByteWriter              is repr<CStruct>  does GLib::Roles::Pointers is
   # HAS does not suppport delegation via handles<> trait!
   HAS GstByteReader $.parent;
 
-  has guint    $.alloc_size is rw;
-  has gboolean $.fixed      is rw;
-  has gboolean $.owned      is rw;
+  has guint         $.alloc_size is rw;
+  has gboolean      $.fixed      is rw;
+  has gboolean      $.owned      is rw;
+
+  HAS GstPadding    $!padding;
 
   method data is rw { $.parent.data }
   method size is rw { $.parent.size }
@@ -1153,27 +1149,27 @@ class GstVideoCodecFrame         is repr<CStruct>    does GLib::Roles::Pointers 
 }
 
 class GstVideoFormatInfo         is repr<CStruct>    does GLib::Roles::Pointers is export {
-  has GstVideoFormat $.format;
+  has GstVideoFormat       $.format;
   has Str                  $!name;
   has Str                  $!description;
   has GstVideoFormatFlags  $.flags                                  is rw;
   has guint                $.bits                                   is rw;
   has guint                $.n_components                           is rw;
-  has guint                @.shift[GST_VIDEO_MAX_COMPONENTS]        is CArray;
-  has guint                @.depth[GST_VIDEO_MAX_COMPONENTS]        is CArray;
-  has gint                 @.pixel_stride[GST_VIDEO_MAX_COMPONENTS] is CArray;
+  HAS guint                @.shift[GST_VIDEO_MAX_COMPONENTS]        is CArray;
+  HAS guint                @.depth[GST_VIDEO_MAX_COMPONENTS]        is CArray;
+  HAS gint                 @.pixel_stride[GST_VIDEO_MAX_COMPONENTS] is CArray;
   has guint                $.n_planes                               is rw;
-  has guint                @.plane[GST_VIDEO_MAX_COMPONENTS]        is CArray;
-  has guint                @.poffset[GST_VIDEO_MAX_COMPONENTS]      is CArray;
-  has guint                @.w_sub[GST_VIDEO_MAX_COMPONENTS]        is CArray;
-  has guint                @.h_sub[GST_VIDEO_MAX_COMPONENTS]        is CArray;
+  HAS guint                @.plane[GST_VIDEO_MAX_COMPONENTS]        is CArray;
+  HAS guint                @.poffset[GST_VIDEO_MAX_COMPONENTS]      is CArray;
+  HAS guint                @.w_sub[GST_VIDEO_MAX_COMPONENTS]        is CArray;
+  HAS guint                @.h_sub[GST_VIDEO_MAX_COMPONENTS]        is CArray;
 
   has GstVideoFormat       $.unpack_format                          is rw;
   has Pointer              $.unpack_func;                           # GstVideoUnpack func
   has gint                 $.pack_lines                             is rw;
   has Pointer              $.pack_func;                             # GstVideoPack   func
 
-  has guint                $.tile_mode                              is rw;   # GstVideoTileMode
+  has guint32              $.tile_mode                              is rw;   # GstVideoTileMode
   has guint                $.tile_ws                                is rw;
   has guint                $.tile_hs                                is rw;
 
@@ -1211,7 +1207,7 @@ class GstVideoInfo               is repr<CStruct>    does GLib::Roles::Pointers 
   has gint                   $.views          is rw;
 
   has GstVideoChromaSite     $.chroma_site    is rw;
-  has GstVideoColorimetry    $.colorimetry    is rw;
+  HAS GstVideoColorimetry    $.colorimetry    is rw;
 
   has gint                   $.par_n          is rw;
   has gint                   $.par_d          is rw;
@@ -1242,7 +1238,7 @@ class GstVideoCodecState         is repr<CStruct>    does GLib::Roles::Pointers 
   has GstBuffer       $!codec_data;
   has GstCaps         $!allocation_caps;
 
-  HAS GstPaddingLarge $!padding;
+  HAS Pointer         @!padding[GST_PADDING_LARGE - 1] is CArray;
 
   method caps is rw {
     Proxy.new:
@@ -1289,10 +1285,10 @@ class GstVideoFrame              is repr<CStruct>    does GLib::Roles::Pointers 
   has gpointer           $!meta;
   has gint               $.id is rw;
 
-  has gpointer           @.data[GST_VIDEO_MAX_PLANES] is CArray;
-  has GstMapInfo         @.map[GST_VIDEO_MAX_PLANES]  is CArray;
+  HAS gpointer           @.data[GST_VIDEO_MAX_PLANES] is CArray;
+  HAS GstMapInfo         @.map[GST_VIDEO_MAX_PLANES]  is CArray;
 
-  has GstPadding         $!padding;
+  HAS GstPadding         $!padding;
 
   method info is rw {
     Proxy.new:
@@ -1351,8 +1347,8 @@ class GstVideoMeta               is repr<CStruct>    does GLib::Roles::Pointers 
   has guint              $.height is rw;
 
   has guint              $.n_planes;
-  has gsize              @.offset[GST_VIDEO_MAX_PLANES] is CArray;
-  has gint               @.stride[GST_VIDEO_MAX_PLANES] is CArray;
+  HAS gsize              @.offset[GST_VIDEO_MAX_PLANES] is CArray;
+  HAS gint               @.stride[GST_VIDEO_MAX_PLANES] is CArray;
 
   has Pointer            $!map;    # (GstVideoMeta *meta, guint plane,
                                    #  GstMapInfo *info, gpointer *data,
@@ -1570,7 +1566,7 @@ class GstVideoTimeCodeMeta            is repr<CStruct>    does GLib::Roles::Poin
   also does MetaRole;
 
   HAS GstMeta          $!meta;
-  has GstVideoTimeCode $.tc is rw;
+  HAS GstVideoTimeCode $.tc is rw;
 
   method meta is rw {
     Proxy.new:
@@ -1761,8 +1757,8 @@ class GstVideoFilter             is repr<CStruct>  does GLib::Roles::Pointers is
   HAS GstBaseTransform $.element;
 
   has gboolean         $.negotiated is rw;
-  has GstVideoInfo     $.in_info;
-  has GstVideoInfo     $.out_info;
+  HAS GstVideoInfo     $.in_info;
+  HAS GstVideoInfo     $.out_info;
 
   HAS GstPadding       $!padding;
 }
