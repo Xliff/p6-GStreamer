@@ -5,6 +5,7 @@ use Method::Also;
 use GStreamer::Raw::Types;
 use GStreamer::Raw::Caps;
 
+use GStreamer::CapsFeatures;
 use GStreamer::MiniObject;
 use GStreamer::Structure;
 
@@ -188,10 +189,14 @@ class GStreamer::Caps is GStreamer::MiniObject {
     gst_caps_foreach($!c, $func, $user_data);
   }
 
-  method get_features (Int() $index) is also<get-features> {
+  method get_features (Int() $index, :$raw = False) is also<get-features> {
     my guint $i = $index;
+    my $cf = gst_caps_get_features($!c, $i);
 
-    gst_caps_get_features($!c, $i);
+    $cf ??
+      ( $raw ?? $cf !! GStreamer::CapsFeatures.new($cf) )
+      !!
+      Nil
   }
 
   method get_size is also<get-size> {
