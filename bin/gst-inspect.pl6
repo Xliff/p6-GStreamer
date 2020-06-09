@@ -7,6 +7,7 @@ use GLib::Object::Type;
 use GLib::Array;
 use GLib::GList;
 use GLib::MainLoop;
+use GLib::Quark;
 use GLib::Signal;
 use GLib::Spawn;
 use GLib::Value;
@@ -122,8 +123,10 @@ sub n-print ($format?) {
 }
 
 sub print-field ($f, $v, $pfx) {
-  my $val   = GLib.Value.new($v);
-  my $field = GQuark.to-string($f);
+  CATCH { default { .message.say } }
+
+  my $val   = GStreamer::Value.new($v);
+  my $field = GLib::Quark.to-string($f);
 
   n-print "{ $pfx }  { FIELD_NAME_COLOR }{ $field.fmt('%15s') }{ RESET_COLOR
            }: {FIELD_VALUE_COLOR}{ $val.serialize }{ RESET_COLOR }\n";
@@ -144,12 +147,12 @@ sub print-caps ($c, $pfx = '') {
     if $f && $f.is-any ||
              $f.is_equal($gst-caps-features-memory-system-memory).not
     {
-      n-print "{ $pfx }{ STRUCT_NAME_COLOR }{ $s.get-name }{ RESET_COLOR
-                }({ CAPS_FEATURE_COLOR }{ ~$f }{ RESET_COLOR })";
+      n-print "{ $pfx }{ STRUCT_NAME_COLOR }{ $s.name }{ RESET_COLOR
+    }({ CAPS_FEATURE_COLOR }{ ~$f }{ RESET_COLOR })\n";
     } else {
-      n-print "{ $pfx }{ STRUCT_NAME_COLOR }{ $s.get-name }{ RESET_COLOR }";
+      n-print "{ $pfx }{ STRUCT_NAME_COLOR }{ $s.name }{ RESET_COLOR }\n";
     }
-    $s.foreach(-> *@a { print-field( |@a[0, 1], $pfx ) });
+    $s.foreach(-> *@a --> gboolean { print-field( |@a[0, 1], $pfx ) });
   }
 }
 
@@ -1122,7 +1125,7 @@ sub print-plugin-automatic-install-info-codecs ($f) {
   }
 
   my $caps;
-  for $f.get-static-pad-templates -> $tmpl {
+  for $f.get-static-pad-templates[] -> $tmpl {
     if $tmpl.direction == $dir {
       $caps = $tmpl.get-caps;
       last;
@@ -1140,7 +1143,7 @@ sub print-plugin-automatic-install-info-codecs ($f) {
 
     $s.remove-field($_) for <framerate   channels  rate  depth  height
                              clock-rate  width     pixel-aspect-ratio>;
-    print "{ $typename } - { ~$s }";
+    print "{ $typename }-{ ~$s }";
   }
 }
 
@@ -1157,10 +1160,10 @@ sub print-plugin-automatic-install-info ($p) {
 
   if $reg.get-feature-list(ELEMENT_FACTORY_TYPE) -> $features {
     for $features[] -> $pf {
-      $pf.gist.say;
       my $fp = $pf.plugin;
 
-      if +$fp.GstPlugin == +$p.GstPlugin {
+      # if +$fp.GstPlugin == +$p.GstPlugin {\
+      if $fp.name eq $p.name {
         print "element-{ $pf.name }\n";
         print-plugin-automatic-install-info-protocols($pf);
         print-plugin-automatic-install-info-codecs($pf);
