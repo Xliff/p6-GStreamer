@@ -119,7 +119,8 @@ sub n-print ($format?) {
     print "\n";
     return;
   }
-  print "{ $indent }{ $name ?? $name !! '' }{ '  ' x $indent }{ $format // '' }";
+  #print "{ $indent }{ $name ?? $name !! '' }{ '  ' x $indent }{ $format // '' }";
+  print "{ $name ?? $name !! '' }{ '  ' x $indent }{ $format // '' }";
 }
 
 sub print-field ($f, $v, $pfx) {
@@ -269,10 +270,15 @@ multi sub print-object-properties-info ($o, $d, $k? is copy) {
       $s.value-set-default($v);
     }
 
+    constant G_PARAM_STATIC_STRINGS = G_PARAM_STATIC_NAME +|
+                                      G_PARAM_STATIC_NICK +|
+                                      G_PARAM_STATIC_BLURB;
+
     my $known-param-flags = [+|](
-      G_PARAM_READWRITE,       G_PARAM_DEPRECATED,      G_PARAM_CONSTRUCT,
-      G_PARAM_CONSTRUCT_ONLY,  G_PARAM_LAX_VALIDATION,  GST_PARAM_CONTROLLABLE,
-      GST_PARAM_MUTABLE_READY, GST_PARAM_MUTABLE_PAUSED,GST_PARAM_MUTABLE_PLAYING
+      G_PARAM_READABLE,        G_PARAM_WRITABLE,         G_PARAM_CONSTRUCT_ONLY,
+      G_PARAM_READWRITE,       G_PARAM_DEPRECATED,       G_PARAM_CONSTRUCT,
+      G_PARAM_STATIC_STRINGS,  G_PARAM_LAX_VALIDATION,   GST_PARAM_CONTROLLABLE,
+      GST_PARAM_MUTABLE_READY, GST_PARAM_MUTABLE_PAUSED, GST_PARAM_MUTABLE_PLAYING
     );
 
     my ($readable, @f) = ( $s.flag-set(G_PARAM_READABLE) );
@@ -280,6 +286,8 @@ multi sub print-object-properties-info ($o, $d, $k? is copy) {
     @f.push( PAV-COLOR('writeable')    ) if $s.flag-set(G_PARAM_WRITABLE);
     @f.push( PAV-COLOR('deprecated')   ) if $s.flag-set(G_PARAM_DEPRECATED);
     @f.push( PAV-COLOR('controllable') ) if $s.flag-set(GST_PARAM_CONTROLLABLE);
+    #@f.push( PAV-COLOR('conditionally avaialble') )
+    #  if $s.flag-set(GST_PARAM_CONDITIONALLY_AVAILABLE);
 
     @f.push( PAV-COLOR('changeable in NULL, READ, PAUSED or PLAYING state') )
       if $s.flag-set(GST_PARAM_MUTABLE_PLAYING);
@@ -303,7 +311,7 @@ multi sub print-object-properties-info ($o, $d, $k? is copy) {
         n-print "{ DATATYPE_COLOR }String{ RESET_COLOR }. ";
           print "{ PROP_ATTR_NAME_COLOR }Default{ RESET_COLOR }: ";
           print PAV-COLOR(
-            $v.value.defined ?? '"' ~ { $v.value } ~ '"' !! 'null'
+            $v.value.defined ?? '"' ~ $v.value ~ '"' !! 'null'
           );
       }
 
