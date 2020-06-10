@@ -119,7 +119,7 @@ sub n-print ($format?) {
     print "\n";
     return;
   }
-  print "{ $indent }{ $name ?? $name !! '' }{ ' ' x $indent }{ $format // '' }";
+  print "{ $indent }{ $name ?? $name !! '' }{ '  ' x $indent }{ $format // '' }";
 }
 
 sub print-field ($f, $v, $pfx) {
@@ -136,8 +136,8 @@ sub print-field ($f, $v, $pfx) {
 sub print-caps ($c, $pfx = '') {
   die '$c (a GStreamer::Cap object) is undefined!' unless $c;
 
-  n-print "{ CAPS_TYPE_COLOR }{ $pfx }ANY{ RESET_COLOR }"   if $c.is-any;
-  n-print "{ CAPS_TYPE_COLOR }{ $pfx }EMPTY{ RESET_COLOR }" if $c.is-empty;
+  n-print "{ CAPS_TYPE_COLOR }{ $pfx }ANY{ RESET_COLOR }\n"   if $c.is-any;
+  n-print "{ CAPS_TYPE_COLOR }{ $pfx }EMPTY{ RESET_COLOR }\n" if $c.is-empty;
   return if $c.is-any || $c.is-empty;
 
   for ^$c.get-size {
@@ -147,8 +147,9 @@ sub print-caps ($c, $pfx = '') {
     if $f && $f.is-any ||
              $f.is_equal($gst-caps-features-memory-system-memory).not
     {
-      n-print "{ $pfx }{ STRUCT_NAME_COLOR }{ $s.name }{ RESET_COLOR
-    }({ CAPS_FEATURE_COLOR }{ ~$f }{ RESET_COLOR })\n";
+      n-print "{ $pfx }{ STRUCT_NAME_COLOR }{ $s.name }{
+                 RESET_COLOR }({ CAPS_FEATURE_COLOR }{ ~$f }{
+                 RESET_COLOR })\n";
     } else {
       n-print "{ $pfx }{ STRUCT_NAME_COLOR }{ $s.name }{ RESET_COLOR }\n";
     }
@@ -243,7 +244,7 @@ multi sub print-object-properties-info ($o, $d, $k? is copy) {
   n-print "{ HEADING_COLOR }{ $d }{ RESET_COLOR }\n";
   push-indent;
 
-  for @specs[0] -> $s {
+  for @specs -> $s {
     my $ot = $s.owner_type;
 
     next unless $o || $ot == none(
@@ -494,7 +495,7 @@ sub print-element-properties-info ($e) {
 }
 
 sub print-pad-templates-info ($e, $ef) {
-  n-print " { HEADING_COLOR }Pad Templates{ RESET_COLOR }:\n";
+  n-print "{ HEADING_COLOR }Pad Templates{ RESET_COLOR }:\n";
   push-indent;
 
   LEAVE { pop-indent }
@@ -506,7 +507,7 @@ sub print-pad-templates-info ($e, $ef) {
   my @spts = $ef.get-static-pad-templates;
   for @spts -> $pt {
     my $dir = get-direction-name($pt.direction).uc;
-    n-print "  { PROP_NAME_COLOR }{ $dir } template{ RESET_COLOR }: {
+    n-print "{ PROP_NAME_COLOR }{ $dir } template{ RESET_COLOR }: {
                 PROP_VALUE_COLOR }{ $pt.name_template }{ RESET_COLOR }\n";
 
     push-indent;
@@ -517,12 +518,12 @@ sub print-pad-templates-info ($e, $ef) {
       when    GST_PAD_REQUEST   { 'On request' }
       default                   { 'UNKNOWN'    }
     }
-    n-print "    { PROP_NAME_COLOR }Availability{ RESET_COLOR }: {
-                PROP_VALUE_COLOR }{ $p }{ RESET_COLOR }\n";
+    n-print "{ PROP_NAME_COLOR }Availability{ RESET_COLOR }: {
+               PROP_VALUE_COLOR }{ $p }{ RESET_COLOR }\n";
 
     if $pt.static-caps -> $sc {
       if $sc.string {
-        n-print "    { PROP_NAME_COLOR }Capabilities{ RESET_COLOR }:\n";
+        n-print "{ PROP_NAME_COLOR }Capabilities{ RESET_COLOR }:\n";
         my $caps = $sc.get;
 
         push-indent;
@@ -534,7 +535,8 @@ sub print-pad-templates-info ($e, $ef) {
     my $klass = $e.getClass;
     if $klass.get-pad-template($pt.name-template) -> $tmpl {
       my $gt = $tmpl.objectType;
-      unless $gt.is-a( G_TYPE_NONE ) || $gt.is-a( PAD_TYPE ) {
+
+      unless $tmpl.abi-type == (G_TYPE_NONE, PAD_TYPE).any {
         my $pk = $gt.class-ref;
 
         n-print "{ PROP_NAME_COLOR }Type{ RESET_COLOR }: { DATATYPE_COLOR }{
@@ -632,13 +634,13 @@ sub print-pad-info ($e) {
     n-print "{ PROP_NAME_COLOR }{ $dir }{ RESET_COLOR }: {
                 PROP_VALUE_COLOR }'{ $n }'{ RESET_COLOR }\n";
 
-    # if $pad.padtemplate -> $pt {
-    #   push-indent;
-    #   n-print "{ PROP_NAME_COLOR }Pad Template{ RESET_COLOR }: {
-    #               PROP_VALUE_COLOR }'{ $pt.name-template }'{ RESET_COLOR }\n";
-    #   pop-indent;
-    # }
-    #
+    if $pad.padtemplate -> $pt {
+      push-indent;
+      n-print "{ PROP_NAME_COLOR }Pad Template{ RESET_COLOR }: {
+                 PROP_VALUE_COLOR }'{ $pt.name-template }'{ RESET_COLOR }\n";
+      pop-indent;
+    }
+
     if $pad.get-current-caps -> $caps {
       n-print "{ PROP_NAME_COLOR }Capabilities{ RESET_COLOR }:";
       push-indent;
