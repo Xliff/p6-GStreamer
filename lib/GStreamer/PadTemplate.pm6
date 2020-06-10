@@ -18,6 +18,7 @@ class GStreamer::PadTemplate is GStreamer::Object {
 
   has GstPadTemplate $!pt handles <
     name_template name-template
+    abi_type      abi-type
     direction
     presence
   >;
@@ -128,7 +129,9 @@ class GStreamer::PadTemplate is GStreamer::Object {
 }
 
 class GStreamer::StaticPadTemplate {
-  has GstStaticPadTemplate $!spt handles <name_template static_caps>;
+  has GstStaticPadTemplate $!spt handles <
+    name_template  name-template
+  >;
 
   submethod BUILD (:$static-template) {
     $!spt = $static-template;
@@ -170,17 +173,13 @@ class GStreamer::StaticPadTemplate {
     unstable_get_type( self.^name, &gst_static_pad_template_get_type, $n, $t );
   }
 
-  method name-template {
-    self.name_template;
-  }
-
   method presence {
     GstPadPresenceEnum( $!spt.presence );
   }
 
-  method static-caps (:$raw = False) {
-    $raw ?? self.static_caps
-         !! GStreamer::StaticCaps.new(self.static_caps);
+  method static_caps (:$raw = False) is also<static-caps> {
+    $raw ?? $!spt.static_caps
+         !! GStreamer::StaticCaps.new($!spt.static_caps);
   }
 
 }
