@@ -358,18 +358,22 @@ class GstPadStruct_abi           is repr<CStruct> {
 
 class GstPadStructABI            is repr<CUnion> {
   HAS GstPadding           $!reserved;
-  HAS GstPadStruct_abi     $!abi;
+  HAS GstPadStruct_abi     $.abi;
 }
 
 class GstPadTemplate             is repr<CStruct>     does GLib::Roles::Pointers is export {
   HAS GstObject	           $.object;
-  has Str                  $.name_template;
+  has Str                  $!name_template;
   has GstPadDirection      $.direction;
   has GstPadPresence       $.presence;
   has GstCaps	             $.caps;
-  HAS GstPadding           $!padding;
+  HAS GstPadStructABI      $!ABI;
 
-  method name-template { $.name_template }
+  method abi_type
+    is also<abi-type>      { $!ABI.abi.gtype }
+
+  method name_template
+    is also<name-template> { $!name_template }
 };
 
 class GstStaticCaps          is repr<CStruct>      does GLib::Roles::Pointers is export {
@@ -386,6 +390,9 @@ class GstStaticPadTemplate       is repr<CStruct>      does GLib::Roles::Pointer
   has GstPadDirection      $.direction;
   has GstPadPresence       $.presence;
   HAS GstStaticCaps        $.static_caps;
+
+  method name-template { $.name_template }
+  method static-caps   { $.static_caps   }
 }
 
 class GstTask                    is repr<CStruct>      does GLib::Roles::Pointers is export {
