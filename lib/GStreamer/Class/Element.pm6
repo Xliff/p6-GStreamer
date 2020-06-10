@@ -82,6 +82,10 @@ class GStreamer::Class::Element is GLib::Class::Object {
     self.setGstElementClass($element-class);
   }
 
+  method GStreamer::Class::Element::GstElementClass
+    is also<GstElementClass>
+  { $!ec }
+
   method setGstElementClass (GstElementClassAncestry $_) {
     my $to-parent;
 
