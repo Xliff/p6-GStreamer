@@ -22,6 +22,7 @@
 #  include "config.h"
 #endif
 
+#include <stdio.h>
 #include <stdlib.h>
 #include <gst/gst.h>
 #include <gst/net/gstnettimeprovider.h>
@@ -34,11 +35,18 @@ main (gint argc, gchar * argv[])
   GstNetTimeProvider *net_clock;
   int clock_port = 0;
 
+  int i;
+  for (i = 0; i < 23; i++)
+    printf("%d, %ld\n", i, g_param_spec_types[i]);
+
   gst_init (&argc, &argv);
 
   if (argc > 1) {
     clock_port = atoi (argv[1]);
   }
+
+  for (i = 0; i < 23; i++)
+    printf("%d, %ld\n", i, g_param_spec_types[i]);
 
   loop = g_main_loop_new (NULL, FALSE);
 
