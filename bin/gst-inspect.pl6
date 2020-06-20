@@ -362,7 +362,6 @@ multi sub print-object-properties-info ($o, $d, $k? is copy) {
         my ($t, $pt, $pre, $vv, $vt) = (GLib::Object::Type.new($v.type), False);
 
         when $s.value_type == GStreamer::Caps.get-type {
-
           if $v.caps -> $c {
             print-caps($c, '                           ');
           } else {
@@ -405,9 +404,11 @@ multi sub print-object-properties-info ($o, $d, $k? is copy) {
           $pt = False;
         }
 
-        when $s.value_type == $g-param-spec-types[G_TYPE_PARAM_OBJECT_IDX] {
+        when $s.checkType( $g-param-spec-types[G_TYPE_PARAM_OBJECT_IDX] ) {
+          my $s-type = GLib::Object::Type.new($s.value_type);
           n-print "{ PROP_VALUE_COLOR }Object of type{ RESET_COLOR } {
-                      DATATYPE_COLOR }\"{ $t.name }\"{ RESET_COLOR }";
+                      DATATYPE_COLOR }\"{
+                        $t ?? $t.name !! $s-type.name }\"{ RESET_COLOR }";
         }
 
         when $s.value_type == $g-param-spec-types[G_TYPE_PARAM_BOXED_IDX] {

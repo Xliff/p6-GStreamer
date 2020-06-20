@@ -36,7 +36,6 @@ class GStreamer::Main {
 
     # $ac is rw to pass the pointer. We do not need it back.
     gst_init($ac, $v);
-    load-gparam-spec-types;
     load-gst-cglobals;
   }
 
