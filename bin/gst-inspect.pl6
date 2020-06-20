@@ -405,8 +405,9 @@ multi sub print-object-properties-info ($o, $d, $k? is copy) {
             my $ename = .key.subst(@names[0], '').subst('_', '-').lc;
             n-print;
             n-print "   { PROP_ATTR_NAME_COLOR }({ $pre }{
-                           .value.fmt($f) }){ RESET_COLOR }: {
-                           $ename.fmt('%-25s') } - { PAV-COLOR(.key) }";
+                          .value.fmt($f) }){ RESET_COLOR }: {
+                          PAV-COLOR( $ename.fmt('%-16s') ) } {
+                          RESET_COLOR } - {.key }";
           }
         }
 
@@ -427,7 +428,7 @@ multi sub print-object-properties-info ($o, $d, $k? is copy) {
           }
         }
 
-        when $s.value_type == $g-param-spec-types[G_TYPE_PARAM_POINTER_IDX] {
+        when $s.checkType( $g-param-spec-types[G_TYPE_PARAM_POINTER_IDX] ) {
           if $s.value_type !=  G_TYPE_POINTER {
             n-print "{ PROP_VALUE_COLOR }Pointer of type{ RESET_COLOR } {
                         DATATYPE_COLOR }\"{ $st.name }\"{ RESET_COLOR }"
@@ -1309,7 +1310,7 @@ sub MAIN (
     }
 
     $retval = print-feature-info($arg, $print-all) unless $plugin-name;
-    unless $retval {
+    if $retval {
       if $reg.find-plugin($arg) -> $plugin {
         print-plugin-details($plugin)
       } else {
@@ -1317,7 +1318,7 @@ sub MAIN (
           if GStreamer::Plugin.load-file($arg) -> $plugin {
             print-plugin-details($plugin);
           } else {
-            $*ERR.say: "Could not load plyhgin file: { $ERROR.message }";
+            $*ERR.say: "Could not load plugin file: { $ERROR.message }";
             $exit-code = -1;
             return;
           }
