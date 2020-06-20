@@ -106,7 +106,7 @@ sub get-direction-name ($t, :$rw = False) {
 }
 
 # From #raku: -- Get longest common substring from a list.
-sub max (:&by = {$_}, :$all!, *@list) {
+sub maxSubstr (:&by = {$_}, :$all!, *@list) {
   # Find the maximal value...
   my $max = max my @values = @list.map: &by;
 
@@ -360,6 +360,7 @@ multi sub print-object-properties-info ($o, $d, $k? is copy) {
 
       default {
         my ($t, $pt, $pre, $vv, $vt) = (GLib::Object::Type.new($v.type), False);
+        my $st = GLib::Object::Type.new($s.value_type);
 
         when $s.value_type == GStreamer::Caps.get-type {
           if $v.caps -> $c {
@@ -369,51 +370,54 @@ multi sub print-object-properties-info ($o, $d, $k? is copy) {
           }
         }
 
-        when $s.value_type == $g-param-spec-types[G_TYPE_PARAM_ENUM_IDX] {
+        when $s.checkType( $g-param-spec-types[G_TYPE_PARAM_ENUM_IDX] ) {
           use MONKEY-SEE-NO-EVAL;
 
           ($pre, $f) = ('', '%d');
-          ($vt, $vv) = EVAL "( { $t.name }, { $t.name }({ $v.get-enum }) )";
-          n-print "{ DATATYPE_COLOR }Enum \"{ $t.name }\"{ RESET_COLOR } ";
+          ($vt, $vv) = EVAL "( { $st.name }, { $st.name }Enum({ $v.enum }) )";
+          n-print "{ DATATYPE_COLOR }Enum \"{ $st.name }\"{ RESET_COLOR } ";
             print "{ PROP_ATTR_NAME_COLOR }Default{ RESET_COLOR }: ";
             print "{ PROP_ATTR_VALUE_COLOR }{ $vv.Int }, \"{ $vv.Str }\"{
-                      RESET_COLOR }";
+                     RESET_COLOR }";
+          $pt = True;
+          proceed;
         }
 
-        when $s.value_type == $g-param-spec-types[G_TYPE_PARAM_FLAGS_IDX] {
+        when $s.checkType( $g-param-spec-types[G_TYPE_PARAM_FLAGS_IDX] ) {
           use MONKEY-SEE-NO-EVAL;
 
-          ($pre, $f, $vt) = ('0x', '%08x', EVAL $t.name);
-          n-print "{ DATATYPE_COLOR }Flags \"{ $t.name }\"{ RESET_COLOR } ";
+          ($pre, $f, $vt) = ('0x', '%08x', EVAL $st.name);
+          n-print "{ DATATYPE_COLOR }Flags \"{ $st.name }\"{ RESET_COLOR } ";
             print "{ PROP_ATTR_NAME_COLOR }Default{ RESET_COLOR }: ";
             print "{ PROP_ATTR_VALUE_COLOR }0x{ $v.flags.fmt('%08x') }{
                       flags-to-string($v.flags) }{ RESET_COLOR }";
+          $pt = True;
+          proceed;
         }
 
         when $pt.so {
-          my @nicks = $vt.enums.pairs.sort( *.value );
-          my @names = max :all,
-                          :by{.chars},
-                          keys [∩] @nicks».match(/.+/, :ex)».Str;
+          my @nicks = $vv.enums.pairs.sort( *.value );
+          my @names = maxSubstr :all,
+                                :by{.chars},
+                                keys [∩]
+                                  @nicks.map( *.key )».match(/.+/, :ex)».Str;
           for @nicks {
             my $ename = .key.subst(@names[0], '').subst('_', '-').lc;
+            n-print;
             n-print "   { PROP_ATTR_NAME_COLOR }({ $pre }{
                            .value.fmt($f) }){ RESET_COLOR }: {
-                           $ename.fmt('%-16s') } - { PAV-COLOR( .key ) }";
+                           $ename.fmt('%-25s') } - { PAV-COLOR(.key) }";
           }
-          $pt = False;
         }
 
         when $s.checkType( $g-param-spec-types[G_TYPE_PARAM_OBJECT_IDX] ) {
-          my $s-type = GLib::Object::Type.new($s.value_type);
           n-print "{ PROP_VALUE_COLOR }Object of type{ RESET_COLOR } {
-                      DATATYPE_COLOR }\"{
-                        $t ?? $t.name !! $s-type.name }\"{ RESET_COLOR }";
+                      DATATYPE_COLOR }\"{ $st.name }\"{ RESET_COLOR }";
         }
 
-        when $s.value_type == $g-param-spec-types[G_TYPE_PARAM_BOXED_IDX] {
+        when $s.checkType( $g-param-spec-types[G_TYPE_PARAM_BOXED_IDX] ) {
           n-print "{ PROP_VALUE_COLOR }Boxed pointer of type{
-                      RESET_COLOR }{ DATATYPE_COLOR }\"{ $t.name }\"{
+                      RESET_COLOR }{ DATATYPE_COLOR }\"{ $st.name }\"{
                       RESET_COLOR }";
           if $s.value_type == GStreamer:: {
             if $v.structure -> $struct {
@@ -426,7 +430,7 @@ multi sub print-object-properties-info ($o, $d, $k? is copy) {
         when $s.value_type == $g-param-spec-types[G_TYPE_PARAM_POINTER_IDX] {
           if $s.value_type !=  G_TYPE_POINTER {
             n-print "{ PROP_VALUE_COLOR }Pointer of type{ RESET_COLOR } {
-                        DATATYPE_COLOR }\"{ $t.name }\"{ RESET_COLOR }"
+                        DATATYPE_COLOR }\"{ $st.name }\"{ RESET_COLOR }"
           } else {
             n-print "{ PROP_VALUE_COLOR }Pointer{ RESET_COLOR }";
           }
@@ -479,10 +483,8 @@ multi sub print-object-properties-info ($o, $d, $k? is copy) {
         }
 
         default {
-          my $ut = GLib::Object::Type.new($s.value_type);
-
-          n-print "{ PROP_VALUE_COLOR }Unknown type { $ut.Int }{
-                    RESET_COLOR }{ DATATYPE_COLOR }\"{ $ut.name }\"{
+          n-print "{ PROP_VALUE_COLOR }Unknown type { $st.Int }{
+                    RESET_COLOR }{ DATATYPE_COLOR }\"{ $st.name }\"{
                     RESET_COLOR }";
         }
       }
