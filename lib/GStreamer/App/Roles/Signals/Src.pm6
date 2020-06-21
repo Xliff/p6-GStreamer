@@ -2,6 +2,8 @@ use v6.c;
 
 use NativeCall;
 
+use GLib::Raw::ReturnedValue;
+
 use GStreamer::Raw::Types;
 
 role GSteramer::App::Roles::Src {
@@ -17,13 +19,13 @@ role GSteramer::App::Roles::Src {
     %!signals-app{$signal} //= do {
       my \𝒮 = Supplier.new;
       $hid = g-connect-end-of-stream($obj, $signal,
-        -> $, $gr, $ud --> GstFlowReturn {
+        -> $, $ud --> GstFlowReturn {
           CATCH {
             default { 𝒮.note($_) }
           }
 
           my $r = ReturnedValue.new;
-          𝒮.emit( [self, $gr, $ud, $r] );
+          𝒮.emit( [self, $ud, $r] );
           $r.r;
         },
         Pointer, 0
@@ -44,13 +46,13 @@ role GSteramer::App::Roles::Src {
     %!signals-app{$signal} //= do {
       my \𝒮 = Supplier.new;
       $hid = g-connect-enough-data($obj, $signal,
-        -> $, , $ud --> GstAppSrc {
+        -> $, $ud --> GstAppSrc {
           CATCH {
             default { 𝒮.note($_) }
           }
 
           my $r = ReturnedValue.new;
-          𝒮.emit( [self, , $ud, $r] );
+          𝒮.emit( [self, $ud, $r] );
           $r.r;
         },
         Pointer, 0
@@ -71,13 +73,13 @@ role GSteramer::App::Roles::Src {
     %!signals-app{$signal} //= do {
       my \𝒮 = Supplier.new;
       $hid = g-connect-need-data($obj, $signal,
-        -> $, $gr, $ud --> GstAppSrc {
+        -> $, $ud --> GstAppSrc {
           CATCH {
             default { 𝒮.note($_) }
           }
 
           my $r = ReturnedValue.new;
-          𝒮.emit( [self, $gr, $ud, $r] );
+          𝒮.emit( [self, $ud, $r] );
           $r.r;
         },
         Pointer, 0
@@ -98,13 +100,13 @@ role GSteramer::App::Roles::Src {
     %!signals-app{$signal} //= do {
       my \𝒮 = Supplier.new;
       $hid = g-connect-push-buffer($obj, $signal,
-        -> $, $gbr, $gr, $ud --> GstFlowReturn {
+        -> $, $gbr, $ud --> GstFlowReturn {
           CATCH {
             default { 𝒮.note($_) }
           }
 
           my $r = ReturnedValue.new;
-          𝒮.emit( [self, $gbr, $gr, $ud, $r] );
+          𝒮.emit( [self, $gbr, $ud, $r] );
           $r.r;
         },
         Pointer, 0
@@ -125,13 +127,13 @@ role GSteramer::App::Roles::Src {
     %!signals-app{$signal} //= do {
       my \𝒮 = Supplier.new;
       $hid = g-connect-push-sample($obj, $signal,
-        -> $, $gse, $gr, $ud --> GstFlowReturn {
+        -> $, $gse, $ud --> GstFlowReturn {
           CATCH {
             default { 𝒮.note($_) }
           }
 
           my $r = ReturnedValue.new;
-          𝒮.emit( [self, $gse, $gr, $ud, $r] );
+          𝒮.emit( [self, $gse, $ud, $r] );
           $r.r;
         },
         Pointer, 0
@@ -148,7 +150,7 @@ role GSteramer::App::Roles::Src {
 sub g-connect-end-of-stream(
   Pointer $app,
   Str $name,
-  &handler (Pointer, , Pointer --> GstFlowReturn),
+  &handler (Pointer, Pointer --> GstFlowReturn),
   Pointer $data,
   uint32 $flags
 )
@@ -161,7 +163,7 @@ sub g-connect-end-of-stream(
 sub g-connect-enough-data(
   Pointer $app,
   Str $name,
-  &handler (Pointer, , Pointer --> GstAppSrc),
+  &handler (Pointer, Pointer --> GstAppSrc),
   Pointer $data,
   uint32 $flags
 )
@@ -174,7 +176,7 @@ sub g-connect-enough-data(
 sub g-connect-need-data(
   Pointer $app,
   Str $name,
-  &handler (Pointer, , Pointer --> GstAppSrc),
+  &handler (Pointer, Pointer --> GstAppSrc),
   Pointer $data,
   uint32 $flags
 )
