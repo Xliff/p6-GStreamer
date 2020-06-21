@@ -1897,3 +1897,16 @@ class GstParamSpecArray          is repr<CStruct>  does GLib::Roles::Pointers is
   HAS GParamSpec $.parent_instance;
   has GParamSpec $.element_spec;
 }
+
+class GstAppSrc                  is repr<CStruct>  does GLib::Roles::Pointers is export {
+  HAS GstBaseSrc $.basesrc;
+  has Pointer    $!priv;        #= GstAppSrcPrivate
+  HAS GstPadding $!padding;
+}
+
+class GstAppSrcCallbacks         is repr<CStruct>  does GLib::Roles::Pointers is export {
+  has Pointer    $.need_data;   #= void      (*need_data)    (GstAppSrc *src, guint length, gpointer user_data);
+  has Pointer    $.enough_data; #= void      (*enough_data)  (GstAppSrc *src, gpointer user_data);
+  has Pointer    $.seek_data;   #= gboolean  (*seek_data)    (GstAppSrc *src, guint64 offset, gpointer user_data);
+  HAS GstPadding $!padding;
+}
