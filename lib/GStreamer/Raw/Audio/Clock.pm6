@@ -4,6 +4,7 @@ use NativeCall;
 
 use GLib::Raw::Definitions;
 use GStreamer::Raw::Definitions;
+use GStreamer::Raw::Structs;
 use GStreamer::Raw::Audio::Structs;
 
 ### /usr/include/gstreamer-1.0/gst/audio/gstaudioclock.h
