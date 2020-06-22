@@ -10,7 +10,7 @@ our subset GstAppSrcAncestry is export of Mu
   where GstAppSrc | GstBaseSrcAncestry;
 
 class GStreamer::App::Src is GStreamer::Base::Src {
-  has GstAppSource $!as
+  has GstAppSrc $!as;
 
   # Type: gboolean
   method block is rw  {
@@ -56,15 +56,15 @@ class GStreamer::App::Src is GStreamer::Base::Src {
   # Type: guint64
   method duration is rw  {
     Proxy.new:
-      FETCH => -> $                            { self.duration(:$raw) }
-      STORE => -> $, GstClockTime $val is copy { self.duration($val)  }
+      FETCH => -> $                           { self.get_duration }
+      STORE => -> $, GstClockTime \ct is copy { self.set_duration(ct)  }
   }
 
   # Type: gboolean
   method emit-signals is rw  {
     Proxy.new:
-      FETCH => -> $                   { self.get_emit_signals      }
-      STORE => -> $, Int() \v is copy { self.set_emit_signals($v)  }
+      FETCH => -> $                   { self.get_emit_signals    }
+      STORE => -> $, Int() \v is copy { self.set_emit_signals(v) }
   }
 
   # Type: GstFormat
@@ -257,7 +257,7 @@ class GStreamer::App::Src is GStreamer::Base::Src {
 
   method set_callbacks (
     GstAppSrcCallbacks $callbacks,
-    gpointer $user_data    = gpointers,
+    gpointer $user_data    = gpointer,
     GDestroyNotify $notify = gpointer
   ) {
     gst_app_src_set_callbacks($!as, $callbacks, $user_data, $notify);
