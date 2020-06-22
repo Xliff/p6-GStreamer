@@ -3,6 +3,7 @@ use v6.c;
 use GStreamer::Raw::Types;
 
 use GLib::Class::Object;
+use GLib::Class::Structs;
 use GLib::Object::Type;
 use GLib::Array;
 use GLib::GList;
@@ -370,44 +371,47 @@ multi sub print-object-properties-info ($o, $d, $k? is copy) {
           }
         }
 
+        my ($pt-class, $pt-nick, $vals);
         when $s.checkType( $g-param-spec-types[G_TYPE_PARAM_ENUM_IDX] ) {
-          use MONKEY-SEE-NO-EVAL;
+          $pt-class = cast(GEnumClass, $s.value_type(:obj).class_ref);
+          $vals = $pt-class.valueArray;
+          my $sel-val = $vals.grep( *.value == $v.enum )[0];
 
           ($pre, $f) = ('', '%d');
-          ($vt, $vv) = EVAL "( { $st.name }, { $st.name }Enum({ $v.enum }) )";
           n-print "{ DATATYPE_COLOR }Enum \"{ $st.name }\"{ RESET_COLOR } ";
             print "{ PROP_ATTR_NAME_COLOR }Default{ RESET_COLOR }: ";
-            print "{ PROP_ATTR_VALUE_COLOR }{ $vv.Int }, \"{ $vv.Str }\"{
-                     RESET_COLOR }";
+            print "{ PROP_ATTR_VALUE_COLOR }{ $sel-val.value }, \"{
+                     $sel-val.nick }\"{ RESET_COLOR }";
           $pt = True;
           proceed;
         }
 
         when $s.checkType( $g-param-spec-types[G_TYPE_PARAM_FLAGS_IDX] ) {
-          use MONKEY-SEE-NO-EVAL;
+          $pt-class = cast(GFlagsClass, $s.value-spec.flags-class);
+          $vals = $pt-class.valueArray;
 
-          ($pre, $f, $vt) = ('0x', '%08x', EVAL $st.name);
+          ($pre, $f) = ('0x', '%08x');
           n-print "{ DATATYPE_COLOR }Flags \"{ $st.name }\"{ RESET_COLOR } ";
             print "{ PROP_ATTR_NAME_COLOR }Default{ RESET_COLOR }: ";
-            print "{ PROP_ATTR_VALUE_COLOR }0x{ $v.flags.fmt('%08x') }{
-                      flags-to-string($v.flags) }{ RESET_COLOR }";
+            print "{ PROP_ATTR_VALUE_COLOR }{ $pre }{ $v.flags.fmt('%08x') }{
+                     flags-to-string($v.flags) }{ RESET_COLOR }";
           $pt = True;
           proceed;
         }
 
         when $pt.so {
-          my @nicks = $vv.enums.pairs.sort( *.value );
-          my @names = maxSubstr :all,
-                                :by{.chars},
-                                keys [∩]
-                                  @nicks.map( *.key )».match(/.+/, :ex)».Str;
-          for @nicks {
-            my $ename = .key.subst(@names[0], '').subst('_', '-').lc;
+          # my @nicks = $vv.enums.pairs.sort( *.value );
+          # my @names = maxSubstr :all,
+          #                       :by{.chars},
+          #                       keys [∩]
+          #                         @nicks.map( *.key )».match(/.+/, :ex)».Str;
+          for $vals[] {
+            #my $ename = .key.subst(@names[0], '').subst('_', '-').lc;
             n-print;
             n-print "   { PROP_ATTR_NAME_COLOR }({ $pre }{
                           .value.fmt($f) }){ RESET_COLOR }: {
-                          PAV-COLOR( $ename.fmt('%-16s') ) } {
-                          RESET_COLOR } - {.key }";
+                          PAV-COLOR( .nick.fmt('%-16s') ) } {
+                          RESET_COLOR } - { .name }";
           }
         }
 
