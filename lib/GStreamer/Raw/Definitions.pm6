@@ -9,7 +9,7 @@ use GLib::Roles::Pointers;
 unit package GStreamer::Raw::Definitions;
 
 # Number of forced compiles made.
-constant forced = 9;
+constant forced = 14;
 
 constant GstClockTime              is export := int64;
 constant GstClockTimeDiff          is export := int64;
@@ -18,6 +18,7 @@ constant GstElementFactoryListType is export := uint64;
 # cw: I now realize, that at some point, ALL of these will have to be functions
 #     to account for the various distributions and OSes out there.
 constant gstreamer            is export = 'gstreamer-1.0',v0;
+constant gstreamer-app        is export = 'gstapp-1.0',v0;
 constant gstreamer-audio      is export = 'gstaudio-1.0',v0;
 constant gstreamer-base       is export = 'gstbase-1.0',v0;
 constant gstreamer-controller is export = 'gstcontroller-1.0',v0;
