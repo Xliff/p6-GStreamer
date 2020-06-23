@@ -10,10 +10,6 @@ use GStreamer::Raw::Preset;
 role GStreamer::Roles::Preset {
   has GstPreset $!ps;
 
-  submethod BUILD (:$preset) {
-    $!ps = $preset;
-  }
-
   method roleInit-GstPreset is also<roleInit_GstPreset> {
     my \i = findProperImplementor(self.^attributes);
     my $o = cast( GstChildProxy, i.get_value(self) );
@@ -87,4 +83,13 @@ role GStreamer::Roles::Preset {
     gst_preset_set_meta($!ps, $name, $tag, $value);
   }
 
+}
+
+sub preset_get_type is export {
+  state ($n, $t);
+  unstable_get_type( 'GstPreset', &gst_preset_get_type, $n, $t );
+}
+
+sub preset-get-type is export {
+  preset_get_type;
 }

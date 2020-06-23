@@ -104,7 +104,11 @@ sub gst_uri_handler_get_uri_type (GstURIHandler $handler)
   is export
 { * }
 
-sub gst_uri_handler_set_uri (GstURIHandler $handler, Str $uri, CArray[Pointer[GError]] $error)
+sub gst_uri_handler_set_uri (
+  GstURIHandler $handler,
+  Str $uri,
+  CArray[Pointer[GError]] $error
+)
   returns uint32
   is native(gstreamer)
   is export
@@ -152,13 +156,30 @@ sub gst_uri_make_writable (GstUri $uri)
   is export
 { * }
 
-sub gst_uri_new (Str $scheme, Str $userinfo, Str $host, guint $port, Str $path, Str $query, Str $fragment)
+sub gst_uri_new (
+  Str $scheme,
+  Str $userinfo,
+  Str $host,
+  guint $port,
+  Str $path,
+  Str $query,
+  Str $fragment
+)
   returns GstUri
   is native(gstreamer)
   is export
 { * }
 
-sub gst_uri_new_with_base (GstUri $base, Str $scheme, Str $userinfo, Str $host, guint $port, Str $path, Str $query, Str $fragment)
+sub gst_uri_new_with_base (
+  GstUri $base,
+  Str $scheme,
+  Str $userinfo,
+  Str $host,
+  guint $port,
+  Str $path,
+  Str $query,
+  Str $fragment
+)
   returns GstUri
   is native(gstreamer)
   is export
@@ -322,6 +343,12 @@ sub gst_uri_set_scheme (GstUri $uri, Str $scheme)
 
 sub gst_uri_set_userinfo (GstUri $uri, Str $userinfo)
   returns uint32
+  is native(gstreamer)
+  is export
+{ * }
+
+sub gst_uri_handler_get_protocols (GstURIHandler $handler)
+  returns CArray[Str]
   is native(gstreamer)
   is export
 { * }

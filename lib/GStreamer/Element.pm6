@@ -7,6 +7,7 @@ use GStreamer::Raw::Types;
 use GStreamer::Raw::Element;
 use GStreamer::Raw::Utils;
 
+use GLib::GList;
 use GStreamer::Bus;
 use GStreamer::Clock;
 use GStreamer::Context;
@@ -15,6 +16,9 @@ use GStreamer::Object;
 use GStreamer::Pad;
 use GStreamer::PadTemplate;
 
+use GStreamer::Class::Element;
+
+use GLib::Roles::ListData;
 use GStreamer::Roles::Signals::Element;
 
 our subset GstElementAncestry is export of Mu
@@ -23,7 +27,7 @@ our subset GstElementAncestry is export of Mu
 class GStreamer::Element is GStreamer::Object {
   also does GStreamer::Roles::Signals::Element;
 
-  has GstElement $!e is implementor;
+  has GstElement $!e is implementor handles <numpads numsrcpads numsinkpads>;
 
   submethod BUILD (:$element) {
     self.setElement($element) if $element;
@@ -49,6 +53,10 @@ class GStreamer::Element is GStreamer::Object {
   method GStreamer::Raw::Structs::GstElement
     is also<GstElement>
   { $!e }
+
+  method getClass (:$raw = False) is default {
+    self._getClass(GstElementClass, GStreamer::Class::Element, :$raw);
+  }
 
   method new (GstElementAncestry $element) {
     $element ?? self.bless( :$element ) !! Nil;
@@ -766,6 +774,23 @@ class GStreamer::Element is GStreamer::Object {
     is also<unlink-pads>
   {
     gst_element_unlink_pads($!e, $srcpadname, $dest, $destpadname);
+  }
+
+  method get_pads (:$glist = False, :$raw = False)
+    is also<
+      get-pads
+      pads
+    >
+  {
+    return Nil unless self.GstElement.pads;
+
+    return self.GstElement.pads if $glist && $raw;
+    my $pl = GLib::GList.new(self.GstElement.pads)
+      but GLib::Roles::ListData[GstPad];
+    return $pl if $glist;
+
+    $raw ?? $pl.Array
+         !! $pl.Array.map({ GStreamer::Pad.new($_) });
   }
 
 }

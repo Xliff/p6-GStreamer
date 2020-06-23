@@ -14,7 +14,7 @@ our subset GstPadAncestry is export of Mu
   where GstPad | GstObject;
 
 class GStreamer::Pad is GStreamer::Object {
-  has GstPad $!p;
+  has GstPad $!p handles <padtemplate>;
 
   submethod BUILD (:$pad) {
     self.setPad($pad);
@@ -37,7 +37,7 @@ class GStreamer::Pad is GStreamer::Object {
     self.setGstObject($to-parent);
   }
 
-  method GStreamer::Raw::Types::GstPad
+  method GStreamer::Raw::Structs::GstPad
     is also<GstPad>
   { $!p }
 

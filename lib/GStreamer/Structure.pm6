@@ -16,7 +16,7 @@ class GStreamer::Structure {
     $!s = $structure;
   }
 
-  method GStreamer::Raw::Types::GstStructure
+  method GStreamer::Raw::Structs::GstStructure
     is also<GstStructure>
   { $!s }
 

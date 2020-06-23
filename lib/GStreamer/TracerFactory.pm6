@@ -33,7 +33,7 @@ class GStreamer::TracerFactory is GStreamer::PluginFeature {
     self.setGstObject($to-parent);
   }
 
-  method GStreamer::Raw::Types::GstTracerFactory
+  method GStreamer::Raw::Definitions::GstTracerFactory
     is also<GstTracerFactory>
   { $!tf }
 

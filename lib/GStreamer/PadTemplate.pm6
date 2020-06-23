@@ -16,7 +16,12 @@ our subset PadTemplateAncestry is export of Mu
 class GStreamer::PadTemplate is GStreamer::Object {
   also does GStreamer::Roles::Signals::Generic;
 
-  has GstPadTemplate $!pt;
+  has GstPadTemplate $!pt handles <
+    name_template name-template
+    abi_type      abi-type
+    direction
+    presence
+  >;
 
   submethod BUILD (:$template) {
     self.setPadTemplate($template);
@@ -39,7 +44,7 @@ class GStreamer::PadTemplate is GStreamer::Object {
     self.setGstObject($to-parent);
   }
 
-  method GStreamer::Raw::Types::GstPadTemplate
+  method GStreamer::Raw::Structs::GstPadTemplate
     is also<GstPadTemplate>
   { $!pt }
 
@@ -97,7 +102,12 @@ class GStreamer::PadTemplate is GStreamer::Object {
     self.connect-pad($!pt, 'pad-created');
   }
 
-  method get_caps (:$raw = False) is also<get-caps> {
+  method get_caps (:$raw = False)
+    is also<
+      get-caps
+      caps
+    >
+  {
     my $c = gst_pad_template_get_caps($!pt);
 
     $c ??
@@ -119,7 +129,9 @@ class GStreamer::PadTemplate is GStreamer::Object {
 }
 
 class GStreamer::StaticPadTemplate {
-  has GstStaticPadTemplate $!spt handles <name_template>;
+  has GstStaticPadTemplate $!spt handles <
+    name_template  name-template
+  >;
 
   submethod BUILD (:$static-template) {
     $!spt = $static-template;
@@ -128,6 +140,10 @@ class GStreamer::StaticPadTemplate {
   method new (GstStaticPadTemplate $static-template) {
     $static-template ?? self.bless( :$static-template ) !! Nil;
   }
+
+  method GStreamer::Raw::Structs::GstStaticPadTemplate
+    is also<GstStaticPadTemplate>
+  { $!spt }
 
   method direction {
     GstPadDirectionEnum( $!spt.direction );
@@ -157,17 +173,13 @@ class GStreamer::StaticPadTemplate {
     unstable_get_type( self.^name, &gst_static_pad_template_get_type, $n, $t );
   }
 
-  method name-template {
-    self.name_template;
-  }
-
   method presence {
     GstPadPresenceEnum( $!spt.presence );
   }
 
-  # method static_caps (:$raw = False) is also<static-caps> {
-  #   $raw ?? $!spt.static_caps.defined !!
-  #           GStreamer::StaticCaps.new($!spt.static_caps);
-  # }
+  method static_caps (:$raw = False) is also<static-caps> {
+    $raw ?? $!spt.static_caps
+         !! GStreamer::StaticCaps.new($!spt.static_caps);
+  }
 
 }

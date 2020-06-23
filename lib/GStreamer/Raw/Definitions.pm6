@@ -9,7 +9,7 @@ use GLib::Roles::Pointers;
 unit package GStreamer::Raw::Definitions;
 
 # Number of forced compiles made.
-constant forced = 8;
+constant forced = 14;
 
 constant GstClockTime              is export := int64;
 constant GstClockTimeDiff          is export := int64;
@@ -18,6 +18,7 @@ constant GstElementFactoryListType is export := uint64;
 # cw: I now realize, that at some point, ALL of these will have to be functions
 #     to account for the various distributions and OSes out there.
 constant gstreamer            is export = 'gstreamer-1.0',v0;
+constant gstreamer-app        is export = 'gstapp-1.0',v0;
 constant gstreamer-audio      is export = 'gstaudio-1.0',v0;
 constant gstreamer-base       is export = 'gstbase-1.0',v0;
 constant gstreamer-controller is export = 'gstcontroller-1.0',v0;
@@ -82,7 +83,7 @@ class GstAllocationParams         is repr<CPointer> does GLib::Roles::Pointers i
 class GstAtomicQueue              is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GstAudioConverter           is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GstAudioStreamAlign         is repr<CPointer> does GLib::Roles::Pointers is export { }
-class GstBin                      is repr<CPointer> does GLib::Roles::Pointers is export { }
+#class GstBin                      is repr<CPointer> does GLib::Roles::Pointers is export { }
 #class GstBuffer                   is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GstBufferList               is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GstBufferPool               is repr<CPointer> does GLib::Roles::Pointers is export { }
@@ -164,18 +165,18 @@ class GstMIKEYEncryptInfo         is repr<CPointer> does GLib::Roles::Pointers i
 class GstPlayerVideoOverlayVideoRenderer   is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GstPlayerMainContextSignalDispatcher is repr<CPointer> does GLib::Roles::Pointers is export { }
 
-constant GST_OBJECT_FLAG_LAST      is export = 1 +< 4;
-constant GST_CLOCK_TIME_NONE       is export = 18446744073709551615;
-constant GST_TIME_FORMAT           is export = '%u:%02u:%02u.%09u';
-constant GST_SECOND                is export = 1000000000;
-constant GST_MSECOND               is export = 1000000;
-constant GST_USECOND               is export = 1000;
-constant GST_NSECOND               is export = 1;
+constant GST_OBJECT_FLAG_LAST             is export = 1 +< 4;
+constant GST_CLOCK_TIME_NONE              is export = 18446744073709551615;
+constant GST_TIME_FORMAT                  is export = '%u:%02u:%02u.%09u';
+constant GST_SECOND                       is export = 1000000000;
+constant GST_MSECOND                      is export = 1000000;
+constant GST_USECOND                      is export = 1000;
+constant GST_NSECOND                      is export = 1;
 
-constant GST_PLAY_KB_ARROW_UP      is export = "\033[A";
-constant GST_PLAY_KB_ARROW_DOWN    is export = "\033[B";
-constant GST_PLAY_KB_ARROW_RIGHT   is export = "\033[C";
-constant GST_PLAY_KB_ARROW_LEFT    is export = "\033[D";
+constant GST_PLAY_KB_ARROW_UP             is export = "\033[A";
+constant GST_PLAY_KB_ARROW_DOWN           is export = "\033[B";
+constant GST_PLAY_KB_ARROW_RIGHT          is export = "\033[C";
+constant GST_PLAY_KB_ARROW_LEFT           is export = "\033[D";
 
 constant GST_ELEMENT_METADATA_LONGNAME    is export = 'long-name';
 constant GST_ELEMENT_METADATA_DESCRIPTION is export = 'description';
@@ -184,13 +185,14 @@ constant GST_ELEMENT_METADATA_DOC_URI     is export = 'doc-uri';
 constant GST_ELEMENT_METADATA_ICON_NAME   is export = 'icon-name';
 constant GST_ELEMENT_METADATA_KLASS       is export = 'klass';
 
-constant GST_PADDING = 4;
+constant GST_PADDING                      is export = 4;
+constant GST_PADDING_LARGE                is export = 20;
 
-constant GST_VIDEO_MAX_PLANES         is export = 4;
-constant GST_VIDEO_MAX_COMPONENTS     is export = 4;
-constant GST_VIDEO_DECODER_MAX_ERRORS is export = 10;
-constant GST_VIDEO_DECODER_SINK_NAME  is export = 'sink';
-constant GST_VIDEO_DECODER_SRC_NAME   is export = 'src';
+constant GST_VIDEO_MAX_PLANES             is export = 4;
+constant GST_VIDEO_MAX_COMPONENTS         is export = 4;
+constant GST_VIDEO_DECODER_MAX_ERRORS     is export = 10;
+constant GST_VIDEO_DECODER_SINK_NAME      is export = 'sink';
+constant GST_VIDEO_DECODER_SRC_NAME       is export = 'src';
 
 constant GST_CAPS_FEATURE_META_GST_VIDEO_OVERLAY_COMPOSITION is export = 'meta:GstVideoOverlayComposition';
 
@@ -228,3 +230,10 @@ constant GST_VIDEO_CONVERTER_OPT_MATRIX_MODE             is export = 'GstVideoCo
 constant GST_VIDEO_CONVERTER_OPT_GAMMA_MODE              is export = 'GstVideoConverter.gamma-mode';
 constant GST_VIDEO_CONVERTER_OPT_PRIMARIES_MODE          is export = 'GstVideoConverter.primaries-mode';
 constant GST_VIDEO_CONVERTER_OPT_THREADS                 is export = 'GstVideoConverter.threads';
+
+constant GST_CAPS_FEATURE_MEMORY_SYSTEM_MEMORY           is export = 'memory:SystemMemory';
+
+our $gst-caps-features-memory-system-memory is export;
+our $gst-cap-features-any                   is export;
+our $gst-caps-any                           is export;
+our $gst-caps-none                          is export;

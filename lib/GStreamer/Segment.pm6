@@ -12,7 +12,7 @@ class GStreamer::Segment {
     $!s = $segment;
   }
 
-  method GStreamer::Raw::Types::GstSegment
+  method GStreamer::Raw::Structs::GstSegment
     is also<GstSegment>
   { $!s }
 

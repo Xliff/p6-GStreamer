@@ -8,6 +8,21 @@ use GStreamer::Raw::Main;
 
 use GLib::Roles::StaticClass;
 
+sub load-gst-cglobals {
+  $gst-caps-features-memory-system-memory = cglobal(
+    gstreamer,
+    '_gst_caps_features_memory_system_memory',
+    GstCapsFeatures
+  );
+  $gst-cap-features-any = cglobal(
+    gstreamer,
+    '_gst_caps_features_any',
+    GstCapsFeatures
+  );
+  $gst-caps-any = cglobal(gstreamer, '_gst_caps_any', GstCaps);
+  $gst-caps-none = cglobal(gstreamer, '_gst_caps_none', GstCaps);
+}
+
 class GStreamer::Main {
   also does GLib::Roles::StaticClass;
 
@@ -21,6 +36,7 @@ class GStreamer::Main {
 
     # $ac is rw to pass the pointer. We do not need it back.
     gst_init($ac, $v);
+    load-gst-cglobals;
   }
 
   proto method init_check (|)

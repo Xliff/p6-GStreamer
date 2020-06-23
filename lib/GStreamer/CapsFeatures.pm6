@@ -12,7 +12,7 @@ class GStreamer::CapsFeatures {
     $!cf = $features;
   }
 
-  method GStreamer::Raw::Types::GstCapsFeatures
+  method GStreamer::Raw::Structs::GstCapsFeatures
     is also<GstCapsFeatures>
   { $!cf }
 

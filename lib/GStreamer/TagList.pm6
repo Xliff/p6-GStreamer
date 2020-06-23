@@ -41,7 +41,7 @@ class GStreamer::TagList is GStreamer::MiniObject {
     self.setMiniObject($to-parent);
   }
 
-  method GStreamer::Raw::Types::GstTagList
+  method GStreamer::Raw::Structs::GstTagList
     is also<GstTagList>
   { * }
 

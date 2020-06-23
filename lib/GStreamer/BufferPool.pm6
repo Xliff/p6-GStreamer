@@ -37,7 +37,7 @@ class GStreamer::BufferPool is GStreamer::Object {
     self.setGstObject($to-parent);
   }
 
-  method GStreamer::Raw::Types::GstBufferPool
+  method GStreamer::Raw::Structs::GstBufferPool
     is also<GstBufferPool>
   { $!bp }
 

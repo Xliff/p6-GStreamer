@@ -6,12 +6,13 @@ use GLib::Raw::Exports;
 use GIO::Raw::Exports;
 use GStreamer::Raw::Exports;
 
-constant forced = 8;
+constant forced = 14;
 
 unit package GStreamer::Raw::Types;
 
 need GLib::Raw::Definitions;
 need GLib::Raw::Enums;
+need GLib::Raw::Object;
 need GLib::Raw::Structs;
 need GLib::Raw::Struct_Subs;
 need GLib::Raw::Subs;

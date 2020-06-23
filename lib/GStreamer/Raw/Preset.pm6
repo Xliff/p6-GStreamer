@@ -34,13 +34,13 @@ sub gst_preset_get_meta (
 { * }
 
 sub gst_preset_get_preset_names (GstPreset $preset)
-  returns Str
+  returns CArray[Str]
   is native(gstreamer)
   is export
 { * }
 
 sub gst_preset_get_property_names (GstPreset $preset)
-  returns Str
+  returns CArray[Str]
   is native(gstreamer)
   is export
 { * }
@@ -77,6 +77,12 @@ sub gst_preset_set_app_dir (Str $app_dir)
 
 sub gst_preset_set_meta (GstPreset $preset, Str $name, Str $tag, Str $value)
   returns uint32
+  is native(gstreamer)
+  is export
+{ * }
+
+sub gst_preset_get_type ()
+  returns GType
   is native(gstreamer)
   is export
 { * }

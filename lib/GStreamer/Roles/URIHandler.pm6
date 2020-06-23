@@ -19,17 +19,31 @@ role GStreamer::Roles::URIHandler {
     is also<GstURIHandler>
   { $!h }
 
-  method urihandler_get_type is also<urihandler-get-type> {
-    state ($n, $t);
-
-    unstable_get_type(self.^name, &gst_uri_handler_get_type, $n, $t)
+  method get_protocols
+    is also<
+      get-protocols
+      protocols
+    >
+  {
+    CArrayToArray( gst_uri_handler_get_protocols($!h) );
   }
 
-  method get_uri is also<get-uri> {
+  method get_uri
+    is also<
+      get-uri
+      uri
+    >
+  {
     gst_uri_handler_get_uri($!h);
   }
 
-  method get_uri_type is also<get-uri-type> {
+  method get_uri_type
+    is also<
+      get-uri-type
+      uri_type
+      uri-type
+    >
+  {
     GstURITypeEnum( gst_uri_handler_get_uri_type($!h) );
   }
 
@@ -45,4 +59,13 @@ role GStreamer::Roles::URIHandler {
     $rv;
   }
 
+}
+
+sub urihandler_get_type is export {
+  state ($n, $t);
+  unstable_get_type( 'GstURIHandler', &gst_uri_handler_get_type, $n, $t )
+}
+
+sub urihandler-get-type is export {
+  urihandler_get_type;
 }

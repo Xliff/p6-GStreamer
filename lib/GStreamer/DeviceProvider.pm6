@@ -36,7 +36,7 @@ class GStreamer::DeviceProvider is GStreamer::Object {
     self.setGstObject($to-parent);
   }
 
-  method GStreamer::Raw::Types::GstDeviceProvider
+  method GStreamer::Raw::Structs::GstDeviceProvider
     is also<GstDeviceProvider>
   { $!dp }
 

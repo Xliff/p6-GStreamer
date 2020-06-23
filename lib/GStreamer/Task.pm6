@@ -35,7 +35,7 @@ class GStreamer::Task is GStreamer::Object {
     self.setGstObject($to-parent);
   }
 
-  method GStreamer::Raw::Types::GstTask
+  method GStreamer::Raw::Structs::GstTask
     is also<GstBuffer>
   { $!t }
 

@@ -5,6 +5,7 @@ use Method::Also;
 use GStreamer::Raw::Types;
 use GStreamer::Raw::Caps;
 
+use GStreamer::CapsFeatures;
 use GStreamer::MiniObject;
 use GStreamer::Structure;
 
@@ -35,7 +36,7 @@ class GStreamer::Caps is GStreamer::MiniObject {
     self.setMiniObject($to-parent);
   }
 
-  method GStreamer::Raw::Types::GstCaps
+  method GStreamer::Raw::Definitions::GstCaps
     is also<GstCaps>
   { $!c }
 
@@ -188,10 +189,14 @@ class GStreamer::Caps is GStreamer::MiniObject {
     gst_caps_foreach($!c, $func, $user_data);
   }
 
-  method get_features (Int() $index) is also<get-features> {
+  method get_features (Int() $index, :$raw = False) is also<get-features> {
     my guint $i = $index;
+    my $cf = gst_caps_get_features($!c, $i);
 
-    gst_caps_get_features($!c, $i);
+    $cf ??
+      ( $raw ?? $cf !! GStreamer::CapsFeatures.new($cf) )
+      !!
+      Nil
   }
 
   method get_size is also<get-size> {
@@ -385,13 +390,13 @@ class GStreamer::Caps is GStreamer::MiniObject {
 }
 
 class GStreamer::StaticCaps {
-  has GstStaticCaps $!sc handles<string>;
+  has GstStaticCaps $!sc handles<string Str>;
 
   submethod BUILD (:$static-caps) {
     $!sc = $static-caps;
   }
 
-  method GStreamer::Raw::Types::GstStaticCaps
+  method GStreamer::Raw::Structs::GstStaticCaps
     is also<GstStaticCaps>
   { $!sc }
 

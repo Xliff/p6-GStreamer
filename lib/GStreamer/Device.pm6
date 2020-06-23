@@ -42,7 +42,7 @@ class GStreamer::Device is GStreamer::Object {
     self.setGstObject($to-parent);
   }
 
-  method GStreamer::Raw::Types::GstDevice
+  method GStreamer::Raw::Definitions::GstDevice
     is also<GstDevice>
   { $!d }
 

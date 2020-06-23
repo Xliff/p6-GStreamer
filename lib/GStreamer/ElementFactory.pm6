@@ -150,7 +150,7 @@ class GStreamer::ElementFactory is GStreamer::PluginFeature {
     gst_element_factory_get_num_pad_templates($!ef);
   }
 
-  method get_static_pad_templates (:$glist = False)
+  method get_static_pad_templates (:$glist = False, :$raw = False)
     is also<
       get-static-pad-templates
       static_pad_templates
@@ -160,10 +160,13 @@ class GStreamer::ElementFactory is GStreamer::PluginFeature {
     my $ptl = gst_element_factory_get_static_pad_templates($!ef);
 
     return Nil unless $ptl;
-    return $ptl if $glist;
+    return $ptl if $glist && $raw;
 
     $ptl = GLib::GList.new($ptl) but GLib::Roles::ListData[GstStaticPadTemplate];
-    $ptl.Array
+    return $ptl if $glist;
+
+    $raw ?? $ptl.Array
+         !! $ptl.Array.map({ GStreamer::StaticPadTemplate.new($_) })
   }
 
   method get_type is also<get-type> {
