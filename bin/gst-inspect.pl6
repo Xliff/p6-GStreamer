@@ -178,12 +178,12 @@ sub print-factory-details-info ($f) {
   n-print "{ HEADING_COLOR } Factory Details{ RESET_COLOR }:\n";
   push-indent;
   n-print "  { PROP_NAME_COLOR }{ "Rank".fmt('%-25s') }{ PROP_VALUE_COLOR }{
-            get-rank-name($rank) } ({ $rank }){ RESET_COLOR }\n";
+               get-rank-name($rank) } ({ $rank }){ RESET_COLOR }\n";
   if $f.get-metadata-keys -> $keys {
     for $keys[] {
       my $val = $f.get_metadata($_);
-      n-print "  { PROP_NAME_COLOR }{ .tc.fmt('%-25s') }{ PROP_VALUE_COLOR }{ $val
-    }{  RESET_COLOR }\n";
+      n-print "  { PROP_NAME_COLOR }{ .tc.fmt('%-25s') }{ PROP_VALUE_COLOR }{
+                   $val }{ RESET_COLOR }\n";
     }
   }
   pop-indent;
@@ -197,8 +197,10 @@ sub print-hierarchy ($t, $l is copy, $ml is rw) {
   print-hierarchy($parent, $l, $ml) if $parent;
   print "{ DATATYPE_COLOR }{ $name }{ RESET_COLOR }" if $name;
   if $ml - $l -> $i {
-    print "      " x ($i - 1);
-    print "{ CHILD_LINK_COLOR }+----{ RESET_COLOR }";
+    if $i > 1 {
+      print "      " x ($i - 2);
+      print " { CHILD_LINK_COLOR }+----{ RESET_COLOR }";
+    }
   }
   say "{ DATATYPE_COLOR }{ $t.name }{ RESET_COLOR }";
   n-print unless $l;
@@ -216,13 +218,13 @@ sub print-interfaces ($t) {
   }
 }
 
-sub flags-to-string (\E, Int() $flags) {
-  my %name-lookup;
-  %name-lookup{.value} = .key for E.enums.pairs.sort( *.value );
-  return %name-lookup{$flags} if %name-lookup{$flags}:exists;
-
-  get_flags(E, $flags, '+');
-}
+# sub flags-to-string (\E, Int() $flags) {
+#   my %name-lookup;
+#   %name-lookup{.value} = .key for E.enums.pairs.sort( *.value );
+#   return %name-lookup{$flags} if %name-lookup{$flags}:exists;
+#
+#   get_flags(E, $flags, '+');
+# }
 
 sub PAV-COLOR ($s)
   { "{ PROP_ATTR_VALUE_COLOR }{ $s }{ RESET_COLOR }" }
@@ -334,7 +336,7 @@ multi sub print-object-properties-info ($o, $d, $k? is copy) {
         my $max   = $pspec.maximum;
         # Raku still has issues with unsigned ints in structs, so we have
         # to adjust!
-        my $is    = ($tn eq 'Long' ?? 64 !! 32);
+        my $is    = ($tn eq <Long Integer64>.any ?? 64 !! 32);
 
         $max += 2 ** $is if $us && ($max +& 2 ** ($is - 1));
         n-print "{ DATATYPE_COLOR }{ $us }{ $tn }{ RESET_COLOR }. ";
@@ -393,8 +395,8 @@ multi sub print-object-properties-info ($o, $d, $k? is copy) {
           ($pre, $f) = ('0x', '%08x');
           n-print "{ DATATYPE_COLOR }Flags \"{ $st.name }\"{ RESET_COLOR } ";
             print "{ PROP_ATTR_NAME_COLOR }Default{ RESET_COLOR }: ";
-            print "{ PROP_ATTR_VALUE_COLOR }{ $pre }{ $v.flags.fmt('%08x') }{
-                     flags-to-string($v.flags) }{ RESET_COLOR }";
+#            print "{ PROP_ATTR_VALUE_COLOR }{ $pre }{ $v.flags.fmt('%08x') }{
+#                     flags-to-string($v.flags) }{ RESET_COLOR }";
           $pt = True;
           proceed;
         }
@@ -808,14 +810,20 @@ sub print-element-list ($pa, $ft) {
   @types = $ft.split('/').map( *.uc ) if $ft;
 
   my %counts;
-  for $reg.get-plugin-list -> $plugin {
+  my @plugin-list = $reg.get-plugin-list;
+  @plugin-list .= sort( *.name ) if $*sorted;
+
+  for @plugin-list -> $plugin {
     %counts<plugin>++;
     if $plugin.flag-set(GST_PLUGIN_FLAG_BLACKLISTED) {
       %counts<blacklist>++;
       next;
     }
 
-    for $reg.get-feature-list-by-plugin($plugin.name)[] -> $feature {
+    my @feature-list = $reg.get-feature-list-by-plugin($plugin.name);
+    @feature-list .= sort( *.name ) if $*sorted;
+
+    for @feature-list -> $feature {
       next unless $feature;
       %counts<feature>++;
 
@@ -963,7 +971,10 @@ sub print-plugin-features ($p) {
   my %counts;
   constant ln = GST_ELEMENT_METADATA_LONGNAME;
 
-  for $reg.get-feature-list-by-plugin($p.name)[] -> $feature {
+  my @feature-list = $reg.get-feature-list-by-plugin($p.name);
+  @feature-list .= sort( *.name ) if $*sorted;
+
+  for @feature-list -> $feature {
     %counts<features>++;
 
     when $feature.isType( ELEMENT_FACTORY_TYPE ) {
@@ -1232,11 +1243,13 @@ sub MAIN (
   Str  :atleast-version(:$min-version),    #= When checking if an element or plugin exists, also check that its version is at least the version specified
   Bool :$uri-handlers,                     #= Print supported URI schemes, with the elements that implement them
   Bool :$no-colors is copy,                #= Disable colors in output. You can also achieve the same by setting 'GST_INSPECT_NO_COLORS' environment variable to any value
+  Bool :$sort,                             #= Sort output where applicable
   # GST_TOOLS_GOPTION_VERSION not implemented since it is not used
   *@args
 ) {
   my $*child-pid;
   my $print-aii = $print-plugin-auto-install-info;
+  my $*sorted = $sort;
 
   GStreamer::Main.init;
 
