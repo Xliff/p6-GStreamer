@@ -210,7 +210,7 @@ sub print-interfaces ($t) {
   my $ifaces = $t.interfaces;
 
   if $ifaces && $ifaces.elems {
-    n-print " { HEADING_COLOR }Implemented Interfaces{ RESET_COLOR }:\n";
+    n-print "{ HEADING_COLOR }Implemented Interfaces{ RESET_COLOR }:\n";
     push-indent;
     n-print "  { DATATYPE_COLOR }{ .name }{ RESET_COLOR }\n" for $ifaces[];
     pop-indent;
@@ -575,7 +575,7 @@ sub print-clocking-info ($e) {
 
   unless $req-clock || $prov-clock {
     n-print;
-    n-print " { DESC_COLOR }Element has no clocking capabilities.{
+    n-print "{ DESC_COLOR }Element has no clocking capabilities.{
                 RESET_COLOR }\n";
     return;
   }
@@ -603,7 +603,7 @@ sub print-clocking-info ($e) {
 
 sub print-uri-handler-info ($e is copy) {
   unless $e.isType( urihandler-get-type ) {
-    n-print " { DESC_COLOR }Element has no URI handling capabilities.{
+    n-print "{ DESC_COLOR }Element has no URI handling capabilities.{
                 RESET_COLOR }\n";
     return;
   }
@@ -614,7 +614,7 @@ sub print-uri-handler-info ($e is copy) {
   my $uri-type = get-uriType-name($e.get_uri_type);
 
   n-print;
-  n-print " { HEADING_COLOR }URI handling capabilities{ RESET_COLOR }:\n";
+  n-print "{ HEADING_COLOR }URI handling capabilities{ RESET_COLOR }:\n";
   push-indent;
   n-print "{ DESC_COLOR }Element can act as { $uri-type }.{ RESET_COLOR }\n";
 
@@ -635,7 +635,7 @@ sub print-uri-handler-info ($e is copy) {
 
 sub print-pad-info ($e) {
   n-print;
-  n-print " { HEADING_COLOR }Pads{ RESET_COLOR }:\n";
+  n-print "{ HEADING_COLOR }Pads{ RESET_COLOR }:\n";
 
   push-indent;
   LAST { pop-indent }
@@ -1093,7 +1093,7 @@ sub print-typefind-info ($f, $pn) {
 
   $name = $pn ?? "{ DATATYPE_COLOR }$factory.name{ RESET_COLOR }" !! Str;
 
-  n-print " { HEADING_COLOR }Factory Details{ RESET_COLOR }:\n";
+  n-print "{ HEADING_COLOR }Factory Details{ RESET_COLOR }:\n";
   n-print "  { PROP_NAME_COLOR }{ 'Rank'.fmt('%-25s') }{ PROP_VALUE_COLOR }{
                 get-rank-name($f.rank) } ({ $f.rank }){ RESET_COLOR }\n";
   n-print "  { PROP_NAME_COLOR }{ 'Name'.fmt('%-25s') }{ PROP_VALUE_COLOR }{
@@ -1129,7 +1129,7 @@ sub print-tracer-info ($f, $pn) {
   }
 
   $name = $pn ?? "{ DATATYPE_COLOR }$factory.name{ RESET_COLOR }" !! Str;
-  n-print " { HEADING_COLOR }Factory Details{ RESET_COLOR }:\n";
+  n-print "{ HEADING_COLOR }Factory Details{ RESET_COLOR }:\n";
   n-print "  { PROP_NAME_COLOR }{ 'Name'.fmt('%-25s') }{ PROP_VALUE_COLOR }{
               $f.name }{ RESET_COLOR }\n";
   n-print;
