@@ -11,9 +11,16 @@ $ export P6_GTK_HOME=/path/to/projects
 Switch to that directory and clone both p6-GtkPlus and p6-GStreamer
 
 ```
+$ git clone https://github.com/Xliff/p6-GLib.git
+$ git clone https://github.com/Xliff/p6-GStreamer.git
+```
+
+```
+[Optional]
 $ git clone https://github.com/Xliff/p6-Pango.git
 $ git clone https://github.com/Xliff/p6-GtkPlus.git
-$ git clone https://github.com/Xliff/p6-GStreamer.git
+```
+
 $ cd p6-GtkPlus
 $ zef install --deps-only .
 ```
