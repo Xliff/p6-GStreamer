@@ -8,14 +8,14 @@ Make a directory to contain the p6-Gtk-based projects. Once made, then set the P
 $ export P6_GTK_HOME=/path/to/projects
 ```
 
-Switch to that directory and clone both p6-GtkPlus and p6-GStreamer
+Switch to that directory and clone both p6-GLib and p6-GStreamer
 
 ```
 $ git clone https://github.com/Xliff/p6-GLib.git
 $ git clone https://github.com/Xliff/p6-GStreamer.git
 ```
 
-[Optional]
+[Optional] - You can also check out p6-Pango and p6-GtkPlus for those examples that need them.
 
 ```
 $ git clone https://github.com/Xliff/p6-Pango.git
