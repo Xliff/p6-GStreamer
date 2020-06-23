@@ -24,7 +24,7 @@ $ git clone https://github.com/Xliff/p6-GtkPlus.git
 
 Install dependencies
 ```
-$ cd p6-GtkPlus
+$ cd p6-GLib
 $ zef install --deps-only .
 ```
 
