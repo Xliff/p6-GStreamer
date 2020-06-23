@@ -1,5 +1,7 @@
 use v6.c;
 
+no precompilation;
+
 use GStreamer::Raw::Types;
 
 use GLib::Class::Object;
@@ -1237,7 +1239,7 @@ sub MAIN (
   # GST_TOOLS_GOPTION_VERSION not implemented since it is not used
   *@args
 )
-  is export 
+  is export
 {
   my $*child-pid;
   my $print-aii = $print-plugin-auto-install-info;
