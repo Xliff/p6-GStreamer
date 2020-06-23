@@ -28,7 +28,7 @@ $ cd p6-GtkPlus
 $ zef install --deps-only .
 ```
 
-[Optional] To build all of GStreamer and the required GTK modules, you can change to the p6-GStreamer directory and do:
+[Optional] To build all of GStreamer and its required modules, you can change to the p6-GStreamer directory and do:
 
 ```
 ./build.sh
