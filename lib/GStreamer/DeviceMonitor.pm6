@@ -19,7 +19,7 @@ our subset GstDeviceMonitorAncestry is export of Mu
 
 class GStreamer::DeviceMonitor is GStreamer::Object {
   also does GLib::Roles::Signals::Generic;
-  
+
   has GstDeviceMonitor $!dm;
 
   submethod BUILD (:$monitor) {
@@ -40,7 +40,8 @@ class GStreamer::DeviceMonitor is GStreamer::Object {
         cast(GstDeviceMonitor, $_);
       }
     }
-    self.setObject($to-parent);
+
+    self.setGstObject($to-parent);
   }
 
   multi method new (GstDeviceMonitorAncestry $monitor) {
