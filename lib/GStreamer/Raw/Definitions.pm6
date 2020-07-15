@@ -9,7 +9,7 @@ use GLib::Roles::Pointers;
 unit package GStreamer::Raw::Definitions;
 
 # Number of forced compiles made.
-my constant forced = 17;
+my constant forced = 19;
 
 constant GstClockTime              is export := int64;
 constant GstClockTimeDiff          is export := int64;
