@@ -1,12 +1,10 @@
 use v6;
 
-use CompUnit::Util :re-export;
-
 use GLib::Raw::Exports;
 use GIO::Raw::Exports;
 use GStreamer::Raw::Exports;
 
-my constant forced = 21;
+my constant forced = 29;
 
 unit package GStreamer::Raw::Types;
 
@@ -34,7 +32,7 @@ need GStreamer::Raw::PBUtils::Structs;
 need GStreamer::Raw::Controller::Structs;
 
 BEGIN {
-  re-export($_) for |@glib-exports,
-                    |@gio-exports,
-                    |@gst-exports;
+  glib-re-export($_) for |@glib-exports,
+                         |@gio-exports,
+                         |@gst-exports;
 }
