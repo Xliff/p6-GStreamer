@@ -7,16 +7,12 @@ use NativeCall;
 use GStreamer::Raw::Types;
 use GStreamer::Raw::Message;
 
-use GStreamer::Raw::Subs;
-
 use GLib::Value;
-
-use GStreamer::MiniObject;
-
-use GStreamer::Element;
 use GStreamer::Clock;
 use GStreamer::Context;
 use GStreamer::Device;
+use GStreamer::Element;
+use GStreamer::MiniObject;
 use GStreamer::Object;
 use GStreamer::StreamCollection;
 use GStreamer::Structure;
@@ -1153,11 +1149,13 @@ class GStreamer::Message is GStreamer::MiniObject {
   }
   multi method parse_error ($gerror is rw, $debug is rw) {
     my $ge = CArray[Pointer[GError]].new;
-    my $d = CArray[Str].new;
+    my $d  = CArray[Str].new;
 
     $ge[0] = Pointer[GError].new;
     gst_message_parse_error($!m, $ge, $d);
+
     ($gerror, $debug) = ppr($ge, $d);
+    ($gerror, $debug);
   }
 
   proto method parse_error_details
