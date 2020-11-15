@@ -43,6 +43,8 @@ sub MAIN (
       when GST_MESSAGE_EOS   { say 'End of stream'; $loop.quit }
 
       when GST_MESSAGE_ERROR {
+        CATCH { default { .message.say; say ~.backtrace } }
+
         my ($error, $debug) = $m.parse_error;
         say "Error: { $error.message }";
         $loop.quit;
