@@ -28,6 +28,15 @@ our enum GstDiscovererResultEnum is export (
   GST_DISCOVERER_MISSING_PLUGINS => 5,
 );
 
+constant GstDiscovererSerializeFlags is export := guint32;
+our enum GstDiscovererSerializeFlagsEnum (
+  GST_DISCOVERER_SERIALIZE_BASIC => 0,
+  GST_DISCOVERER_SERIALIZE_CAPS  => 1,
+  GST_DISCOVERER_SERIALIZE_TAGS  => 1 +< 1,
+  GST_DISCOVERER_SERIALIZE_MISC  => 1 +< 2,
+  GST_DISCOVERER_SERIALIZE_ALL   => 1 +| 1 +< 1 +| 1 +< 2
+);
+
 constant GstInstallPluginsReturn is export := guint32;
 our enum GstInstallPluginsReturnEnum is export (
   GST_INSTALL_PLUGINS_SUCCESS               =>   0,
