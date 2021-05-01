@@ -50,6 +50,9 @@ class GStreamer::PBUtils::Discoverer {
     is also<GstDiscoverer>
   { $!d }
 
+  proto method new (|)
+  { * }
+
   multi method new (GstDiscovererAncestry $discoverer, :$ref = True) {
     return Nil unless $discoverer;
 
@@ -721,13 +724,24 @@ class GStreamer::PBUtils::Discoverer::Info {
   #   gst_discoverer_info_get_misc($!di);
   # }
 
-  method get_missing_elements_installer_details is also<get-missing-elements-installer-details> {
+  method get_missing_elements_installer_details
+    is also<
+      get-missing-elements-installer-details
+      missing_elements_installer_details
+      missing-elements-installer-details
+    >
+  {
     CStringArrayToArray(
       gst_discoverer_info_get_missing_elements_installer_details($!di)
     );
   }
 
-  method get_result is also<get-result> {
+  method get_result
+    is also<
+      get-result
+      result
+    >
+  {
     GstDiscovererResultEnum( gst_discoverer_info_get_result($!di) );
   }
 
