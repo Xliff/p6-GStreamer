@@ -31,6 +31,9 @@ sub postfix:<usec> ($us) is export {
 }
 
 # Method::Also does not work for subs.
+sub GST_TIME_ARGS ($d) is export {
+  time_args($d);
+}
 sub time-args ($d) is export {
   time_args($d);
 }
