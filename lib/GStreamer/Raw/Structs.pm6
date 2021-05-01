@@ -274,9 +274,8 @@ class GstQuery                   is repr<CStruct>      does GLib::Roles::Pointer
 }
 
 class GstStructure               is repr<CStruct>      does GLib::Roles::Pointers is export {
-  has GType                $.type;
-
-  has GQuark $!name;
+  has GType  $.type is rw;
+  has GQuark $.name is rw;
 }
 
 class GstSegment                 is repr<CStruct>      does GLib::Roles::Pointers is export {
