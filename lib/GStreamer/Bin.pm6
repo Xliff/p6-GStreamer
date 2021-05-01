@@ -200,7 +200,7 @@ class GStreamer::Bin is GStreamer::Element {
   }
 
   method add_many (*@e) is also<add-many> {
-    my $dieMsg = qq:to/DIE/.&nocr;
+    my $dieMsg = qq:to/DIE/.&nolf;
       Items passed to GStreamer::Bin.add_many must be GStreamer::Element {''
       }compatible!
       DIE
@@ -311,7 +311,7 @@ class GStreamer::Bin is GStreamer::Element {
   }
 
   method remove_many (*@e) is also<remove-many> {
-    my $dieMsg = qq:to/DIE/.&nocr;
+    my $dieMsg = qq:to/DIE/.&nolf;
       Items passed to GStreamer::Bin.remove_many must be GStreamer::Element {''
       }compatible!
       DIE

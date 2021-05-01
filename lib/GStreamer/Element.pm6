@@ -609,7 +609,7 @@ class GStreamer::Element is GStreamer::Object {
   }
 
   method link_many (*@e) is also<link-many> {
-    my $dieMsg = qq:to/DIE/.&nocr;
+    my $dieMsg = qq:to/DIE/.&nolf;
       Items passed to GStreamer::Element.link_many must be {''
       }GStreamer::Element compatible!
       DIE
