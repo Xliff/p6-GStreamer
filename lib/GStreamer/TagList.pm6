@@ -17,6 +17,10 @@ use GStreamer::Sample;
 our subset GstTagListAncestry is export of Mu
   where GstTagList | GstMiniObject;
 
+# Note: BINARY COMPATIBLE but distinct from GstStructure!
+# In other words, this is valid: GStreamer::TagList.new(GstStructure)
+
+
 class GStreamer::TagList is GStreamer::MiniObject {
   has GstTagList $!tl;
 

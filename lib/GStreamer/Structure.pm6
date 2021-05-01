@@ -9,6 +9,11 @@ use GStreamer::Raw::Subs;
 
 use GLib::Value;
 
+# Note: BINARY COMPATIBLE but distinct from GstStructure!
+# In other words, this is valid: GStreamer::Structure.new(GstTagList)
+
+# Given the above fact, might this not be better served as a role?
+
 class GStreamer::Structure {
   has GstStructure $!s handles <type>;
 
