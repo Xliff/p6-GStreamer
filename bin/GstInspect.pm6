@@ -223,7 +223,7 @@ sub flags-to-string (\E, Int() $flags) {
   %name-lookup{.value} = .key for E.enums.pairs.sort( *.value );
   return %name-lookup{$flags} if %name-lookup{$flags}:exists;
 
-  get_flags(E, $flags, '+');
+  getFlags(E, $flags).List.join('+');
 }
 
 sub PAV-COLOR ($s)
@@ -1237,7 +1237,7 @@ sub MAIN (
   # GST_TOOLS_GOPTION_VERSION not implemented since it is not used
   *@args
 )
-  is export 
+  is export
 {
   my $*child-pid;
   my $print-aii = $print-plugin-auto-install-info;
