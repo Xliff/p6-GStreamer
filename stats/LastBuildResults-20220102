@@ -1,0 +1,5284 @@
+Dependency Generation
+=====================
+real 3.78
+user 4.15
+sys 0.06
+ === GIO::DBus::Raw::Types === (1/309)
+Stage start      :   0.000
+Stage parse      :   1.253
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.001
+Stage mast       :   0.002
+Stage mbc        :   0.001
+Stage moar       :   0.000
+ === GIO::Raw::Definitions === (2/309)
+Stage start      :   0.000
+Stage parse      :   1.021
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.001
+Stage mast       :   0.002
+Stage mbc        :   0.001
+Stage moar       :   0.000
+ === GIO::Raw::Enums === (3/309)
+Stage start      :   0.000
+Stage parse      :   1.031
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.002
+Stage mast       :   0.002
+Stage mbc        :   0.001
+Stage moar       :   0.000
+ === GIO::Raw::Exports === (4/309)
+Stage start      :   0.000
+Stage parse      :   0.852
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.001
+Stage mast       :   0.005
+Stage mbc        :   0.001
+Stage moar       :   0.000
+ === GIO::Raw::Quarks === (5/309)
+Stage start      :   0.000
+Stage parse      :   1.279
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.000
+Stage mast       :   0.001
+Stage mbc        :   0.001
+Stage moar       :   0.000
+ === GIO::Raw::Structs === (6/309)
+Stage start      :   0.000
+Stage parse      :   1.186
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.000
+Stage mast       :   0.001
+Stage mbc        :   0.001
+Stage moar       :   0.000
+ === GIO::Raw::Subs === (7/309)
+Stage start      :   0.000
+Stage parse      :   1.190
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.000
+Stage mast       :   0.001
+Stage mbc        :   0.001
+Stage moar       :   0.000
+ === GLib::Class::Object === (8/309)
+Stage start      :   0.000
+Stage parse      :   1.274
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.000
+Stage mast       :   0.001
+Stage mbc        :   0.001
+Stage moar       :   0.000
+ === GLib::DateTime === (9/309)
+Stage start      :   0.000
+Stage parse      :   1.204
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.000
+Stage mast       :   0.001
+Stage mbc        :   0.001
+Stage moar       :   0.000
+ === GLib::GList === (10/309)
+Stage start      :   0.000
+Stage parse      :   1.191
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.000
+Stage mast       :   0.001
+Stage mbc        :   0.001
+Stage moar       :   0.000
+ === GLib::HashTable === (11/309)
+Stage start      :   0.000
+»»»»»»
+» Please note that the objects in /home/cbwood/Projects/p6-GLib/lib/GLib/HashTable.pm6 (GLib::HashTable) are classed as use-at-your-own-risk!
+» Accessing an object created from C should be usable, but creating objects of
+» this type, via Raku, may behave erratically.
+»»»»»»
+
+Stage parse      :   1.247
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.000
+Stage mast       :   0.001
+Stage mbc        :   0.001
+Stage moar       :   0.000
+ === GLib::Object::ParamSpec === (12/309)
+Stage start      :   0.000
+Stage parse      :   1.218
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.000
+Stage mast       :   0.001
+Stage mbc        :   0.001
+Stage moar       :   0.000
+ === GLib::Raw::Definitions === (13/309)
+Stage start      :   0.000
+Stage parse      :   0.996
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.001
+Stage mast       :   0.005
+Stage mbc        :   0.001
+Stage moar       :   0.000
+ === GLib::Raw::Enums === (14/309)
+Stage start      :   0.000
+Stage parse      :   1.044
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.003
+Stage mast       :   0.004
+Stage mbc        :   0.002
+Stage moar       :   0.000
+ === GLib::Raw::Exceptions === (15/309)
+Stage start      :   0.000
+Stage parse      :   0.887
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.002
+Stage mast       :   0.005
+Stage mbc        :   0.001
+Stage moar       :   0.000
+ === GLib::Raw::Exports === (16/309)
+Stage start      :   0.000
+Stage parse      :   0.912
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.001
+Stage mast       :   0.001
+Stage mbc        :   0.000
+Stage moar       :   0.000
+ === GLib::Raw::Object === (17/309)
+Stage start      :   0.000
+Stage parse      :   1.094
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.000
+Stage mast       :   0.001
+Stage mbc        :   0.001
+Stage moar       :   0.000
+ === GLib::Raw::ReturnedValue === (18/309)
+Stage start      :   0.000
+Stage parse      :   0.851
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.001
+Stage mast       :   0.005
+Stage mbc        :   0.001
+Stage moar       :   0.000
+ === GLib::Raw::Struct_Subs === (19/309)
+Stage start      :   0.000
+Stage parse      :   1.006
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.000
+Stage mast       :   0.001
+Stage mbc        :   0.001
+Stage moar       :   0.000
+ === GLib::Raw::Structs === (20/309)
+Stage start      :   0.000
+Stage parse      :   1.143
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.001
+Stage mast       :   0.002
+Stage mbc        :   0.001
+Stage moar       :   0.000
+ === GLib::Raw::Subs === (21/309)
+Stage start      :   0.000
+Stage parse      :   1.130
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.001
+Stage mast       :   0.002
+Stage mbc        :   0.001
+Stage moar       :   0.000
+ === GLib::Raw::Types === (22/309)
+Stage start      :   0.000
+Stage parse      :   1.183
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.003
+Stage mast       :   0.005
+Stage mbc        :   0.003
+Stage moar       :   0.000
+ === GLib::Roles::ListData === (23/309)
+Stage start      :   0.000
+Stage parse      :   1.225
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.000
+Stage mast       :   0.001
+Stage mbc        :   0.001
+Stage moar       :   0.000
+ === GLib::Roles::Object === (24/309)
+Stage start      :   0.000
+Stage parse      :   1.337
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.000
+Stage mast       :   0.001
+Stage mbc        :   0.002
+Stage moar       :   0.000
+ === GLib::Roles::Pointers === (25/309)
+Stage start      :   0.000
+Stage parse      :   0.992
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.000
+Stage mast       :   0.001
+Stage mbc        :   0.001
+Stage moar       :   0.000
+ === GLib::Roles::Signals::Generic === (26/309)
+Stage start      :   0.000
+Stage parse      :   1.228
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.000
+Stage mast       :   0.001
+Stage mbc        :   0.001
+Stage moar       :   0.000
+ === GLib::Roles::StaticClass === (27/309)
+Stage start      :   0.000
+Stage parse      :   1.167
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.000
+Stage mast       :   0.001
+Stage mbc        :   0.001
+Stage moar       :   0.000
+ === GLib::Roles::TypedBuffer === (28/309)
+Stage start      :   0.000
+Stage parse      :   1.163
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.000
+Stage mast       :   0.001
+Stage mbc        :   0.001
+Stage moar       :   0.000
+ === GLib::Source === (29/309)
+Stage start      :   0.000
+Stage parse      :   1.226
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.000
+Stage mast       :   0.001
+Stage mbc        :   0.001
+Stage moar       :   0.000
+ === GLib::Value === (30/309)
+Stage start      :   0.000
+Stage parse      :   1.189
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.000
+Stage mast       :   0.001
+Stage mbc        :   0.001
+Stage moar       :   0.000
+ === Method::Also === (31/309)
+Stage start      :   0.000
+Stage parse      :   0.868
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.002
+Stage mast       :   0.005
+Stage mbc        :   0.001
+Stage moar       :   0.000
+ === NativeCall === (32/309)
+Stage start      :   0.000
+Stage parse      :   0.952
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.001
+Stage mast       :   0.001
+Stage mbc        :   0.004
+Stage moar       :   0.000
+ === Pango::Raw::Definitions === (33/309)
+Stage start      :   0.000
+Stage parse      :   1.022
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.001
+Stage mast       :   0.001
+Stage mbc        :   0.001
+Stage moar       :   0.000
+ === Pango::Raw::Enums === (34/309)
+Stage start      :   0.000
+Stage parse      :   1.039
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.001
+Stage mast       :   0.002
+Stage mbc        :   0.001
+Stage moar       :   0.000
+ === Pango::Raw::Structs === (35/309)
+Stage start      :   0.000
+Stage parse      :   1.207
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.000
+Stage mast       :   0.001
+Stage mbc        :   0.001
+Stage moar       :   0.000
+ === GStreamer::Raw::Definitions === (36/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/Raw/Definitions.pm6
+    Stage start      :   0.000
+    Stage parse      :   1.577
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.011
+    Stage mast       :   0.067
+    Stage mbc        :   0.007
+Stage parse      :   2.668
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.002
+Stage mast       :   0.004
+Stage mbc        :   0.001
+Stage moar       :   0.000
+ === GStreamer::Raw::Audio::Enums === (37/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/Raw/Audio/Enums.pm6
+    Stage start      :   0.000
+    Stage parse      :   1.608
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.017
+    Stage mast       :   0.030
+    Stage mbc        :   0.010
+Stage parse      :   2.668
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.002
+Stage mast       :   0.004
+Stage mbc        :   0.001
+Stage moar       :   0.000
+ === GStreamer::Raw::Audio::StreamAlign === (38/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/Raw/Audio/StreamAlign.pm6
+    Stage start      :   0.000
+    Stage parse      :   1.481
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.011
+    Stage mast       :   0.026
+    Stage mbc        :   0.009
+Stage parse      :   2.524
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.002
+Stage mast       :   0.004
+Stage mbc        :   0.001
+Stage moar       :   0.000
+ === GStreamer::Raw::Enums === (39/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/Raw/Enums.pm6
+    Stage start      :   0.000
+    Stage parse      :   3.619
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.090
+    Stage mast       :   0.188
+    Stage mbc        :   0.091
+Stage parse      :   5.026
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.006
+Stage mast       :   0.008
+Stage mbc        :   0.004
+Stage moar       :   0.000
+ === GStreamer::Raw::PBUtils::Enums === (40/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/Raw/PBUtils/Enums.pm6
+    Stage start      :   0.000
+    Stage parse      :   1.168
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.007
+    Stage mast       :   0.009
+    Stage mbc        :   0.002
+Stage parse      :   2.112
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.005
+Stage mast       :   0.005
+Stage mbc        :   0.001
+Stage moar       :   0.000
+ === GStreamer::Raw::Structs === (41/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/Raw/Structs.pm6
+    Stage start      :   0.000
+    Stage parse      :   3.184
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.118
+    Stage mast       :   0.219
+    Stage mbc        :   0.121
+Stage parse      :   4.666
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.002
+Stage mast       :   0.003
+Stage mbc        :   0.001
+Stage moar       :   0.000
+ === GStreamer::Raw::Subs === (42/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/Raw/Subs.pm6
+    Stage start      :   0.000
+    Stage parse      :   2.286
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.011
+    Stage mast       :   0.029
+    Stage mbc        :   0.005
+Stage parse      :   3.333
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.001
+Stage mast       :   0.003
+Stage mbc        :   0.000
+Stage moar       :   0.000
+ === GStreamer::Raw::Task === (43/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/Raw/Task.pm6
+    Stage start      :   0.000
+    Stage parse      :   1.682
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.011
+    Stage mast       :   0.021
+    Stage mbc        :   0.013
+Stage parse      :   2.734
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.001
+Stage mast       :   0.003
+Stage mbc        :   0.000
+Stage moar       :   0.000
+ === GStreamer::Raw::TaskPool === (44/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/Raw/TaskPool.pm6
+    Stage start      :   0.000
+    Stage parse      :   1.452
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.008
+    Stage mast       :   0.012
+    Stage mbc        :   0.004
+Stage parse      :   2.481
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.002
+Stage mast       :   0.003
+Stage mbc        :   0.000
+Stage moar       :   0.000
+ === GStreamer::Raw::TypeFindFactory === (45/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/Raw/TypeFindFactory.pm6
+    Stage start      :   0.000
+    Stage parse      :   1.476
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.008
+    Stage mast       :   0.011
+    Stage mbc        :   0.004
+Stage parse      :   2.503
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.001
+Stage mast       :   0.003
+Stage mbc        :   0.000
+Stage moar       :   0.000
+ === GStreamer::Raw::Exports === (46/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/Raw/Exports.pm6
+    Stage start      :   0.000
+    Stage parse      :   0.115
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.002
+    Stage mast       :   0.003
+    Stage mbc        :   0.001
+Stage parse      :   1.032
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.003
+Stage mast       :   0.005
+Stage mbc        :   0.001
+Stage moar       :   0.000
+ === GStreamer::Raw::Video::Decoder === (47/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/Raw/Video/Decoder.pm6
+    Stage start      :   0.000
+    Stage parse      :   2.082
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.024
+    Stage mast       :   0.029
+    Stage mbc        :   0.026
+Stage parse      :   3.173
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.002
+Stage mast       :   0.003
+Stage mbc        :   0.001
+Stage moar       :   0.000
+ === GStreamer::Raw::Video::Encoder === (48/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/Raw/Video/Encoder.pm6
+    Stage start      :   0.000
+    Stage parse      :   1.840
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.014
+    Stage mast       :   0.025
+    Stage mbc        :   0.017
+Stage parse      :   2.938
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.002
+Stage mast       :   0.003
+Stage mbc        :   0.001
+Stage moar       :   0.000
+ === GStreamer::Raw::Video::Event === (49/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/Raw/Video/Event.pm6
+    Stage start      :   0.000
+    Stage parse      :   1.341
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.006
+    Stage mast       :   0.024
+    Stage mbc        :   0.004
+Stage parse      :   2.383
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.002
+Stage mast       :   0.003
+Stage mbc        :   0.001
+Stage moar       :   0.000
+ === GStreamer::Raw::Video::Format === (50/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/Raw/Video/Format.pm6
+    Stage start      :   0.000
+    Stage parse      :   1.410
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.012
+    Stage mast       :   0.013
+    Stage mbc        :   0.007
+Stage parse      :   2.443
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.001
+Stage mast       :   0.003
+Stage mbc        :   0.000
+Stage moar       :   0.000
+ === GStreamer::Raw::Video::Meta === (51/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/Raw/Video/Meta.pm6
+    Stage start      :   0.000
+    Stage parse      :   1.434
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.014
+    Stage mast       :   0.015
+    Stage mbc        :   0.008
+Stage parse      :   2.504
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.001
+Stage mast       :   0.003
+Stage mbc        :   0.000
+Stage moar       :   0.000
+ === GStreamer::Raw::Video::Navigation === (52/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/Raw/Video/Navigation.pm6
+    Stage start      :   0.000
+    Stage parse      :   1.719
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.018
+    Stage mast       :   0.026
+    Stage mbc        :   0.020
+Stage parse      :   2.788
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.002
+Stage mast       :   0.003
+Stage mbc        :   0.000
+Stage moar       :   0.000
+ === GStreamer::Raw::Video::Orientation === (53/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/Raw/Video/Orientation.pm6
+    Stage start      :   0.000
+    Stage parse      :   1.420
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.011
+    Stage mast       :   0.017
+    Stage mbc        :   0.009
+Stage parse      :   2.466
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.001
+Stage mast       :   0.003
+Stage mbc        :   0.000
+Stage moar       :   0.000
+ === GStreamer::Raw::Video::OverlayComposition === (54/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/Raw/Video/OverlayComposition.pm6
+    Stage start      :   0.000
+    Stage parse      :   1.721
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.015
+    Stage mast       :   0.028
+    Stage mbc        :   0.018
+Stage parse      :   2.834
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.002
+Stage mast       :   0.003
+Stage mbc        :   0.000
+Stage moar       :   0.000
+ === GStreamer::Raw::Video::Scaler === (55/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/Raw/Video/Scaler.pm6
+    Stage start      :   0.000
+    Stage parse      :   1.464
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.014
+    Stage mast       :   0.016
+    Stage mbc        :   0.007
+Stage parse      :   2.505
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.001
+Stage mast       :   0.003
+Stage mbc        :   0.000
+Stage moar       :   0.000
+ === GStreamer::Raw::Video::TimeCode === (56/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/Raw/Video/TimeCode.pm6
+    Stage start      :   0.000
+    Stage parse      :   1.700
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.019
+    Stage mast       :   0.037
+    Stage mbc        :   0.018
+Stage parse      :   2.783
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.002
+Stage mast       :   0.003
+Stage mbc        :   0.000
+Stage moar       :   0.000
+ === GStreamer::Roles::Plugins::Raw::Types === (57/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/Roles/Plugins/Raw/Types.pm6
+    Stage start      :   0.000
+    Stage parse      :   1.081
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.006
+    Stage mast       :   0.012
+    Stage mbc        :   0.002
+Stage parse      :   2.081
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.002
+Stage mast       :   0.003
+Stage mbc        :   0.000
+Stage moar       :   0.000
+ === GStreamer::Raw::Tags === (58/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/Raw/Tags.pm6
+    Stage start      :   0.000
+    Stage parse      :   0.181
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.007
+    Stage mast       :   0.010
+    Stage mbc        :   0.001
+Stage parse      :   1.132
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.002
+Stage mast       :   0.005
+Stage mbc        :   0.001
+Stage moar       :   0.000
+ === GStreamer::Plugins::Pango::Raw === (59/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/Plugins/Pango/Raw.pm6
+    Stage start      :   0.000
+    Stage parse      :   1.795
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.014
+    Stage mast       :   0.037
+    Stage mbc        :   0.012
+Stage parse      :   2.890
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.002
+Stage mast       :   0.003
+Stage mbc        :   0.001
+Stage moar       :   0.000
+ === GStreamer::Raw::App::Sink === (60/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/Raw/App/Sink.pm6
+    Stage start      :   0.000
+    Stage parse      :   1.447
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.010
+    Stage mast       :   0.026
+    Stage mbc        :   0.009
+Stage parse      :   2.512
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.002
+Stage mast       :   0.003
+Stage mbc        :   0.000
+Stage moar       :   0.000
+ === GStreamer::Raw::App::Src === (61/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/Raw/App/Src.pm6
+    Stage start      :   0.000
+    Stage parse      :   1.661
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.015
+    Stage mast       :   0.026
+    Stage mbc        :   0.016
+Stage parse      :   2.762
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.002
+Stage mast       :   0.003
+Stage mbc        :   0.000
+Stage moar       :   0.000
+ === GStreamer::Raw::Audio::Structs === (62/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/Raw/Audio/Structs.pm6
+    Stage start      :   0.000
+    Stage parse      :   1.672
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.027
+    Stage mast       :   0.038
+    Stage mbc        :   0.007
+Stage parse      :   2.783
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.002
+Stage mast       :   0.003
+Stage mbc        :   0.000
+Stage moar       :   0.000
+ === GStreamer::Raw::Audio::Subs === (63/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/Raw/Audio/Subs.pm6
+    Stage start      :   0.000
+    Stage parse      :   1.259
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.003
+    Stage mast       :   0.010
+    Stage mbc        :   0.002
+Stage parse      :   2.284
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.001
+Stage mast       :   0.003
+Stage mbc        :   0.000
+Stage moar       :   0.000
+ === GStreamer::Raw::Base::Adapter === (64/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/Raw/Base/Adapter.pm6
+    Stage start      :   0.000
+    Stage parse      :   1.697
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.015
+    Stage mast       :   0.023
+    Stage mbc        :   0.014
+Stage parse      :   2.774
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.002
+Stage mast       :   0.004
+Stage mbc        :   0.001
+Stage moar       :   0.000
+ === GStreamer::Raw::Base::Aggregator === (65/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/Raw/Base/Aggregator.pm6
+    Stage start      :   0.000
+    Stage parse      :   1.495
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.014
+    Stage mast       :   0.019
+    Stage mbc        :   0.012
+Stage parse      :   2.575
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.001
+Stage mast       :   0.003
+Stage mbc        :   0.000
+Stage moar       :   0.000
+ === GStreamer::Raw::Base::BitReader === (66/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/Raw/Base/BitReader.pm6
+    Stage start      :   0.000
+    Stage parse      :   1.411
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.008
+    Stage mast       :   0.016
+    Stage mbc        :   0.027
+Stage parse      :   2.471
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.002
+Stage mast       :   0.003
+Stage mbc        :   0.000
+Stage moar       :   0.000
+ === GStreamer::Raw::Base::ByteReader === (67/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/Raw/Base/ByteReader.pm6
+    Stage start      :   0.000
+    Stage parse      :   1.997
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.028
+    Stage mast       :   0.050
+    Stage mbc        :   0.024
+Stage parse      :   3.128
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.002
+Stage mast       :   0.004
+Stage mbc        :   0.001
+Stage moar       :   0.000
+ === GStreamer::Raw::Base::ByteWriter === (68/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/Raw/Base/ByteWriter.pm6
+    Stage start      :   0.000
+    Stage parse      :   1.629
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.015
+    Stage mast       :   0.076
+    Stage mbc        :   0.020
+Stage parse      :   2.753
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.002
+Stage mast       :   0.003
+Stage mbc        :   0.000
+Stage moar       :   0.000
+ === GStreamer::Raw::Base::CollectPads === (69/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/Raw/Base/CollectPads.pm6
+    Stage start      :   0.000
+    Stage parse      :   1.720
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.015
+    Stage mast       :   0.037
+    Stage mbc        :   0.020
+Stage parse      :   2.808
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.002
+Stage mast       :   0.003
+Stage mbc        :   0.000
+Stage moar       :   0.000
+ === GStreamer::Raw::Base::DataQueue === (70/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/Raw/Base/DataQueue.pm6
+    Stage start      :   0.000
+    Stage parse      :   1.465
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.013
+    Stage mast       :   0.016
+    Stage mbc        :   0.009
+Stage parse      :   2.506
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.001
+Stage mast       :   0.003
+Stage mbc        :   0.000
+Stage moar       :   0.000
+ === GStreamer::Raw::Base::FlowCombiner === (71/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/Raw/Base/FlowCombiner.pm6
+    Stage start      :   0.000
+    Stage parse      :   1.475
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.012
+    Stage mast       :   0.020
+    Stage mbc        :   0.010
+Stage parse      :   2.518
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.001
+Stage mast       :   0.003
+Stage mbc        :   0.000
+Stage moar       :   0.000
+ === GStreamer::Raw::Base::Parse === (72/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/Raw/Base/Parse.pm6
+    Stage start      :   0.000
+    Stage parse      :   1.694
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.019
+    Stage mast       :   0.024
+    Stage mbc        :   0.017
+Stage parse      :   2.763
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.002
+Stage mast       :   0.003
+Stage mbc        :   0.000
+Stage moar       :   0.000
+ === GStreamer::Raw::Base::QueueArray === (73/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/Raw/Base/QueueArray.pm6
+    Stage start      :   0.000
+    Stage parse      :   1.454
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.012
+    Stage mast       :   0.018
+    Stage mbc        :   0.009
+Stage parse      :   2.490
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.002
+Stage mast       :   0.003
+Stage mbc        :   0.000
+Stage moar       :   0.000
+ === GStreamer::Raw::Base::Sink === (74/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/Raw/Base/Sink.pm6
+    Stage start      :   0.000
+    Stage parse      :   1.842
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.018
+    Stage mast       :   0.029
+    Stage mbc        :   0.024
+Stage parse      :   2.935
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.002
+Stage mast       :   0.003
+Stage mbc        :   0.000
+Stage moar       :   0.000
+ === GStreamer::Raw::Base::Src === (75/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/Raw/Base/Src.pm6
+    Stage start      :   0.000
+    Stage parse      :   1.671
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.014
+    Stage mast       :   0.028
+    Stage mbc        :   0.020
+Stage parse      :   2.757
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.002
+Stage mast       :   0.003
+Stage mbc        :   0.000
+Stage moar       :   0.000
+ === GStreamer::Raw::Base::Transform === (76/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/Raw/Base/Transform.pm6
+    Stage start      :   0.000
+    Stage parse      :   1.429
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.009
+    Stage mast       :   0.016
+    Stage mbc        :   0.010
+Stage parse      :   2.473
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.002
+Stage mast       :   0.003
+Stage mbc        :   0.000
+Stage moar       :   0.000
+ === GStreamer::Raw::Base::TypeFindHelper === (77/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/Raw/Base/TypeFindHelper.pm6
+    Stage start      :   0.000
+    Stage parse      :   1.435
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.011
+    Stage mast       :   0.019
+    Stage mbc        :   0.008
+Stage parse      :   2.473
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.001
+Stage mast       :   0.003
+Stage mbc        :   0.000
+Stage moar       :   0.000
+ === GStreamer::Raw::ControlBinding === (78/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/Raw/ControlBinding.pm6
+    Stage start      :   0.000
+    Stage parse      :   1.438
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.008
+    Stage mast       :   0.012
+    Stage mbc        :   0.004
+Stage parse      :   2.474
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.001
+Stage mast       :   0.003
+Stage mbc        :   0.000
+Stage moar       :   0.000
+ === GStreamer::Raw::Controller::Structs === (79/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/Raw/Controller/Structs.pm6
+    Stage start      :   0.000
+    Stage parse      :   1.390
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.007
+    Stage mast       :   0.028
+    Stage mbc        :   0.003
+Stage parse      :   2.444
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.001
+Stage mast       :   0.003
+Stage mbc        :   0.000
+Stage moar       :   0.000
+ === GStreamer::Raw::Controller::TimedValueControlSource === (80/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/Raw/Controller/TimedValueControlSource.pm6
+    Stage start      :   0.000
+    Stage parse      :   1.474
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.009
+    Stage mast       :   0.013
+    Stage mbc        :   0.006
+Stage parse      :   2.498
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.001
+Stage mast       :   0.003
+Stage mbc        :   0.000
+Stage moar       :   0.000
+ === GStreamer::Raw::Memory === (81/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/Raw/Memory.pm6
+    Stage start      :   0.000
+    Stage parse      :   1.536
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.011
+    Stage mast       :   0.031
+    Stage mbc        :   0.010
+Stage parse      :   2.588
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.001
+Stage mast       :   0.003
+Stage mbc        :   0.000
+Stage moar       :   0.000
+ === GStreamer::Raw::Meta === (82/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/Raw/Meta.pm6
+    Stage start      :   0.000
+    Stage parse      :   1.274
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.005
+    Stage mast       :   0.018
+    Stage mbc        :   0.004
+Stage parse      :   2.296
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.002
+Stage mast       :   0.003
+Stage mbc        :   0.000
+Stage moar       :   0.000
+ === GStreamer::Raw::PBUtils::Structs === (83/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/Raw/PBUtils/Structs.pm6
+    Stage start      :   0.000
+    Stage parse      :   1.302
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.004
+    Stage mast       :   0.034
+    Stage mbc        :   0.002
+Stage parse      :   2.336
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.001
+Stage mast       :   0.003
+Stage mbc        :   0.000
+Stage moar       :   0.000
+ === GStreamer::Raw::Player::VideoOverlayVideoRenderer === (84/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/Raw/Player/VideoOverlayVideoRenderer.pm6
+    Stage start      :   0.000
+    Stage parse      :   1.318
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.005
+    Stage mast       :   0.012
+    Stage mbc        :   0.007
+Stage parse      :   2.338
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.001
+Stage mast       :   0.003
+Stage mbc        :   0.000
+Stage moar       :   0.000
+ === GStreamer::Raw::Player::Visualization === (85/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/Raw/Player/Visualization.pm6
+    Stage start      :   0.000
+    Stage parse      :   1.393
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.010
+    Stage mast       :   0.027
+    Stage mbc        :   0.006
+Stage parse      :   2.430
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.002
+Stage mast       :   0.003
+Stage mbc        :   0.000
+Stage moar       :   0.000
+ === GStreamer::Raw::Poll === (86/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/Raw/Poll.pm6
+    Stage start      :   0.000
+    Stage parse      :   1.617
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.013
+    Stage mast       :   0.018
+    Stage mbc        :   0.010
+Stage parse      :   2.700
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.002
+Stage mast       :   0.003
+Stage mbc        :   0.000
+Stage moar       :   0.000
+ === GStreamer::Raw::Preset === (87/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/Raw/Preset.pm6
+    Stage start      :   0.000
+    Stage parse      :   1.372
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.007
+    Stage mast       :   0.014
+    Stage mbc        :   0.006
+Stage parse      :   2.402
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.001
+Stage mast       :   0.003
+Stage mbc        :   0.000
+Stage moar       :   0.000
+ === GStreamer::Raw::Promise === (88/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/Raw/Promise.pm6
+    Stage start      :   0.000
+    Stage parse      :   1.387
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.015
+    Stage mast       :   0.014
+    Stage mbc        :   0.006
+Stage parse      :   2.421
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.002
+Stage mast       :   0.003
+Stage mbc        :   0.000
+Stage moar       :   0.000
+ === GStreamer::Raw::SDP::Structs === (89/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/Raw/SDP/Structs.pm6
+    Stage start      :   0.000
+    Stage parse      :   1.762
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.053
+    Stage mast       :   0.115
+    Stage mbc        :   0.007
+Stage parse      :   2.961
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.002
+Stage mast       :   0.003
+Stage mbc        :   0.000
+Stage moar       :   0.000
+ === GStreamer::Raw::Types === (90/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/Raw/Types.pm6
+    Stage start      :   0.000
+    Stage parse      :   1.889
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.002
+    Stage mast       :   0.014
+    Stage mbc        :   0.005
+Stage parse      :   3.026
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.012
+Stage mast       :   0.029
+Stage mbc        :   0.012
+Stage moar       :   0.000
+ === GStreamer::Raw::URI === (91/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/Raw/URI.pm6
+    Stage start      :   0.000
+    Stage parse      :   2.912
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.032
+    Stage mast       :   0.064
+    Stage mbc        :   0.079
+Stage parse      :   4.185
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.002
+Stage mast       :   0.010
+Stage mbc        :   0.001
+Stage moar       :   0.000
+ === GStreamer::Raw::Utils === (92/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/Raw/Utils.pm6
+    Stage start      :   0.000
+    Stage parse      :   3.370
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.107
+    Stage mast       :   0.081
+    Stage mbc        :   0.098
+Stage parse      :   4.772
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.002
+Stage mast       :   0.010
+Stage mbc        :   0.001
+Stage moar       :   0.000
+ === GStreamer::Raw::Value === (93/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/Raw/Value.pm6
+    Stage start      :   0.000
+    Stage parse      :   3.412
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.037
+    Stage mast       :   0.075
+    Stage mbc        :   0.101
+Stage parse      :   4.781
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.002
+Stage mast       :   0.010
+Stage mbc        :   0.001
+Stage moar       :   0.000
+ === GStreamer::Raw::Video::ColorBalance === (94/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/Raw/Video/ColorBalance.pm6
+    Stage start      :   0.000
+    Stage parse      :   1.494
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.015
+    Stage mast       :   0.040
+    Stage mbc        :   0.014
+Stage parse      :   2.616
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.001
+Stage mast       :   0.003
+Stage mbc        :   0.000
+Stage moar       :   0.000
+ === GStreamer::Roles::Plugins::Raw::Playbin === (95/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/Roles/Plugins/Raw/Playbin.pm6
+    Stage start      :   0.000
+    Stage parse      :   1.802
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.014
+    Stage mast       :   0.042
+    Stage mbc        :   0.025
+Stage parse      :   2.944
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.001
+Stage mast       :   0.003
+Stage mbc        :   0.000
+Stage moar       :   0.000
+ === GStreamer::Roles::Preset === (96/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/Roles/Preset.pm6
+    Stage start      :   0.000
+    Stage parse      :   1.592
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.022
+    Stage mast       :   0.045
+    Stage mbc        :   0.012
+Stage parse      :   2.733
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.001
+Stage mast       :   0.003
+Stage mbc        :   0.000
+Stage moar       :   0.000
+ === GStreamer::Roles::Signals::Bin === (97/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/Roles/Signals/Bin.pm6
+    Stage start      :   0.000
+    Stage parse      :   1.828
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.029
+    Stage mast       :   0.051
+    Stage mbc        :   0.018
+Stage parse      :   2.983
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.001
+Stage mast       :   0.003
+Stage mbc        :   0.000
+Stage moar       :   0.000
+ === GStreamer::Roles::Signals::Bus === (98/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/Roles/Signals/Bus.pm6
+    Stage start      :   0.000
+    Stage parse      :   1.562
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.017
+    Stage mast       :   0.034
+    Stage mbc        :   0.009
+Stage parse      :   2.677
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.001
+Stage mast       :   0.003
+Stage mbc        :   0.000
+Stage moar       :   0.000
+ === GStreamer::Roles::Signals::ChildProxy === (99/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/Roles/Signals/ChildProxy.pm6
+    Stage start      :   0.000
+    Stage parse      :   1.573
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.017
+    Stage mast       :   0.036
+    Stage mbc        :   0.009
+Stage parse      :   2.681
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.001
+Stage mast       :   0.003
+Stage mbc        :   0.000
+Stage moar       :   0.000
+ === GStreamer::Roles::Signals::Controller::TimedValueControlSource === (100/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/Roles/Signals/Controller/TimedValueControlSource.pm6
+    Stage start      :   0.000
+    Stage parse      :   1.617
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.017
+    Stage mast       :   0.034
+    Stage mbc        :   0.009
+Stage parse      :   2.796
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.001
+Stage mast       :   0.003
+Stage mbc        :   0.000
+Stage moar       :   0.000
+ === GStreamer::Roles::Signals::Element === (101/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/Roles/Signals/Element.pm6
+    Stage start      :   0.000
+    Stage parse      :   2.013
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.014
+    Stage mast       :   0.045
+    Stage mbc        :   0.009
+Stage parse      :   3.148
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.001
+Stage mast       :   0.010
+Stage mbc        :   0.000
+Stage moar       :   0.000
+ === GStreamer::Roles::Signals::Generic === (102/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/Roles/Signals/Generic.pm6
+    Stage start      :   0.000
+    Stage parse      :   1.743
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.031
+    Stage mast       :   0.050
+    Stage mbc        :   0.016
+Stage parse      :   2.901
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.001
+Stage mast       :   0.003
+Stage mbc        :   0.000
+Stage moar       :   0.000
+ === GStreamer::Roles::Signals::Object === (103/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/Roles/Signals/Object.pm6
+    Stage start      :   0.000
+    Stage parse      :   1.584
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.017
+    Stage mast       :   0.037
+    Stage mbc        :   0.009
+Stage parse      :   2.723
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.002
+Stage mast       :   0.003
+Stage mbc        :   0.000
+Stage moar       :   0.000
+ === GStreamer::Roles::Signals::PBUtils::Discoverer === (104/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/Roles/Signals/PBUtils/Discoverer.pm6
+    Stage start      :   0.000
+    Stage parse      :   1.684
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.020
+    Stage mast       :   0.040
+    Stage mbc        :   0.009
+Stage parse      :   2.844
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.002
+Stage mast       :   0.003
+Stage mbc        :   0.000
+Stage moar       :   0.000
+ === GStreamer::Roles::Signals::Player === (105/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/Roles/Signals/Player.pm6
+    Stage start      :   0.000
+    Stage parse      :   2.174
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.018
+    Stage mast       :   0.053
+    Stage mbc        :   0.012
+Stage parse      :   3.333
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.001
+Stage mast       :   0.010
+Stage mbc        :   0.000
+Stage moar       :   0.000
+ === GStreamer::Roles::Signals::StreamCollection === (106/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/Roles/Signals/StreamCollection.pm6
+    Stage start      :   0.000
+    Stage parse      :   1.624
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.017
+    Stage mast       :   0.037
+    Stage mbc        :   0.009
+Stage parse      :   2.760
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.001
+Stage mast       :   0.003
+Stage mbc        :   0.000
+Stage moar       :   0.000
+ === GStreamer::Roles::Signals::Video::ColorBalance === (107/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/Roles/Signals/Video/ColorBalance.pm6
+    Stage start      :   0.000
+    Stage parse      :   1.628
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.017
+    Stage mast       :   0.036
+    Stage mbc        :   0.009
+Stage parse      :   2.768
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.001
+Stage mast       :   0.003
+Stage mbc        :   0.000
+Stage moar       :   0.000
+ === GStreamer::Roles::URIHandler === (108/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/Roles/URIHandler.pm6
+    Stage start      :   0.000
+    Stage parse      :   1.668
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.021
+    Stage mast       :   0.034
+    Stage mbc        :   0.011
+Stage parse      :   2.791
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.001
+Stage mast       :   0.003
+Stage mbc        :   0.000
+Stage moar       :   0.000
+ === GStreamer::Roles::Video::Orientation === (109/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/Roles/Video/Orientation.pm6
+    Stage start      :   0.000
+    Stage parse      :   1.490
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.023
+    Stage mast       :   0.046
+    Stage mbc        :   0.006
+Stage parse      :   2.617
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.001
+Stage mast       :   0.003
+Stage mbc        :   0.000
+Stage moar       :   0.000
+ === GStreamer::URI === (110/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/URI.pm6
+    Stage start      :   0.000
+    Stage parse      :   2.268
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.053
+    Stage mast       :   0.084
+    Stage mbc        :   0.025
+»»»»»»
+Stage parse      :   3.544
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.001
+Stage mast       :   0.003
+Stage mbc        :   0.000
+Stage moar       :   0.000
+» Please note that the objects in /home/cbwood/Projects/p6-GLib/lib/GLib/HashTable.pm6 (GLib::HashTable) are classed as use-at-your-own-risk!
+» Accessing an object created from C should be usable, but creating objects of
+» this type, via Raku, may behave erratically.
+
+»»»»»»
+» Please note that the objects in /home/cbwood/Projects/p6-GLib/lib/GLib/HashTable.pm6 (GLib::HashTable) are classed as use-at-your-own-risk!
+» Accessing an object created from C should be usable, but creating objects of
+» this type, via Raku, may behave erratically.
+»»»»»»
+
+ === GStreamer::Video::ColorBalanceChannel === (111/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/Video/ColorBalanceChannel.pm6
+    Stage start      :   0.000
+    Stage parse      :   2.169
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.022
+    Stage mast       :   0.035
+    Stage mbc        :   0.007
+Stage parse      :   3.377
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.002
+Stage mast       :   0.003
+Stage mbc        :   0.000
+Stage moar       :   0.000
+ === GStreamer::Video::Dither === (112/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/Video/Dither.pm6
+    Stage start      :   0.000
+    Stage parse      :   1.571
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.017
+    Stage mast       :   0.037
+    Stage mbc        :   0.013
+Stage parse      :   2.707
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.002
+Stage mast       :   0.003
+Stage mbc        :   0.000
+Stage moar       :   0.000
+ === GStreamer::Video::Format === (113/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/Video/Format.pm6
+    Stage start      :   0.000
+    Stage parse      :   1.376
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.020
+    Stage mast       :   0.049
+    Stage mbc        :   0.008
+Stage parse      :   2.493
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.001
+Stage mast       :   0.003
+Stage mbc        :   0.000
+Stage moar       :   0.000
+ === GStreamer::Video::Scaler === (114/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/Video/Scaler.pm6
+    Stage start      :   0.000
+    Stage parse      :   1.615
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.030
+    Stage mast       :   0.058
+    Stage mbc        :   0.009
+Stage parse      :   2.790
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.001
+Stage mast       :   0.003
+Stage mbc        :   0.000
+Stage moar       :   0.000
+ === GStreamer::Video::TimeCode === (115/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/Video/TimeCode.pm6
+    Stage start      :   0.000
+    Stage parse      :   1.615
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.044
+    Stage mast       :   0.066
+    Stage mbc        :   0.012
+Stage parse      :   2.796
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.001
+Stage mast       :   0.003
+Stage mbc        :   0.000
+Stage moar       :   0.000
+ === GStreamer::App::Roles::Signals::Sink === (116/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/App/Roles/Signals/Sink.pm6
+    Stage start      :   0.000
+    Stage parse      :   2.156
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.020
+    Stage mast       :   0.043
+    Stage mbc        :   0.014
+Stage parse      :   3.299
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.001
+Stage mast       :   0.010
+Stage mbc        :   0.000
+Stage moar       :   0.000
+ === GStreamer::App::Roles::Signals::Src === (117/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/App/Roles/Signals/Src.pm6
+    Stage start      :   0.000
+    Stage parse      :   1.909
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.028
+    Stage mast       :   0.108
+    Stage mbc        :   0.022
+Stage parse      :   3.118
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.001
+Stage mast       :   0.003
+Stage mbc        :   0.000
+Stage moar       :   0.000
+ === GStreamer::Audio::StreamAlign === (118/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/Audio/StreamAlign.pm6
+    Stage start      :   0.000
+    Stage parse      :   1.363
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.028
+    Stage mast       :   0.070
+    Stage mbc        :   0.009
+Stage parse      :   2.565
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.001
+Stage mast       :   0.003
+Stage mbc        :   0.000
+Stage moar       :   0.000
+ === GStreamer::Base::BitReader === (119/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/Base/BitReader.pm6
+    Stage start      :   0.000
+    Stage parse      :   1.679
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.041
+    Stage mast       :   0.066
+    Stage mbc        :   0.010
+Stage parse      :   2.848
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.001
+Stage mast       :   0.003
+Stage mbc        :   0.000
+Stage moar       :   0.000
+ === GStreamer::Base::ByteReader === (120/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/Base/ByteReader.pm6
+    Stage start      :   0.000
+    [31m===[0mSORRY![31m===[0m Error while compiling /home/cbwood/Projects/p6-GStreamer/lib/GStreamer/Base/ByteReader.pm6 (GStreamer::Base::ByteReader)
+    No such private method 'SET-SELF' on Map
+    at /home/cbwood/Projects/p6-GStreamer/lib/GStreamer/Base/ByteReader.pm6 (GStreamer::Base::ByteReader):3
+[31m===[0mSORRY![31m===[0m Error while compiling -e
+Stage start      :   0.000
+[31m===[0mSORRY![31m===[0m Error while compiling /home/cbwood/Projects/p6-GStreamer/lib/GStreamer/Base/ByteReader.pm6 (GStreamer::Base::ByteReader)
+No such private method 'SET-SELF' on Map
+at /home/cbwood/Projects/p6-GStreamer/lib/GStreamer/Base/ByteReader.pm6 (GStreamer::Base::ByteReader):3
+
+at -e:1
+ === GStreamer::Base::DataQueue === (121/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/Base/DataQueue.pm6
+    Stage start      :   0.000
+    Stage parse      :   2.196
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.032
+    Stage mast       :   0.047
+    Stage mbc        :   0.008
+Stage parse      :   3.426
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.001
+Stage mast       :   0.003
+Stage mbc        :   0.000
+Stage moar       :   0.000
+ === GStreamer::Base::FlowCombiner === (122/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/Base/FlowCombiner.pm6
+    Stage start      :   0.000
+    Stage parse      :   1.381
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.020
+    Stage mast       :   0.052
+    Stage mbc        :   0.010
+Stage parse      :   2.522
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.001
+Stage mast       :   0.003
+Stage mbc        :   0.000
+Stage moar       :   0.000
+ === GStreamer::Base::QueueArray === (123/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/Base/QueueArray.pm6
+    Stage start      :   0.000
+    Stage parse      :   1.463
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.029
+    Stage mast       :   0.042
+    Stage mbc        :   0.011
+Stage parse      :   2.600
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.001
+Stage mast       :   0.003
+Stage mbc        :   0.000
+Stage moar       :   0.000
+ === GStreamer::Class::Object === (124/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/Class/Object.pm6
+    Stage start      :   0.000
+    Stage parse      :   1.716
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.011
+    Stage mast       :   0.027
+    Stage mbc        :   0.007
+Stage parse      :   2.851
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.001
+Stage mast       :   0.003
+Stage mbc        :   0.000
+Stage moar       :   0.000
+ === GStreamer::Controller::ControlPoint === (125/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/Controller/ControlPoint.pm6
+    Stage start      :   0.000
+    Stage parse      :   1.402
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.017
+    Stage mast       :   0.035
+    Stage mbc        :   0.011
+Stage parse      :   2.543
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.001
+Stage mast       :   0.003
+Stage mbc        :   0.000
+Stage moar       :   0.000
+ === GStreamer::Meta === (126/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/Meta.pm6
+    Stage start      :   0.000
+    Stage parse      :   1.534
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.021
+    Stage mast       :   0.045
+    Stage mbc        :   0.008
+Stage parse      :   2.660
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.001
+Stage mast       :   0.003
+Stage mbc        :   0.000
+Stage moar       :   0.000
+ === GStreamer::ParamSpec === (127/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/ParamSpec.pm6
+    Stage start      :   0.000
+    Stage parse      :   2.117
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.017
+    Stage mast       :   0.044
+    Stage mbc        :   0.010
+Stage parse      :   3.281
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.002
+Stage mast       :   0.003
+Stage mbc        :   0.000
+Stage moar       :   0.000
+ === GStreamer::Player::MainContextSignalDispatcher === (128/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/Player/MainContextSignalDispatcher.pm6
+    Stage start      :   0.000
+    Stage parse      :   2.253
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.018
+    Stage mast       :   0.042
+    Stage mbc        :   0.009
+Stage parse      :   3.433
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.001
+Stage mast       :   0.003
+Stage mbc        :   0.000
+Stage moar       :   0.000
+ === GStreamer::Player::Roles::SignalDispatcher === (129/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/Player/Roles/SignalDispatcher.pm6
+    Stage start      :   0.000
+    Stage parse      :   1.575
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.016
+    Stage mast       :   0.046
+    Stage mbc        :   0.008
+Stage parse      :   2.744
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.001
+Stage mast       :   0.003
+Stage mbc        :   0.000
+Stage moar       :   0.000
+ === GStreamer::Player::Visualization === (130/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/Player/Visualization.pm6
+    Stage start      :   0.000
+    Stage parse      :   1.600
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.021
+    Stage mast       :   0.038
+    Stage mbc        :   0.010
+Stage parse      :   2.718
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.001
+Stage mast       :   0.003
+Stage mbc        :   0.000
+Stage moar       :   0.000
+ === GStreamer::Plugins::AutoDetect::Raw === (131/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/Plugins/AutoDetect/Raw.pm6
+    Stage start      :   0.000
+    Stage parse      :   1.556
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.023
+    Stage mast       :   0.061
+    Stage mbc        :   0.009
+Stage parse      :   2.729
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.001
+Stage mast       :   0.003
+Stage mbc        :   0.000
+Stage moar       :   0.000
+ === GStreamer::Poll === (132/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/Poll.pm6
+    Stage start      :   0.000
+    Stage parse      :   1.468
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.038
+    Stage mast       :   0.065
+    Stage mbc        :   0.013
+Stage parse      :   2.637
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.001
+Stage mast       :   0.003
+Stage mbc        :   0.000
+Stage moar       :   0.000
+ === GStreamer::Raw::Allocator === (133/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/Raw/Allocator.pm6
+    Stage start      :   0.000
+    Stage parse      :   1.713
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.014
+    Stage mast       :   0.035
+    Stage mbc        :   0.019
+Stage parse      :   2.843
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.001
+Stage mast       :   0.003
+Stage mbc        :   0.000
+Stage moar       :   0.000
+ === GStreamer::Raw::AtomicQueue === (134/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/Raw/AtomicQueue.pm6
+    Stage start      :   0.000
+    Stage parse      :   1.697
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.023
+    Stage mast       :   0.041
+    Stage mbc        :   0.016
+Stage parse      :   2.842
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.002
+Stage mast       :   0.003
+Stage mbc        :   0.000
+Stage moar       :   0.000
+ === GStreamer::Raw::Audio::BaseSink === (135/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/Raw/Audio/BaseSink.pm6
+    Stage start      :   0.000
+    Stage parse      :   1.474
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.010
+    Stage mast       :   0.015
+    Stage mbc        :   0.008
+Stage parse      :   2.516
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.002
+Stage mast       :   0.003
+Stage mbc        :   0.001
+Stage moar       :   0.000
+ === GStreamer::Raw::Audio::BaseSrc === (136/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/Raw/Audio/BaseSrc.pm6
+    Stage start      :   0.000
+    Stage parse      :   1.286
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.004
+    Stage mast       :   0.014
+    Stage mbc        :   0.004
+Stage parse      :   2.327
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.001
+Stage mast       :   0.003
+Stage mbc        :   0.000
+Stage moar       :   0.000
+ === GStreamer::Raw::Audio::Clock === (137/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/Raw/Audio/Clock.pm6
+    Stage start      :   0.000
+    Stage parse      :   1.384
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.004
+    Stage mast       :   0.011
+    Stage mbc        :   0.003
+Stage parse      :   2.404
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.001
+Stage mast       :   0.003
+Stage mbc        :   0.000
+Stage moar       :   0.000
+ === GStreamer::Raw::Audio::Converter === (138/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/Raw/Audio/Converter.pm6
+    Stage start      :   0.000
+    Stage parse      :   1.442
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.010
+    Stage mast       :   0.025
+    Stage mbc        :   0.006
+Stage parse      :   2.473
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.001
+Stage mast       :   0.003
+Stage mbc        :   0.000
+Stage moar       :   0.000
+ === GStreamer::Raw::Audio::Info === (139/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/Raw/Audio/Info.pm6
+    Stage start      :   0.000
+    Stage parse      :   1.498
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.012
+    Stage mast       :   0.019
+    Stage mbc        :   0.010
+Stage parse      :   2.553
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.001
+Stage mast       :   0.003
+Stage mbc        :   0.000
+Stage moar       :   0.000
+ === GStreamer::Raw::Audio::RingBuffer === (140/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/Raw/Audio/RingBuffer.pm6
+    Stage start      :   0.000
+    Stage parse      :   2.481
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.020
+    Stage mast       :   0.041
+    Stage mbc        :   0.039
+Stage parse      :   3.656
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.002
+Stage mast       :   0.003
+Stage mbc        :   0.000
+Stage moar       :   0.000
+ === GStreamer::Raw::Base::BitWriter === (141/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/Raw/Base/BitWriter.pm6
+    Stage start      :   0.000
+    Stage parse      :   2.139
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.020
+    Stage mast       :   0.043
+    Stage mbc        :   0.033
+Stage parse      :   3.321
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.002
+Stage mast       :   0.004
+Stage mbc        :   0.000
+Stage moar       :   0.000
+ === GStreamer::Raw::Bin === (142/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/Raw/Bin.pm6
+    Stage start      :   0.000
+    Stage parse      :   1.920
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.018
+    Stage mast       :   0.036
+    Stage mbc        :   0.027
+Stage parse      :   3.101
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.001
+Stage mast       :   0.003
+Stage mbc        :   0.000
+Stage moar       :   0.000
+ === GStreamer::Raw::Buffer === (143/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/Raw/Buffer.pm6
+    Stage start      :   0.000
+    Stage parse      :   3.223
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.032
+    Stage mast       :   0.075
+    Stage mbc        :   0.091
+Stage parse      :   4.576
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.002
+Stage mast       :   0.011
+Stage mbc        :   0.001
+Stage moar       :   0.000
+ === GStreamer::Raw::BufferList === (144/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/Raw/BufferList.pm6
+    Stage start      :   0.000
+    Stage parse      :   1.742
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.020
+    Stage mast       :   0.043
+    Stage mbc        :   0.019
+Stage parse      :   2.878
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.001
+Stage mast       :   0.003
+Stage mbc        :   0.000
+Stage moar       :   0.000
+ === GStreamer::Raw::BufferPool === (145/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/Raw/BufferPool.pm6
+    Stage start      :   0.000
+    Stage parse      :   2.008
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.026
+    Stage mast       :   0.040
+    Stage mbc        :   0.032
+Stage parse      :   3.198
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.002
+Stage mast       :   0.003
+Stage mbc        :   0.000
+Stage moar       :   0.000
+ === GStreamer::Raw::Bus === (146/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/Raw/Bus.pm6
+    Stage start      :   0.000
+    Stage parse      :   2.099
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.022
+    Stage mast       :   0.043
+    Stage mbc        :   0.037
+Stage parse      :   3.282
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.002
+Stage mast       :   0.003
+Stage mbc        :   0.000
+Stage moar       :   0.000
+ === GStreamer::Raw::Caps === (147/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/Raw/Caps.pm6
+    Stage start      :   0.000
+    Stage parse      :   2.685
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.031
+    Stage mast       :   0.054
+    Stage mbc        :   0.068
+Stage parse      :   3.956
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.002
+Stage mast       :   0.003
+Stage mbc        :   0.001
+Stage moar       :   0.000
+ === GStreamer::Raw::CapsFeatures === (148/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/Raw/CapsFeatures.pm6
+    Stage start      :   0.000
+    Stage parse      :   1.979
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.021
+    Stage mast       :   0.040
+    Stage mbc        :   0.032
+Stage parse      :   3.137
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.002
+Stage mast       :   0.003
+Stage mbc        :   0.000
+Stage moar       :   0.000
+ === GStreamer::Raw::ChildProxy === (149/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/Raw/ChildProxy.pm6
+    Stage start      :   0.000
+    Stage parse      :   1.698
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.020
+    Stage mast       :   0.041
+    Stage mbc        :   0.017
+Stage parse      :   2.856
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.001
+Stage mast       :   0.003
+Stage mbc        :   0.000
+Stage moar       :   0.000
+ === GStreamer::Raw::Clock === (150/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/Raw/Clock.pm6
+    Stage start      :   0.000
+    Stage parse      :   2.362
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.024
+    Stage mast       :   0.048
+    Stage mbc        :   0.051
+Stage parse      :   3.577
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.002
+Stage mast       :   0.003
+Stage mbc        :   0.001
+Stage moar       :   0.000
+ === GStreamer::Raw::Context === (151/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/Raw/Context.pm6
+    Stage start      :   0.000
+    Stage parse      :   1.637
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.015
+    Stage mast       :   0.040
+    Stage mbc        :   0.015
+Stage parse      :   2.762
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.002
+Stage mast       :   0.003
+Stage mbc        :   0.000
+Stage moar       :   0.000
+ === GStreamer::Raw::DateTime === (152/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/Raw/DateTime.pm6
+    Stage start      :   0.000
+    Stage parse      :   2.243
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.020
+    Stage mast       :   0.046
+    Stage mbc        :   0.043
+Stage parse      :   3.427
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.002
+Stage mast       :   0.003
+Stage mbc        :   0.000
+Stage moar       :   0.000
+ === GStreamer::Raw::Device === (153/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/Raw/Device.pm6
+    Stage start      :   0.000
+    Stage parse      :   1.733
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.018
+    Stage mast       :   0.029
+    Stage mbc        :   0.017
+Stage parse      :   2.883
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.002
+Stage mast       :   0.003
+Stage mbc        :   0.000
+Stage moar       :   0.000
+ === GStreamer::Raw::DeviceMonitor === (154/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/Raw/DeviceMonitor.pm6
+    Stage start      :   0.000
+    Stage parse      :   1.748
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.021
+    Stage mast       :   0.040
+    Stage mbc        :   0.020
+Stage parse      :   2.885
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.001
+Stage mast       :   0.003
+Stage mbc        :   0.000
+Stage moar       :   0.000
+ === GStreamer::Raw::DeviceProvider === (155/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/Raw/DeviceProvider.pm6
+    Stage start      :   0.000
+    Stage parse      :   1.855
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.018
+    Stage mast       :   0.040
+    Stage mbc        :   0.023
+Stage parse      :   3.058
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.002
+Stage mast       :   0.003
+Stage mbc        :   0.000
+Stage moar       :   0.000
+ === GStreamer::Raw::DeviceProviderFactory === (156/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/Raw/DeviceProviderFactory.pm6
+    Stage start      :   0.000
+    Stage parse      :   1.735
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.018
+    Stage mast       :   0.043
+    Stage mbc        :   0.018
+Stage parse      :   2.878
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.001
+Stage mast       :   0.003
+Stage mbc        :   0.000
+Stage moar       :   0.000
+ === GStreamer::Raw::Element === (157/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/Raw/Element.pm6
+    Stage start      :   0.000
+    Stage parse      :   2.892
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.032
+    Stage mast       :   0.103
+    Stage mbc        :   0.076
+Stage parse      :   4.197
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.002
+Stage mast       :   0.009
+Stage mbc        :   0.001
+Stage moar       :   0.000
+ === GStreamer::Raw::ElementFactory === (158/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/Raw/ElementFactory.pm6
+    Stage start      :   0.000
+    Stage parse      :   2.027
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.021
+    Stage mast       :   0.043
+    Stage mbc        :   0.032
+Stage parse      :   3.199
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.002
+Stage mast       :   0.003
+Stage mbc        :   0.000
+Stage moar       :   0.000
+ === GStreamer::Raw::Event === (159/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/Raw/Event.pm6
+    Stage start      :   0.000
+    Stage parse      :   3.314
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.036
+    Stage mast       :   0.068
+    Stage mbc        :   0.091
+Stage parse      :   4.598
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.002
+Stage mast       :   0.009
+Stage mbc        :   0.001
+Stage moar       :   0.000
+ === GStreamer::Raw::Format === (160/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/Raw/Format.pm6
+    Stage start      :   0.000
+    Stage parse      :   1.706
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.014
+    Stage mast       :   0.040
+    Stage mbc        :   0.014
+Stage parse      :   2.826
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.002
+Stage mast       :   0.003
+Stage mbc        :   0.000
+Stage moar       :   0.000
+ === GStreamer::Raw::GhostPad === (161/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/Raw/GhostPad.pm6
+    Stage start      :   0.000
+    Stage parse      :   1.674
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.022
+    Stage mast       :   0.032
+    Stage mbc        :   0.024
+Stage parse      :   2.812
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.002
+Stage mast       :   0.003
+Stage mbc        :   0.000
+Stage moar       :   0.000
+ === GStreamer::Raw::Iterator === (162/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/Raw/Iterator.pm6
+    Stage start      :   0.000
+    Stage parse      :   1.817
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.018
+    Stage mast       :   0.037
+    Stage mbc        :   0.023
+Stage parse      :   2.961
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.001
+Stage mast       :   0.003
+Stage mbc        :   0.000
+Stage moar       :   0.000
+ === GStreamer::Raw::Main === (163/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/Raw/Main.pm6
+    Stage start      :   0.000
+    Stage parse      :   1.753
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.017
+    Stage mast       :   0.031
+    Stage mbc        :   0.022
+Stage parse      :   2.884
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.001
+Stage mast       :   0.003
+Stage mbc        :   0.000
+Stage moar       :   0.000
+ === GStreamer::Raw::Message === (164/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/Raw/Message.pm6
+    Stage start      :   0.000
+    Stage parse      :   4.320
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.050
+    Stage mast       :   0.094
+    Stage mbc        :   0.147
+Stage parse      :   5.745
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.002
+Stage mast       :   0.004
+Stage mbc        :   0.001
+Stage moar       :   0.000
+ === GStreamer::Raw::MiniObject === (165/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/Raw/MiniObject.pm6
+    Stage start      :   0.000
+    Stage parse      :   1.997
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.024
+    Stage mast       :   0.038
+    Stage mbc        :   0.030
+Stage parse      :   3.148
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.001
+Stage mast       :   0.003
+Stage mbc        :   0.000
+Stage moar       :   0.000
+ === GStreamer::Raw::Object === (166/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/Raw/Object.pm6
+    Stage start      :   0.000
+    Stage parse      :   2.218
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.022
+    Stage mast       :   0.046
+    Stage mbc        :   0.045
+Stage parse      :   3.458
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.002
+Stage mast       :   0.004
+Stage mbc        :   0.001
+Stage moar       :   0.000
+ === GStreamer::Raw::PBUtils::Discoverer === (167/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/Raw/PBUtils/Discoverer.pm6
+    Stage start      :   0.000
+    Stage parse      :   2.522
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.028
+    Stage mast       :   0.050
+    Stage mbc        :   0.049
+Stage parse      :   3.696
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.002
+Stage mast       :   0.003
+Stage mbc        :   0.001
+Stage moar       :   0.000
+ === GStreamer::Raw::Pad === (168/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/Raw/Pad.pm6
+    Stage start      :   0.000
+    Stage parse      :   3.621
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.036
+    Stage mast       :   0.072
+    Stage mbc        :   0.109
+Stage parse      :   4.994
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.002
+Stage mast       :   0.010
+Stage mbc        :   0.001
+Stage moar       :   0.000
+ === GStreamer::Raw::PadTemplate === (169/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/Raw/PadTemplate.pm6
+    Stage start      :   0.000
+    Stage parse      :   1.703
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.017
+    Stage mast       :   0.029
+    Stage mbc        :   0.017
+Stage parse      :   2.838
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.001
+Stage mast       :   0.003
+Stage mbc        :   0.000
+Stage moar       :   0.000
+ === GStreamer::Raw::Parse === (170/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/Raw/Parse.pm6
+    Stage start      :   0.000
+    Stage parse      :   1.729
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.018
+    Stage mast       :   0.045
+    Stage mbc        :   0.018
+Stage parse      :   2.886
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.002
+Stage mast       :   0.003
+Stage mbc        :   0.000
+Stage moar       :   0.000
+ === GStreamer::Raw::Pipeline === (171/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/Raw/Pipeline.pm6
+    Stage start      :   0.000
+    Stage parse      :   1.791
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.016
+    Stage mast       :   0.036
+    Stage mbc        :   0.024
+Stage parse      :   2.931
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.001
+Stage mast       :   0.003
+Stage mbc        :   0.000
+Stage moar       :   0.000
+ === GStreamer::Raw::Player === (172/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/Raw/Player.pm6
+    Stage start      :   0.000
+    Stage parse      :   3.084
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.032
+    Stage mast       :   0.062
+    Stage mbc        :   0.087
+Stage parse      :   4.348
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.002
+Stage mast       :   0.010
+Stage mbc        :   0.001
+Stage moar       :   0.000
+ === GStreamer::Raw::Player::StreamInfo === (173/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/Raw/Player/StreamInfo.pm6
+    Stage start      :   0.000
+    Stage parse      :   2.339
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.021
+    Stage mast       :   0.047
+    Stage mbc        :   0.050
+Stage parse      :   3.539
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.002
+Stage mast       :   0.009
+Stage mbc        :   0.000
+Stage moar       :   0.000
+ === GStreamer::Raw::Plugin === (174/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/Raw/Plugin.pm6
+    Stage start      :   0.000
+    Stage parse      :   2.046
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.021
+    Stage mast       :   0.043
+    Stage mbc        :   0.034
+Stage parse      :   3.219
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.002
+Stage mast       :   0.003
+Stage mbc        :   0.000
+Stage moar       :   0.000
+ === GStreamer::Raw::PluginFeature === (175/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/Raw/PluginFeature.pm6
+    Stage start      :   0.000
+    Stage parse      :   1.813
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.020
+    Stage mast       :   0.031
+    Stage mbc        :   0.019
+Stage parse      :   2.948
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.001
+Stage mast       :   0.003
+Stage mbc        :   0.000
+Stage moar       :   0.000
+ === GStreamer::Raw::Query === (176/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/Raw/Query.pm6
+    Stage start      :   0.000
+    Stage parse      :   3.968
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.046
+    Stage mast       :   0.084
+    Stage mbc        :   0.129
+Stage parse      :   5.337
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.002
+Stage mast       :   0.010
+Stage mbc        :   0.001
+Stage moar       :   0.000
+ === GStreamer::Raw::Registry === (177/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/Raw/Registry.pm6
+    Stage start      :   0.000
+    Stage parse      :   1.770
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.019
+    Stage mast       :   0.041
+    Stage mbc        :   0.027
+Stage parse      :   2.912
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.002
+Stage mast       :   0.003
+Stage mbc        :   0.000
+Stage moar       :   0.000
+ === GStreamer::Raw::SDP::Message === (178/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/Raw/SDP/Message.pm6
+    Stage start      :   0.000
+    Stage parse      :   3.350
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.052
+    Stage mast       :   0.084
+    Stage mbc        :   0.084
+Stage parse      :   4.637
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.002
+Stage mast       :   0.003
+Stage mbc        :   0.001
+Stage moar       :   0.000
+ === GStreamer::Raw::SDP::Mickey === (179/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/Raw/SDP/Mickey.pm6
+    Stage start      :   0.000
+    Stage parse      :   2.172
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.023
+    Stage mast       :   0.035
+    Stage mbc        :   0.030
+Stage parse      :   3.283
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.002
+Stage mast       :   0.003
+Stage mbc        :   0.000
+Stage moar       :   0.000
+ === GStreamer::Raw::Sample === (180/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/Raw/Sample.pm6
+    Stage start      :   0.000
+    Stage parse      :   1.842
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.017
+    Stage mast       :   0.038
+    Stage mbc        :   0.021
+Stage parse      :   3.030
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.002
+Stage mast       :   0.004
+Stage mbc        :   0.001
+Stage moar       :   0.000
+ === GStreamer::Raw::Segment === (181/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/Raw/Segment.pm6
+    Stage start      :   0.000
+    Stage parse      :   1.937
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.025
+    Stage mast       :   0.039
+    Stage mbc        :   0.031
+Stage parse      :   3.142
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.002
+Stage mast       :   0.003
+Stage mbc        :   0.000
+Stage moar       :   0.000
+ === GStreamer::Raw::Stream === (182/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/Raw/Stream.pm6
+    Stage start      :   0.000
+    Stage parse      :   1.819
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.022
+    Stage mast       :   0.033
+    Stage mbc        :   0.021
+Stage parse      :   2.950
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.001
+Stage mast       :   0.003
+Stage mbc        :   0.000
+Stage moar       :   0.000
+ === GStreamer::Raw::StreamCollection === (183/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/Raw/StreamCollection.pm6
+    Stage start      :   0.000
+    Stage parse      :   1.577
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.016
+    Stage mast       :   0.039
+    Stage mbc        :   0.013
+Stage parse      :   2.693
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.002
+Stage mast       :   0.003
+Stage mbc        :   0.000
+Stage moar       :   0.000
+ === GStreamer::Raw::Structure === (184/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/Raw/Structure.pm6
+    Stage start      :   0.000
+    Stage parse      :   3.159
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.035
+    Stage mast       :   0.066
+    Stage mbc        :   0.088
+Stage parse      :   4.461
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.002
+Stage mast       :   0.010
+Stage mbc        :   0.001
+Stage moar       :   0.000
+ === GStreamer::Raw::TagList === (185/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/Raw/TagList.pm6
+    Stage start      :   0.000
+    Stage parse      :   2.988
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.035
+    Stage mast       :   0.063
+    Stage mbc        :   0.079
+Stage parse      :   4.262
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.002
+Stage mast       :   0.009
+Stage mbc        :   0.001
+Stage moar       :   0.000
+ === GStreamer::Raw::Toc === (186/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/Raw/Toc.pm6
+    Stage start      :   0.000
+    Stage parse      :   2.192
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.023
+    Stage mast       :   0.046
+    Stage mbc        :   0.042
+Stage parse      :   3.371
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.002
+Stage mast       :   0.003
+Stage mbc        :   0.000
+Stage moar       :   0.000
+ === GStreamer::Roles::ChildProxy === (187/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/Roles/ChildProxy.pm6
+    Stage start      :   0.000
+    Stage parse      :   1.678
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.024
+    Stage mast       :   0.040
+    Stage mbc        :   0.008
+[31m===[0mSORRY![31m===[0m Error while compiling -e
+No such private method 'SET-SELF' on Map
+at -e:1
+ === GStreamer::Roles::Video::ColorBalance === (188/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/Roles/Video/ColorBalance.pm6
+    Stage start      :   0.000
+    Stage parse      :   2.217
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.021
+    Stage mast       :   0.040
+    Stage mbc        :   0.007
+Stage parse      :   3.420
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.002
+Stage mast       :   0.003
+Stage mbc        :   0.000
+Stage moar       :   0.000
+ === GStreamer::Segment === (189/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/Segment.pm6
+    Stage start      :   0.000
+    Stage parse      :   1.523
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.049
+    Stage mast       :   0.093
+    Stage mbc        :   0.012
+Stage parse      :   2.729
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.001
+Stage mast       :   0.003
+Stage mbc        :   0.000
+Stage moar       :   0.000
+ === GStreamer::Structure === (190/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/Structure.pm6
+    Stage start      :   0.000
+    Stage parse      :   2.402
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.074
+    Stage mast       :   0.126
+    Stage mbc        :   0.011
+Stage parse      :   3.702
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.001
+Stage mast       :   0.004
+Stage mbc        :   0.000
+Stage moar       :   0.000
+ === GStreamer::Tag === (191/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/Tag.pm6
+    Stage start      :   0.000
+    Stage parse      :   1.373
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.020
+    Stage mast       :   0.052
+    Stage mbc        :   0.008
+Stage parse      :   2.530
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.001
+Stage mast       :   0.003
+Stage mbc        :   0.000
+Stage moar       :   0.000
+ === GStreamer::Video::Converter === (192/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/Video/Converter.pm6
+    Stage start      :   0.000
+    Stage parse      :   1.761
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.025
+    Stage mast       :   0.039
+    Stage mbc        :   0.010
+Stage parse      :   2.912
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.001
+Stage mast       :   0.003
+Stage mbc        :   0.000
+Stage moar       :   0.000
+ === GStreamer::AtomicQueue === (193/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/AtomicQueue.pm6
+    Stage start      :   0.000
+    Stage parse      :   1.332
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.080
+    Stage mast       :   0.050
+    Stage mbc        :   0.011
+Stage parse      :   2.536
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.001
+Stage mast       :   0.003
+Stage mbc        :   0.000
+Stage moar       :   0.000
+ === GStreamer::Audio::Converter === (194/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/Audio/Converter.pm6
+    Stage start      :   0.000
+    Stage parse      :   1.578
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.032
+    Stage mast       :   0.056
+    Stage mbc        :   0.008
+Stage parse      :   2.824
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.001
+Stage mast       :   0.003
+Stage mbc        :   0.000
+Stage moar       :   0.000
+ === GStreamer::CapsFeatures === (195/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/CapsFeatures.pm6
+    Stage start      :   0.000
+    Stage parse      :   1.558
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.035
+    Stage mast       :   0.059
+    Stage mbc        :   0.012
+Stage parse      :   2.714
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.001
+Stage mast       :   0.003
+Stage mbc        :   0.000
+Stage moar       :   0.000
+ === GStreamer::DateTime === (196/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/DateTime.pm6
+    Stage start      :   0.000
+    Stage parse      :   2.244
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.031
+    Stage mast       :   0.055
+    Stage mbc        :   0.016
+Stage parse      :   3.424
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.001
+Stage mast       :   0.003
+Stage mbc        :   0.000
+Stage moar       :   0.000
+ === GStreamer::Iterator === (197/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/Iterator.pm6
+    Stage start      :   0.000
+    Stage parse      :   1.451
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.084
+    Stage mast       :   0.055
+    Stage mbc        :   0.010
+Stage parse      :   2.664
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.001
+Stage mast       :   0.003
+Stage mbc        :   0.000
+Stage moar       :   0.000
+ === GStreamer::Main === (198/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/Main.pm6
+    Stage start      :   0.000
+    Stage parse      :   1.564
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.026
+    Stage mast       :   0.045
+    Stage mbc        :   0.009
+Stage parse      :   2.721
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.001
+Stage mast       :   0.003
+Stage mbc        :   0.000
+Stage moar       :   0.000
+ === GStreamer::MiniObject === (199/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/MiniObject.pm6
+    Stage start      :   0.000
+    Stage parse      :   1.552
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.033
+    Stage mast       :   0.041
+    Stage mbc        :   0.013
+Stage parse      :   2.695
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.001
+Stage mast       :   0.003
+Stage mbc        :   0.000
+Stage moar       :   0.000
+ === GStreamer::Object === (200/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/Object.pm6
+    Stage start      :   0.000
+    Stage parse      :   2.376
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.046
+    Stage mast       :   0.078
+    Stage mbc        :   0.008
+Stage parse      :   3.621
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.001
+Stage mast       :   0.003
+Stage mbc        :   0.000
+Stage moar       :   0.000
+ === GStreamer::Plugin === (201/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/Plugin.pm6
+    Stage start      :   0.000
+    Stage parse      :   1.916
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.037
+    Stage mast       :   0.137
+    Stage mbc        :   0.020
+Stage parse      :   3.251
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.001
+Stage mast       :   0.003
+Stage mbc        :   0.000
+Stage moar       :   0.000
+ === GStreamer::PluginFeature === (202/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/PluginFeature.pm6
+    Stage start      :   0.000
+    Stage parse      :   2.333
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.024
+    Stage mast       :   0.048
+    Stage mbc        :   0.011
+Stage parse      :   3.556
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.002
+Stage mast       :   0.003
+Stage mbc        :   0.000
+Stage moar       :   0.000
+ === GStreamer::Promise === (203/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/Promise.pm6
+    Stage start      :   0.000
+    Stage parse      :   1.419
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.023
+    Stage mast       :   0.056
+    Stage mbc        :   0.008
+Stage parse      :   2.604
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.001
+Stage mast       :   0.003
+Stage mbc        :   0.000
+Stage moar       :   0.000
+ === GStreamer::Registry === (204/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/Registry.pm6
+    Stage start      :   0.000
+    Stage parse      :   2.356
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.034
+    Stage mast       :   0.053
+    Stage mbc        :   0.007
+Stage parse      :   3.588
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.001
+Stage mast       :   0.003
+Stage mbc        :   0.000
+Stage moar       :   0.000
+ === GStreamer::SDP::Mickey === (205/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/SDP/Mickey.pm6
+    Stage start      :   0.000
+    Stage parse      :   1.756
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.068
+    Stage mast       :   0.133
+    Stage mbc        :   0.009
+Stage parse      :   3.007
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.002
+Stage mast       :   0.010
+Stage mbc        :   0.000
+Stage moar       :   0.000
+ === GStreamer::TaskPool === (206/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/TaskPool.pm6
+    Stage start      :   0.000
+    Stage parse      :   1.577
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.025
+    Stage mast       :   0.058
+    Stage mbc        :   0.008
+Stage parse      :   2.784
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.001
+Stage mast       :   0.003
+Stage mbc        :   0.000
+Stage moar       :   0.000
+ === GStreamer::Tracer === (207/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/Tracer.pm6
+    Stage start      :   0.000
+    Stage parse      :   1.758
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.026
+    Stage mast       :   0.048
+    Stage mbc        :   0.010
+Stage parse      :   2.976
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.001
+Stage mast       :   0.003
+Stage mbc        :   0.000
+Stage moar       :   0.000
+ === GStreamer::TracerFactory === (208/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/TracerFactory.pm6
+    Stage start      :   0.000
+    Stage parse      :   1.577
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.021
+    Stage mast       :   0.042
+    Stage mbc        :   0.009
+Stage parse      :   2.800
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.001
+Stage mast       :   0.003
+Stage mbc        :   0.000
+Stage moar       :   0.000
+ === GStreamer::Audio::RingBuffer === (209/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/Audio/RingBuffer.pm6
+    Stage start      :   0.000
+    Stage parse      :   1.731
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.049
+    Stage mast       :   0.096
+    Stage mbc        :   0.009
+Stage parse      :   3.036
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.002
+Stage mast       :   0.004
+Stage mbc        :   0.001
+Stage moar       :   0.000
+ === GStreamer::Bus === (210/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/Bus.pm6
+    Stage start      :   0.000
+    Stage parse      :   2.343
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.035
+    Stage mast       :   0.066
+    Stage mbc        :   0.006
+Stage parse      :   3.571
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.001
+Stage mast       :   0.003
+Stage mbc        :   0.000
+Stage moar       :   0.000
+ === GStreamer::Caps === (211/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/Caps.pm6
+    Stage start      :   0.000
+    Stage parse      :   1.831
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.056
+    Stage mast       :   0.089
+    Stage mbc        :   0.010
+Stage parse      :   3.108
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.001
+Stage mast       :   0.003
+Stage mbc        :   0.000
+Stage moar       :   0.000
+ === GStreamer::Clock === (212/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/Clock.pm6
+    Stage start      :   0.000
+    Stage parse      :   1.871
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.053
+    Stage mast       :   0.100
+    Stage mbc        :   0.011
+Stage parse      :   3.197
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.001
+Stage mast       :   0.003
+Stage mbc        :   0.000
+Stage moar       :   0.000
+ === GStreamer::Context === (213/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/Context.pm6
+    Stage start      :   0.000
+    Stage parse      :   1.471
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.022
+    Stage mast       :   0.045
+    Stage mbc        :   0.010
+Stage parse      :   2.664
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.002
+Stage mast       :   0.003
+Stage mbc        :   0.000
+Stage moar       :   0.000
+ === GStreamer::ControlBinding === (214/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/ControlBinding.pm6
+    Stage start      :   0.000
+    Stage parse      :   2.106
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.027
+    Stage mast       :   0.054
+    Stage mbc        :   0.008
+Stage parse      :   3.333
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.001
+Stage mast       :   0.003
+Stage mbc        :   0.000
+Stage moar       :   0.000
+ === GStreamer::ControlSource === (215/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/ControlSource.pm6
+    Stage start      :   0.000
+    Stage parse      :   1.697
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.022
+    Stage mast       :   0.048
+    Stage mbc        :   0.009
+Stage parse      :   2.907
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.001
+Stage mast       :   0.003
+Stage mbc        :   0.000
+Stage moar       :   0.000
+ === GStreamer::Controller::ARGBControlBinding === (216/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/Controller/ARGBControlBinding.pm6
+    Stage start      :   0.000
+    Stage parse      :   2.125
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.024
+    Stage mast       :   0.058
+    Stage mbc        :   0.007
+Stage parse      :   3.370
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.001
+Stage mast       :   0.003
+Stage mbc        :   0.000
+Stage moar       :   0.000
+ === GStreamer::Controller::DirectControlBinding === (217/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/Controller/DirectControlBinding.pm6
+    Stage start      :   0.000
+    Stage parse      :   2.112
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.022
+    Stage mast       :   0.042
+    Stage mbc        :   0.008
+Stage parse      :   3.340
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.001
+Stage mast       :   0.003
+Stage mbc        :   0.000
+Stage moar       :   0.000
+ === GStreamer::Controller::LFOControlSource === (218/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/Controller/LFOControlSource.pm6
+    Stage start      :   0.000
+    Stage parse      :   2.142
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.021
+    Stage mast       :   0.048
+    Stage mbc        :   0.007
+Stage parse      :   3.340
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.001
+Stage mast       :   0.003
+Stage mbc        :   0.000
+Stage moar       :   0.000
+ === GStreamer::Controller::TimedValueControlSource === (219/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/Controller/TimedValueControlSource.pm6
+    Stage start      :   0.000
+    Stage parse      :   2.096
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.025
+    Stage mast       :   0.053
+    Stage mbc        :   0.006
+Stage parse      :   3.307
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.001
+Stage mast       :   0.010
+Stage mbc        :   0.000
+Stage moar       :   0.000
+ === GStreamer::DynamicTypeFactory === (220/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/DynamicTypeFactory.pm6
+    Stage start      :   0.000
+    Stage parse      :   1.673
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.020
+    Stage mast       :   0.044
+    Stage mbc        :   0.010
+Stage parse      :   2.865
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.002
+Stage mast       :   0.003
+Stage mbc        :   0.000
+Stage moar       :   0.000
+ === GStreamer::Format === (221/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/Format.pm6
+    Stage start      :   0.000
+    Stage parse      :   1.458
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.080
+    Stage mast       :   0.045
+    Stage mbc        :   0.008
+Stage parse      :   2.704
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.008
+Stage mast       :   0.003
+Stage mbc        :   0.000
+Stage moar       :   0.000
+ === GStreamer::Memory === (222/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/Memory.pm6
+    Stage start      :   0.000
+    Stage parse      :   1.470
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.036
+    Stage mast       :   0.067
+    Stage mbc        :   0.012
+Stage parse      :   2.634
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.001
+Stage mast       :   0.010
+Stage mbc        :   0.000
+Stage moar       :   0.000
+ === GStreamer::Pad === (223/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/Pad.pm6
+    Stage start      :   0.000
+    Stage parse      :   2.087
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.180
+    Stage mast       :   0.143
+    Stage mbc        :   0.019
+Stage parse      :   3.607
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.001
+Stage mast       :   0.003
+Stage mbc        :   0.000
+Stage moar       :   0.000
+ === GStreamer::PadTemplate === (224/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/PadTemplate.pm6
+    Stage start      :   0.000
+    Stage parse      :   1.728
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.030
+    Stage mast       :   0.054
+    Stage mbc        :   0.007
+Stage parse      :   2.994
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.001
+Stage mast       :   0.003
+Stage mbc        :   0.000
+Stage moar       :   0.000
+ === GStreamer::SDP::Media === (225/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/SDP/Media.pm6
+    Stage start      :   0.000
+    Stage parse      :   1.707
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.120
+    Stage mast       :   0.074
+    Stage mbc        :   0.010
+Stage parse      :   3.014
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.001
+Stage mast       :   0.003
+Stage mbc        :   0.000
+Stage moar       :   0.000
+ === GStreamer::SDP::Message === (226/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/SDP/Message.pm6
+    Stage start      :   0.000
+    Stage parse      :   1.940
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.075
+    Stage mast       :   0.117
+    Stage mbc        :   0.011
+Stage parse      :   3.260
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.001
+Stage mast       :   0.003
+Stage mbc        :   0.000
+Stage moar       :   0.000
+ === GStreamer::SystemClock === (227/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/SystemClock.pm6
+    Stage start      :   0.000
+    Stage parse      :   1.679
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.020
+    Stage mast       :   0.040
+    Stage mbc        :   0.009
+Stage parse      :   2.882
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.001
+Stage mast       :   0.011
+Stage mbc        :   0.000
+Stage moar       :   0.000
+ === GStreamer::Task === (228/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/Task.pm6
+    Stage start      :   0.000
+    Stage parse      :   1.523
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.027
+    Stage mast       :   0.063
+    Stage mbc        :   0.008
+Stage parse      :   2.731
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.001
+Stage mast       :   0.010
+Stage mbc        :   0.000
+Stage moar       :   0.000
+ === GStreamer::TypeFindFactory === (229/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/TypeFindFactory.pm6
+    Stage start      :   0.000
+    Stage parse      :   2.222
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.021
+    Stage mast       :   0.039
+    Stage mbc        :   0.012
+Stage parse      :   3.467
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.001
+Stage mast       :   0.003
+Stage mbc        :   0.001
+Stage moar       :   0.000
+ === GStreamer::Value === (230/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/Value.pm6
+    Stage start      :   0.000
+    Stage parse      :   2.295
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.050
+    Stage mast       :   0.080
+    Stage mbc        :   0.008
+Stage parse      :   3.539
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.001
+Stage mast       :   0.003
+Stage mbc        :   0.000
+Stage moar       :   0.000
+ === GStreamer::Allocator === (231/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/Allocator.pm6
+    Stage start      :   0.000
+    Stage parse      :   1.510
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.024
+    Stage mast       :   0.061
+    Stage mbc        :   0.008
+Stage parse      :   2.745
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.001
+Stage mast       :   0.003
+Stage mbc        :   0.000
+Stage moar       :   0.000
+ === GStreamer::Audio::Clock === (232/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/Audio/Clock.pm6
+    Stage start      :   0.000
+    Stage parse      :   1.472
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.023
+    Stage mast       :   0.047
+    Stage mbc        :   0.009
+Stage parse      :   2.664
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.001
+Stage mast       :   0.003
+Stage mbc        :   0.000
+Stage moar       :   0.000
+ === GStreamer::Audio::Info === (233/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/Audio/Info.pm6
+    Stage start      :   0.000
+    Stage parse      :   1.613
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.025
+    Stage mast       :   0.121
+    Stage mbc        :   0.009
+Stage parse      :   2.902
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.002
+Stage mast       :   0.004
+Stage mbc        :   0.000
+Stage moar       :   0.000
+ === GStreamer::Base::TypeFindHelper === (234/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/Base/TypeFindHelper.pm6
+    Stage start      :   0.000
+    Stage parse      :   1.658
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.036
+    Stage mast       :   0.080
+    Stage mbc        :   0.009
+Stage parse      :   2.902
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.002
+Stage mast       :   0.003
+Stage mbc        :   0.000
+Stage moar       :   0.000
+ === GStreamer::Buffer === (235/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/Buffer.pm6
+    Stage start      :   0.000
+    Stage parse      :   1.955
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.083
+    Stage mast       :   0.126
+    Stage mbc        :   0.014
+Stage parse      :   3.310
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.002
+Stage mast       :   0.003
+Stage mbc        :   0.000
+Stage moar       :   0.000
+ === GStreamer::BufferList === (236/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/BufferList.pm6
+    Stage start      :   0.000
+    Stage parse      :   1.604
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.028
+    Stage mast       :   0.065
+    Stage mbc        :   0.010
+Stage parse      :   2.831
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.001
+Stage mast       :   0.003
+Stage mbc        :   0.000
+Stage moar       :   0.000
+ === GStreamer::BufferPool === (237/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/BufferPool.pm6
+    Stage start      :   0.000
+    Stage parse      :   1.701
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.107
+    Stage mast       :   0.073
+    Stage mbc        :   0.008
+Stage parse      :   3.097
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.002
+Stage mast       :   0.003
+Stage mbc        :   0.000
+Stage moar       :   0.000
+ === GStreamer::Class::Element === (238/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/Class/Element.pm6
+    Stage start      :   0.000
+    Stage parse      :   2.599
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.030
+    Stage mast       :   0.057
+    Stage mbc        :   0.019
+Stage parse      :   3.879
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.001
+Stage mast       :   0.003
+Stage mbc        :   0.000
+Stage moar       :   0.000
+ === GStreamer::Controller::InterpolationControlSource === (239/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/Controller/InterpolationControlSource.pm6
+    Stage start      :   0.000
+    Stage parse      :   2.230
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.020
+    Stage mast       :   0.050
+    Stage mbc        :   0.008
+Stage parse      :   3.460
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.001
+Stage mast       :   0.003
+Stage mbc        :   0.000
+Stage moar       :   0.000
+ === GStreamer::Element === (240/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/Element.pm6
+    Stage start      :   0.000
+    Stage parse      :   3.569
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.076
+    Stage mast       :   0.132
+    Stage mbc        :   0.018
+Stage parse      :   5.098
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.003
+Stage mast       :   0.004
+Stage mbc        :   0.001
+Stage moar       :   0.000
+ === GStreamer::ElementFactory === (241/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/ElementFactory.pm6
+    Stage start      :   0.000
+    Stage parse      :   2.641
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.035
+    Stage mast       :   0.055
+    Stage mbc        :   0.017
+Stage parse      :   4.029
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.001
+Stage mast       :   0.009
+Stage mbc        :   0.000
+Stage moar       :   0.000
+ === GStreamer::Net::Clock === (242/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/Net/Clock.pm6
+    Stage start      :   0.000
+    Stage parse      :   2.423
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.034
+    Stage mast       :   0.080
+    Stage mbc        :   0.011
+Stage parse      :   3.698
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.001
+Stage mast       :   0.003
+Stage mbc        :   0.000
+Stage moar       :   0.000
+ === GStreamer::PBUtils::AudioVisualizer === (243/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/PBUtils/AudioVisualizer.pm6
+    Stage start      :   0.000
+    Stage parse      :   1.754
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.025
+    Stage mast       :   0.053
+    Stage mbc        :   0.011
+Stage parse      :   3.131
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.001
+Stage mast       :   0.003
+Stage mbc        :   0.000
+Stage moar       :   0.000
+ === GStreamer::Parse === (244/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/Parse.pm6
+    Stage start      :   0.000
+    Stage parse      :   1.798
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.028
+    Stage mast       :   0.050
+    Stage mbc        :   0.008
+Stage parse      :   3.154
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.001
+Stage mast       :   0.003
+Stage mbc        :   0.000
+Stage moar       :   0.000
+ === GStreamer::Player::Roles::VideoRenderer === (245/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/Player/Roles/VideoRenderer.pm6
+    Stage start      :   0.000
+    Stage parse      :   1.738
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.015
+    Stage mast       :   0.034
+    Stage mbc        :   0.012
+Stage parse      :   3.088
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.001
+Stage mast       :   0.003
+Stage mbc        :   0.000
+Stage moar       :   0.000
+ === GStreamer::Player::VideoOverlayVideoRenderer === (246/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/Player/VideoOverlayVideoRenderer.pm6
+    Stage start      :   0.000
+    Stage parse      :   1.699
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.030
+    Stage mast       :   0.068
+    Stage mbc        :   0.009
+Stage parse      :   3.079
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.001
+Stage mast       :   0.003
+Stage mbc        :   0.000
+Stage moar       :   0.000
+ === GStreamer::Plugins::AudioConvert === (247/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/Plugins/AudioConvert.pm6
+    Stage start      :   0.000
+    Stage parse      :   2.314
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.026
+    Stage mast       :   0.047
+    Stage mbc        :   0.010
+Stage parse      :   3.669
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.001
+Stage mast       :   0.003
+Stage mbc        :   0.000
+Stage moar       :   0.000
+ === GStreamer::Plugins::GstISOMP4::Raw === (248/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/Plugins/GstISOMP4/Raw.pm6
+    Stage start      :   0.000
+    Stage parse      :   2.827
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.090
+    Stage mast       :   0.201
+    Stage mbc        :   0.045
+Stage parse      :   4.377
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.002
+Stage mast       :   0.004
+Stage mbc        :   0.001
+Stage moar       :   0.000
+ === GStreamer::Plugins::Pango::TextOverlay === (249/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/Plugins/Pango/TextOverlay.pm6
+    Stage start      :   0.000
+    Stage parse      :   2.541
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.059
+    Stage mast       :   0.103
+    Stage mbc        :   0.008
+Stage parse      :   4.010
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.001
+Stage mast       :   0.003
+Stage mbc        :   0.001
+Stage moar       :   0.000
+ === GStreamer::Plugins::Queue === (250/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/Plugins/Queue.pm6
+    Stage start      :   0.000
+    Stage parse      :   1.954
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.038
+    Stage mast       :   0.073
+    Stage mbc        :   0.012
+Stage parse      :   3.336
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.001
+Stage mast       :   0.003
+Stage mbc        :   0.000
+Stage moar       :   0.000
+ === GStreamer::Plugins::Tee === (251/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/Plugins/Tee.pm6
+    Stage start      :   0.000
+    Stage parse      :   1.900
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.028
+    Stage mast       :   0.055
+    Stage mbc        :   0.012
+Stage parse      :   3.257
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.002
+Stage mast       :   0.003
+Stage mbc        :   0.000
+Stage moar       :   0.000
+ === GStreamer::Plugins::Visual === (252/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/Plugins/Visual.pm6
+    Stage start      :   0.000
+    Stage parse      :   1.698
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.019
+    Stage mast       :   0.066
+    Stage mbc        :   0.007
+Stage parse      :   3.065
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.002
+Stage mast       :   0.003
+Stage mbc        :   0.000
+Stage moar       :   0.000
+ === GStreamer::Protection === (253/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/Protection.pm6
+    Stage start      :   0.000
+    Stage parse      :   1.619
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.016
+    Stage mast       :   0.038
+    Stage mbc        :   0.009
+Stage parse      :   2.799
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.001
+Stage mast       :   0.003
+Stage mbc        :   0.000
+Stage moar       :   0.000
+ === GStreamer::ProxyPad === (254/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/ProxyPad.pm6
+    Stage start      :   0.000
+    Stage parse      :   1.791
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.026
+    Stage mast       :   0.061
+    Stage mbc        :   0.008
+Stage parse      :   3.102
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.002
+Stage mast       :   0.003
+Stage mbc        :   0.000
+Stage moar       :   0.000
+ === GStreamer::Query === (255/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/Query.pm6
+    Stage start      :   0.000
+    Stage parse      :   2.441
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.117
+    Stage mast       :   0.181
+    Stage mbc        :   0.013
+Stage parse      :   3.963
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.002
+Stage mast       :   0.003
+Stage mbc        :   0.000
+Stage moar       :   0.000
+ === GStreamer::Sample === (256/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/Sample.pm6
+    Stage start      :   0.000
+    Stage parse      :   1.640
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.029
+    Stage mast       :   0.073
+    Stage mbc        :   0.008
+Stage parse      :   2.879
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.001
+Stage mast       :   0.003
+Stage mbc        :   0.000
+Stage moar       :   0.000
+ === GStreamer::TagList === (257/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/TagList.pm6
+    Stage start      :   0.000
+    Stage parse      :   2.765
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.115
+    Stage mast       :   0.170
+    Stage mbc        :   0.010
+Stage parse      :   4.234
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.001
+Stage mast       :   0.003
+Stage mbc        :   0.000
+Stage moar       :   0.000
+ === GStreamer::Toc === (258/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/Toc.pm6
+    Stage start      :   0.000
+    Stage parse      :   2.268
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.036
+    Stage mast       :   0.077
+    Stage mbc        :   0.007
+Stage parse      :   3.573
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.001
+Stage mast       :   0.003
+Stage mbc        :   0.000
+Stage moar       :   0.000
+ === GStreamer::Video::Decoder === (259/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/Video/Decoder.pm6
+    Stage start      :   0.000
+    Stage parse      :   1.966
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.044
+    Stage mast       :   0.107
+    Stage mbc        :   0.008
+Stage parse      :   3.446
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.002
+Stage mast       :   0.003
+Stage mbc        :   0.000
+Stage moar       :   0.000
+ === GStreamer::Video::Encoder === (260/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/Video/Encoder.pm6
+    Stage start      :   0.000
+    Stage parse      :   1.881
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.037
+    Stage mast       :   0.064
+    Stage mbc        :   0.008
+Stage parse      :   3.303
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.001
+Stage mast       :   0.003
+Stage mbc        :   0.000
+Stage moar       :   0.000
+ === GStreamer::Video::Meta === (261/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/Video/Meta.pm6
+    Stage start      :   0.000
+    Stage parse      :   1.459
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.025
+    Stage mast       :   0.049
+    Stage mbc        :   0.011
+Stage parse      :   2.652
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.001
+Stage mast       :   0.003
+Stage mbc        :   0.000
+Stage moar       :   0.000
+ === GStreamer::Video::OverlayComposition === (262/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/Video/OverlayComposition.pm6
+    Stage start      :   0.000
+    Stage parse      :   1.610
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.032
+    Stage mast       :   0.065
+    Stage mbc        :   0.012
+Stage parse      :   2.859
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.001
+Stage mast       :   0.003
+Stage mbc        :   0.000
+Stage moar       :   0.000
+ === GStreamer::Base::Adapter === (263/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/Base/Adapter.pm6
+    Stage start      :   0.000
+    Stage parse      :   2.545
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.038
+    Stage mast       :   0.126
+    Stage mbc        :   0.009
+Stage parse      :   3.900
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.001
+Stage mast       :   0.003
+Stage mbc        :   0.000
+Stage moar       :   0.000
+ === GStreamer::Base::Aggregator === (264/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/Base/Aggregator.pm6
+    Stage start      :   0.000
+    Stage parse      :   2.039
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.037
+    Stage mast       :   0.077
+    Stage mbc        :   0.007
+Stage parse      :   3.544
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.002
+Stage mast       :   0.004
+Stage mbc        :   0.000
+Stage moar       :   0.000
+ === GStreamer::Base::BitWriter === (265/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/Base/BitWriter.pm6
+    Stage start      :   0.000
+    Stage parse      :   1.621
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.028
+    Stage mast       :   0.074
+    Stage mbc        :   0.008
+Stage parse      :   2.907
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.002
+Stage mast       :   0.003
+Stage mbc        :   0.000
+Stage moar       :   0.000
+ === GStreamer::Base::ByteWriter === (266/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/Base/ByteWriter.pm6
+    Stage start      :   0.000
+    
+        precomp lib/GStreamer/Base/ByteReader.pm6
+        Stage start      :   0.000
+        Stage parse      :   2.287
+        Stage syntaxcheck:   0.000
+        Stage ast        :   0.000
+        Stage optimize   :   0.139
+        Stage mast       :   0.202
+        Stage mbc        :   0.014
+    Stage parse      :   4.746
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.065
+    Stage mast       :   0.119
+    Stage mbc        :   0.013
+Stage parse      :   6.109
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.008
+Stage mast       :   0.003
+Stage mbc        :   0.000
+Stage moar       :   0.000
+ === GStreamer::Base::CollectPads === (267/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/Base/CollectPads.pm6
+    Stage start      :   0.000
+    Stage parse      :   1.758
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.034
+    Stage mast       :   0.075
+    Stage mbc        :   0.008
+Stage parse      :   3.053
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.001
+Stage mast       :   0.003
+Stage mbc        :   0.000
+Stage moar       :   0.000
+ === GStreamer::Base::Parse === (268/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/Base/Parse.pm6
+    Stage start      :   0.000
+    Stage parse      :   1.694
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.038
+    Stage mast       :   0.087
+    Stage mbc        :   0.009
+Stage parse      :   3.126
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.001
+Stage mast       :   0.003
+Stage mbc        :   0.000
+Stage moar       :   0.000
+ === GStreamer::Base::Sink === (269/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/Base/Sink.pm6
+    Stage start      :   0.000
+    Stage parse      :   2.137
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.037
+    Stage mast       :   0.100
+    Stage mbc        :   0.023
+Stage parse      :   3.637
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.001
+Stage mast       :   0.003
+Stage mbc        :   0.000
+Stage moar       :   0.000
+ === GStreamer::Base::Src === (270/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/Base/Src.pm6
+    Stage start      :   0.000
+    Stage parse      :   2.017
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.037
+    Stage mast       :   0.072
+    Stage mbc        :   0.009
+Stage parse      :   3.421
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.001
+Stage mast       :   0.003
+Stage mbc        :   0.000
+Stage moar       :   0.000
+ === GStreamer::Base::Transform === (271/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/Base/Transform.pm6
+    Stage start      :   0.000
+    Stage parse      :   1.901
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.026
+    Stage mast       :   0.063
+    Stage mbc        :   0.009
+Stage parse      :   3.300
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.001
+Stage mast       :   0.003
+Stage mbc        :   0.000
+Stage moar       :   0.000
+ === GStreamer::Bin === (272/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/Bin.pm6
+    Stage start      :   0.000
+    
+        precomp lib/GStreamer/Roles/ChildProxy.pm6
+        Stage start      :   0.000
+        Stage parse      :   1.660
+        Stage syntaxcheck:   0.000
+        Stage ast        :   0.000
+        Stage optimize   :   0.028
+        Stage mast       :   0.035
+        Stage mbc        :   0.013
+    Stage parse      :   4.295
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.046
+    Stage mast       :   0.075
+    Stage mbc        :   0.007
+Stage parse      :   5.706
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.001
+Stage mast       :   0.003
+Stage mbc        :   0.000
+Stage moar       :   0.000
+ === GStreamer::Device === (273/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/Device.pm6
+    Stage start      :   0.000
+    Stage parse      :   1.946
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.027
+    Stage mast       :   0.046
+    Stage mbc        :   0.009
+Stage parse      :   3.297
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.001
+Stage mast       :   0.003
+Stage mbc        :   0.000
+Stage moar       :   0.000
+ === GStreamer::DeviceMonitor === (274/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/DeviceMonitor.pm6
+    Stage start      :   0.000
+    Stage parse      :   2.516
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.027
+    Stage mast       :   0.047
+    Stage mbc        :   0.011
+Stage parse      :   3.906
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.002
+Stage mast       :   0.003
+Stage mbc        :   0.000
+Stage moar       :   0.000
+ === GStreamer::DeviceProvider === (275/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/DeviceProvider.pm6
+    Stage start      :   0.000
+    Stage parse      :   1.731
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.033
+    Stage mast       :   0.081
+    Stage mbc        :   0.009
+Stage parse      :   3.157
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.001
+Stage mast       :   0.003
+Stage mbc        :   0.000
+Stage moar       :   0.000
+ === GStreamer::DeviceProviderFactory === (276/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/DeviceProviderFactory.pm6
+    Stage start      :   0.000
+    Stage parse      :   1.874
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.029
+    Stage mast       :   0.056
+    Stage mbc        :   0.009
+Stage parse      :   3.281
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.002
+Stage mast       :   0.003
+Stage mbc        :   0.000
+Stage moar       :   0.000
+ === GStreamer::GhostPad === (277/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/GhostPad.pm6
+    Stage start      :   0.000
+    Stage parse      :   1.563
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.029
+    Stage mast       :   0.065
+    Stage mbc        :   0.008
+Stage parse      :   2.895
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.001
+Stage mast       :   0.003
+Stage mbc        :   0.000
+Stage moar       :   0.000
+ === GStreamer::PBUtils::Discoverer === (278/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/PBUtils/Discoverer.pm6
+    Stage start      :   0.000
+    Stage parse      :   2.927
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.074
+    Stage mast       :   0.145
+    Stage mbc        :   0.012
+Stage parse      :   4.403
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.002
+Stage mast       :   0.003
+Stage mbc        :   0.000
+Stage moar       :   0.000
+ === GStreamer::Pipeline === (279/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/Pipeline.pm6
+    Stage start      :   0.000
+    Stage parse      :   1.744
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.030
+    Stage mast       :   0.045
+    Stage mbc        :   0.010
+Stage parse      :   3.126
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.002
+Stage mast       :   0.003
+Stage mbc        :   0.000
+Stage moar       :   0.000
+ === GStreamer::Player::StreamInfo === (280/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/Player/StreamInfo.pm6
+    Stage start      :   0.000
+    Stage parse      :   1.756
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.020
+    Stage mast       :   0.045
+    Stage mbc        :   0.010
+Stage parse      :   3.052
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.001
+Stage mast       :   0.003
+Stage mbc        :   0.000
+Stage moar       :   0.000
+ === GStreamer::Player::SubtitleInfo === (281/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/Player/SubtitleInfo.pm6
+    Stage start      :   0.000
+    Stage parse      :   1.580
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.020
+    Stage mast       :   0.049
+    Stage mbc        :   0.008
+Stage parse      :   2.895
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.001
+Stage mast       :   0.003
+Stage mbc        :   0.000
+Stage moar       :   0.000
+ === GStreamer::Player::VideoInfo === (282/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/Player/VideoInfo.pm6
+    Stage start      :   0.000
+    Stage parse      :   1.742
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.029
+    Stage mast       :   0.045
+    Stage mbc        :   0.014
+Stage parse      :   3.066
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.001
+Stage mast       :   0.003
+Stage mbc        :   0.000
+Stage moar       :   0.000
+ === GStreamer::Plugins::AudioTestSrc === (283/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/Plugins/AudioTestSrc.pm6
+    Stage start      :   0.000
+    Stage parse      :   2.162
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.060
+    Stage mast       :   0.111
+    Stage mbc        :   0.013
+Stage parse      :   3.640
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.002
+Stage mast       :   0.003
+Stage mbc        :   0.000
+Stage moar       :   0.000
+ === GStreamer::Plugins::AutoDetect::AutoAudioSink === (284/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/Plugins/AutoDetect/AutoAudioSink.pm6
+    Stage start      :   0.000
+    Stage parse      :   1.718
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.031
+    Stage mast       :   0.072
+    Stage mbc        :   0.013
+Stage parse      :   3.123
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.001
+Stage mast       :   0.003
+Stage mbc        :   0.000
+Stage moar       :   0.000
+ === GStreamer::Plugins::AutoDetect::AutoAudioSrc === (285/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/Plugins/AutoDetect/AutoAudioSrc.pm6
+    Stage start      :   0.000
+    Stage parse      :   1.676
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.027
+    Stage mast       :   0.054
+    Stage mbc        :   0.008
+Stage parse      :   3.060
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.002
+Stage mast       :   0.003
+Stage mbc        :   0.000
+Stage moar       :   0.000
+ === GStreamer::Plugins::AutoDetect::AutoVideoSink === (286/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/Plugins/AutoDetect/AutoVideoSink.pm6
+    Stage start      :   0.000
+    Stage parse      :   1.738
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.031
+    Stage mast       :   0.071
+    Stage mbc        :   0.012
+Stage parse      :   3.142
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.002
+Stage mast       :   0.003
+Stage mbc        :   0.000
+Stage moar       :   0.000
+ === GStreamer::Plugins::AutoDetect::AutoVideoSrc === (287/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/Plugins/AutoDetect/AutoVideoSrc.pm6
+    Stage start      :   0.000
+    Stage parse      :   1.745
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.027
+    Stage mast       :   0.054
+    Stage mbc        :   0.008
+Stage parse      :   3.153
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.001
+Stage mast       :   0.003
+Stage mbc        :   0.000
+Stage moar       :   0.000
+ === GStreamer::Plugins::GstISOMP4::Gppmux3 === (288/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/Plugins/GstISOMP4/Gppmux3.pm6
+    Stage start      :   0.000
+    Stage parse      :   1.838
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.037
+    Stage mast       :   0.098
+    Stage mbc        :   0.008
+Stage parse      :   3.259
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.002
+Stage mast       :   0.003
+Stage mbc        :   0.000
+Stage moar       :   0.000
+ === GStreamer::Stream === (289/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/Stream.pm6
+    Stage start      :   0.000
+    Stage parse      :   1.702
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.029
+    Stage mast       :   0.049
+    Stage mbc        :   0.010
+Stage parse      :   3.002
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.001
+Stage mast       :   0.003
+Stage mbc        :   0.000
+Stage moar       :   0.000
+ === GStreamer::StreamCollection === (290/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/StreamCollection.pm6
+    Stage start      :   0.000
+    Stage parse      :   1.634
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.024
+    Stage mast       :   0.044
+    Stage mbc        :   0.010
+Stage parse      :   2.938
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.002
+Stage mast       :   0.003
+Stage mbc        :   0.000
+Stage moar       :   0.000
+ === GStreamer::Video::Filter === (291/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/Video/Filter.pm6
+    Stage start      :   0.000
+    Stage parse      :   1.761
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.025
+    Stage mast       :   0.043
+    Stage mbc        :   0.009
+Stage parse      :   3.145
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.001
+Stage mast       :   0.003
+Stage mbc        :   0.000
+Stage moar       :   0.000
+ === GStreamer::Video::Sink === (292/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/Video/Sink.pm6
+    Stage start      :   0.000
+    Stage parse      :   1.811
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.024
+    Stage mast       :   0.047
+    Stage mbc        :   0.010
+Stage parse      :   3.224
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.001
+Stage mast       :   0.003
+Stage mbc        :   0.000
+Stage moar       :   0.000
+ === GStreamer::App::Sink === (293/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/App/Sink.pm6
+    Stage start      :   0.000
+    Stage parse      :   1.764
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.039
+    Stage mast       :   0.096
+    Stage mbc        :   0.009
+Stage parse      :   3.278
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.002
+Stage mast       :   0.003
+Stage mbc        :   0.000
+Stage moar       :   0.000
+ === GStreamer::App::Src === (294/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/App/Src.pm6
+    Stage start      :   0.000
+    Stage parse      :   1.720
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.039
+    Stage mast       :   0.089
+    Stage mbc        :   0.008
+Stage parse      :   3.201
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.002
+Stage mast       :   0.004
+Stage mbc        :   0.000
+Stage moar       :   0.000
+ === GStreamer::Audio::BaseSink === (295/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/Audio/BaseSink.pm6
+    Stage start      :   0.000
+    Stage parse      :   1.788
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.035
+    Stage mast       :   0.078
+    Stage mbc        :   0.011
+Stage parse      :   3.270
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.002
+Stage mast       :   0.004
+Stage mbc        :   0.000
+Stage moar       :   0.000
+ === GStreamer::Base::PushSrc === (296/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/Base/PushSrc.pm6
+    Stage start      :   0.000
+    Stage parse      :   1.849
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.023
+    Stage mast       :   0.039
+    Stage mbc        :   0.008
+Stage parse      :   3.207
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.001
+Stage mast       :   0.003
+Stage mbc        :   0.000
+Stage moar       :   0.000
+ === GStreamer::Message === (297/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/Message.pm6
+    Stage start      :   0.000
+    Stage parse      :   3.645
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.148
+    Stage mast       :   0.242
+    Stage mbc        :   0.019
+Stage parse      :   5.432
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.002
+Stage mast       :   0.003
+Stage mbc        :   0.000
+Stage moar       :   0.000
+ === GStreamer::Player::AudioInfo === (298/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/Player/AudioInfo.pm6
+    Stage start      :   0.000
+    Stage parse      :   1.698
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.020
+    Stage mast       :   0.043
+    Stage mbc        :   0.012
+Stage parse      :   3.008
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.001
+Stage mast       :   0.003
+Stage mbc        :   0.000
+Stage moar       :   0.000
+ === GStreamer::Player::MediaInfo === (299/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/Player/MediaInfo.pm6
+    Stage start      :   0.000
+    Stage parse      :   2.897
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.030
+    Stage mast       :   0.053
+    Stage mbc        :   0.017
+Stage parse      :   4.292
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.002
+Stage mast       :   0.004
+Stage mbc        :   0.000
+Stage moar       :   0.000
+ === GStreamer::Plugins::VideoConvert === (300/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/Plugins/VideoConvert.pm6
+    Stage start      :   0.000
+    Stage parse      :   1.888
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.032
+    Stage mast       :   0.073
+    Stage mbc        :   0.008
+Stage parse      :   3.292
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.001
+Stage mast       :   0.003
+Stage mbc        :   0.000
+Stage moar       :   0.000
+ === GStreamer::Plugins::VideoTestSrc === (301/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/Plugins/VideoTestSrc.pm6
+    Stage start      :   0.000
+    Stage parse      :   2.633
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.043
+    Stage mast       :   0.104
+    Stage mbc        :   0.010
+Stage parse      :   4.094
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.002
+Stage mast       :   0.003
+Stage mbc        :   0.001
+Stage moar       :   0.000
+ === GStreamer::Video::Navigation === (302/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/Video/Navigation.pm6
+    Stage start      :   0.000
+    Stage parse      :   2.140
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.042
+    Stage mast       :   0.096
+    Stage mbc        :   0.010
+Stage parse      :   3.712
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.002
+Stage mast       :   0.003
+Stage mbc        :   0.000
+Stage moar       :   0.000
+ === GStreamer::Audio::BaseSrc === (303/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/Audio/BaseSrc.pm6
+    Stage start      :   0.000
+    Stage parse      :   2.350
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.028
+    Stage mast       :   0.045
+    Stage mbc        :   0.010
+Stage parse      :   3.757
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.002
+Stage mast       :   0.003
+Stage mbc        :   0.000
+Stage moar       :   0.000
+ === GStreamer::Audio::CdSrc === (304/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/Audio/CdSrc.pm6
+    Stage start      :   0.000
+    Stage parse      :   1.868
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.025
+    Stage mast       :   0.048
+    Stage mbc        :   0.008
+Stage parse      :   3.253
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.002
+Stage mast       :   0.004
+Stage mbc        :   0.000
+Stage moar       :   0.000
+ === GStreamer::Event === (305/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/Event.pm6
+    Stage start      :   0.000
+    Stage parse      :   3.112
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.103
+    Stage mast       :   0.162
+    Stage mbc        :   0.010
+Stage parse      :   4.784
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.001
+Stage mast       :   0.003
+Stage mbc        :   0.000
+Stage moar       :   0.000
+ === GStreamer::Player === (306/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/Player.pm6
+    Stage start      :   0.000
+    Stage parse      :   2.869
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.067
+    Stage mast       :   0.097
+    Stage mbc        :   0.008
+Stage parse      :   4.438
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.002
+Stage mast       :   0.003
+Stage mbc        :   0.000
+Stage moar       :   0.000
+ === GStreamer::Roles::Video::Navigation === (307/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/Roles/Video/Navigation.pm6
+    Stage start      :   0.000
+    Stage parse      :   1.762
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.030
+    Stage mast       :   0.038
+    Stage mbc        :   0.013
+Stage parse      :   3.254
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.002
+Stage mast       :   0.003
+Stage mbc        :   0.000
+Stage moar       :   0.000
+ === GStreamer::Video::Event === (308/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/Video/Event.pm6
+    Stage start      :   0.000
+    Stage parse      :   1.799
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.027
+    Stage mast       :   0.058
+    Stage mbc        :   0.008
+Stage parse      :   3.316
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.002
+Stage mast       :   0.003
+Stage mbc        :   0.000
+Stage moar       :   0.000
+ === GStreamer::Roles::Plugins::Playbin === (309/309)
+Stage start      :   0.000
+
+    precomp lib/GStreamer/Roles/Plugins/Playbin.pm6
+    Stage start      :   0.000
+    Stage parse      :   3.513
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.065
+    Stage mast       :   0.106
+    Stage mbc        :   0.022
+Stage parse      :   5.151
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.002
+Stage mast       :   0.003
+Stage mbc        :   0.000
+Stage moar       :   0.000
+
+real 947.34
+user 1115.54
+sys 74.18
