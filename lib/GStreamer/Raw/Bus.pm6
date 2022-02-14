@@ -17,8 +17,8 @@ sub gst_bus_add_signal_watch_full (GstBus $bus, gint $priority)
 { * }
 
 sub gst_bus_add_watch (
-  GstBus $bus,
-  &func (GstBus, GstMessage, gpointer --> gboolean),
+  GstBus   $bus,
+           &func (GstBus, GstMessage, gpointer --> gboolean),
   gpointer $user_data
 )
   returns guint
@@ -27,10 +27,10 @@ sub gst_bus_add_watch (
 { * }
 
 sub gst_bus_add_watch_full (
-  GstBus $bus,
-  gint $priority,
-  &func (GstBus, GstMessage, gpointer --> gboolean),
-  gpointer $user_data,
+  GstBus         $bus,
+  gint           $priority,
+                 &func (GstBus, GstMessage, gpointer --> gboolean),
+  gpointer       $user_data,
   GDestroyNotify $notify
 )
   returns guint
@@ -39,9 +39,9 @@ sub gst_bus_add_watch_full (
 { * }
 
 sub gst_bus_async_signal_func (
-  GstBus $bus,
+  GstBus     $bus,
   GstMessage $message,
-  gpointer $data
+  gpointer   $data
 )
   returns uint32
   is native(gstreamer)
@@ -107,7 +107,7 @@ sub gst_bus_pop (GstBus $bus)
 
 sub gst_bus_pop_filtered (
   GstBus $bus,
-  guint $type # GstMessageType $types
+  guint  $type # GstMessageType $types
 )
   returns GstMessage
   is native(gstreamer)
@@ -137,9 +137,9 @@ sub gst_bus_set_flushing (GstBus $bus, gboolean $flushing)
 { * }
 
 sub gst_bus_set_sync_handler (
-  GstBus $bus,
-  &func (GstBus, GstMessage, gpointer --> guint),
-  gpointer $user_data,
+  GstBus         $bus,
+                 &func (GstBus, GstMessage, gpointer --> guint),
+  gpointer       $user_data,
   GDestroyNotify $notify
 )
   is native(gstreamer)
@@ -147,9 +147,9 @@ sub gst_bus_set_sync_handler (
 { * }
 
 sub gst_bus_sync_signal_handler (
-  GstBus $bus,
+  GstBus     $bus,
   GstMessage $message,
-  gpointer $data
+  gpointer   $data
 )
   returns guint # GstBusSyncReply
   is native(gstreamer)
@@ -163,9 +163,9 @@ sub gst_bus_timed_pop (GstBus $bus, GstClockTime $timeout)
 { * }
 
 sub gst_bus_timed_pop_filtered (
-  GstBus $bus,
+  GstBus       $bus,
   GstClockTime $timeout,
-  guint $type # GstMessageType $types
+  guint        $type # GstMessageType $types
 )
   returns GstMessage
   is native(gstreamer)
