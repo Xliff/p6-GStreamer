@@ -1,0 +1,85 @@
+Dependency Generation
+=====================
+real 6.04
+user 6.55
+sys 0.18
+ === GIO::DBus::Raw::Types === (1/309)
+Stage start      :   0.000
+
+    precomp ../p6-GIO/lib/GIO/DBus/Raw/Types.pm6
+    Stage start      :   0.000
+    
+        precomp ../p6-GLib/lib/GLib/Raw/Definitions.pm6
+        Stage start      :   0.000
+        
+            precomp ../p6-GLib/lib/GLib/Compat/Definitions.pm6
+            Stage start      :   0.000
+            
+                precomp ../p6-GLib/lib/GLib/Roles/Pointers.pm6
+                Stage start      :   0.000
+                Stage parse      :   1.868
+                Stage syntaxcheck:   0.000
+                Stage ast        :   0.000
+                Stage optimize   :   0.008
+                Stage mast       :   0.014
+                Stage mbc        :   0.004
+            Stage parse      :   3.873
+            Stage syntaxcheck:   0.000
+            Stage ast        :   0.000
+            Stage optimize   :   0.020
+            Stage mast       :   0.038
+            Stage mbc        :   0.006
+        Stage parse      :   6.177
+        Stage syntaxcheck:   0.000
+        Stage ast        :   0.000
+        Stage optimize   :   0.028
+        Stage mast       :   0.048
+        Stage mbc        :   0.007
+    
+        precomp ../p6-GLib/lib/GLib/Raw/Enums.pm6
+        Stage start      :   0.000
+        Stage parse      :   3.331
+        Stage syntaxcheck:   0.000
+        Stage ast        :   0.000
+        Stage optimize   :   0.083
+        Stage mast       :   0.110
+        Stage mbc        :   0.076
+    
+        precomp ../p6-GLib/lib/GLib/Raw/Object.pm6
+        Stage start      :   0.000
+        
+            precomp ../p6-GLib/lib/GLib/Roles/TypeInstance.pm6
+            Stage start      :   0.000
+            Stage parse      :   1.657
+            Stage syntaxcheck:   0.000
+            Stage ast        :   0.000
+            Stage optimize   :   0.010
+            Stage mast       :   0.011
+            Stage mbc        :   0.007
+        Stage parse      :   3.945
+        Stage syntaxcheck:   0.000
+        Stage ast        :   0.000
+        Stage optimize   :   0.023
+        Stage mast       :   0.030
+        Stage mbc        :   0.008
+    
+        precomp ../p6-GLib/lib/GLib/Raw/Structs.pm6
+        Stage start      :   0.000
+        
+            precomp ../p6-GLib/lib/GLib/Raw/Subs.pm6
+            Stage start      :   0.000
+            Stage parse      :   4.057
+            Stage syntaxcheck:   0.000
+            Stage ast        :   0.000
+            Stage optimize   :   0.129
+            Stage mast       :   0.283
+            Stage mbc        :   0.100
+        
+            precomp ../p6-GLib/lib/GLib/Raw/Struct_Subs.pm6
+            Stage start      :   0.000
+            Stage parse      :   1.943
+            Stage syntaxcheck:   0.000
+            Stage ast        :   0.000
+            Stage optimize   :   0.010
+            Stage mast       :   0.031
+            Stage mbc        :   0.012
