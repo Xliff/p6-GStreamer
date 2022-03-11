@@ -422,7 +422,7 @@ class GStreamer::Event is GStreamer::MiniObject {
         gst_event_get_running_time_offset($!e);
       },
       STORE => sub ($, Int() $offset is copy) {
-        my guint64 $o = $offset;
+        my gint64 $o = $offset;
 
         gst_event_set_running_time_offset($!e, $o);
       }

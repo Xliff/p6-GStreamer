@@ -261,7 +261,7 @@ class GStreamer::SDP::Message {
   method insert_attribute (Int() $idx, GstSDPAttribute $attr)
     is also<insert-attribute>
   {
-    my guint $i = $idx;
+    my gint $i = $idx;
 
     gst_sdp_message_insert_attribute($!sm, $i, $attr);
   }
@@ -269,7 +269,7 @@ class GStreamer::SDP::Message {
   method insert_bandwidth (Int() $idx, GstSDPBandwidth $bw)
     is also<insert-bandwidth>
   {
-    my guint $i = $idx;
+    my gint $i = $idx;
 
     gst_sdp_message_insert_bandwidth($!sm, $i, $bw);
   }

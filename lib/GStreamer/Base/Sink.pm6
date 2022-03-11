@@ -300,14 +300,14 @@ class GStreamer::Base::Sink is GStreamer::Element {
     gst_base_sink_set_last_sample_enabled($!bs, $e);
   }
 
-  method set_max_bitrate (guint64 $max_bitrate) is also<set-max-bitrate> {
+  method set_max_bitrate (Int() $max_bitrate) is also<set-max-bitrate> {
     my guint64 $m = $max_bitrate;
 
     gst_base_sink_set_max_bitrate($!bs, $m);
   }
 
-  method set_max_lateness (gint64 $max_lateness) is also<set-max-lateness> {
-    my guint64 $m = $max_lateness;
+  method set_max_lateness (Int() $max_lateness) is also<set-max-lateness> {
+    my gint64 $m = $max_lateness;
 
     gst_base_sink_set_max_lateness($!bs, $m);
   }

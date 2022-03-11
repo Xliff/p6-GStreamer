@@ -96,7 +96,7 @@ class GStreamer::Base::Parse is GStreamer::Element {
     :$all = False
   ) {
     my GstFormat ($sf, $df) = ($src_format, $dest_format);
-    my guint64 ($sv, $dv) = ($src_value, 0);
+    my gint64 ($sv, $dv)    = ($src_value, 0);
 
     my $rv = so gst_base_parse_convert_default($!bp, $sf, $sv, $df, $dv);
     $dest_value = $dv;

@@ -96,7 +96,7 @@ class GStreamer::Pad is GStreamer::Object {
         gst_pad_get_offset($!p);
       },
       STORE => sub ($, Int() $offset is copy) {
-        my guint64 $o = $offset;
+        my gint64 $o = $offset;
 
         gst_pad_set_offset($!p, $o);
       }

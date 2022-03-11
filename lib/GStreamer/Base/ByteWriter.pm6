@@ -341,7 +341,7 @@ class GStreamer::Base::ByteWriter is GStreamer::Base::ByteReader {
   }
 
   method put_int8 (Int() $val) {
-    my guint8 $v = $val;
+    my int8 $v = $val;
 
     gst_byte_writer_put_int8($!bw, $v);
   }
