@@ -7,8 +7,8 @@ use GStreamer::Raw::Types;
 unit package GStreamer::Raw::Pad;
 
 sub gst_pad_activate_mode (
-  GstPad $pad,
-  guint $mode,                   # GstPadMode $mode,
+  GstPad   $pad,
+  guint    $mode,                   # GstPadMode $mode,
   gboolean $active
 )
   returns uint32
@@ -17,11 +17,11 @@ sub gst_pad_activate_mode (
 { * }
 
 sub gst_pad_add_probe (
-  GstPad $pad,
-  guint $mask,                   # GstPadProbeType $mask,
+  GstPad              $pad,
+  guint               $mask,                   # GstPadProbeType $mask,
   GstPadProbeCallback $callback,
-  gpointer $user_data,
-  GDestroyNotify $destroy_data
+  gpointer            $user_data,
+  GDestroyNotify      $destroy_data
 )
   returns gulong
   is native(gstreamer)
@@ -35,13 +35,13 @@ sub gst_pad_can_link (GstPad $srcpad, GstPad $sinkpad)
 { * }
 
 sub gst_pad_chain (GstPad $pad, GstBuffer $buffer)
-  returns gint # GstFlowReturn
+  returns GstFlowReturn
   is native(gstreamer)
   is export
 { * }
 
 sub gst_pad_chain_list (GstPad $pad, GstBufferList $list)
-  returns gint # GstFlowReturn
+  returns GstFlowReturn
   is native(gstreamer)
   is export
 { * }
@@ -91,13 +91,13 @@ sub gst_pad_get_current_caps (GstPad $pad)
 { * }
 
 sub gst_pad_get_direction (GstPad $pad)
-  returns guint # GstPadDirection
+  returns GstPadDirection
   is native(gstreamer)
   is export
 { * }
 
 sub gst_pad_get_last_flow_return (GstPad $pad)
-  returns guint # GstFlowReturn
+  returns GstFlowReturn
   is native(gstreamer)
   is export
 { * }
@@ -132,7 +132,7 @@ sub gst_pad_get_range (
   guint $size,
   GstBuffer $buffer
 )
-  returns guint # GstFlowReturn
+  returns GstFlowReturn
   is native(gstreamer)
   is export
 { * }
@@ -148,7 +148,7 @@ sub gst_pad_get_sticky_event (
 { * }
 
 sub gst_pad_get_task_state (GstPad $pad)
-  returns guint # GstTaskState
+  returns GstTaskState
   is native(gstreamer)
   is export
 { * }
@@ -160,7 +160,7 @@ sub gst_pad_get_type ()
 { * }
 
 sub gst_flow_get_name (
-  guint $ret                     # GstFlowReturn $ret
+  GstFlowReturn $ret
 )
   returns Str
   is native(gstreamer)
@@ -168,7 +168,7 @@ sub gst_flow_get_name (
 { * }
 
 sub gst_flow_to_quark (
-  guint $ret                     # GstFlowReturn $ret
+  GstFlowReturn $ret
 )
   returns GQuark
   is native(gstreamer)
@@ -218,23 +218,23 @@ sub gst_pad_iterate_internal_links_default (GstPad $pad, GstObject $parent)
 { * }
 
 sub gst_pad_link (GstPad $srcpad, GstPad $sinkpad)
-  returns gint # GstPadLinkReturn
+  returns GstPadLinkReturn
   is native(gstreamer)
   is export
 { * }
 
 sub gst_pad_link_full (
-  GstPad $srcpad,
-  GstPad $sinkpad,
-  guint $flags # GstPadLinkCheck $flags
+  GstPad          $srcpad,
+  GstPad          $sinkpad,
+  GstPadLinkCheck $flags
 )
-  returns gint # GstPadLinkReturn
+  returns GstPadLinkReturn
   is native(gstreamer)
   is export
 { * }
 
 sub gst_pad_link_get_name (
-  gint $ret # GstPadLinkReturn $ret
+  GstPadLinkReturn $ret
 )
   returns Str
   is native(gstreamer)
@@ -247,7 +247,7 @@ sub gst_pad_mark_reconfigure (GstPad $pad)
 { * }
 
 sub gst_pad_mode_get_name (
-  guint $mode # GstPadMode $mode
+  GstPadMode $mode
 )
   returns Str
   is native(gstreamer)
@@ -261,8 +261,8 @@ sub gst_pad_needs_reconfigure (GstPad $pad)
 { * }
 
 sub gst_pad_new (
-  Str $name,
-  guint $direction # GstPadDirection $direction
+  Str             $name,
+  GstPadDirection $direction
 )
   returns GstPad
   is native(gstreamer)
@@ -318,18 +318,18 @@ sub gst_pad_probe_info_get_query (GstPadProbeInfo $info)
 { * }
 
 sub gst_pad_pull_range (
-  GstPad $pad,
-  guint64 $offset,
-  guint $size,
+  GstPad    $pad,
+  guint64   $offset,
+  guint     $size,
   GstBuffer $buffer
 )
-  returns gint # GstFlowReturn
+  returns GstFlowReturn
   is native(gstreamer)
   is export
 { * }
 
 sub gst_pad_push (GstPad $pad, GstBuffer $buffer)
-  returns gint # GstFlowReturn
+  returns GstFlowReturn
   is native(gstreamer)
   is export
 { * }
@@ -341,7 +341,7 @@ sub gst_pad_push_event (GstPad $pad, GstEvent $event)
 { * }
 
 sub gst_pad_push_list (GstPad $pad, GstBufferList $list)
-  returns gint # GstFlowReturn
+  returns GstFlowReturn
   is native(gstreamer)
   is export
 { * }
@@ -370,20 +370,26 @@ sub gst_pad_send_event (GstPad $pad, GstEvent $event)
 { * }
 
 sub gst_pad_set_activate_function_full (
-  GstPad $pad,
-  GstPadActivateFunction $activate,
-  gpointer $user_data,
-  GDestroyNotify $notify
+  GstPad                 $pad,
+                         &activate (GstPad, GstObject --> gboolean),
+  gpointer               $user_data,
+  GDestroyNotify         $notify
 )
   is native(gstreamer)
   is export
 { * }
 
 sub gst_pad_set_activatemode_function_full (
-  GstPad $pad,
-  GstPadActivateModeFunction $activatemode,
+  GstPad   $pad,
+           &activatemode (
+             GstPad,
+             GstObject,
+             GstPadMode,
+             gboolean
+             --> gboolean
+           ),
   gpointer $user_data,
-  GDestroyNotify $notify
+           &notify (gpointer)
 )
   is native(gstreamer)
   is export
@@ -396,100 +402,107 @@ sub gst_pad_set_active (GstPad $pad, gboolean $active)
 { * }
 
 sub gst_pad_set_chain_function_full (
-  GstPad $pad,
-  GstPadChainFunction $chain,
+  GstPad   $pad,
+           &chain (GstPad, GstObject, GstBuffer --> GstFlowReturn),
   gpointer $user_data,
-  GDestroyNotify $notify
+           &notify (gpointer)
 )
   is native(gstreamer)
   is export
 { * }
 
 sub gst_pad_set_chain_list_function_full (
-  GstPad $pad,
-  GstPadChainListFunction $chainlist,
+  GstPad   $pad,
+           &chain (GstPad, GstObject, GstBufferList --> GstFlowReturn),
   gpointer $user_data,
-  GDestroyNotify $notify
+           &notify (gpointer)
 )
   is native(gstreamer)
   is export
 { * }
 
 sub gst_pad_set_event_full_function_full (
-  GstPad $pad,
-  GstPadEventFullFunction $event,
+  GstPad   $pad,
+           &event (GstPad, GstObject, GstEvent --> GstFlowReturn),
   gpointer $user_data,
-  GDestroyNotify $notify
+           &notify (gpointer)
 )
   is native(gstreamer)
   is export
 { * }
 
 sub gst_pad_set_event_function_full (
-  GstPad $pad,
-  GstPadEventFunction $event,
+  GstPad   $pad,
+           &event (GstPad, GstObject, GstEvent --> gboolean),
   gpointer $user_data,
-  GDestroyNotify $notify
+           &notify (gpointer)
 )
   is native(gstreamer)
   is export
 { * }
 
 sub gst_pad_set_getrange_function_full (
-  GstPad $pad,
-  GstPadGetRangeFunction $get,
+  GstPad   $pad,
+           &get (
+            GstPad,
+            GstObject,
+            gint64,
+            guint,
+            CArray[Pointer[GstBuffer]]
+            --> GstFlowReturn
+          ),
   gpointer $user_data,
-  GDestroyNotify $notify
+           &notify (gpointer)
 )
   is native(gstreamer)
   is export
 { * }
 
 sub gst_pad_set_iterate_internal_links_function_full (
-  GstPad $pad,
-  GstPadIterIntLinkFunction $iterintlink,
+  GstPad   $pad,
+           & (GstPad, GstObject --> GstIterator),
   gpointer $user_data,
-  GDestroyNotify $notify
+           &notify (gpointer)
 )
   is native(gstreamer)
   is export
 { * }
 
 sub gst_pad_set_link_function_full (
-  GstPad $pad,
-  GstPadLinkFunction $link,
+  GstPad   $pad,
+           & (GstPad, GstObject, GstPad --> GstPadLinkReturn),
   gpointer $user_data,
-  GDestroyNotify $notify
+           &notify (gpointer)
 )
   is native(gstreamer)
   is export
 { * }
 
 sub gst_pad_set_query_function_full (
-  GstPad $pad,
-  GstPadQueryFunction $query,
+  GstPad   $pad,
+           & (GstPad, GstObject, GstQuery --> gboolean),
   gpointer $user_data,
-  GDestroyNotify $notify
+           &notify (gpointer)
 )
   is native(gstreamer)
   is export
 { * }
 
 sub gst_pad_set_unlink_function_full (
-  GstPad $pad,
-  GstPadUnlinkFunction $unlink,
+  GstPad   $pad,
+           & (GstPad, GstObject),
   gpointer $user_data,
-  GDestroyNotify $notify
+           &notify (gpointer)
 )
   is native(gstreamer)
   is export
 { * }
 
 sub gst_pad_start_task (
-  GstPad $pad,
-  GstTaskFunction $func,
+  GstPad   $pad,
+           & (GstTask, GThread, gpointer),
   gpointer $user_data,
-  GDestroyNotify $notify
+           &notify (gpointer)
 )
   returns uint32
   is native(gstreamer)
@@ -497,8 +510,8 @@ sub gst_pad_start_task (
 { * }
 
 sub gst_pad_sticky_events_foreach (
-  GstPad $pad,
-  GstPadStickyEventsForeachFunction $foreach_func,
+  GstPad   $pad,
+           & (GstPad, CArray[Pointer[GstEvent]], gpointer --> gboolean),
   gpointer $user_data
 )
   is native(gstreamer)
@@ -512,7 +525,7 @@ sub gst_pad_stop_task (GstPad $pad)
 { * }
 
 sub gst_pad_store_sticky_event (GstPad $pad, GstEvent $event)
-  returns gint # GstFlowReturn
+  returns GstFlowReturn
   is native(gstreamer)
   is export
 { * }
