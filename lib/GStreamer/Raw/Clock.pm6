@@ -7,10 +7,10 @@ use GStreamer::Raw::Types;
 unit package GStreamer::Raw::Clock;
 
 sub gst_clock_add_observation (
-  GstClock $clock,
+  GstClock     $clock,
   GstClockTime $slave,
   GstClockTime $master,
-  gdouble $r_squared is rw
+  gdouble      $r_squared is rw
 )
   returns uint32
   is native(gstreamer)
@@ -18,10 +18,10 @@ sub gst_clock_add_observation (
 { * }
 
 sub gst_clock_add_observation_unapplied (
-  GstClock $clock,
+  GstClock     $clock,
   GstClockTime $slave,
   GstClockTime $master,
-  gdouble $r_squared,
+  gdouble      $r_squared,
   GstClockTime $internal,
   GstClockTime $external,
   GstClockTime $rate_num,
@@ -39,7 +39,7 @@ sub gst_clock_adjust_unlocked (GstClock $clock, GstClockTime $internal)
 { * }
 
 sub gst_clock_adjust_with_calibration (
-  GstClock $clock,
+  GstClock     $clock,
   GstClockTime $internal_target,
   GstClockTime $cinternal,
   GstClockTime $cexternal,
@@ -52,7 +52,7 @@ sub gst_clock_adjust_with_calibration (
 { * }
 
 sub gst_clock_get_calibration (
-  GstClock $clock,
+  GstClock     $clock,
   GstClockTime $internal   is rw,
   GstClockTime $external   is rw,
   GstClockTime $rate_num   is rw,
@@ -144,7 +144,7 @@ sub gst_clock_is_synced (GstClock $clock)
 { * }
 
 sub gst_clock_new_periodic_id (
-  GstClock $clock,
+  GstClock     $clock,
   GstClockTime $start_time,
   GstClockTime $interval
 )
@@ -160,8 +160,8 @@ sub gst_clock_new_single_shot_id (GstClock $clock, GstClockTime $time)
 { * }
 
 sub gst_clock_periodic_id_reinit (
-  GstClock $clock,
-  GstClockID $id,
+  GstClock     $clock,
+  GstClockID   $id,
   GstClockTime $start_time,
   GstClockTime $interval
 )
@@ -171,7 +171,7 @@ sub gst_clock_periodic_id_reinit (
 { * }
 
 sub gst_clock_set_calibration (
-  GstClock $clock,
+  GstClock     $clock,
   GstClockTime $internal,
   GstClockTime $external,
   GstClockTime $rate_num,
@@ -187,8 +187,8 @@ sub gst_clock_set_synced (GstClock $clock, gboolean $synced)
 { * }
 
 sub gst_clock_single_shot_id_reinit (
-  GstClock $clock,
-  GstClockID $id,
+  GstClock     $clock,
+  GstClockID   $id,
   GstClockTime $time
 )
   returns uint32
@@ -203,7 +203,7 @@ sub gst_clock_unadjust_unlocked (GstClock $clock, GstClockTime $external)
 { * }
 
 sub gst_clock_unadjust_with_calibration (
-  GstClock $clock,
+  GstClock     $clock,
   GstClockTime $external_target,
   GstClockTime $cinternal,
   GstClockTime $cexternal,
