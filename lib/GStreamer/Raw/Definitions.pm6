@@ -9,9 +9,9 @@ use GLib::Roles::Pointers;
 unit package GStreamer::Raw::Definitions;
 
 # Number of forced compiles made.
-my constant forced = 77;
+my constant forced = 79;
 
-constant GstClockTime              is export := int64;
+constant GstClockTime              is export := uint64;
 constant GstClockTimeDiff          is export := int64;
 constant GstElementFactoryListType is export := uint64;
 
@@ -159,7 +159,7 @@ class GstVideoScaler              is repr<CPointer> does GLib::Roles::Pointers i
 class GstUri                      is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GstURIHandler               is repr<CPointer> does GLib::Roles::Pointers is export { }
 
-class GstDiscovererInfo           is repr<CPointer> does GLib::Roles::Pointers is export { } 
+class GstDiscovererInfo           is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GstDiscovererStreamInfo     is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GstDiscovererAudioInfo      is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GstDiscovererContainerInfo  is repr<CPointer> does GLib::Roles::Pointers is export { }
