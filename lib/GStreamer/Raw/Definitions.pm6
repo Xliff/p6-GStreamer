@@ -9,7 +9,7 @@ use GLib::Roles::Pointers;
 unit package GStreamer::Raw::Definitions;
 
 # Number of forced compiles made.
-my constant forced = 79;
+my constant forced = 221;
 
 constant GstClockTime              is export := uint64;
 constant GstClockTimeDiff          is export := int64;
@@ -153,6 +153,7 @@ class GstVideoDecoder             is repr<CPointer> does GLib::Roles::Pointers i
 class GstVideoDither              is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GstVideoEncoder             is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GstVideoOrientation         is repr<CPointer> does GLib::Roles::Pointers is export { }
+class GstVideoOverlay             is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GstVideoOverlayComposition  is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GstVideoOverlayRectangle    is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GstVideoScaler              is repr<CPointer> does GLib::Roles::Pointers is export { }
