@@ -15,6 +15,7 @@ use GStreamer::Roles::Plugins::Raw::Playbin;
 use GLib::Value;
 use GStreamer::Buffer;
 use GStreamer::Element;
+use GStreamer::Pipeline;
 use GStreamer::Sample;
 use GStreamer::TagList;
 
@@ -22,18 +23,28 @@ use GLib::Roles::Object;
 use GLib::Roles::Signals::Generic;
 use GStreamer::Roles::Video::ColorBalance;
 use GStreamer::Roles::Video::Navigation;
+use GStreamer::Roles::Video::Overlay;
 
-role GStreamer::Roles::Plugins::Playbin {
+our subset GstPlayBinAncestry is export of Mu
+where GstPlayBin      | GstVideoOverlay | GstNavigation        |
+      GstColorBalance | GstChildProxy   | GstPipelineAncestry;
+
+class GStreamer::Roles::Plugins::Playbin is GStreamer::Pipeline {
   also does GLib::Roles::Signals::Generic;
+  also does GStreamer::Roles::ChildProxy;
   also does GStreamer::Roles::Video::ColorBalance;
   also does GStreamer::Roles::Video::Navigation;
+  also does GStreamer::Roles::Video::Overlay;
 
-  has $!pb;
+  has GstPlayBin $!pb;
+
   has %!signals-pb;
 
   submethod TWEAK {
+    self.roleInit-ChildProxy;
     self.roleInit-Navigation;
     self.roleInit-ColorBalance;
+    self.roleInit-GstVideoOverlay;
   }
 
   # Check to insure all methods are provided!
@@ -731,17 +742,17 @@ role GStreamer::Roles::Plugins::Playbin {
   { * }
 
   multi method emit-get-tags (
-    Str() $name,
-    Int() $i,
-    :$raw = False
+    Str()  $name,
+    Int()  $i,
+          :$raw = False
   ) {
     samewith($name, $i, $, :$raw);
   }
   multi method emit-get-tags (
-    Str() $name,
-    Int() $i,
-    $taglist is rw,
-    :$raw = False
+    Str()  $name,
+    Int()  $i,
+           $taglist is rw,
+          :$raw = False
   ) {
     my gint $ii = $i;
     my $tl = CArray[Pointer[GstTagList]].new;
@@ -892,8 +903,8 @@ role GStreamer::Roles::Plugins::Playbin {
 
 sub gst_object_set_uint (
   Pointer $element,
-  Str $name,
-  guint $value,
+  Str     $name,
+  guint   $value,
   Str
 )
   is native(gobject)
@@ -901,8 +912,8 @@ sub gst_object_set_uint (
 { * }
 
 sub gst_object_get_uint (
-  Pointer $element,
-  Str $name,
+  Pointer       $element,
+  Str           $name,
   CArray[guint] $value,
   Str
 )
@@ -912,9 +923,9 @@ sub gst_object_get_uint (
 
 constant GstAutoplugSelectResult is export := guint32;
 our enum GstAutoplugSelectResultEnum is export <
-    GST_AUTOPLUG_SELECT_TRY
-    GST_AUTOPLUG_SELECT_EXPOSE
-    GST_AUTOPLUG_SELECT_SKIP
+  GST_AUTOPLUG_SELECT_TRY
+  GST_AUTOPLUG_SELECT_EXPOSE
+  GST_AUTOPLUG_SELECT_SKIP
 >;
 
 constant GstPlayFlags is export := guint32;
@@ -935,11 +946,11 @@ our enum GstPlayFlagsEnum is export (
 
 constant GstPlaySinkType is export := guint32;
 our enum GstPlaySinkTypeEnum is export (
-    GST_PLAY_SINK_TYPE_AUDIO     =>  0,
-    GST_PLAY_SINK_TYPE_AUDIO_RAW =>  1,
-    GST_PLAY_SINK_TYPE_VIDEO     =>  2,
-    GST_PLAY_SINK_TYPE_VIDEO_RAW =>  3,
-    GST_PLAY_SINK_TYPE_TEXT      =>  4,
-    GST_PLAY_SINK_TYPE_LAST      =>  5,
-    GST_PLAY_SINK_TYPE_FLUSHING  =>  6,
+  GST_PLAY_SINK_TYPE_AUDIO     =>  0,
+  GST_PLAY_SINK_TYPE_AUDIO_RAW =>  1,
+  GST_PLAY_SINK_TYPE_VIDEO     =>  2,
+  GST_PLAY_SINK_TYPE_VIDEO_RAW =>  3,
+  GST_PLAY_SINK_TYPE_TEXT      =>  4,
+  GST_PLAY_SINK_TYPE_LAST      =>  5,
+  GST_PLAY_SINK_TYPE_FLUSHING  =>  6,
 );

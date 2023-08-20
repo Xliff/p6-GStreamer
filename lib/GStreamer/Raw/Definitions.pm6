@@ -114,6 +114,7 @@ class GstPadProbeInfo             is repr<CPointer> does GLib::Roles::Pointers i
 class GstParseContext             is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GstPipeline                 is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GstPlayer                   is repr<CPointer> does GLib::Roles::Pointers is export { }
+class GstPlayBin                  is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GstPlugin                   is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GstPluginFeature            is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GstPoll                     is repr<CPointer> does GLib::Roles::Pointers is export { }
