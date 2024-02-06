@@ -1,5 +1,6 @@
 typePrefix=Gst
-prefix=GStreamer::
+prefix=GStreamer
 modules=GStreamer::Raw::Types
 backups=backup,bitbucket,google-backup,azure-backup
 libdirs=lib,resources
+include-directory=/usr/include/gstreamer-1.0/gst
