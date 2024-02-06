@@ -16,7 +16,7 @@ class GStreamer::Pipeline is GStreamer::Bin {
   has GstPipeline $!p;
 
   submethod BUILD (:$pipeline) {
-    self.setPipeline($pipeline);
+    self.setPipeline($pipeline) if $pipeline
   }
 
   method setPipeline (GstPipelineAncestry $_) {
