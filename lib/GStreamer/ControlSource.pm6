@@ -55,7 +55,8 @@ class GStreamer::ControlSource is GStreamer::Object {
   }
   multi method get_value (Int() $timestamp, $value is rw, :$all = False) {
     my GstClockTime $t = $timestamp;
-    my gdouble $v = 0e0;
+    my gdouble      $v = 0e0;
+
     my $rv = so gst_control_source_get_value($!cs, $timestamp, $v);
 
     $value = $v;
@@ -76,12 +77,12 @@ class GStreamer::ControlSource is GStreamer::Object {
     $rv[0] ?? $rv[1] !! Nil;
   }
   multi method get_value_array (
-    Int() $timestamp,
-    Int() $interval,
-    Int() $n_values,
-    $values is rw,
-    :$all = False,
-    :$raw = True
+    Int()  $timestamp,
+    Int()  $interval,
+    Int()  $n_values,
+           $values      is rw,
+          :$all                = False,
+          :$raw                = True
   ) {
     my GstClockTime ($t, $i) = ($timestamp, $interval);
     my guint $n = $n_values;
@@ -107,8 +108,8 @@ sub gst_control_source_get_type ()
 
 sub gst_control_source_get_value (
   GstControlSource $self,
-  GstClockTime $timestamp,
-  gdouble $value is rw
+  GstClockTime     $timestamp,
+  gdouble          $value      is rw
 )
   returns uint32
   is native(gstreamer)
@@ -117,10 +118,10 @@ sub gst_control_source_get_value (
 
 sub gst_control_source_get_value_array (
   GstControlSource $self,
-  GstClockTime $timestamp,
-  GstClockTime $interval,
-  guint $n_values,
-  CArray[gdouble] $values
+  GstClockTime     $timestamp,
+  GstClockTime     $interval,
+  guint            $n_values,
+  CArray[gdouble]  $values
 )
   returns uint32
   is native(gstreamer)
