@@ -2,6 +2,7 @@ use v6.c;
 
 use Method::Also;
 
+use GLib::Raw::Traits;
 use GStreamer::Raw::Types;
 use GStreamer::Raw::ElementFactory;
 
@@ -175,14 +176,14 @@ class GStreamer::ElementFactory is GStreamer::PluginFeature {
     unstable_get_type( self.^name, &gst_element_factory_get_type, $n, $t );
   }
 
-  method get_uri_type
+  method get_uri_type ( :$raw = False )
     is also<
       get-uri-type
       uri_type
       uri-type
     >
   {
-    GTypeEnum( gst_element_factory_get_uri_type($!ef) );
+    GLib::Object::Type.new( gst_element_factory_get_uri_type($!ef) );
   }
 
   method has_interface (Str() $interfacename) is also<has-interface> {
@@ -190,60 +191,49 @@ class GStreamer::ElementFactory is GStreamer::PluginFeature {
   }
 
   method list_filter (
-    GStreamer::ElementFactory:U:
-    GList() $list,
-    GstCaps() $caps,
-    Int() $direction,
-    Int() $subsetonly,
-    :$glist = False,
-    :$raw = False
+    GList()    $list,
+    GstCaps()  $caps,
+    Int()      $direction,
+    Int()      $subsetonly,
+              :$glist = False,
+              :$raw = False
   )
+    is static
     is also<list-filter>
   {
-    my GstPadDirection $p = $direction;
-    my gboolean $s = $subsetonly.so.Int;
+    my GstPadDirection $d = $direction;
+    my gboolean        $s = $subsetonly.so.Int;
 
-    my $ef = gst_element_factory_list_filter(
-      $list,
-      $caps,
-      $direction,
-      $subsetonly
-    );
-
-    return Nil unless $ef;
-    return $ef if $glist;
-
-    $ef = GLib::GList.new($ef) but GLib::Roles::ListData[GstElementFactory];
-
-    $raw ?? $ef.Array
-         !! $ef.Array({ GStreamer::ElementFactory.new($_) });
+    returnGList(
+      gst_element_factory_list_filter($list, $caps, $d, $s),
+      $raw,
+      $glist,
+      |GStreamer::ElementFactory.getTypePair
+    )
   }
 
   method list_get_elements (
-    GStreamer::ElementFactory:U:
-    Int() $type,
-    GstRank $minrank,
-    :$glist = False,
-    :$raw = False;
+    Int()    $type,
+    GstRank  $minrank,
+            :$glist = False,
+            :$raw = False;
   )
+    is static
     is also<list-get-elements>
   {
-    my $ef = gst_element_factory_list_get_elements($type, $minrank);
-
-    return Nil unless $ef;
-    return $ef if $glist;
-
-    $ef = GLib::GList.new($ef) but GLib::Roles::ListData[GstElementFactory];
-
-    $raw ?? $ef.Array
-         !! $ef.Array({ GStreamer::ElementFactory.new($_ ) })
+    returnGList(
+      gst_element_factory_list_get_elements($type, $minrank),
+      $raw,
+      $glist,
+      |GStreamer::ElementFactory.getTypePair
+    );
   }
 
   method list_is_type (Int() $type) is also<list-is-type> {
     so gst_element_factory_list_is_type($!ef, $type);
   }
 
-  method make (Str() $fname, Str() $name = Str, :$raw = False) {
+  method make (Str() $fname, Str() $name = $fname, :$raw = False) {
     my $e = gst_element_factory_make($fname, $name);
 
     $e ??
@@ -254,11 +244,14 @@ class GStreamer::ElementFactory is GStreamer::PluginFeature {
 
   method register (
     GstPlugin() $plugin,
-    Str() $name,
-    guint $rank,
-    GType $type
+    Str()       $name,
+    Int()       $rank,
+    Int()       $type
   ) {
-    gst_element_register($plugin, $name, $rank, $type);
+    my guint $r = $rank;
+    my GType $t = $type;
+
+    gst_element_register($plugin, $name, $r, $t);
   }
 
   method get_uri_protocols is also<get-uri-protocols> {
