@@ -12,7 +12,7 @@ use GStreamer::ControlBinding;
 our subset GstDirectControlBindingAncestry is export of Mu
   where GstDirectControlBinding | GstControlBinding;
 
-class GStreamer::Controller::DirectControlBinding
+class GStreamer::Controller::DirectBinding
   is GStreamer::ControlBinding
 {
   has GstDirectControlBinding $!dcb;
@@ -46,8 +46,8 @@ class GStreamer::Controller::DirectControlBinding
     $direct-binding ?? self.bless( :$direct-binding ) !! Nil;
   }
   multi method new (
-    GstObject() $object,
-    Str() $property_name,
+    GstObject()        $object,
+    Str()              $property_name,
     GstControlSource() $cs
   ) {
     my $direct-binding = gst_direct_control_binding_new(
@@ -60,8 +60,8 @@ class GStreamer::Controller::DirectControlBinding
   }
 
   method new_absolute (
-    GstObject() $object,
-    Str() $property_name,
+    GstObject()        $object,
+    Str()              $property_name,
     GstControlSource() $cs
   )
     is also<new-absolute>
@@ -123,21 +123,21 @@ class GStreamer::Controller::DirectControlBinding
 ### /usr/include/gstreamer-1.0/gst/controller/gstdirectcontrolbinding.h
 
 sub gst_direct_control_binding_new (
-  GstObject $object,
-  Str $property_name,
+  GstObject        $object,
+  Str              $property_name,
   GstControlSource $cs
 )
   returns GstDirectControlBinding
-  is native(gstreamer-controller)
-  is export
+  is      native(gstreamer-controller)
+  is      export
 { * }
 
 sub gst_direct_control_binding_new_absolute (
-  GstObject $object,
-  Str $property_name,
+  GstObject        $object,
+  Str              $property_name,
   GstControlSource $cs
 )
   returns GstDirectControlBinding
-  is native(gstreamer-controller)
-  is export
+  is      native(gstreamer-controller)
+  is      export
 { * }

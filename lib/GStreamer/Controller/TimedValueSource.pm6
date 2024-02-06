@@ -13,7 +13,7 @@ use GStreamer::Roles::Signals::Controller::TimedValueControlSource;
 our subset GstTimedValueControlSourceAncestry is export of Mu
   where GstTimedValueControlSource | GstControlSourceAncestry;
 
-class GStreamer::Controller::TimedValueControlSource
+class GStreamer::Controller::TimedValue
   is GStreamer::ControlSource
 {
   also does GStreamer::Roles::Signals::Controller::TimedValueControlSource;
@@ -98,7 +98,7 @@ class GStreamer::Controller::TimedValueControlSource
 
   method set (Int() $timestamp, Num() $value) {
     my GstClockTime $t = $timestamp;
-    my gdouble $v = $value;
+    my gdouble      $v = $value;
 
     gst_timed_value_control_source_set($!tvcs, $t, $v);
   }

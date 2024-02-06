@@ -11,8 +11,8 @@ use GStreamer::Controller::TimedValueControlSource;
 our subset GstInterpolationControlSourceAncestry is export of Mu
   where GstInterpolationControlSource | GstTimedValueControlSourceAncestry;
 
-class GStreamer::Controller::InterpolationControlSource
-  is GStreamer::Controller::TimedValueControlSource
+class GStreamer::Controller::Interpolation
+  is GStreamer::Controller::TimedValue
 {
   has GstInterpolationControlSource $!tvcs;
 
@@ -87,12 +87,12 @@ class GStreamer::Controller::InterpolationControlSource
 
 sub gst_interpolation_control_source_new ()
   returns GstInterpolationControlSource
-  is native(gstreamer-controller)
-  is export
+  is      native(gstreamer-controller)
+  is      export
 { * }
 
 sub gst_interpolation_control_source_get_type ()
   returns GType
-  is native(gstreamer-controller)
-  is export
+  is      native(gstreamer-controller)
+  is      export
 { * }

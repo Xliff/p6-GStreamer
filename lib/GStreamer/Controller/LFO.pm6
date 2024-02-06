@@ -11,9 +11,7 @@ use GStreamer::ControlSource;
 our subset GstLFOControlSourceAncestry is export of Mu
   where GstLFOControlSource | GstControlSourceAncestry;
 
-class GStreamer::Controller::LFOControlSource
-  is GStreamer::ControlSource
-{
+class GStreamer::Controller::LFO is GStreamer::ControlSource {
   has GstLFOControlSource $!lcs;
 
   submethod BUILD (:$lfo-source) {
