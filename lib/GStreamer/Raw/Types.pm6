@@ -4,10 +4,12 @@ use GLib::Raw::Exports;
 use GIO::Raw::Exports;
 use GStreamer::Raw::Exports;
 
-my constant forced = 90;
+my constant forced = 270;
 
 unit package GStreamer::Raw::Types;
 
+need GLib::Raw::Debug;
+need GLib::Raw::Types;
 need GLib::Raw::Definitions;
 need GLib::Raw::Enums;
 need GLib::Raw::Exceptions;
@@ -16,6 +18,7 @@ need GLib::Raw::Structs;
 need GLib::Raw::Subs;
 need GLib::Raw::Struct_Subs;
 need GLib::Roles::Pointers;
+need GLib::Roles::Implementor;
 need GIO::Raw::Definitions;
 need GIO::Raw::Enums;
 need GIO::Raw::Quarks;
