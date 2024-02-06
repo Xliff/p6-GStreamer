@@ -15,36 +15,101 @@ use GStreamer::Roles::Plugins::Raw::Playbin;
 use GLib::Value;
 use GStreamer::Buffer;
 use GStreamer::Element;
+use GStreamer::ElementFactory;
 use GStreamer::Pipeline;
 use GStreamer::Sample;
 use GStreamer::TagList;
+use GStreamer::Controller::Interpolation;
+use GStreamer::Controller::DirectBinding;
 
 use GLib::Roles::Object;
 use GLib::Roles::Signals::Generic;
 use GStreamer::Roles::Video::ColorBalance;
 use GStreamer::Roles::Video::Navigation;
 use GStreamer::Roles::Video::Overlay;
+use GStreamer::Roles::Plugins::Signals::Playbin;
 
 our subset GstPlayBinAncestry is export of Mu
-where GstPlayBin      | GstVideoOverlay | GstNavigation        |
+where GstPlayBin      | GstVideoOverlay | GstNavigation         |
       GstColorBalance | GstChildProxy   | GstPipelineAncestry;
 
-class GStreamer::Roles::Plugins::Playbin is GStreamer::Pipeline {
+class GStreamer::Plugins::Playbin is GStreamer::Pipeline {
   also does GLib::Roles::Signals::Generic;
   also does GStreamer::Roles::ChildProxy;
   also does GStreamer::Roles::Video::ColorBalance;
   also does GStreamer::Roles::Video::Navigation;
   also does GStreamer::Roles::Video::Overlay;
+  also does GStreamer::Roles::Plugins::Signals::Playbin;
 
   has GstPlayBin $!pb;
 
-  has %!signals-pb;
+  submethod BUILD ( :$gst-playbin ) {
+    self.setGstPlayBin($gst-playbin) if $gst-playbin;
+  }
 
-  submethod TWEAK {
+  method setGstPlayBin (GstPlayBinAncestry $_) {
+    my $to-parent;
+
+    $!pb = do {
+      when GstPlayBin {
+        $to-parent = cast(GstPipeline, $_);
+        $_;
+      }
+
+      when GstVideoOverlay  {
+        $to-parent = cast(GstPipeline, $_);
+        $!gst-vo   = $_;
+        cast(GstPlayBin, $_);
+      }
+
+      when GstNavigation {
+        $to-parent = cast(GstPipeline, $_);
+        $!n        = $_;
+        cast(GstPlayBin, $_);
+      }
+
+      when GstColorBalance {
+        $to-parent = cast(GstPipeline, $_);
+        $!cb       = $_;
+        cast(GstPlayBin, $_);
+      }
+
+      when GstChildProxy {
+        $to-parent = cast(GstPipeline, $_);
+        $!cp       = $_;
+        cast(GstPlayBin, $_);
+      }
+
+      default {
+        $to-parent = $_;
+        cast(GstPlayBin, $_);
+      }
+    }
+    self.setPipeline($to-parent);
     self.roleInit-ChildProxy;
     self.roleInit-Navigation;
     self.roleInit-ColorBalance;
     self.roleInit-GstVideoOverlay;
+  }
+
+  method GStreamer::Raw::Definitions::GstPlayBin
+    is also<GstPlayBin>
+  { $!pb }
+
+  multi method new (GstPlayBinAncestry $gst-playbin, :$ref = True) {
+    return Nil unless $gst-playbin;
+
+    my $o = self.bless( :$gst-playbin );
+    $o.ref if $ref;
+    $o;
+  }
+  multi method new {
+    my $gst-playbin = GStreamer::ElementFactory.make('playbin', :raw);
+
+    return Nil unless $gst-playbin;
+    $gst-playbin = cast(GstPlayBin, $gst-playbin);
+
+    self.bless( :$gst-playbin );
   }
 
   # Check to insure all methods are provided!
@@ -154,8 +219,7 @@ class GStreamer::Roles::Plugins::Playbin is GStreamer::Pipeline {
           !!
           Nil;
       },
-      STORE => -> $, GstElementOrObject $val is copy {
-        $val .= GObject if $val ~~ GStreamer::Element;
+      STORE => -> $, GstElement() $val is copy {
         $gv.object = $val;
         self.prop_set('vis-plugin', $gv);
       }
@@ -737,6 +801,100 @@ class GStreamer::Roles::Plugins::Playbin is GStreamer::Pipeline {
     self.connect-tags-changed($!pb, 'video-tags-changed');
   }
 
+  method play (
+    :fade(:$time) is required where *.so,
+    :$mode                                = GST_INTERPOLATION_MODE_CUBIC,
+    :$start                               = DateTime.now,
+    :&onComplete
+  ) {
+    $time = 2500 if $time ~~ Bool;
+    
+    self.audio-fade-in(
+      :$time,
+      :$mode,
+      :$start,
+      :&onComplete
+    );
+    self.play;
+  }
+  method play {
+    self.set-state(GST_STATE_PLAYING)
+  }
+
+  method stop (
+    :fade(:$time) is required where *.so,
+    :$mode                                = GST_INTERPOLATION_MODE_CUBIC,
+    :$start                               = DateTime.now,
+    :&onComplete
+  ) {
+    $time = 2500 if $time ~~ Bool;
+
+    self.audio-fade-out(
+      :$time,
+      :$mode,
+      :$start,
+
+      onComplete => SUB { self.stop; &onComplete() if &onComplete }
+    )
+  }
+
+  method stop {
+    self.set-state(GST_STATE_NULL);
+  }
+
+  method audio-fade-in (
+    :$mode                   = GST_INTERPOLATION_MODE_CUBIC,
+    :$time                   = 2500,
+    :$from                   = 0,
+    :$to                     = 1,
+    :$start                  = DateTime.now.posix,
+    :&onComplete
+  ) {
+    my $cs = GStreamer::Controller::Interpolation.new;
+    $cs.mode = $mode;
+
+    X::GLib::InvalidValue.new(
+      message => 'Starting volume must be less than then ending volume!'
+    ).throw unless $from < $to
+
+    my $b = GStreamer::Control::DirectBinding.new(self, 'volume', $cs);
+    $cs.set( $start,         $from );
+    $cs.set( $start + $time, $to   );
+    self.add-control-binding($b);
+
+    if &onComplete {
+      $cs.value-changed.tap: sub (@a) {
+        &onComplete() if @a[1].value == $time;
+      }
+    }
+  }
+
+  method audio-fade-out (
+    :$mode       = GST_INTERPOLATION_MODE_CUBIC,
+    :$time       = 2500,
+    :$to         = 0,
+    :$start      = DateTime.now.posix,
+    :&onComplete
+  ) {
+    my $cs = GStreamer::Controller::Interpolation.new;
+    $cs.mode = $mode;
+
+    X::GLib::InvalidValue.new(
+      message => 'Ending volume must be less than starting volume!'
+    ).throw unless $to < self.volume;
+
+    my $b = GStreamer::Control::DirectBinding.new(self, 'volume', $cs);
+    $cs.set( $start,         self.volume );
+    $cs.set( $start + $time, $to );
+    self.add-control-binding($b);
+
+    if &onComplete {
+      $cs.value-changed.tap: sub (@a) {
+        &onComplete() if @a[1].value == $time;
+      }
+    }
+  }
+
   proto method emit-get-tags (|)
       is also<emit_get_tags>
   { * }
@@ -766,137 +924,6 @@ class GStreamer::Roles::Plugins::Playbin is GStreamer::Pipeline {
       ( $raw ?? $taglist !! GStreamer::TagList.new($taglist) )
       !!
       Nil;
-  }
-
-  # GstPlayBin, gint, gpointer
-  method connect-tags-changed (
-    $obj,
-    $signal,
-    &handler?
-  ) {
-    my $hid;
-    %!signals-pb{$signal} //= do {
-      my $s = Supplier.new;
-      $hid = g-connect-tags-changed($obj, $signal,
-        -> $, $g, $ud {
-          CATCH {
-            default { $s.note($_) }
-          }
-
-          $s.emit( [self, $g, $ud ] );
-        },
-        Pointer, 0
-      );
-      [ $s.Supply, $obj, $hid ];
-    };
-    %!signals-pb{$signal}[0].tap(&handler) with &handler;
-    %!signals-pb{$signal}[0];
-  }
-
-  # GstPlayBin, GstCaps, gpointer --> GstSample
-  method connect-convert-sample (
-    $obj,
-    $signal = 'convert-sample',
-    &handler?
-  ) {
-    my $hid;
-    %!signals-pb{$signal} //= do {
-      my $s = Supplier.new;
-      $hid = g-connect-convert-sample($obj, $signal,
-        -> $, $gc, $ud --> GstSample {
-          CATCH {
-            default { $s.note($_) }
-          }
-
-          my $r = ReturnedValue.new;
-          $s.emit( [self, $gc, $ud, $r] );
-          $r.r;
-        },
-        Pointer, 0
-      );
-      [ $s.Supply, $obj, $hid ];
-    };
-    %!signals-pb{$signal}[0].tap(&handler) with &handler;
-    %!signals-pb{$signal}[0];
-  }
-
-  # GstPlayBin, gint, gpointer --> GstPad
-  method connect-get-pad (
-    $obj,
-    $signal,
-    &handler?
-  ) {
-    my $hid;
-    %!signals-pb{$signal} //= do {
-      my $s = Supplier.new;
-      $hid = g-connect-get-pad($obj, $signal,
-        -> $, $g, $ud --> GstPad {
-          CATCH {
-            default { $s.note($_) }
-          }
-
-          my $r = ReturnedValue.new;
-          $s.emit( [self, $g, $ud, $r] );
-          $r.r;
-        },
-        Pointer, 0
-      );
-      [ $s.Supply, $obj, $hid ];
-    };
-    %!signals-pb{$signal}[0].tap(&handler) with &handler;
-    %!signals-pb{$signal}[0];
-  }
-
-  # GstPlayBin, gint, gpointer --> GstTagList
-  method connect-get-tags (
-    $obj,
-    $signal,
-    &handler?
-  ) {
-    my $hid;
-    %!signals-pb{$signal} //= do {
-      my $s = Supplier.new;
-      $hid = g-connect-get-tags($obj, $signal,
-        -> $, $g, $ud --> GstTagList {
-          CATCH {
-            default { $s.note($_) }
-          }
-
-          my $r = ReturnedValue.new;
-          $s.emit( [self, $g, $ud, $r] );
-          $r.r;
-        },
-        Pointer, 0
-      );
-      [ $s.Supply, $obj, $hid ];
-    };
-    %!signals-pb{$signal}[0].tap(&handler) with &handler;
-    %!signals-pb{$signal}[0];
-  }
-
-  # GstPlayBin, GstElement, gpointer
-  method connect-source-setup (
-    $obj,
-    $signal = 'source-setup',
-    &handler?
-  ) {
-    my $hid;
-    %!signals-pb{$signal} //= do {
-      my $s = Supplier.new;
-      $hid = g-connect-source-setup($obj, $signal,
-        -> $, $ge, $ud {
-          CATCH {
-            default { $s.note($_) }
-          }
-
-          $s.emit( [self, $ge, $ud ] );
-        },
-        Pointer, 0
-      );
-      [ $s.Supply, $obj, $hid ];
-    };
-    %!signals-pb{$signal}[0].tap(&handler) with &handler;
-    %!signals-pb{$signal}[0];
   }
 
 }
