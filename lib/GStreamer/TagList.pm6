@@ -557,16 +557,18 @@ class GStreamer::TagList is GStreamer::MiniObject {
     $rv[0] ?? $rv[1] !! Nil;
   }
   multi method get_string (
-    Str() $tag,
-    $value is rw,
-    :$all = False,
+    Str()  $tag,
+           $value is rw,
+          :$all           = False,
+          :$encoding      = 'utf8'
   ) {
-    my $sa = CArray[Str].new;
-    $sa[0] = Str;
+    my $sa = CArray[CArray[uint8]].new;
+    $sa[0] = CArray[uint8];
 
     my $rv = gst_tag_list_get_string($!tl, $tag, $sa);
 
-    ($value) = ppr($sa);
+    $value = Buf.new( nullTerminatedBuffer( $sa[0] ) ).decode($encoding);
+
     $all.not ?? $rv !! ($rv, $value);
   }
 
