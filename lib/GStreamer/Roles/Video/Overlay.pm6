@@ -16,7 +16,7 @@ role GStreamer::Roles::Video::Overlay {
     my \i = findProperImplementor(self.^attributes);
     return if $!gst-vo;
 
-    $!gst-vo = cast( GstVideoOrientation, i.get_value(self) );
+    $!gst-vo = cast( GstVideoOverlay, i.get_value(self) );
   }
 
   method GStreamer::Raw::Definitions::GstVideoOverlay
