@@ -17,10 +17,10 @@ unit package GStreamer::Raw::TagList;
 # { * }
 
 sub gst_tag_list_add_value (
-  GstTagList $list,
+  GstTagList      $list,
   GstTagMergeMode $mode,
-  Str $tag,
-  GValue $value
+  Str             $tag,
+  GValue          $value
 )
   is native(gstreamer)
   is export
@@ -28,8 +28,8 @@ sub gst_tag_list_add_value (
 
 sub gst_tag_list_copy_value (GValue $dest, GstTagList $list, Str $tag)
   returns uint32
-  is native(gstreamer)
-  is export
+  is      native(gstreamer)
+  is      export
 { * }
 
 sub gst_tag_list_foreach (
@@ -216,7 +216,11 @@ sub gst_tag_list_get_scope (GstTagList $list)
   is export
 { * }
 
-sub gst_tag_list_get_string (GstTagList $list, Str $tag, CArray[Str] $value)
+sub gst_tag_list_get_string (
+  GstTagList            $list,
+  Str                   $tag,
+  CArray[CArray[uint8]] $value
+)
   returns uint32
   is native(gstreamer)
   is export
