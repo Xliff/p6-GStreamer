@@ -9,6 +9,8 @@ role GStreamer::Roles::Video::Orientation {
   has GstVideoOrientation $!vo;
 
   method roleInit-GstOrientation is also<roleInit_GstOrientation> {
+    return if $!vo;
+    
     my \i = findProperImplementor(self.^attributes);
 
     $!vo = cast( GstVideoOrientation, i.get_value(self) );
