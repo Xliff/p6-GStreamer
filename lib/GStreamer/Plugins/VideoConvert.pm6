@@ -33,7 +33,7 @@ class GStreamer::Plugins::VideoConvert is GStreamer::Video::Filter {
   has GstVideoConvert $!vf;
 
   submethod BUILD (:$video-convert) {
-    self.setGstVideoConvert($video-convert);
+    self.setGstVideoConvert($video-convert) if $video-convert;
   }
 
   method setGstVideoConvert (GstVideoConvertAncestry $_) {

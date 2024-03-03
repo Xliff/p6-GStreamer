@@ -15,10 +15,11 @@ role GStreamer::Roles::ChildProxy {
   has GstChildProxy $!cp;
 
   method roleInit-ChildProxy {
-    my \i = findProperImplementor(self.^attributes);
-    my $o = cast( GstChildProxy, i.get_value(self) );
+    return if $!cp;
 
-    $!cp = cast(GstChildProxy, $o);
+    my \i = findProperImplementor(self.^attributes);
+
+    $!cp  = cast( GstChildProxy, i.get_value(self) );
   }
 
   method GStreamer::Raw::Definitions::GstChildProxy
@@ -83,8 +84,8 @@ role GStreamer::Roles::ChildProxy {
   }
 
   method lookup (
-    Str() $name,
-    GObject() $target,
+    Str()                       $name,
+    GObject()                   $target,
     CArray[Pointer[GParamSpec]] $pspec
   ) {
     gst_child_proxy_lookup($!cp, $name, $target, $pspec);

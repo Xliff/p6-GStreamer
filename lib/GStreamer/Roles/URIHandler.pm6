@@ -10,6 +10,8 @@ role GStreamer::Roles::URIHandler {
   has GstURIHandler $!h;
 
   method roleInit-URIHandler is also<roleInit_URIHandler> {
+    return if $!h;
+    
     my \i = findProperImplementor(self.^attributes);
 
     $!h = cast( GstURIHandler, i.get_value(self) );

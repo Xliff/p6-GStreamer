@@ -12,9 +12,9 @@ role GStreamer::Roles::Video::Overlay {
   has GstVideoOverlay $!gst-vo is implementor;
 
   method roleInit-GstVideoOverlay {
+    return if $!gst-vo;
 
     my \i = findProperImplementor(self.^attributes);
-    return if $!gst-vo;
 
     $!gst-vo = cast( GstVideoOverlay, i.get_value(self) );
   }

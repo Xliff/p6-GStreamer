@@ -34,7 +34,7 @@ class GStreamer::Plugins::Visual is GStreamer::PBUtils::AudioVisualizer {
     my $to-parent;
 
     $!v = do  {
-      when GstAudioVisualizer {
+      when GstVisual {
         $to-parent = cast(GstAudioVisualizer, $_);
         $_;
       }
@@ -51,7 +51,7 @@ class GStreamer::Plugins::Visual is GStreamer::PBUtils::AudioVisualizer {
     is also<GstVisual>
   { $!v }
 
-  method new (GstVisualAncestry $visualizer) {
+  multi method new (GstVisualAncestry $visualizer) {
     $visualizer ?? self.bless( :$visualizer ) !! Nil;
   }
 

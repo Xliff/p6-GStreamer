@@ -9,7 +9,7 @@ use GLib::Roles::Pointers;
 unit package GStreamer::Raw::Definitions;
 
 # Number of forced compiles made.
-my constant forced = 221;
+my constant forced = 261;
 
 constant GstClockTime              is export := uint64;
 constant GstClockTimeDiff          is export := int64;
@@ -17,16 +17,16 @@ constant GstElementFactoryListType is export := uint64;
 
 # cw: I now realize, that at some point, ALL of these will have to be functions
 #     to account for the various distributions and OSes out there.
-constant gstreamer            is export = 'gstreamer-1.0',v0;
-constant gstreamer-app        is export = 'gstapp-1.0',v0;
-constant gstreamer-audio      is export = 'gstaudio-1.0',v0;
-constant gstreamer-base       is export = 'gstbase-1.0',v0;
-constant gstreamer-controller is export = 'gstcontroller-1.0',v0;
-constant gstreamer-net        is export = 'gstnet-1.0',v0;
-constant gstreamer-pbutils    is export = 'gstpbutils-1.0',v0;
-constant gstreamer-player     is export = 'gstplayer-1.0',v0;
-constant gstreamer-sdp        is export = 'gstsdp-1.0',v0;
-constant gstreamer-video      is export = 'gstvideo-1.0',v0;
+constant gstreamer              is export = 'gstreamer-1.0',v0;
+constant gstreamer-app          is export = 'gstapp-1.0',v0;
+constant gstreamer-audio        is export = 'gstaudio-1.0',v0;
+constant gstreamer-base         is export = 'gstbase-1.0',v0;
+constant gstreamer-controller   is export = 'gstcontroller-1.0',v0;
+constant gstreamer-net          is export = 'gstnet-1.0',v0;
+constant gstreamer-pbutils      is export = 'gstpbutils-1.0',v0;
+constant gstreamer-player       is export = 'gstplayer-1.0',v0;
+constant gstreamer-sdp          is export = 'gstsdp-1.0',v0;
+constant gstreamer-video        is export = 'gstvideo-1.0',v0;
 
 constant GstBufferListFunc                 is export := Pointer;
 constant GstBusSyncHandler                 is export := Pointer;
@@ -78,8 +78,12 @@ constant GstCapsMapFunc                    is export := Pointer;
 constant GstVideoGLTextureUpload           is export := Pointer;
 
 class GstAdapter                  is repr<CPointer> does GLib::Roles::Pointers is export { }
+class GstArray                    is repr<CPointer> does GLib::Roles::Pointers is export { }
+class GstAudioConvert             is repr<CPointer> does GLib::Roles::Pointers is export { }
+class GstAudioDecoder             is repr<CPointer> does GLib::Roles::Pointers is export { }
+class GstAudioFilter              is repr<CPointer> does GLib::Roles::Pointers is export { }
+class GstAudioResample            is repr<CPointer> does GLib::Roles::Pointers is export { }
 #class GstAllocator                is repr<CPointer> does GLib::Roles::Pointers is export { }
-class GstAllocationParams         is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GstAtomicQueue              is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GstAudioConverter           is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GstAudioStreamAlign         is repr<CPointer> does GLib::Roles::Pointers is export { }
@@ -102,6 +106,7 @@ class GstDynamicTypeFactory       is repr<CPointer> does GLib::Roles::Pointers i
 #class GstElement                  is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GstElementFactory           is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GstEvent                    is repr<CPointer> does GLib::Roles::Pointers is export { }
+class GstFileSrc                  is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GstFlowCombiner             is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GstGhostPad                 is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GstIterator                 is repr<CPointer> does GLib::Roles::Pointers is export { }
@@ -129,6 +134,7 @@ class GstSample                   is repr<CPointer> does GLib::Roles::Pointers i
 #class GstStaticPadTemplate        is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GstStream                   is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GstStreamCollection         is repr<CPointer> does GLib::Roles::Pointers is export { }
+class GstStreamVolume             is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GstTracerFactory            is repr<CPointer> does GLib::Roles::Pointers is export { }
 #class GstStructure                is repr<CPointer> does GLib::Roles::Pointers is export { }
 #class GstTagList                  is repr<CPointer> does GLib::Roles::Pointers is export { }
@@ -139,6 +145,7 @@ class GstTypeFindFactory          is repr<CPointer> does GLib::Roles::Pointers i
 #class GstMapInfo                  is repr<CPointer> does GLib::Roles::Pointers is export { }
 #class GstMemory                   is repr<CPointer> does GLib::Roles::Pointers is export { }
 #class GstMeta                     is repr<CPointer> does GLib::Roles::Pointers is export { }
+class GstMpegAudioParse           is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GstParentBufferMeta         is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GstPlayerAudioInfo          is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GstPlayerMediaInfo          is repr<CPointer> does GLib::Roles::Pointers is export { }
@@ -158,8 +165,11 @@ class GstVideoOverlay             is repr<CPointer> does GLib::Roles::Pointers i
 class GstVideoOverlayComposition  is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GstVideoOverlayRectangle    is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GstVideoScaler              is repr<CPointer> does GLib::Roles::Pointers is export { }
+class GstVolume                   is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GstUri                      is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GstURIHandler               is repr<CPointer> does GLib::Roles::Pointers is export { }
+
+class mpg123audiodec              is repr<CPointer> does GLib::Roles::Pointers is export { }
 
 class GstDiscovererInfo           is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GstDiscovererStreamInfo     is repr<CPointer> does GLib::Roles::Pointers is export { }

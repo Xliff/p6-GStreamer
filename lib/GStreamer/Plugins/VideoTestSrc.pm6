@@ -123,7 +123,7 @@ class GStreamer::Plugins::VideoTestSrc is GStreamer::Base::PushSrc {
   has GstVideoTestSrc $!vts;
 
   submethod BUILD (:$video-test-src) {
-    self.setGstVideoTestSrc($video-test-src);
+    self.setGstVideoTestSrc($video-test-src) if $video-test-src;
   }
 
   method setGstVideoTestSrc (GstVideoTestSrcAncestry $_) {
@@ -147,7 +147,15 @@ class GStreamer::Plugins::VideoTestSrc is GStreamer::Base::PushSrc {
     is also<GstVideoTestSrc>
   { $!vts }
 
-  method new (GstVideoTestSrcAncestry $video-test-src) {
+  multi method new (GstVideoTestSrcAncestry $video-test-src) {
+    $video-test-src ?? self.bless( :$video-test-src ) !! Nil;
+  }
+  multi method new {
+    my $video-test-src = cast(
+      GstVideoTestSrc,
+      GStreamer::ElementFactory.make('videotestsrc', :raw)
+    );
+
     $video-test-src ?? self.bless( :$video-test-src ) !! Nil;
   }
 

@@ -3,7 +3,7 @@ use v6.c;
 use Method::Also;
 
 use GStreamer::Raw::Types;
-use GStreamer::Raw::Controller::TimedValueControlSource; # For raw defs
+use GStreamer::Raw::Controller::TimedValue; # For raw defs
 
 class GStreamer::Controller::ControlPoint {
   has GstControlPoint $!cp;

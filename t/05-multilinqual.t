@@ -1,40 +1,43 @@
 use v6.c;
 
-
 use GStreamer::Raw::Types;
 use GStreamer::Raw::Tags;
 
-use GLib::MainLoop;
 use GLib::IOChannel;
+use GLib::MainLoop;
 
 use GStreamer::ElementFactory;
 use GStreamer::Main;
 use GStreamer::Message;
 
-use GStreamer::Roles::Plugins::Raw::Playbin;
-use GStreamer::Roles::Plugins::Playbin;
+use GStreamer::Plugins::Playbin;
 
 my %data;
 
 sub MAIN {
   GStreamer::Main.init;
 
-  unless %data<playbin> = (
-    GStreamer::ElementFactory.make('playbin', 'playbin')
-      but
-    GStreamer::Roles::Plugins::Playbin
-  ) {
+  unless %data<playbin> = GStreamer::Plugins::Playbin.new {
     say 'Not all elements could be created.';
     exit 1;
   }
 
   %data<playbin>.uri = 'https://www.freedesktop.org/software/gstreamer-sdk/data/media/sintel_cropped_multilingual.webm';
-  %data<playbin>.flags +|= GST_PLAY_FLAG_VIDEO +| GST_PLAY_FLAG_AUDIO;
-  %data<playbin>.flags +&= +^GST_PLAY_FLAG_TEXT;
+  %data<playbin>.flags = %data<playbin>.flags.&setFlags(
+    GST_PLAY_FLAG_VIDEO,
+    GST_PLAY_FLAG_AUDIO
+  ).&unsetFlags(
+    GST_PLAY_FLAG_TEXT
+  );
   %data<playbin>.connection-speed = 56;
 
   %data<bus> = %data<playbin>.bus;
-  %data<bus>.add_watch(-> *@a --> gboolean { handle-message( @a[1] ); 1 });
+
+  %data<bus>.add_watch(-> *@a --> gboolean {
+    handle-message( @a[1] );
+    1
+  });
+
   %data<stdin> = GLib::IOChannel.new(:unix, $*IN.native-descriptor);
   %data<stdin>.add_watch(
     G_IO_IN,
@@ -90,7 +93,7 @@ sub analyze-streams {
               audio-stream { $sn }:
                 codec: { $tags.get_string(GST_TAG_AUDIO_CODEC) // 'unknown' }
                 language: { $tags.get_string(GST_TAG_LANGUAGE_CODE) // 'unknown' }
-                bitrate: {$tags.get_uint(GST_TAG_BITRATE) // 'unknown' }
+                bitrate: { $tags.get_uint(GST_TAG_BITRATE) // 'unknown' }
               AUDIO
           }
 
@@ -102,7 +105,7 @@ sub analyze-streams {
           }
         }
 
-        $tags.unref;
+        #$tags.unref;
       }
     }
   }
@@ -134,7 +137,10 @@ sub handle-message($m is copy) {
       %data<loop>.quit;
     }
 
-    when GST_MESSAGE_EOS { say 'End-Of-Stream reached.'; %data<loop>.quit }
+    when GST_MESSAGE_EOS {
+      say 'End-Of-Stream reached.';
+      %data<loop>.quit
+    }
 
     when GST_MESSAGE_STATE_CHANGED {
       my ($os, $ns, $ps) = $m.parse-state-changed;

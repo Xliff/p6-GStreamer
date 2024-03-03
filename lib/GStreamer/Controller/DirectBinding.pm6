@@ -56,6 +56,8 @@ class GStreamer::Controller::DirectBinding
       $cs
     );
 
+    say "DB: { $direct-binding }";
+
     $direct-binding ?? self.bless( :$direct-binding ) !! Nil;
   }
 

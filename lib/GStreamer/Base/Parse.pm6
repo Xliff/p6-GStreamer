@@ -13,11 +13,11 @@ our subset GstBaseParseAncestry is export of Mu
 class GStreamer::Base::Parse is GStreamer::Element {
   has GstBaseParse $!bp;
 
-  submethod BUILD (:$aggregator-pad) {
-    self.setBaseParse($aggregator-pad);
+  submethod BUILD (:$gst-base-parse) {
+    self.setGstBaseParse($gst-base-parse) if $gst-base-parse;
   }
 
-  method setBaseParse(GstBaseParseAncestry $_) {
+  method setGstBaseParse(GstBaseParseAncestry $_) is also<setBaseParse> {
     my $to-parent;
 
     $!bp = do  {
@@ -38,8 +38,8 @@ class GStreamer::Base::Parse is GStreamer::Element {
     is also<GstBaseParse>
   { $!bp }
 
-  method new (GstBaseParseAncestry $base-parse ) {
-    $base-parse ?? self.bless( :$base-parse ) !! Nil;
+  method new (GstBaseParseAncestry $gst-base-parse ) {
+    $gst-base-parse ?? self.bless( :$gst-base-parse ) !! Nil;
   }
 
   # Type: gboolean
@@ -68,9 +68,9 @@ class GStreamer::Base::Parse is GStreamer::Element {
   )
     is also<add-index-entry>
   {
-    my guint64 $o = $offset;
-    my GstClockTime $t = $ts;
-    my gboolean ($k, $f) = ($key, $force).map( *.so.Int );
+    my guint64       $o      =  $offset;
+    my GstClockTime  $t      =  $ts;
+    my gboolean     ($k, $f) = ($key, $force).map( *.so.Int );
 
     so gst_base_parse_add_index_entry($!bp, $o, $t, $k, $f);
   }
@@ -89,14 +89,14 @@ class GStreamer::Base::Parse is GStreamer::Element {
     $rv[0] ?? $rv[1] !! Nil;
   }
   multi method convert_default (
-    Int() $src_format,
-    Int() $src_value,
-    Int() $dest_format,
-    $dest_value is rw,
-    :$all = False
+    Int()  $src_format,
+    Int()  $src_value,
+    Int()  $dest_format,
+           $dest_value   is rw,
+          :$all                 = False
   ) {
     my GstFormat ($sf, $df) = ($src_format, $dest_format);
-    my gint64 ($sv, $dv)    = ($src_value, 0);
+    my gint64    ($sv, $dv) = ($src_value, 0);
 
     my $rv = so gst_base_parse_convert_default($!bp, $sf, $sv, $df, $dv);
     $dest_value = $dv;
@@ -148,8 +148,8 @@ class GStreamer::Base::Parse is GStreamer::Element {
     is also<set-duration>
   {
     my GstFormat $f = $fmt;
-    my gint64 $d = $duration;
-    my gint $i = $interval;
+    my gint64    $d = $duration;
+    my gint      $i = $interval;
 
     gst_base_parse_set_duration($!bp, $f, $d, $i);
   }

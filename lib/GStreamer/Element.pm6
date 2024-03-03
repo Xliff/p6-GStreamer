@@ -371,11 +371,12 @@ class GStreamer::Element is GStreamer::Object {
 
   method make_from_uri (
     GStreamer::Element:U:
-    Int() $type,
-    Str() $uri,
-    Str() $elementname,
-    CArray[Pointer[GError]] $error = gerror,
-    :$raw = False
+
+    Int()                    $type,
+    Str()                    $uri,
+    Str()                    $elementname,
+    CArray[Pointer[GError]]  $error        = gerror,
+                            :$raw          = False
   )
     is also<gst-element-make-from-uri>
   {
@@ -392,14 +393,14 @@ class GStreamer::Element is GStreamer::Object {
   }
 
   method message_full (
-    Int() $type,
+    Int()  $type,
     GQuark $domain,
-    Int() $code,     # gint $code,
-    Str() $text,
-    Str() $debug,
-    Str() $file,
-    Str() $function,
-    Int() $line      # gint $line
+    Int()  $code,     # gint $code,
+    Str()  $text,
+    Str()  $debug,
+    Str()  $file,
+    Str()  $function,
+    Int()  $line      # gint $line
   )
     is also<message-full>
   {
@@ -419,14 +420,14 @@ class GStreamer::Element is GStreamer::Object {
   }
 
   method message_full_with_details (
-    Int() $type,
-    GQuark $domain,
-    Int() $code,
-    Str() $text,
-    Str() $debug,
-    Str() $file,
-    Str() $function,
-    Int() $line,
+    Int()          $type,
+    GQuark         $domain,
+    Int()          $code,
+    Str()          $text,
+    Str()          $debug,
+    Str()          $file,
+    Str()          $function,
+    Int()          $line,
     GstStructure() $structure
   )
     is also<message-full-with-details>
@@ -487,10 +488,10 @@ class GStreamer::Element is GStreamer::Object {
   }
 
   method request_pad (
-    GstPadTemplate() $templ,
-    Str() $name,
-    GstCaps() $caps,
-    :$raw = False
+    GstPadTemplate()  $templ,
+    Str()             $name,
+    GstCaps()         $caps,
+                     :$raw     = False
   )
     is also<request-pad>
   {
@@ -503,18 +504,18 @@ class GStreamer::Element is GStreamer::Object {
   }
 
   method seek (
-    Num() $rate,       # gdouble
+    Num()       $rate,       # gdouble
     GstFormat() $format,
-    Int() $flags,      # GstSeekFlags $flags,
-    Int() $start_type, # GstSeekType $start_type,
-    Int() $start,      # uint64
-    Int() $stop_type,  # GstSeekType $stop_type,
-    Int() $stop        # uint64
+    Int()       $flags,      # GstSeekFlags $flags,
+    Int()       $start_type, # GstSeekType $start_type,
+    Int()       $start,      # uint64
+    Int()       $stop_type,  # GstSeekType $stop_type,
+    Int()       $stop        # uint64
   ) {
-    my gdouble $r = $rate;
-    my GstSeekFlags $f = $flags;
+    my gdouble      $r          = $rate;
+    my GstSeekFlags $f          = $flags;
     my GstSeekType ($stt, $spt) = ($start_type, $stop_type);
-    my uint64 ($st, $sp) = ($start, $stop);
+    my uint64      ($st, $sp)   = ($start, $stop);
 
     so gst_element_seek($!e, $r, $format, $f, $stt, $st, $spt, $sp);
   }
@@ -609,20 +610,18 @@ class GStreamer::Element is GStreamer::Object {
   }
 
   method link_many (*@e) is also<link-many> {
-    my $dieMsg = qq:to/DIE/.&nolf;
-      Items passed to GStreamer::Element.link_many must be {''
-      }GStreamer::Element compatible!
-      DIE
-
-    die $dieMsg unless @e.all ~~ (GStreamer::Element, GstElement).any;
-
-    my ($last, $aok) = (self);
-    for @e {
-      last unless $aok = $last.link($_);
-      $last = $_;
-      $last = GStreamer::Element.new($last) unless $last ~~ GStreamer::Element;
+    @e.unshift(self);
+    for @e.rotor(2 => -1) {
+      my $t := .tail;
+      if $t !~~ ::?CLASS {
+        X::GLib::InvalidType.new(
+          message => "Cannot use a { .^name } in call to .link-many as it {
+            '' }must be GstElement compatible!"
+        ).throw unless $t.^can('GstElement');
+        $t = ::?CLASS.new($t.GstElement);
+      }
+      .head.link( $t );
     }
-    $aok;
   }
 
   method link_filtered (GstElement() $dest, GstCaps() $filter)
@@ -638,10 +637,10 @@ class GStreamer::Element is GStreamer::Object {
   }
 
   method link_pads_filtered (
-    Str() $srcpadname,
+    Str()        $srcpadname,
     GstElement() $dest,
-    Str() $destpadname,
-    GstCaps() $filter
+    Str()        $destpadname,
+    GstCaps()    $filter
   )
     is also<link-pads-filtered>
   {
@@ -681,14 +680,16 @@ class GStreamer::Element is GStreamer::Object {
     $rv[0] ?? $rv[1] !! Nil;
   }
   multi method query_convert (
-    GstFormat $src_format,
-    gint64 $src_val,
-    GstFormat $dest_format,
-    $dest_val is rw,
-    :$all = False;
+    GstFormat  $src_format,
+    gint64     $src_val,
+    GstFormat  $dest_format,
+               $dest_val     is rw,
+              :$all                 = False;
   ) {
     my GstFormat ($sf, $df) = ($src_format, $dest_format);
+
     my gint64 $dv = 0;
+
     my $rv = so gst_element_query_convert(
       $!e,
       $src_format,

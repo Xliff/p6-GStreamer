@@ -10,10 +10,11 @@ unit package GStreamer::Raw::Base::Transform;
 
 ### /usr/include/gstreamer-1.0/gst/base/gstbasetransform.h
 
+# Need GstAllocationParams to be a struct!
 sub gst_base_transform_get_allocator (
-  GstBaseTransform $trans,
+  GstBaseTransform              $trans,
   CArray[Pointer[GstAllocator]] $allocator,
-  GstAllocationParams $params is rw
+  GstAllocationParams           $params
 )
   is native(gstreamer-base)
   is export

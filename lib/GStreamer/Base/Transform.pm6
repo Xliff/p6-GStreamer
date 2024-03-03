@@ -16,8 +16,8 @@ our subset GstBaseTransformAncestry is export of Mu
 class GStreamer::Base::Transform is GStreamer::Element {
   has GstBaseTransform $!bt;
 
-  submethod BUILD (:$base-src) {
-    self.setGstBaseTransform($base-src);
+  submethod BUILD ( :$base-src ) {
+    self.setGstBaseTransform($base-src) if $base-src
   }
 
   method setGstBaseTransform (GstBaseTransformAncestry $_) {
@@ -52,31 +52,42 @@ class GStreamer::Base::Transform is GStreamer::Element {
   }
 
   proto method get_allocator (|)
-      is also<get-allocator>
+    is also<get-allocator>
   { * }
 
-  multi method get_allocator (:$raw = False) {
-    samewith($, $, :$raw);
+  multi method get_allocator ( :$raw = False, :$enum = True ) {
+    samewith($, $, :$raw, :$enum);
   }
-  multi method get_allocator ($allocator is rw, $params is rw, :$raw = False) {
-    my GstAllocationParams $p = 0;
-    my $aa = CArray[Pointer[GstAllocator]];
+  multi method get_allocator (
+     $allocator is rw,
+     $params    is rw,
+    :$raw              = False,
+    :$enum             = True;
+  ) {
+    my $p  = GstAllocationParams.new;
+    my $aa = newCArray(GstAllocator);
 
-    $aa[0] = Pointer[GstAllocator];
     gst_base_transform_get_allocator($!bt, $aa, $p);
-    ($allocator, $params) = ppr($aa, $p);
-    $allocator = GStreamer::Allocator.new($allocator)
-      unless $raw || $allocator.not;
-    ($allocator, $params);
+    $aa = propReturnObject(
+      ppr($aa),
+      $raw,
+      |GStreamer::Allocator.getTypePair
+    );
+    $p = propReturnObject(
+      cast( GstAllocationParams, Pointer.new($p) ),
+      $raw,
+      |GStreamer::Allocation::Params.getTypePair
+    );
+
+    ($allocator, $params) = ($aa, $p);
   }
 
   method get_buffer_pool (:$raw = False) is also<get-buffer-pool> {
-    my $bp = gst_base_transform_get_buffer_pool($!bt);
-
-    $bp ??
-      ( $raw ?? $bp !! GStreamer::BufferPool.new($bp) )
-      !!
-      Nil;
+    propReturnObject(
+      gst_base_transform_get_buffer_pool($!bt),
+      $raw,
+      |GStreamer::BufferPool.getTypePair
+    );
   }
 
   method get_type is also<get-type> {
@@ -144,9 +155,9 @@ class GStreamer::Base::Transform is GStreamer::Element {
   )
     is also<update-qos>
   {
-    my gdouble $p = $proportion;
+    my gdouble          $p = $proportion;
     my GstClockTimeDiff $d = $diff;
-    my GstClockTime $t = $timestamp;
+    my GstClockTime     $t = $timestamp;
 
     gst_base_transform_update_qos($!bt, $p, $d, $t);
   }

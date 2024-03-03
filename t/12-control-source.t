@@ -7,11 +7,11 @@ use GStreamer::ElementFactory;
 use GStreamer::Main;
 use GStreamer::Pipeline;
 
-use GStreamer::Controller::InterpolationControlSource;
-use GStreamer::Controller::DirectControlBinding;
+use GStreamer::Controller::Interpolation;
+use GStreamer::Controller::DirectBinding;
 
-constant ICS = GStreamer::Controller::InterpolationControlSource;
-constant DCB = GStreamer::Controller::DirectControlBinding;
+constant ICS = GStreamer::Controller::Interpolation;
+constant DCB = GStreamer::Controller::DirectBinding;
 
 sub MAIN {
   GStreamer::Main.init;
@@ -35,16 +35,16 @@ sub MAIN {
 
   my @cs = ICS.new xx 2;
   $src.add_control_binding( DCB.new( $src, 'volume', @cs[0] ) );
-  $src.add_control_binding( DCB.new( $src,   'freq', @cs[1] ) );
+  #$src.add_control_binding( DCB.new( $src,   'freq', @cs[1] ) );
 
   .mode = GST_INTERPOLATION_MODE_LINEAR for @cs;
 
   @cs[0].set(0sec, 0);
   @cs[0].set(5sec, 1);
 
-  @cs[1].set(0sec,  220 / 20000);
-  @cs[1].set(3sec, 3520 / 20000);
-  @cs[1].set(6sec,  440 / 20000);
+  # @cs[1].set(0sec,  220 / 20000);
+  # @cs[1].set(3sec, 3520 / 20000);
+  # @cs[1].set(6sec,  440 / 20000);
 
   my $cid = $clock.create-single-shot-id( 7sec, :relative );
   if $pipeline.set-state(GST_STATE_PLAYING) {

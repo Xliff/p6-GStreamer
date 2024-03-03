@@ -1,6 +1,9 @@
 use v6.c;
 
+use NativeCall;
+
 use GLib::Raw::Definitions;
+use GLib::Raw::Subs;
 use GStreamer::Raw::Definitions;
 
 unit package GStreamer::Raw::Enums;
@@ -1606,3 +1609,64 @@ our enum GstTagLicenseFlagsEnum is export (
   GST_TAG_LICENSE_CREATIVE_COMMONS_LICENSE         => 1 +< 24,
   GST_TAG_LICENSE_FREE_SOFTWARE_FOUNDATION_LICENSE => 1 +< 25,
 );
+
+constant GstStreamVolumeFormat is export := guint32;
+our enum GstStreamVolumeFormatEnum is export <
+  GST_STREAM_VOLUME_FORMAT_LINEAR
+  GST_STREAM_VOLUME_FORMAT_CUBIC
+  GST_STREAM_VOLUME_FORMAT_DB
+>;
+
+constant GstAudioNoiseShapingMethod is export := guint32;
+our enum GstAudioNoiseShapingMethodEnum is export <
+  GST_AUDIO_NOISE_SHAPING_NONE
+  GST_AUDIO_NOISE_SHAPING_ERROR_FEEDBACK
+  GST_AUDIO_NOISE_SHAPING_SIMPLE
+  GST_AUDIO_NOISE_SHAPING_MEDIUM
+  GST_AUDIO_NOISE_SHAPING_HIGH
+>;
+
+constant GstAudioDitherMethod is export := guint32;
+our enum GstAudioDitherMethodEnum is export <
+  GST_AUDIO_DITHER_NONE
+  GST_AUDIO_DITHER_RPDF
+  GST_AUDIO_DITHER_TPDF
+  GST_AUDIO_DITHER_TPDF_HF
+>;
+
+sub gst_audio_dither_method_get_type
+  returns GType
+  is      native(gstreamer-audio)
+  is      export
+{ * }
+
+class GStreaner::Audio::Dither::Method {
+
+  method get_type {
+    state ($n, $t);
+
+    unstable_get_type(self.^name, &gst_audio_dither_method_get_type, $n, $t);
+  }
+
+}
+
+sub gst_audio_noise_shaping_method_get_type
+  returns GType
+  is      native(gstreamer-audio)
+  is      export
+{ * }
+
+class GStreamer::Audio::Noise::Shaping::Method {
+
+  method get_type {
+    state ($n, $t);
+
+    unstable_get_type(
+      self.^name,
+      &gst_audio_noise_shaping_method_get_type,
+      $n,
+      $t
+    );
+  }
+
+}

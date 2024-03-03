@@ -1909,3 +1909,12 @@ class GstAppSrcCallbacks         is repr<CStruct>  does GLib::Roles::Pointers is
   has Pointer    $.seek_data;   #= gboolean  (*seek_data)    (GstAppSrc *src, guint64 offset, gpointer user_data);
   HAS GstPadding $!padding;
 }
+
+class GstAllocationParams is repr<CStruct> does GLib::Roles::Pointers is export {
+  has GstMemoryFlags $.flags   is rw;
+  has gsize          $.align   is rw;
+  has gsize          $.prefix  is rw;
+  has gsize          $.padding is rw;
+
+  HAS GstPadding $!reserved;
+}

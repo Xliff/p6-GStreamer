@@ -4,9 +4,10 @@ use Method::Also;
 
 use NativeCall;
 
+use GLib::Raw::Traits;
+use GLib::Raw::ReturnedValue;
 use GStreamer::Raw::Types;
 
-use GLib::Raw::ReturnedValue;
 use GStreamer::Raw::Subs;
 use GStreamer::Roles::Plugins::Raw::Playbin;
 
@@ -103,8 +104,11 @@ class GStreamer::Plugins::Playbin is GStreamer::Pipeline {
     $o.ref if $ref;
     $o;
   }
-  multi method new {
-    my $gst-playbin = GStreamer::ElementFactory.make('playbin', :raw);
+  multi method new ( :$v3 ) {
+    my $gst-playbin = GStreamer::ElementFactory.make(
+      $v3 ?? 'playbin3' !! 'playbin',
+      :raw
+    );
 
     return Nil unless $gst-playbin;
     $gst-playbin = cast(GstPlayBin, $gst-playbin);
@@ -120,6 +124,28 @@ class GStreamer::Plugins::Playbin is GStreamer::Pipeline {
     state ($n, $t);
 
     unstable_get_type( self.^name, &gst_play_flags_get_type, $n, $t );
+  }
+
+  # Type: GstElement
+  method audio-filter (:$raw = False) is rw  is also<audio_filter> {
+    my GLib::Value $gv .= new( G_TYPE_OBJECT );
+    Proxy.new(
+      FETCH => sub ($) {
+        $gv = GLib::Value.new(
+          self.prop_get('audio-filter', $gv)
+        );
+        my $e = cast(GstElement, $gv.object);
+
+        $e ??
+          ( $raw ?? $e !! GStreamer::Element.new($e) )
+          !!
+          GstElement
+      },
+      STORE => -> $, GObject() $val is copy {
+        $gv.object = $val;
+        self.prop_set('audio-filter', $gv);
+      }
+    );
   }
 
   # Type: GstElement
@@ -771,7 +797,7 @@ class GStreamer::Plugins::Playbin is GStreamer::Pipeline {
     self.connect-get-tags($!pb, 'get-video-tags');
   }
 
-  # Is originally:
+  # Is originallysay "DB: { $direct-binding }";:
   # GstPlayBin, GstElement, gpointer --> void
   method source-setup is also<source_setup> {
     self.connect-source-setup($!pb);
@@ -799,100 +825,6 @@ class GStreamer::Plugins::Playbin is GStreamer::Pipeline {
   # GstPlayBin, gint, gpointer --> void
   method video-tags-changed is also<video_tags_changed> {
     self.connect-tags-changed($!pb, 'video-tags-changed');
-  }
-
-  method play (
-    :fade(:$time) is required where *.so,
-    :$mode                                = GST_INTERPOLATION_MODE_CUBIC,
-    :$start                               = DateTime.now,
-    :&onComplete
-  ) {
-    $time = 2500 if $time ~~ Bool;
-    
-    self.audio-fade-in(
-      :$time,
-      :$mode,
-      :$start,
-      :&onComplete
-    );
-    self.play;
-  }
-  method play {
-    self.set-state(GST_STATE_PLAYING)
-  }
-
-  method stop (
-    :fade(:$time) is required where *.so,
-    :$mode                                = GST_INTERPOLATION_MODE_CUBIC,
-    :$start                               = DateTime.now,
-    :&onComplete
-  ) {
-    $time = 2500 if $time ~~ Bool;
-
-    self.audio-fade-out(
-      :$time,
-      :$mode,
-      :$start,
-
-      onComplete => SUB { self.stop; &onComplete() if &onComplete }
-    )
-  }
-
-  method stop {
-    self.set-state(GST_STATE_NULL);
-  }
-
-  method audio-fade-in (
-    :$mode                   = GST_INTERPOLATION_MODE_CUBIC,
-    :$time                   = 2500,
-    :$from                   = 0,
-    :$to                     = 1,
-    :$start                  = DateTime.now.posix,
-    :&onComplete
-  ) {
-    my $cs = GStreamer::Controller::Interpolation.new;
-    $cs.mode = $mode;
-
-    X::GLib::InvalidValue.new(
-      message => 'Starting volume must be less than then ending volume!'
-    ).throw unless $from < $to
-
-    my $b = GStreamer::Control::DirectBinding.new(self, 'volume', $cs);
-    $cs.set( $start,         $from );
-    $cs.set( $start + $time, $to   );
-    self.add-control-binding($b);
-
-    if &onComplete {
-      $cs.value-changed.tap: sub (@a) {
-        &onComplete() if @a[1].value == $time;
-      }
-    }
-  }
-
-  method audio-fade-out (
-    :$mode       = GST_INTERPOLATION_MODE_CUBIC,
-    :$time       = 2500,
-    :$to         = 0,
-    :$start      = DateTime.now.posix,
-    :&onComplete
-  ) {
-    my $cs = GStreamer::Controller::Interpolation.new;
-    $cs.mode = $mode;
-
-    X::GLib::InvalidValue.new(
-      message => 'Ending volume must be less than starting volume!'
-    ).throw unless $to < self.volume;
-
-    my $b = GStreamer::Control::DirectBinding.new(self, 'volume', $cs);
-    $cs.set( $start,         self.volume );
-    $cs.set( $start + $time, $to );
-    self.add-control-binding($b);
-
-    if &onComplete {
-      $cs.value-changed.tap: sub (@a) {
-        &onComplete() if @a[1].value == $time;
-      }
-    }
   }
 
   proto method emit-get-tags (|)

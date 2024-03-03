@@ -12,11 +12,13 @@ use GLib::Roles::ListData;
 use GStreamer::Roles::Signals::Video::ColorBalance;
 
 role GStreamer::Roles::Video::ColorBalance {
-  also does GStreamer::Roles::Signals::Video::ColorBalance
-;
+  also does GStreamer::Roles::Signals::Video::ColorBalance;
+
   has GstColorBalance $!cb;
 
   method roleInit-ColorBalance {
+    return if $!cb;
+
     my \i = findProperImplementor(self.^attributes);
 
     $!cb = cast( GstColorBalance, i.get_value(self) );

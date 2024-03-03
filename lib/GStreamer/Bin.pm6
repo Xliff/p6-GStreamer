@@ -22,10 +22,10 @@ class GStreamer::Bin is GStreamer::Element {
   has GstBin $!b handles <numchildren children_cookie>;
 
   submethod BUILD (:$bin) {
-    self.setBin($bin) if $bin.defined;
+    self.setBin($bin) if $bin;
   }
 
-  method setBin(GstBinAncestry $_) {
+  method setGstBin(GstBinAncestry $_) is also<setBin> {
     my $to-parent;
 
     $!b = do {

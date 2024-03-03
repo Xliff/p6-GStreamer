@@ -43,7 +43,7 @@ class GStreamer::Plugins::Tee is GStreamer::Element {
   has GstTee $!t;
 
   submethod BUILD (:$tee) {
-    self.setTee($tee);
+    self.setTee($tee) if $tee;
   }
 
   method setTee (GstTeeAncestry $_) {
@@ -67,7 +67,15 @@ class GStreamer::Plugins::Tee is GStreamer::Element {
     is also<GstTee>
   { $!t }
 
-  method new (GstTeeAncestry $tee) {
+  multi method new (GstTeeAncestry $tee) {
+    $tee ?? self.bless( :$tee ) !! Nil;
+  }
+  multi method new {
+    my $tee = cast(
+      GstTee,
+      GStreamer::ElementFactory.make('tee', :raw)
+    );
+
     $tee ?? self.bless( :$tee ) !! Nil;
   }
 

@@ -53,14 +53,6 @@ our enum GstAudioConverterFlagsEnum is export (
   GST_AUDIO_CONVERTER_FLAG_VARIABLE_RATE => (1 +< 1),
 );
 
-constant GstAudioDitherMethod is export := guint32;
-our enum GstAudioDitherMethodEnum is export (
-  GST_AUDIO_DITHER_NONE    => 0,
-  'GST_AUDIO_DITHER_RPDF',
-  'GST_AUDIO_DITHER_TPDF',
-  'GST_AUDIO_DITHER_TPDF_HF'
-);
-
 constant GstAudioFlags is export := guint32;
 our enum GstAudioFlagsEnum is export (
   GST_AUDIO_FLAG_NONE         =>        0,
@@ -101,15 +93,6 @@ our enum GstAudioLayoutEnum is export (
   'GST_AUDIO_LAYOUT_NON_INTERLEAVED'
 );
 
-constant GstAudioNoiseShapingMethod is export := guint32;
-our enum GstAudioNoiseShapingMethodEnum is export (
-  GST_AUDIO_NOISE_SHAPING_NONE           => 0,
-  'GST_AUDIO_NOISE_SHAPING_ERROR_FEEDBACK',
-  'GST_AUDIO_NOISE_SHAPING_SIMPLE',
-  'GST_AUDIO_NOISE_SHAPING_MEDIUM',
-  'GST_AUDIO_NOISE_SHAPING_HIGH'
-);
-
 constant GstAudioPackFlags is export := guint32;
 our enum GstAudioPackFlagsEnum is export (
   GST_AUDIO_PACK_FLAG_NONE           =>        0,
@@ -122,37 +105,6 @@ our enum GstAudioQuantizeFlagsEnum is export (
   GST_AUDIO_QUANTIZE_FLAG_NON_INTERLEAVED => (1 +< 0),
 );
 
-constant GstAudioResamplerFilterInterpolation is export := guint32;
-our enum GstAudioResamplerFilterInterpolationEnum is export (
-  GST_AUDIO_RESAMPLER_FILTER_INTERPOLATION_NONE   => (0),
-  'GST_AUDIO_RESAMPLER_FILTER_INTERPOLATION_LINEAR',
-  'GST_AUDIO_RESAMPLER_FILTER_INTERPOLATION_CUBIC'
-);
-
-constant GstAudioResamplerFilterMode is export := guint32;
-our enum GstAudioResamplerFilterModeEnum is export (
-  GST_AUDIO_RESAMPLER_FILTER_MODE_INTERPOLATED => (0),
-  'GST_AUDIO_RESAMPLER_FILTER_MODE_FULL',
-  'GST_AUDIO_RESAMPLER_FILTER_MODE_AUTO'
-);
-
-constant GstAudioResamplerFlags is export := guint32;
-our enum GstAudioResamplerFlagsEnum is export (
-  GST_AUDIO_RESAMPLER_FLAG_NONE                =>      (0),
-  GST_AUDIO_RESAMPLER_FLAG_NON_INTERLEAVED_IN  => (1 +< 0),
-  GST_AUDIO_RESAMPLER_FLAG_NON_INTERLEAVED_OUT => (1 +< 1),
-  GST_AUDIO_RESAMPLER_FLAG_VARIABLE_RATE       => (1 +< 2),
-);
-
-constant GstAudioResamplerMethod is export := guint32;
-our enum GstAudioResamplerMethodEnum is export <
-  GST_AUDIO_RESAMPLER_METHOD_NEAREST
-  GST_AUDIO_RESAMPLER_METHOD_LINEAR
-  GST_AUDIO_RESAMPLER_METHOD_CUBIC
-  GST_AUDIO_RESAMPLER_METHOD_BLACKMAN_NUTTALL
-  GST_AUDIO_RESAMPLER_METHOD_KAISER
->;
-
 constant GstAudioRingBufferState is export := guint32;
 our enum GstAudioRingBufferStateEnum is export <
   GST_AUDIO_RING_BUFFER_STATE_STOPPED
@@ -160,13 +112,6 @@ our enum GstAudioRingBufferStateEnum is export <
   GST_AUDIO_RING_BUFFER_STATE_STARTED
   GST_AUDIO_RING_BUFFER_STATE_ERROR
 >;
-
-constant GstStreamVolumeFormat is export := guint32;
-our enum GstStreamVolumeFormatEnum is export (
-  GST_STREAM_VOLUME_FORMAT_LINEAR => 0,
-  'GST_STREAM_VOLUME_FORMAT_CUBIC',
-  'GST_STREAM_VOLUME_FORMAT_DB'
-);
 
 constant GstAudioFormat is export := guint32;
 enum GstAudioFormatNonEndianEnum is export (

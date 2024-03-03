@@ -9,6 +9,8 @@ role GStreamer::Roles::Video::Navigation {
   has GstNavigation $!n;
 
   method roleInit-Navigation {
+    return if $!n;
+    
     my \i = findProperImplementor(self.^attributes);
 
     $!n = cast( GstNavigation, i.get_value(self) );

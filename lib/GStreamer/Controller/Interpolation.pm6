@@ -6,7 +6,7 @@ use Method::Also;
 use GStreamer::Raw::Types;
 
 use GLib::Value;
-use GStreamer::Controller::TimedValueControlSource;
+use GStreamer::Controller::TimedValue;
 
 our subset GstInterpolationControlSourceAncestry is export of Mu
   where GstInterpolationControlSource | GstTimedValueControlSourceAncestry;

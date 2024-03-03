@@ -111,23 +111,26 @@ class GStreamer::Object {
 
   multi method default_deep_notify (
     GStreamer::Object:U:
-    GObject() $obj,
+
+    GObject()   $obj,
     GstObject() $orig,
-    GParamSpec $pspec,
-    @excluded_props
+    GParamSpec  $pspec,
+                @excluded_props
   ) {
     my $ep = CArray[Str].new;
 
     my $ne = @excluded_props.elems;
-    $ep[$_] = @excluded_props[$_] for ^$ne;
+
+    $ep[$_]  = @excluded_props[$_] for ^$ne;
     $ep[$ne] = Str;
     samewith($obj, $orig, $pspec, $ep);
   }
   multi method default_deep_notify (
     GStreamer::Object:U:
-    GObject() $obj,
+
+    GObject()   $obj,
     GstObject() $orig,
-    GParamSpec $pspec,
+    GParamSpec  $pspec,
     CArray[Str] $excluded_props
   ) {
     gst_object_default_deep_notify($obj, $orig, $pspec, $excluded_props);
@@ -144,11 +147,11 @@ class GStreamer::Object {
   { * }
 
   multi method get_g_value_array (
-    Str() $property_name,
-    Int() $timestamp,
-    Int() $interval,
-    Int() $n_values,
-    :$raw = False
+    Str()  $property_name,
+    Int()  $timestamp,
+    Int()  $interval,
+    Int()  $n_values,
+          :$raw              = False
   ) {
     my $rv = callwith(
       $property_name,
@@ -163,13 +166,13 @@ class GStreamer::Object {
     $rv[0] ?? $rv[1] !! Nil;
   }
   multi method get_g_value_array (
-    Str() $property_name,
-    Int() $timestamp,
-    Int() $interval,
-    Int() $n_values,
-    @values,
-    :$all = False,
-    :$raw = False
+    Str()  $property_name,
+    Int()  $timestamp,
+    Int()  $interval,
+    Int()  $n_values,
+           @values,
+          :$all             = False,
+          :$raw             = False
   ) {
     my GstClockTime ($ts, $in) = ($timestamp, $interval);
     my guint $n = $n_values;
@@ -236,6 +239,7 @@ class GStreamer::Object {
 
   method clear_object (
     GStreamer::Object:U:
+    
     GstObject $obj
   )
     is also<clear-object>

@@ -11,10 +11,11 @@ role GStreamer::Roles::Preset {
   has GstPreset $!ps;
 
   method roleInit-GstPreset is also<roleInit_GstPreset> {
+    return if $!ps;
+    
     my \i = findProperImplementor(self.^attributes);
-    my $o = cast( GstChildProxy, i.get_value(self) );
 
-    $!ps = cast(GstPreset, $o);
+    $!ps = cast( GstChildProxy, i.get_value(self) );
   }
 
   method GStreamer::Raw::Definitions::GstPreset
