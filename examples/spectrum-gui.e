@@ -13,6 +13,9 @@ use GStreamer::Controller::LFO;
 
 use GStreamer::Plugins::Auto::Audio::Sink;
 use GStreamer::Plugins::Audio::TestSrc;
+use GStreamer::Plugins::FileSrc;
+use GStreamer::Plugins::Mpeg::AudioParse;
+use GStreamer::Plugins::Mpeg123::AudioDec;
 use GStreamer::Plugins::Spectrum;
 use GStreamer::Plugins::FakeSink;
 
@@ -22,10 +25,11 @@ use GDK::RGBA;
 use GTK::Application;
 use GTK::DrawingArea;
 
-constant BANDS     = 20;
-constant AUDIOFREQ = 32000;
-constant W         = 700;
-constant H         = 350;
+constant BANDS      = 50;
+constant AUDIOFREQ  = 32000;
+constant W          = 700;
+constant H          = 350;
+constant MAXMEASURE = 70;
 
 my (@bands, @size);
 
@@ -45,7 +49,7 @@ sub message-handler ($b, $m) {
   return True unless $n eq 'spectrum';
 
   @bands = $s.get-list('magnitude').Array.map( *.value );
-  my $max = @bands.hyper.map( *.abs.Int ).max;
+  my $max = @bands.hyper.map( *.abs.Int ).max / MAXMEASURE;
 
   True;
 }
@@ -54,25 +58,14 @@ my %app-opts;
 
 sub drawBand ($b, $v, $w, $h) {
   my ($hs, $vs) = ($w, $h) »/« (W, H);
-  my ($x,   $y) = (35 * $b * $hs + 5, $v.Int.abs * 10 * $vs);
-
-#  say "Drawing #{ $b }: ({ $x }, { $y }) s ({ $hs }, { $vs })";
-
-  my $color = @colors[$b];
+  my ($x,   $y) = (35 * $b * $hs + 5, $v.Int.abs * 5 * $vs);
+  my  $color    = @colors[$b];
 
   given $*cr {
     my $bh = $y - $h * $vs;
 
     .rgba( |$color.lighten(14).rgbad );
-    .rectangle($x * $hs, $y * $vs, 25 * $hs, (700 - $y) * $vs);
-
-    # .move_to($x, $y);
-    # .line_to(           25 * $hs,     0, :rel );
-    # .line_to(                  0,   $bh, :rel );
-    # .line_to(          -25 * $hs,     0, :rel );
-    # .close_path;
-    # cw: COLORING!
-
+    .rectangle($x * $hs, $y * $vs, 25 * $hs, (H - $y) * $vs);
     .stroke( :preserve );
     .rgba( |$color.rgbad );
     .fill;
@@ -94,7 +87,12 @@ sub draw ($, $cr, $, $r) {
   $r.r = 1;
 }
 
-sub MAIN {
+sub MAIN ( $filename ) {
+  unless $filename.IO.r {
+    $*ERR.say: "Could not load file '{ $filename }'";
+    exit(1);
+  }
+
   GStreamer::Main.init;
 
   my $bin = GStreamer::Pipeline.new('bin');
@@ -108,11 +106,13 @@ sub MAIN {
   my $a = GTK::Application.new( |%app-opts );
 
   $a.activate.tap: SUB {
-    my $src  = GStreamer::Plugins::Audio::TestSrc.new;
+    my $src  = GStreamer::Plugins::FileSrc.new;
+    my $ap   = GStreamer::Plugins::Mpeg::AudioParse.new;
+    my $ad   = GStreamer::Plugins::Mpeg123::AudioDec.new;
     my $ac   = GStreamer::ElementFactory.make('audioconvert');
     my $s    = GStreamer::Plugins::Spectrum.new;
     my $sink = GStreamer::Plugins::Auto::Audio::Sink.new;
-    $bin.add-many($src, $ac, $s, $sink);
+    $bin.add-many($src, $ap, $ad, $ac, $s, $sink);
 
     {
       my $caps = GStreamer::Caps.new-simple(
@@ -123,7 +123,9 @@ sub MAIN {
       );
 
       unless [&&](
-        $src.link($ac),
+        $src.link($ap),
+        $ap.link($ad),
+        $ad.link($ac),
         $ac.link-filtered($s, $caps),
         $s.link($sink)
       ) {
@@ -132,17 +134,13 @@ sub MAIN {
       }
     }
 
-    $src.setAttributes(
-      wave => 0,
-      freq => 2000
-    );
+    $src.setAttributes( location => $filename );
     $s.setAttributes(
       bands         => BANDS,
       threshold     => -80,
       post-messages => True,
       message-phase => True
     );
-    #$sink.setAttributes( sync => True );
 
     $bin.bus.add-watch: sub (*@a) { message-handler( |@a[^2] ) }
 
@@ -154,23 +152,7 @@ sub MAIN {
 
     $bin.play;
 
-    GLib::Timeout.add(100, SUB { $da.invalidate; G_SOURCE_CONTINUE });
-
-    $*SCHEDULER.cue( in => 5, sub {
-      $bin.stop;
-      $src.freq = 3000;
-      $bin.start;
-      $*SCHEDULER.cue( in => 5, sub {
-        $bin.stop;
-        $src.freq = 4000;
-        $bin.play;
-        $*SCHEDULER.cue( in => 5, sub {
-          $bin.stop;
-          $src.freq = 5000;
-          $bin.start;
-        });
-      });
-    });
+    GLib::Timeout.add(50, SUB { $da.invalidate; G_SOURCE_CONTINUE });
   }
 
   $a.run;
