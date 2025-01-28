@@ -10,27 +10,42 @@ use GLib::Value;
 
 use GLib::Roles::Object;
 
-class GStreamer::Object {
-  also does GLib::Roles::Object;
+our subset GstObjectAncestry is export of Mu
+  where GstObject | GObject;
 
+class GStreamer::Object is GLib::Object {
   has GstObject $!gst-o handles <flags>;
 
-  submethod BUILD (:$object) {
-    self.setGstObject($object) if $object;
+  submethod BUILD (:$gst-object) {
+    self.setGstObject($gst-object) if $gst-object;
   }
 
-  multi method Numeric { $!gst-o.p }
+  method setGstObject(GstObjectAncestry $_) {
+    my $to-parent;
+    $!gst-o = do {
+      when GstObject {
+        $to-parent = cast(GObject, $_);
+        $_;
+      }
 
-  method setGstObject(GstObject $object) {
-    self!setObject( cast(GObject, $!gst-o = $object) )
+      default {
+        $to-parent = $_;
+        cast(GstObject, $_);
+      }
+    }
+    self.setGObject($to-parent)
   }
 
   method GStreamer::Raw::Structs::GstObject
     is also<GstObject>
   { $!gst-o }
 
-  multi method new (GstObject $object) {
-    $object ?? self.bless( :$object ) !! Nil;
+  multi method new (GstObjectAncestry $gst-object, :$ref = True) {
+    return Nil unless $gst-object;
+
+    my $o = self.bless( :$gst-object );
+    $o.ref if $ref;
+    $o;
   }
   multi method new (|c) {
     my $dieMsg = qq:to/DIE/.chomp;
@@ -239,7 +254,7 @@ class GStreamer::Object {
 
   method clear_object (
     GStreamer::Object:U:
-    
+
     GstObject $obj
   )
     is also<clear-object>

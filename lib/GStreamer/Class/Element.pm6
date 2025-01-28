@@ -14,6 +14,7 @@ use GLib::Roles::ListData;
 
 class GstElementClass is repr<CStruct> does GLib::Roles::Pointers is export {
   HAS GstObjectClass        $.parent_class;
+
   # Public
   has gpointer              $.metadata;
   has GstElementFactory     $.elementfactory;
@@ -67,19 +68,19 @@ class GstElementClass is repr<CStruct> does GLib::Roles::Pointers is export {
 }
 
 use GLib::GList;
-use GLib::Class::Object;
+use GStreamer::Class::Object;
 use GStreamer::PadTemplate;
 
 use GLib::Roles::ListData;
 
 our subset GstElementClassAncestry is export of Mu
-  where GstElementClass | GObjectClass;
+  where GstElementClass | GstObjectClassAncestry;
 
-class GStreamer::Class::Element is GLib::Class::Object {
+class GStreamer::Class::Element is GStreamer::Class::Object is export {
   has GstElementClass $!ec;
 
   submethod BUILD (:$element-class) {
-    self.setGstElementClass($element-class);
+    self.setGstElementClass($element-class) if $element-class
   }
 
   method GStreamer::Class::Element::GstElementClass
@@ -91,7 +92,7 @@ class GStreamer::Class::Element is GLib::Class::Object {
 
     $!ec = do {
       when GstElementClass {
-        $to-parent = cast(GObjectClass, $_);
+        $to-parent = cast(GstObjectClass, $_);
         $_;
       }
 
@@ -100,10 +101,10 @@ class GStreamer::Class::Element is GLib::Class::Object {
         cast(GstElementClass, $_);
       }
     }
-    self.setObjectClass($to-parent);
+    self.setGstObjectClass($to-parent);
   }
 
-  method new (GstElementClass $element-class) {
+  method new (GstElementClassAncestry $element-class) {
     $element-class ?? self.bless( :$element-class ) !! Nil;
   }
 

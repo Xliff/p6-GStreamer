@@ -7,6 +7,8 @@ use GStreamer::Raw::Types;
 use GStreamer::Raw::Element;
 use GStreamer::Raw::Utils;
 
+use GStreamer::Class::Element;
+
 use GLib::GList;
 use GStreamer::Bus;
 use GStreamer::Clock;
@@ -54,8 +56,13 @@ class GStreamer::Element is GStreamer::Object {
     is also<GstElement>
   { $!e }
 
-  method getClass (:$raw = False) is default {
-    self._getClass(GstElementClass, GStreamer::Class::Element, :$raw);
+  multi method getClass ( :$raw = False ) {
+    propReturnObject(
+      cast( GstElementClass, callwith( :base, :raw ) ),
+      $raw,
+      GstElementClass,
+      GStreamer::Class::Element
+    );
   }
 
   method new (GstElementAncestry $element) {
