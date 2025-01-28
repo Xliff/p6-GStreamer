@@ -229,16 +229,13 @@ sub print-interfaces ($t) {
 sub PAV-COLOR ($s)
   { "{ PROP_ATTR_VALUE_COLOR }{ $s }{ RESET_COLOR }" }
 
-multi sub print-object-properties-info (gpointer $k, $d) {
-  my $klass = GLib::Class::Object.new( cast(GObjectClass, $k) );
-
-  print-object-properties-info(Nil, $d, $klass);
+multi sub print-object-properties-info ($o, $d) {
+  my $go = GLib::Object.new($o.GObject);
+  print-object-properties-info($o, $d, $go);
 }
 multi sub print-object-properties-info ($o, $d, $k? is copy) {
-  $k //= $o.getClass;
+  my @specs    = $k.getClass( :base ).list-properties;
 
-  my @specs    = $k ?? $k.list-properties.Array.sort( *.name )
-                    !! die 'ObjectClass is not defined!';
   my $long     = (  G_TYPE_LONG,  G_TYPE_ULONG ).any;
   my $unsigned = (  G_TYPE_UINT, G_TYPE_UINT64, G_TYPE_ULONG ).any;
   my $integer  = (  G_TYPE_UINT,    G_TYPE_INT, G_TYPE_UINT64, G_TYPE_INT64,
@@ -332,8 +329,7 @@ multi sub print-object-properties-info ($o, $d, $k? is copy) {
                       proceed                                           }
 
       when $tn.so {
-        my $pspec = $s.value-spec;
-        my $max   = $pspec.maximum;
+        my $max   = $s.maximum;
         # Raku still has issues with unsigned ints in structs, so we have
         # to adjust!
         my $is    = ($tn eq <Long Integer64>.any ?? 64 !! 32);
@@ -341,7 +337,7 @@ multi sub print-object-properties-info ($o, $d, $k? is copy) {
         $max += 2 ** $is if $us && ($max +& 2 ** ($is - 1));
         n-print "{ DATATYPE_COLOR }{ $us }{ $tn }{ RESET_COLOR }. ";
           print "{ PROP_ATTR_NAME_COLOR }Range{ RESET_COLOR }: ";
-          print "{ PROP_ATTR_VALUE_COLOR }{ $pspec.minimum.fmt($f) } - {
+          print "{ PROP_ATTR_VALUE_COLOR }{ $s.minimum.fmt($f) } - {
                    $max.fmt($f)  }{ RESET_COLOR } ";
           print "{ PROP_ATTR_NAME_COLOR }Default{ RESET_COLOR }: ";
           print "{ PROP_ATTR_VALUE_COLOR }{ $v.value }{ RESET_COLOR }";
@@ -374,7 +370,7 @@ multi sub print-object-properties-info ($o, $d, $k? is copy) {
         }
 
         my ($pt-class, $pt-nick, $vals);
-        when $s.checkType( $g-param-spec-types[G_TYPE_PARAM_ENUM_IDX] ) {
+        when $s.value-type == G_TYPE_ENUM {
           $pt-class = cast(GEnumClass, $s.value_type(:obj).class_ref);
           $vals = $pt-class.valueArray;
           my $sel-val = $vals.grep( *.value == $v.enum )[0];
@@ -388,7 +384,7 @@ multi sub print-object-properties-info ($o, $d, $k? is copy) {
           proceed;
         }
 
-        when $s.checkType( $g-param-spec-types[G_TYPE_PARAM_FLAGS_IDX] ) {
+        when $s.value-type == G_TYPE_FLAGS {
           $pt-class = cast(GFlagsClass, $s.value-spec.flags-class);
           $vals = $pt-class.valueArray;
 
@@ -417,12 +413,15 @@ multi sub print-object-properties-info ($o, $d, $k? is copy) {
           }
         }
 
-        when $s.checkType( $g-param-spec-types[G_TYPE_PARAM_OBJECT_IDX] ) {
+        when
+          $s.value-type == G_TYPE_OBJECT               ||
+          $s.value-type == GStreamer::Object.get_type
+        {
           n-print "{ PROP_VALUE_COLOR }Object of type{ RESET_COLOR } {
                       DATATYPE_COLOR }\"{ $st.name }\"{ RESET_COLOR }";
         }
 
-        when $s.checkType( $g-param-spec-types[G_TYPE_PARAM_BOXED_IDX] ) {
+        when $s.value-type == G_TYPE_BOXED {
           n-print "{ PROP_VALUE_COLOR }Boxed pointer of type{
                       RESET_COLOR }{ DATATYPE_COLOR }\"{ $st.name }\"{
                       RESET_COLOR }";
@@ -434,7 +433,7 @@ multi sub print-object-properties-info ($o, $d, $k? is copy) {
           }
         }
 
-        when $s.checkType( $g-param-spec-types[G_TYPE_PARAM_POINTER_IDX] ) {
+        when $s.value-type == G_TYPE_POINTER {
           if $s.value_type !=  G_TYPE_POINTER {
             n-print "{ PROP_VALUE_COLOR }Pointer of type{ RESET_COLOR } {
                         DATATYPE_COLOR }\"{ $st.name }\"{ RESET_COLOR }"
@@ -462,7 +461,7 @@ multi sub print-object-properties-info ($o, $d, $k? is copy) {
           }
         }
 
-        when $s.value_type == GStreamer::Value.fraction-get-type {
+        when $s.value_type == GStreamer::Value::Fraction.get-type {
           my $pspec = cast(GstParamSpecFraction, $s.GParamSpec);
 
           n-print "{ DATATYPE_COLOR }Fraction{ RESET_COLOR }. {
@@ -550,8 +549,7 @@ sub print-pad-templates-info ($e, $ef) {
       }
     }
 
-    my $klass = $e.getClass;
-    if $klass.get-pad-template($pt.name-template) -> $tmpl {
+    if $e.get-pad-template($pt.name-template) -> $tmpl {
       my $gt = $tmpl.objectType;
 
       unless $tmpl.abi-type == (G_TYPE_NONE, PAD_TYPE).any {
@@ -669,7 +667,8 @@ sub print-pad-info ($e) {
 }
 
 sub has-sometimes-template ($e) {
-  for $e.getClass.pad-templates[] -> $l {
+  # cw: -XXX- GstElement must override getClass to a GstElementClass
+  for $e.getClass.pad-templates -> $l {
     return True if ($l.presence // 0) == GST_PAD_SOMETIMES;
   }
   False;
